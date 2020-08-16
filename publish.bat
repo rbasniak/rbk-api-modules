@@ -1,0 +1,2 @@
+dotnet nuget push D:\Repositories\pessoal\rbkApiModules.Comments\rbkApiModules.Infrastructure\bin\Debug\rbkApiModules.Infrastructure.1.0.2-alpha1.nupkg -k oy2j3by2szon6bjddk5apn3x4ljmwgherbdrjwjrarv2oy -s https://api.nuget.org/v3/index.json
+dotnet nuget push D:\Repositories\pessoal\rbkApiModules.Comments\rbkApiModules.Comments\bin\Debug\rbkApiModules.Comments.1.0.2-alpha1.nupkg -k oy2j3by2szon6bjddk5apn3x4ljmwgherbdrjwjrarv2oy -s https://api.nuget.org/v3/index.json

@@ -1,0 +1,3 @@
+- Como amarrar comments com os Users
+- Como tratar tamanhos dos campos para validação 
+- Como tratar dados extras dos usuários
