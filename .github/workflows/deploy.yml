@@ -1,0 +1,60 @@
+# This is a basic workflow to help you get started with Actions
+name: Release to NuGet
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  release:
+    types: [published]
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.101
+      - name: Create NuGet Package
+        run: dotnet pack -c Release /p:Version=${{ github.event.release.tag_name }} /p:PackageReleaseNotes="See https://github.com/rbasniak/Code.Library/releases/tag/${{ github.event.release.tag_name }}"
+        working-directory: .
+      - name: Archive NuGet Package
+        uses: actions/upload-artifact@v1
+        with:
+          name: rbkApiModules.Analytics
+          path: ./rbkApiModules.Analytics/bin/Release/rbkApiModules.Analytics.${{ github.event.release.tag_name }}.nupkg
+      - name: Archive NuGet Package
+        uses: actions/upload-artifact@v1
+        with:
+          name: rbkApiModules.Auditing
+          path: ./rbkApiModules.Auditing/bin/Release/rbkApiModules.Auditing.${{ github.event.release.tag_name }}.nupkg       
+      - name: Archive NuGet Package
+        uses: actions/upload-artifact@v1
+        with:
+          name: rbkApiModules.Authentication
+          path: ./rbkApiModules.Authentication/bin/Release/rbkApiModules.Authentication.${{ github.event.release.tag_name }}.nupkg   
+      - name: Archive NuGet Package
+        uses: actions/upload-artifact@v1
+        with:
+          name: rbkApiModules.Comments
+          path: ./rbkApiModules.Comments/bin/Release/rbkApiModules.Comments.${{ github.event.release.tag_name }}.nupkg   
+      - name: Archive NuGet Package
+        uses: actions/upload-artifact@v1
+        with:
+          name: rbkApiModules.Infrastructure
+          path: ./rbkApiModules.Infrastructure/bin/Release/rbkApiModules.Infrastructure.${{ github.event.release.tag_name }}.nupkg   
+      - name: Archive NuGet Package
+        uses: actions/upload-artifact@v1
+        with:
+          name: rbkApiModules.Utilities
+          path: ./rbkApiModules.Utilities/bin/Release/rbkApiModules.Utilities.${{ github.event.release.tag_name }}.nupkg   
+      - name: Archive NuGet Package
+        uses: actions/upload-artifact@v1
+        with:
+          name: rbkApiModules.UIAnnotations
+          path: ./rbkApiModules.UIAnnotations/bin/Release/rbkApiModules.UIAnnotations.${{ github.event.release.tag_name }}.nupkg   
+      - name: Publish Nuget Package
+        run: dotnet nuget push **/*.nupkg --api-key ${{ secrets.nuget_api_key }} --source https://api.nuget.org/v3/index.json --no-symbols true
