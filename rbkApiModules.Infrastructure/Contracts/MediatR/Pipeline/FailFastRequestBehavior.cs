@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,14 +20,16 @@ namespace rbkApiModules.Infrastructure
         where TResponse : BaseResponse
     {
         private readonly IEnumerable<IValidator> _validators;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         /// <summary>
         /// Construtor padrão
         /// </summary>
         /// <param name="validators">Validadoes (uso automático do MediatR)</param>
-        public FailFastRequestBehavior(IEnumerable<IValidator<TRequest>> validators)
+        public FailFastRequestBehavior(IEnumerable<IValidator<TRequest>> validators, IHttpContextAccessor httpContextAccessor)
         {
             _validators = validators;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         /// <summary>
@@ -36,8 +39,20 @@ namespace rbkApiModules.Infrastructure
         {
             var context = new ValidationContext<object>(request);
 
+            var interfaces = request.GetType().GetInterfaces().Where(x => !x.FullName.Contains("MediatR"));
+
+            var composedValidators = _validators.ToList();
+
+            foreach (var @interface in interfaces)
+            {
+                var ivalidator = typeof(IValidator<>);
+                var generic = ivalidator.MakeGenericType(@interface);
+                var validator = _httpContextAccessor.HttpContext.RequestServices.GetService(generic);
+                composedValidators.Add((IValidator)validator);
+            }
+
             // Cuidado com Task.Result, pode ocasionar deadlocks.
-            var failures = _validators
+            var failures = composedValidators
                 .Select(async v => await v.ValidateAsync(context))
                 .SelectMany(result => result.Result.Errors)
                 .Where(f => f != null)
