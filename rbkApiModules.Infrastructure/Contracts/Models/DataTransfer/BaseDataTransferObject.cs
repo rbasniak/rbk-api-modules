@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace rbkApiModules.Infrastructure
+﻿namespace rbkApiModules.Infrastructure
 {
     public class BaseDataTransferObject
     {

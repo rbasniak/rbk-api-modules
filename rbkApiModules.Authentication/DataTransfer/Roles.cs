@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using rbkApiModules.Authentication;
 using rbkApiModules.Infrastructure;
 using rbkApiModules.Infrastructure.Models;
 

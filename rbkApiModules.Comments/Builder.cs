@@ -1,12 +1,7 @@
 ﻿using FluentValidation;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 using rbkApiModules.Infrastructure;
-using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 
 namespace rbkApiModules.Comments
 {

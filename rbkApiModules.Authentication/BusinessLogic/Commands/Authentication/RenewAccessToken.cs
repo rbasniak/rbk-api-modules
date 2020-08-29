@@ -2,11 +2,9 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Linq;
 using System.Collections.Generic;
 using rbkApiModules.Infrastructure;
 using Microsoft.AspNetCore.Http;

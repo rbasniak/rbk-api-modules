@@ -1,30 +1,22 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using AutoMapper;
-using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using rbkApiModules.Comments;
 using rbkApiModules.Tester.Database;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using rbkApiModules.Infrastructure;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using rbkApiModules.Authentication;
 using AspNetCoreApiTemplate.Auditing;
 using rbkApiModules.Auditing;
@@ -178,6 +170,7 @@ namespace rbkApiModules.Tester
             app.UseCors(c => c.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().WithExposedHeaders("Content-Disposition"));
 
             app.UseHttpsRedirection();
+            app.UseAntiXssMiddleware();
             app.UseAuthentication();
             app.UseDefaultFiles();
             app.UseStaticFiles();

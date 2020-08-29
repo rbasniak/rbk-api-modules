@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using rbkApiModules.Authentication;
 using rbkApiModules.Infrastructure;
 using rbkApiModules.Infrastructure.Models;

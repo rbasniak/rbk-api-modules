@@ -1,5 +1,4 @@
-﻿using AspNetCoreApiTemplate.Utilities;
-using rbkApiModules.Infrastructure;
+﻿using rbkApiModules.Infrastructure;
 using rbkApiModules.Utilities.Passwords;
 using System;
 using System.Collections.Generic;

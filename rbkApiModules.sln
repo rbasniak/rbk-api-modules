@@ -31,6 +31,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastru
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{F35DF5CD-4270-4087-8307-EE2422CC921B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.UIAnnotations", "rbkApiModules.UIAnnotations\rbkApiModules.UIAnnotations.csproj", "{B91DEAE0-C23E-485F-820A-D25312FEBB31}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.UIAnnotations.Tests", "rbkApiModules.UIAnnotations.Tests\rbkApiModules.UIAnnotations.Tests.csproj", "{3BEB0496-40F7-440C-A66A-CA184EE40975}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,6 +69,14 @@ Global
 		{7A158AEA-806E-4B2A-BDE0-DA5B7B0CAA47}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A158AEA-806E-4B2A-BDE0-DA5B7B0CAA47}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A158AEA-806E-4B2A-BDE0-DA5B7B0CAA47}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B91DEAE0-C23E-485F-820A-D25312FEBB31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B91DEAE0-C23E-485F-820A-D25312FEBB31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B91DEAE0-C23E-485F-820A-D25312FEBB31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B91DEAE0-C23E-485F-820A-D25312FEBB31}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3BEB0496-40F7-440C-A66A-CA184EE40975}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3BEB0496-40F7-440C-A66A-CA184EE40975}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3BEB0496-40F7-440C-A66A-CA184EE40975}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3BEB0496-40F7-440C-A66A-CA184EE40975}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -77,6 +89,8 @@ Global
 		{3E34F320-BDD1-4979-95C4-2AB025DD4CA7} = {FEB05D26-EA9A-4338-939C-D319053767F7}
 		{BBF00E35-086B-42C7-A7E8-30022D66279F} = {F35DF5CD-4270-4087-8307-EE2422CC921B}
 		{7A158AEA-806E-4B2A-BDE0-DA5B7B0CAA47} = {F35DF5CD-4270-4087-8307-EE2422CC921B}
+		{B91DEAE0-C23E-485F-820A-D25312FEBB31} = {F35DF5CD-4270-4087-8307-EE2422CC921B}
+		{3BEB0496-40F7-440C-A66A-CA184EE40975} = {F35DF5CD-4270-4087-8307-EE2422CC921B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9AAC09BF-43DC-408B-8F24-24DAA39DA1E8}

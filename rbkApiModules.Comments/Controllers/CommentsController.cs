@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using rbkApiModules.Infrastructure;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace rbkApiModules.Comments.Controllers

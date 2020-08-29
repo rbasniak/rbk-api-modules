@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace AspNetCoreApiTemplate.Utilities.Authentication
+﻿namespace AspNetCoreApiTemplate.Utilities.Authentication
 {
     public interface IPassword
     {

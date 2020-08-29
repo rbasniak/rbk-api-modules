@@ -4,7 +4,6 @@ using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Options;
 using rbkApiModules.Infrastructure;
 using rbkApiModules.Utilities.Passwords;
