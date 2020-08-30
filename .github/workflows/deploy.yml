@@ -39,16 +39,6 @@ jobs:
       - name: Archive NuGet Package
         uses: actions/upload-artifact@v1
         with:
-          name: rbkApiModules.Comments
-          path: ./rbkApiModules.Comments/bin/Release/rbkApiModules.Comments.${{ github.event.release.tag_name }}.nupkg   
-      - name: Archive NuGet Package
-        uses: actions/upload-artifact@v1
-        with:
-          name: rbkApiModules.Infrastructure
-          path: ./rbkApiModules.Infrastructure/bin/Release/rbkApiModules.Infrastructure.${{ github.event.release.tag_name }}.nupkg   
-      - name: Archive NuGet Package
-        uses: actions/upload-artifact@v1
-        with:
           name: rbkApiModules.Utilities
           path: ./rbkApiModules.Utilities/bin/Release/rbkApiModules.Utilities.${{ github.event.release.tag_name }}.nupkg   
       - name: Archive NuGet Package
