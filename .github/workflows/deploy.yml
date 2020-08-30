@@ -25,10 +25,5 @@ jobs:
       - name: Create NuGet Package
         run: dotnet pack -c Release /p:Version=${{ github.event.release.tag_name }} /p:PackageReleaseNotes="See https://github.com/rbasniak/rbk-api-modules/releases/tag/${{ github.event.release.tag_name }}"
         working-directory: .
-      - name: Archive NuGet Package
-        uses: actions/upload-artifact@v1
-        with:
-          name: rbkApiModules.Utilities
-          path: ./rbkApiModules.Utilities/bin/Release/rbkApiModules.Utilities.${{ github.event.release.tag_name }}.nupkg
       - name: Publish Nuget Package
         run: dotnet nuget push **/*.nupkg --api-key ${{ secrets.nuget_api_key }} --source https://api.nuget.org/v3/index.json --no-symbols true
