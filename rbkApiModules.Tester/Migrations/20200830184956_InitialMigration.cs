@@ -8,7 +8,7 @@ namespace rbkApiModules.Tester.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Claim",
+                name: "Claims",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
@@ -17,7 +17,20 @@ namespace rbkApiModules.Tester.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Claim", x => x.Id);
+                    table.PrimaryKey("PK_Claims", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Clients",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Name = table.Column<string>(maxLength: 512, nullable: true),
+                    Birthdate = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Clients", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -43,7 +56,7 @@ namespace rbkApiModules.Tester.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Role",
+                name: "Roles",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
@@ -51,22 +64,30 @@ namespace rbkApiModules.Tester.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Role", x => x.Id);
+                    table.PrimaryKey("PK_Roles", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "User",
+                name: "Users",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    Username = table.Column<string>(nullable: false),
-                    Password = table.Column<string>(nullable: false),
+                    Username = table.Column<string>(maxLength: 512, nullable: false),
+                    Password = table.Column<string>(maxLength: 1024, nullable: false),
                     RefreshToken = table.Column<string>(nullable: true),
-                    RefreshTokenValidity = table.Column<DateTime>(nullable: false)
+                    RefreshTokenValidity = table.Column<DateTime>(nullable: false),
+                    Discriminator = table.Column<string>(nullable: false),
+                    IsConfirmed = table.Column<bool>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_User", x => x.Id);
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Users_Clients_Id",
+                        column: x => x.Id,
+                        principalTable: "Clients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -80,15 +101,15 @@ namespace rbkApiModules.Tester.Migrations
                 {
                     table.PrimaryKey("PK_RolesToClaims", x => new { x.ClaimId, x.RoleId });
                     table.ForeignKey(
-                        name: "FK_RolesToClaims_Claim_ClaimId",
+                        name: "FK_RolesToClaims_Claims_ClaimId",
                         column: x => x.ClaimId,
-                        principalTable: "Claim",
+                        principalTable: "Claims",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_RolesToClaims_Role_RoleId",
+                        name: "FK_RolesToClaims_Roles_RoleId",
                         column: x => x.RoleId,
-                        principalTable: "Role",
+                        principalTable: "Roles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -105,15 +126,15 @@ namespace rbkApiModules.Tester.Migrations
                 {
                     table.PrimaryKey("PK_UsersToClaims", x => new { x.ClaimId, x.UserId });
                     table.ForeignKey(
-                        name: "FK_UsersToClaims_Claim_ClaimId",
+                        name: "FK_UsersToClaims_Claims_ClaimId",
                         column: x => x.ClaimId,
-                        principalTable: "Claim",
+                        principalTable: "Claims",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_UsersToClaims_User_UserId",
+                        name: "FK_UsersToClaims_Users_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -129,22 +150,22 @@ namespace rbkApiModules.Tester.Migrations
                 {
                     table.PrimaryKey("PK_UsersToRoles", x => new { x.RoleId, x.UserId });
                     table.ForeignKey(
-                        name: "FK_UsersToRoles_Role_RoleId",
+                        name: "FK_UsersToRoles_Roles_RoleId",
                         column: x => x.RoleId,
-                        principalTable: "Role",
+                        principalTable: "Roles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_UsersToRoles_User_UserId",
+                        name: "FK_UsersToRoles_Users_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Claim_Name",
-                table: "Claim",
+                name: "IX_Claims_Name",
+                table: "Claims",
                 column: "Name",
                 unique: true);
 
@@ -159,8 +180,8 @@ namespace rbkApiModules.Tester.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_User_Username",
-                table: "User",
+                name: "IX_Users_Username",
+                table: "Users",
                 column: "Username",
                 unique: true);
 
@@ -190,13 +211,16 @@ namespace rbkApiModules.Tester.Migrations
                 name: "UsersToRoles");
 
             migrationBuilder.DropTable(
-                name: "Claim");
+                name: "Claims");
 
             migrationBuilder.DropTable(
-                name: "Role");
+                name: "Roles");
 
             migrationBuilder.DropTable(
-                name: "User");
+                name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "Clients");
         }
     }
 }

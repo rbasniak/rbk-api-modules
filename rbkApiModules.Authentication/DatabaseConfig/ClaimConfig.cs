@@ -8,6 +8,8 @@ namespace AspNetCoreApiTemplate.Database
     {
         public void Configure(EntityTypeBuilder<Claim> entity)
         {
+            entity.ToTable("Claims");
+
             entity.HasIndex(c => c.Name).IsUnique();
 
             entity.Property(c => c.Name)

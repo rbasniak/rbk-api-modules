@@ -10,7 +10,7 @@ using rbkApiModules.Tester.Database;
 namespace rbkApiModules.Tester.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20200816185620_InitialMigration")]
+    [Migration("20200830184956_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,6 +20,38 @@ namespace rbkApiModules.Tester.Migrations
                 .HasAnnotation("ProductVersion", "3.1.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("rbkApiModules.Authentication.BaseUser", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(1024)")
+                        .HasMaxLength(1024);
+
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("RefreshTokenValidity")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(512)")
+                        .HasMaxLength(512);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("BaseUser");
+                });
 
             modelBuilder.Entity("rbkApiModules.Authentication.Claim", b =>
                 {
@@ -40,7 +72,7 @@ namespace rbkApiModules.Tester.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Claim");
+                    b.ToTable("Claims");
                 });
 
             modelBuilder.Entity("rbkApiModules.Authentication.Role", b =>
@@ -55,7 +87,7 @@ namespace rbkApiModules.Tester.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Role");
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("rbkApiModules.Authentication.RoleToClaim", b =>
@@ -71,34 +103,6 @@ namespace rbkApiModules.Tester.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("RolesToClaims");
-                });
-
-            modelBuilder.Entity("rbkApiModules.Authentication.User", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RefreshToken")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("RefreshTokenValidity")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Username")
-                        .IsUnique();
-
-                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("rbkApiModules.Authentication.UserToClaim", b =>
@@ -162,6 +166,37 @@ namespace rbkApiModules.Tester.Migrations
                     b.ToTable("Comment");
                 });
 
+            modelBuilder.Entity("rbkApiModules.Tester.Models.Client", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("Birthdate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(512)")
+                        .HasMaxLength(512);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Clients");
+                });
+
+            modelBuilder.Entity("rbkApiModules.Tester.Models.User", b =>
+                {
+                    b.HasBaseType("rbkApiModules.Authentication.BaseUser");
+
+                    b.Property<bool>("IsConfirmed")
+                        .HasColumnType("bit");
+
+                    b.HasIndex("Username")
+                        .IsUnique();
+
+                    b.HasDiscriminator().HasValue("User");
+                });
+
             modelBuilder.Entity("rbkApiModules.Authentication.RoleToClaim", b =>
                 {
                     b.HasOne("rbkApiModules.Authentication.Claim", "Claim")
@@ -185,7 +220,7 @@ namespace rbkApiModules.Tester.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("rbkApiModules.Authentication.User", "User")
+                    b.HasOne("rbkApiModules.Authentication.BaseUser", "User")
                         .WithMany("Claims")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -200,7 +235,7 @@ namespace rbkApiModules.Tester.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("rbkApiModules.Authentication.User", "User")
+                    b.HasOne("rbkApiModules.Authentication.BaseUser", "User")
                         .WithMany("Roles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -213,6 +248,15 @@ namespace rbkApiModules.Tester.Migrations
                         .WithMany("Children")
                         .HasForeignKey("ParentId")
                         .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("rbkApiModules.Tester.Models.User", b =>
+                {
+                    b.HasOne("rbkApiModules.Tester.Models.Client", "Client")
+                        .WithOne("User")
+                        .HasForeignKey("rbkApiModules.Tester.Models.User", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

@@ -12,7 +12,7 @@ namespace rbkApiModules.Authentication
 
         }
 
-        public UserToClaim(User user, Claim claim, ClaimAcessType access)
+        public UserToClaim(BaseUser user, Claim claim, ClaimAcessType access)
         {
             User = user;
             Claim = claim;
@@ -20,7 +20,7 @@ namespace rbkApiModules.Authentication
         }
 
         public virtual Guid UserId { get; private set; }
-        public virtual User User { get; private set; }
+        public virtual BaseUser User { get; private set; }
 
         public virtual Guid ClaimId { get; private set; }
         public virtual Claim Claim { get; private set; }

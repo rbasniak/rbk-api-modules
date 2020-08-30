@@ -47,7 +47,7 @@ namespace rbkApiModules.Authentication
             /// </summary>
             public async Task<bool> UserExistOnDatabase(Command command, string username, CancellationToken cancelation)
             {
-                return await _context.Set<User>().AnyAsync(x => EF.Functions.Like(x.Username, username));
+                return await _context.Set<BaseUser>().AnyAsync(x => EF.Functions.Like(x.Username, username));
             }
 
             /// <summary>
@@ -55,7 +55,7 @@ namespace rbkApiModules.Authentication
             /// </summary>
             public async Task<bool> RoleIsNotAssociatedWithUser(Command command, Guid id, CancellationToken cancelation)
             {
-                var user = await _context.Set<User>().SingleAsync(x => EF.Functions.Like(x.Username, command.Username));
+                var user = await _context.Set<BaseUser>().SingleAsync(x => EF.Functions.Like(x.Username, command.Username));
 
                 return !await _context.Set<UserToRole>()
                     .AnyAsync(x => x.UserId == user.Id && x.RoleId == command.RoleId);
@@ -70,7 +70,7 @@ namespace rbkApiModules.Authentication
 
             protected override async Task<(Guid? entityId, object result)> ExecuteAsync(Command request)
             {
-                var user = await _context.Set<User>()
+                var user = await _context.Set<BaseUser>()
                     .Include(x => x.Roles)
                         .SingleAsync(x => EF.Functions.Like(x.Username, request.Username));
 

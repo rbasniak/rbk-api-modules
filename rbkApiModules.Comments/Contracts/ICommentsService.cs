@@ -13,10 +13,12 @@ namespace rbkApiModules.Comments
     public class CommentsService : ICommentsService
     {
         private readonly DbContext _context;
+        private readonly IUserdataCommentService _userdataService;
 
-        public CommentsService(DbContext context)
+        public CommentsService(DbContext context, IUserdataCommentService userdataService)
         {
             _context = context;
+            _userdataService = userdataService;
         }
 
         public async Task<Comment[]> GetComments(Guid entityId)
@@ -25,6 +27,8 @@ namespace rbkApiModules.Comments
                .Include(x => x.Parent)
                .Where(x => x.EntityId == entityId)
                .ToListAsync();
+
+            _userdataService.SetUserdata(comments);
 
             var result = comments.Where(x => x.ParentId == null).ToArray();
 

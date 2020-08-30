@@ -56,7 +56,7 @@ namespace rbkApiModules.Authentication
             services.RegisterApplicationServices(Assembly.GetAssembly(typeof(IJwtFactory)));
 
             AssemblyScanner
-                .FindValidatorsInAssembly(Assembly.GetAssembly(typeof(CreateUser.Command)))
+                .FindValidatorsInAssembly(Assembly.GetAssembly(typeof(UserLogin.Command)))
                     .ForEach(result => services.AddScoped(result.InterfaceType, result.ValidatorType));
         }
     }

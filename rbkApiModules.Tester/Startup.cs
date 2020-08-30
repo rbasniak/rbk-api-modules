@@ -21,6 +21,7 @@ using rbkApiModules.Authentication;
 using AspNetCoreApiTemplate.Auditing;
 using rbkApiModules.Auditing;
 using rbkApiModules.Analytics;
+using rbkApiModules.Tester.Services;
 
 namespace rbkApiModules.Tester
 {
@@ -121,10 +122,12 @@ namespace rbkApiModules.Tester
                 });
             });
 
+            services.AddScoped<IUserdataCommentService, UserdataCommentService>();
+
             services.AddScoped(typeof(IPipelineBehavior<,>), typeof(FailFastRequestBehavior<,>));
             services.AddMediatR(
                 Assembly.GetAssembly(typeof(CommentEntity.Command)),
-                Assembly.GetAssembly(typeof(CreateUser.Command)),
+                Assembly.GetAssembly(typeof(UserLogin.Command)),
                 Assembly.GetAssembly(typeof(AuditingPostProcessingBehavior<,>)));
 
             // Configuração para desabilitar a validação default da API Core para os controllers

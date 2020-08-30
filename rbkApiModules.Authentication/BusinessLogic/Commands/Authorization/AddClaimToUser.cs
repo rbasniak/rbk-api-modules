@@ -49,7 +49,7 @@ namespace rbkApiModules.Authentication
             /// </summary>
             public async Task<bool> UserExistOnDatabase(Command command, string username, CancellationToken cancelation)
             {
-                return await _context.Set<User>().AnyAsync(x => EF.Functions.Like(x.Username, username));
+                return await _context.Set<BaseUser>().AnyAsync(x => EF.Functions.Like(x.Username, username));
             }
 
             /// <summary>
@@ -57,7 +57,7 @@ namespace rbkApiModules.Authentication
             /// </summary>
             public async Task<bool> ClaimIsNotAssociatedWithUser(Command command, Guid id, CancellationToken cancelation)
             {
-                var user = await _context.Set<User>().SingleAsync(x => EF.Functions.Like(x.Username, command.Username));
+                var user = await _context.Set<BaseUser>().SingleAsync(x => EF.Functions.Like(x.Username, command.Username));
 
                 return !await _context.Set<UserToClaim>()
                     .AnyAsync(x => x.UserId == user.Id && x.ClaimId == command.ClaimId);
@@ -75,7 +75,7 @@ namespace rbkApiModules.Authentication
 
             protected override async Task<(Guid? entityId, object result)> ExecuteAsync(Command request)
             {
-                var user = await _context.Set<User>().Include(x => x.Claims)
+                var user = await _context.Set<BaseUser>().Include(x => x.Claims)
                     .SingleAsync(x => EF.Functions.Like(x.Username, request.Username));
 
                 var claim = await _context.Set<Claim>()

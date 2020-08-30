@@ -45,7 +45,7 @@ namespace rbkApiModules.Authentication
             /// </summary>
             public async Task<bool> TokenMustBeWithinValidity(string refreshToken, CancellationToken cancelation)
             {
-                var user = await _context.Set<User>()
+                var user = await _context.Set<BaseUser>()
                     .SingleAsync(x => x.RefreshToken == refreshToken);
 
                 return user.RefreshTokenValidity > DateTime.UtcNow;
@@ -56,7 +56,7 @@ namespace rbkApiModules.Authentication
             /// </summary>
             public async Task<bool> RefreshTokenExistOnDatabase(string refreshToken, CancellationToken cancelation)
             {
-                return await _context.Set<User>().AnyAsync(x => x.RefreshToken == refreshToken);
+                return await _context.Set<BaseUser>().AnyAsync(x => x.RefreshToken == refreshToken);
             }
         }
 
@@ -73,7 +73,7 @@ namespace rbkApiModules.Authentication
             protected override async Task<(Guid? entityId, object result)> ExecuteAsync(Command request)
             {
 
-                var user = await _context.Set<User>()
+                var user = await _context.Set<BaseUser>()
                     .Include(x => x.Roles)
                         .ThenInclude(x => x.Role)
                             .ThenInclude(x => x.Claims)

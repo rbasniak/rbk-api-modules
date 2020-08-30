@@ -9,17 +9,17 @@ namespace rbkApiModules.Authentication
     /// <summary>
     /// Classe que representa um usuário do sistema
     /// </summary>
-    public class User : BaseEntity
+    public abstract class BaseUser : BaseEntity
     {
-        private HashSet<UserToClaim> _claims;
-        private HashSet<UserToRole> _roles;
+        protected HashSet<UserToClaim> _claims;
+        protected HashSet<UserToRole> _roles;
 
-        protected User()
+        protected BaseUser()
         {
 
         }
 
-        public User(string username, string password)
+        public BaseUser(string username, string password)
         {
             Username = username.ToLower();
             SetPassword(password);
@@ -44,7 +44,7 @@ namespace rbkApiModules.Authentication
         /// Método que processa as roles e claims de um usuário 
         /// e retorma uma lista compilada apenas do que do usuário tem acesso
         /// </summary>
-        public List<string> GetAccessClaims()
+        public virtual List<string> GetAccessClaims()
         {
             var claims = new HashSet<string>();
 
@@ -81,7 +81,7 @@ namespace rbkApiModules.Authentication
         /// Método que recebe a senha do usuário e seta o valor já encriptado com hash
         /// </summary>
         /// <param name="password">Senha do usuário</param>
-        public void SetPassword(string password)
+        public virtual void SetPassword(string password)
         {
             Password = PasswordHasher.GenerateSaltedHash(password);
         }
@@ -89,7 +89,7 @@ namespace rbkApiModules.Authentication
         /// <summary>
         /// Método para setar o RefreshToken do usuário
         /// </summary>
-        public void SetRefreshToken(string refreshToken, int minutes)
+        public virtual void SetRefreshToken(string refreshToken, int minutes)
         {
             RefreshToken = refreshToken;
             RefreshTokenValidity = DateTime.UtcNow.AddMinutes(minutes);
@@ -98,7 +98,7 @@ namespace rbkApiModules.Authentication
         /// <summary>
         /// Método para adicionar uma role a um usuário
         /// </summary>
-        public UserToRole AddRole(Role role)
+        public virtual UserToRole AddRole(Role role)
         {
             if (_roles == null) throw new Exception("Não é possível manipular listas que não foram carregadas completamente do banco de dados");
 
@@ -112,7 +112,7 @@ namespace rbkApiModules.Authentication
         /// <summary>
         /// Método para remover uma role de um usuário
         /// </summary>
-        public void RemoveRole(Role role)
+        public virtual void RemoveRole(Role role)
         {
             if (_roles == null) throw new Exception("Não é possível manipular listas que não foram carregadas completamente do banco de dados");
 
@@ -124,7 +124,7 @@ namespace rbkApiModules.Authentication
         /// <summary>
         /// Método para adicionar uma role ao usuário
         /// </summary>
-        public void SetRole(Role role)
+        public virtual void SetRole(Role role)
         {
             var entity = new UserToRole(this, role);
 
@@ -137,7 +137,7 @@ namespace rbkApiModules.Authentication
         /// <param name="claim">Claim sendo adicionada</param>
         /// <param name="access">Tipo de acesso (permitir ou bloquear)</param>
         /// <returns>Retorna a entidade n-n necessária para modelar o relacionamento no EFCore</returns>
-        public UserToClaim AddClaim(Claim claim, ClaimAcessType access)
+        public virtual UserToClaim AddClaim(Claim claim, ClaimAcessType access)
         {
             if (_claims == null) throw new Exception("Não é possível manipular listas que não foram carregadas completamente do banco de dados");
 

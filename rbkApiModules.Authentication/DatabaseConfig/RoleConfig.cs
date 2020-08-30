@@ -8,6 +8,8 @@ namespace AspNetCoreApiTemplate.Database
     {
         public void Configure(EntityTypeBuilder<Role> entity)
         {
+            entity.ToTable("Roles");
+
             entity.Property(r => r.Name)
                 .IsRequired();
             // FIXME: .HasMaxLength(ModelConstants.Generic.Name.MaxLength); 

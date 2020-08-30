@@ -1,4 +1,5 @@
-﻿using rbkApiModules.Infrastructure;
+﻿using Microsoft.EntityFrameworkCore;
+using rbkApiModules.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,7 @@ namespace rbkApiModules.Comments
 {
     public class Comment : BaseEntity
     {
+        private object _userdata;
         private HashSet<Comment> _children;
 
         protected Comment()
@@ -37,6 +39,13 @@ namespace rbkApiModules.Comments
 
         public virtual DateTime Date { get; private set; }
 
+        public virtual object Userdata => _userdata;
+
         public virtual IEnumerable<Comment> Children => _children?.ToList();
+
+        public virtual void SetUserdata(object value)
+        {
+            _userdata = value;
+        }
     }
 }

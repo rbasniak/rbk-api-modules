@@ -28,7 +28,7 @@ namespace rbkApiModules.Authentication
                 CascadeMode = CascadeMode.Stop;
 
                 RuleFor(x => x.Id)
-                    .MustExistInDatabase<Command, User>(context);
+                    .MustExistInDatabase<Command, BaseUser>(context);
             }
         }
         public class Handler : BaseQueryHandler<Command, DbContext>
@@ -42,7 +42,7 @@ namespace rbkApiModules.Authentication
 
             protected override async Task<object> ExecuteAsync(Command request)
             {
-                var results = await _context.Set<User>()
+                var results = await _context.Set<BaseUser>()
                     .Where(x => x.Id == request.Id)
                     .ProjectTo<Users.Details>(_mapper.ConfigurationProvider)
                     .SingleAsync();

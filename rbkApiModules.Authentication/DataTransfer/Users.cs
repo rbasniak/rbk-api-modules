@@ -23,12 +23,12 @@ namespace rbkApiModules.Authentication
     {
         public UserMappings()
         {
-            CreateMap<User, SimpleNamedEntity>()
+            CreateMap<BaseUser, SimpleNamedEntity>()
                 .ForMember(dto => dto.Name, map => map.MapFrom(entity => entity.Username));
 
-            CreateMap<User, Users.ListItem>();
+            CreateMap<BaseUser, Users.ListItem>();
 
-            CreateMap<User, Users.Details>()
+            CreateMap<BaseUser, Users.Details>()
                 .ForMember(dto => dto.Id, map => map.MapFrom(entity => entity.Id))
                 .ForMember(dto => dto.Username, map => map.MapFrom(entity => entity.Username));
 

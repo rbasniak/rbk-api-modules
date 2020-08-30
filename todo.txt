@@ -1,4 +1,1 @@
-- Como amarrar comments com os Users
-- Como tratar tamanhos dos campos para validação de campos da biblioteca, como tamanho da senha e usuário
-- Como tratar dados extras dos usuários?
 - FAz sentido ter command para criação de usuários?

@@ -61,7 +61,7 @@ namespace rbkApiModules.Authentication
             /// </summary>
             public async Task<bool> ExistOnDatabase(Command command, string username, CancellationToken cancelation)
             {
-                var query = _context.Set<User>().Select(x => new { x.Username, x.Password });
+                var query = _context.Set<BaseUser>().Select(x => new { x.Username, x.Password });
 
                 return await query.AnyAsync(x => EF.Functions.Like(x.Username, username));
             }
@@ -71,7 +71,7 @@ namespace rbkApiModules.Authentication
             /// </summary>
             public async Task<bool> MatchPassword(Command command, string password, CancellationToken cancelation)
             {
-                var user = await _context.Set<User>().Select(x => new { x.Username, x.Password })
+                var user = await _context.Set<BaseUser>().Select(x => new { x.Username, x.Password })
                     .SingleAsync(x => EF.Functions.Like(x.Username, command.Username));
 
                 return PasswordHasher.VerifyPassword(password, user.Password);
@@ -94,7 +94,7 @@ namespace rbkApiModules.Authentication
             {
                 var claims = new Dictionary<string, string[]>();
 
-                var user = await _context.Set<User>()
+                var user = await _context.Set<BaseUser>()
                     .Include(x => x.Roles)
                         .ThenInclude(x => x.Role)
                             .ThenInclude(x => x.Claims)

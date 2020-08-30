@@ -39,7 +39,7 @@ namespace rbkApiModules.Authentication
 
             protected override async Task<object> ExecuteAsync(Command request)
             {
-                var results = await _context.Set<User>()
+                var results = await _context.Set<BaseUser>()
                     .OrderBy(x => x.Username)
                     .ProjectTo<Users.ListItem>(_mapper.ConfigurationProvider)
                     .ToListAsync();

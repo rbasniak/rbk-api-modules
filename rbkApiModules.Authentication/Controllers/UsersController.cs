@@ -32,14 +32,14 @@ namespace AspNetCoreApiTemplate.Api
             return HttpResponse<Users.Details>(await Mediator.Send(new GetUserDetails.Command { Id = id }));
         }
 
-        /// <summary>
-        /// Cria um novo usuário
-        /// </summary>
-        [HttpPost]
-        public async Task<ActionResult<SimpleNamedEntity>> Create(CreateUser.Command data)
-        {
-            return HttpResponse<SimpleNamedEntity>(await Mediator.Send(data));
-        }
+        ///// <summary>
+        ///// Cria um novo usuário
+        ///// </summary>
+        //[HttpPost]
+        //public async Task<ActionResult<SimpleNamedEntity>> Create(CreateUser.Command data)
+        //{
+        //    return HttpResponse<SimpleNamedEntity>(await Mediator.Send(data));
+        //}
 
         /// <summary>
         /// Sobrescreve um controle de acesso em um usuário
