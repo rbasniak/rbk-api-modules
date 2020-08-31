@@ -10,20 +10,20 @@ jobs:
   build:
     name: Create Release
     runs-on: windows-latest
+    if: "!contains(github.event.head_commit.message, '/^Release d+.d+.d+.*/')"
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
+      - name: Checkout Code
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body: |
-            Changes in this Release
-            - First Change
-            - Second Change
-          draft: false
-          prerelease: false
+        run: |
+          git config user.email "ci@github.com"
+          git config user.name "ci"
+          git remote set-url --push origin "https://github.com/$GITHUB_REPOSITORY.git"
+          git reset --hard
+          git clean -fd
+          git checkout $GITHUB_REF_NAME
+          git pull origin $GITHUB_REF_NAME
+      - name: Update Version
+        run: |
+          npm ci
+          npx release-it --ci
