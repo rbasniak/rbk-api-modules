@@ -26,5 +26,7 @@ jobs:
     - name: NPM Install 
       run: npm ci
     - name: Update Version 
+      env: 
+         GITHUB_TOKEN: ${{ secrets.RELEASEIT_ACCESS_TOKEN }}
       run: npx release-it --ci
 
