@@ -24,7 +24,7 @@
 //        }
 
 //        public class Validator : AbstractValidator<Command>
-//        {
+//        { 
 //            private readonly DbContext _context;
 
 //            public Validator(DbContext context)
