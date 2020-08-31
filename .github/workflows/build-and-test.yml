@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-
+   
     runs-on: windows-latest
 
     steps:
@@ -23,10 +23,4 @@ jobs:
       run: dotnet build --configuration Release --no-restore
     - name: Test
       run: dotnet test --no-restore --verbosity normal
-    - name: NPM Install 
-      run: npm ci
-    - name: Update Version 
-      env: 
-         GITHUB_TOKEN: ${{ secrets.RELEASEIT_ACCESS_TOKEN }}
-      run: npx release-it --ci
 
