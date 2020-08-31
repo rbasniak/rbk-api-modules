@@ -14,19 +14,17 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Checkout Code
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}          
         run: |
-          echo Setting git user
-          echo $GITHUB_REPOSITORY
           git config user.email "ci@github.com"
           git config user.name "ci"
-          git remote set-url --push origin "https://github.com/$GITHUB_REPOSITORY.git"
+          git remote set-url --push origin "https://github.com/rbasniak/rbk-api-modules.git"
           git reset --hard
           git clean -fd
           git checkout $GITHUB_REF_NAME
           git pull origin $GITHUB_REF_NAME
       - name: Update Version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}     
         run: |
           npm ci
           npx release-it --ci      
