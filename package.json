@@ -1,0 +1,56 @@
+{
+  "name": "rbk-api-modules",
+  "version": "1.0.3-alpha1",
+  "description": "Set of libraries for quickly scaffolding production ready APIs in ASP.NET Core",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rbasniak/rbk-api-modules.git"
+  },
+  "author": "rbasniak",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rbasniak/rbk-api-modules/issues"
+  },
+  "homepage": "https://github.com/rbasniak/rbk-api-modules#readme",
+  "devDependencies": {
+    "@release-it/bumper": "^1.4.1",
+    "@release-it/conventional-changelog": "^1.1.4",
+    "@release-it/keep-a-changelog": "^1.1.1"
+  },
+  "release-it": {
+    "plugins": {
+      "@release-it/conventional-changelog": {
+        "preset": "angular",
+        "infile": "CHANGELOG.md"
+      },
+      "@release-it/bumper": {
+        "out": [
+          "package.json",
+          "rbkApiModules.Analytics/rbkApiModules.Analytics.csproj",
+          "rbkApiModules.Auditing/rbkApiModules.Auditing.csproj",
+          "rbkApiModules.Authentication/rbkApiModules.Authentication.csproj",
+          "rbkApiModules.Comments/rbkApiModules.Comments.csproj",
+          "rbkApiModules.Infrastructure/rbkApiModules.Infrastructure.csproj",
+          "rbkApiModules.UIAnnotations/rbkApiModules.UIAnnotations.csproj",
+          "rbkApiModules.Utilities/rbkApiModules.Utilities.csproj"
+        ]
+      }
+    },
+    "github": {
+      "release": true
+    },
+    "git": {
+      "requireCleanWorkingDir": false,
+      "commitArgs": [
+        "-a"
+      ]
+    },
+    "npm": {
+      "publish": false
+    }
+  }
+}

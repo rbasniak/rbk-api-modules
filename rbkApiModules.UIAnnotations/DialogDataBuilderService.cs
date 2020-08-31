@@ -12,9 +12,11 @@ namespace rbkApiModules.UIAnnotations
     {
         public const int InputTextMaxLengh = 50;
 
-        public List<InputControl> Build(Type type)
+        public List<FormGroup> Build(Type type, OperationType operation)
         {
-            var results = new List<InputControl>();
+            var results = new List<FormGroup>();
+
+            var allInputs = new List<InputControl>();
 
             foreach (var property in type.GetProperties())
             {
@@ -24,13 +26,24 @@ namespace rbkApiModules.UIAnnotations
 
                 var dialogData = type.GetAttributeFrom<DialogDataAttribute>(property);
 
-                if (dialogData != null)
+                if (dialogData != null && (operation == dialogData.Operation || dialogData.Operation == OperationType.CreateAndUpdate))
                 {
-                    string name = Char.ToLower(property.Name[0]) + property.Name.Substring(1);
+                    var name = Char.ToLower(property.Name[0]) + property.Name.Substring(1);
                     var inputData = new InputControl(name, property.PropertyType, required, minlen, maxlen, dialogData);
 
-                    results.Add(inputData);
+                    allInputs.Add(inputData);
                 }
+            }
+
+            var groups = allInputs.GroupBy(x => x.Group);
+
+            foreach (var groupedData in groups)
+            {
+                var group = new FormGroup();
+                group.Name = groupedData.Key;
+                group.Controls.AddRange(groupedData);
+
+                results.Add(group);
             }
 
             return results;
@@ -91,28 +104,28 @@ namespace rbkApiModules.UIAnnotations
             {
                 if (MaxLength.HasValue && MaxLength.Value <= 100)
                 {
-                    return DialogControlTypes.InputText;
+                    return DialogControlTypes.Text;
                 }
                 else if (MaxLength.HasValue && MaxLength.Value > 100)
                 {
-                    return DialogControlTypes.InputArea;
+                    return DialogControlTypes.TextArea;
                 }
                 else
                 {
-                    return DialogControlTypes.InputText;
+                    return DialogControlTypes.Text;
                 }
             }
             else if (_type.FullName == typeof(Boolean).FullName)
             {
-                return DialogControlTypes.Numeric;
+                return DialogControlTypes.Number;
             }
             else if (_type.FullName == typeof(Int32).FullName || _type.FullName == typeof(Int64).FullName)
             {
-                return DialogControlTypes.Numeric;
+                return DialogControlTypes.Number;
             }
             else if (_type.FullName == typeof(Single).FullName || _type.FullName == typeof(Double).FullName)
             {
-                return DialogControlTypes.Numeric;
+                return DialogControlTypes.Number;
             }
             else if (typeof(BaseEntity).IsAssignableFrom(_type))
             {

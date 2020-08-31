@@ -1,25 +1,16 @@
-using Newtonsoft.Json;
+ï»¿using Microsoft.AspNetCore.Mvc;
 using rbkApiModules.Infrastructure;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
 using System.Linq;
-using Xunit;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace rbkApiModules.UIAnnotations.Tests
+namespace rbkApiModules.UIAnnotations
 {
-    public class UnitTest1
-    {
-        [Fact]
-        public void Test1()
-        {
-            var builder = new DialogDataBuilderService();
-
-            var results = builder.Build(typeof(DemoEntity), OperationType.Create);
-
-            Debug.WriteLine(JsonConvert.SerializeObject(results, Formatting.Indented));
-        }
-    }
 
     public class DemoEntity : BaseEntity
     {
@@ -32,31 +23,31 @@ namespace rbkApiModules.UIAnnotations.Tests
 
         // inputtext
         [Required, MinLength(5), MaxLength(15)]
-        [DialogData(OperationType.CreateAndUpdate, "Nome", Group = "Dados Básicos")]
+        [DialogData(OperationType.CreateAndUpdate, "Nome", Group = "Dados BÃ¡sicos")]
         public string Name { get; set; }
 
         // textarea
         [MinLength(5), MaxLength(500)]
-        [DialogData(OperationType.CreateAndUpdate, "Descrição", Group = "Dados Básicos")]
+        [DialogData(OperationType.CreateAndUpdate, "DescriÃ§Ã£o", Group = "Dados BÃ¡sicos")]
         public string Description { get; set; }
 
         // mask
         [MinLength(11), MaxLength(11)]
-        [DialogData(OperationType.CreateAndUpdate, "Descrição", Group = "Dados Básicos")]
+        [DialogData(OperationType.CreateAndUpdate, "DescriÃ§Ã£o", Group = "Dados BÃ¡sicos")]
         public string Phone { get; set; }
 
         // dropdown
         [Required]
-        [DialogData(OperationType.Update, "Relacionamento 1", Group = "Dados Avançados")]
+        [DialogData(OperationType.Update, "Relacionamento 1", Group = "Dados AvanÃ§ados")]
         public DemoEntity Navigation1 { get; set; }
 
         // dropdown
         [Required]
-        [DialogData(OperationType.Update, "Relacionamento 2", Group = "Dados Avançados", Nullable = true)]
+        [DialogData(OperationType.Update, "Relacionamento 2", Group = "Dados AvanÃ§ados", Nullable = true)]
         public DemoEntity Navigation2 { get; set; }
 
         // multi select
-        [DialogData(OperationType.Update, "Items", Group = "Dados Avançados")]
+        [DialogData(OperationType.Update, "Items", Group = "Dados AvanÃ§ados")]
         public List<DemoEntity> Children { get; set; }
 
         // numeric
@@ -89,15 +80,48 @@ namespace rbkApiModules.UIAnnotations.Tests
     public class NavigationEntity : BaseEntity
     {
         [Required, MinLength(5), MaxLength(50)]
-        [DialogData(OperationType.Update, "Endereço")]
+        [DialogData(OperationType.Update, "EndereÃ§o")]
         public string Endereco { get; set; }
-        
+
         [Required]
-        [DialogData(OperationType.Update, "Número")]
+        [DialogData(OperationType.Update, "NÃºmero")]
         public string Number { get; set; }
 
         [MinLength(5), MaxLength(50)]
         [DialogData(OperationType.Update, "Bairro")]
         public string Neighborhood { get; set; }
     }
+
+    public class OtherEntity : BaseEntity
+    {
+        [Required, MinLength(5), MaxLength(50)]
+        [DialogData(OperationType.Create, "Nome")]
+        public string Name { get; set; }
+
+        [Required]
+        [DialogData(OperationType.Update, "Idade")]
+        public int Age{ get; set; }
+
+        [DialogData(OperationType.Update, "Tipo de Animal Preferido")]
+        public Animals Input { get; set; }
+    }
+
+    public enum Animals
+    {
+        [Description("Nenhum")]
+        None,
+
+        [Description("Cachorros")]
+        Dog,
+
+        [Description("Gatos")]
+        Cat,
+
+        [Description("Peixes")]
+        Fish,
+
+        [Description("PÃ¡ssaros")]
+        Bird
+    }
 }
+

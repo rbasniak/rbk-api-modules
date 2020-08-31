@@ -128,6 +128,7 @@ namespace rbkApiModules.Tester
             services.AddMediatR(
                 Assembly.GetAssembly(typeof(CommentEntity.Command)),
                 Assembly.GetAssembly(typeof(UserLogin.Command)),
+                Assembly.GetAssembly(typeof(GetUiDefinitions.Command)),
                 Assembly.GetAssembly(typeof(AuditingPostProcessingBehavior<,>)));
 
             // Configuração para desabilitar a validação default da API Core para os controllers
