@@ -19,7 +19,6 @@ jobs:
         run: |
           echo Setting git user
           echo $GITHUB_REPOSITORY
-          echo ${{ GITHUB_REPOSITORY }}
           git config user.email "ci@github.com"
           git config user.name "ci"
           git remote set-url --push origin "https://github.com/$GITHUB_REPOSITORY.git"
