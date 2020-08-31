@@ -14,8 +14,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Checkout Code
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
         run: |
           git config user.email "ci@github.com"
           git config user.name "ci"
@@ -25,6 +23,8 @@ jobs:
           git checkout $GITHUB_REF_NAME
           git pull origin $GITHUB_REF_NAME
       - name: Update Version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
         run: |
           npm ci
           npx release-it --ci
