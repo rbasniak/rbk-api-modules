@@ -22,10 +22,10 @@ jobs:
           git reset --hard
           git clean -fd
           echo 'checkout start'
-          git checkout
+          git checkout master
           echo 'checkout end'
           echo 'pull start'
-          git pull origin
+          git pull origin master
           echo 'pull end'
       - name: Update Version
         env:
