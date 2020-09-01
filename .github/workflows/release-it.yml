@@ -14,12 +14,18 @@ jobs:
       - uses: actions/checkout@v2
       - name: Checkout Code
         run: |
+          echo 'Git config'
           git config user.email "ci@github.com"
           git config user.name "ci"
+          echo 'Git set remote'
           git remote set-url --push origin "https://github.com/rbasniak/rbk-api-modules.git"
+          echo 'Git reset'
           git reset --hard
+          echo 'Git clean'
           git clean -fd
+          echo 'Git checkout $GITHUB_REF_NAME'
           git checkout $GITHUB_REF_NAME
+          echo 'Git pull'
           git pull origin $GITHUB_REF_NAME
       - name: Update Version
         env:
