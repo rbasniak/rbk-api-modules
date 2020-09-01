@@ -19,6 +19,11 @@ jobs:
         run: |
           git config user.email "ci@github.com"
           git config user.name "ci"
+          git remote set-url --push origin "https://github.com/rbasniak/rbk-api-modules.git"
+          git reset --hard
+          git clean -fd
+          git checkout master  
+          git pull origin master           
           npm ci
           npx release-it --ci
       - name: Setup .NET Core
