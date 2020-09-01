@@ -23,7 +23,7 @@ jobs:
           git reset --hard
           echo 'Git clean'
           git clean -fd
-          echo 'Git checkout $GITHUB_REF_NAME'
+          echo "Git checkout $GITHUB_REF_NAME"
           git checkout $GITHUB_REF_NAME
           echo 'Git pull'
           git pull origin $GITHUB_REF_NAME
