@@ -17,6 +17,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          git config user.email "ci@github.com"
+          git config user.name "ci"
           npm ci
           npx release-it --ci
       - name: Setup .NET Core
