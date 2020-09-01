@@ -21,9 +21,12 @@ jobs:
           git remote set-url --push origin "https://github.com/rbasniak/rbk-api-modules.git"
           git reset --hard
           git clean -fd
-          echo $Env:GITHUB_REF_NAME
-          git checkout $Env:GITHUB_REF_NAME
-          git pull origin $Env:GITHUB_REF_NAME 
+          echo 'checkout start'
+          git checkout
+          echo 'checkout end'
+          echo 'pull start'
+          git pull origin
+          echo 'pull end'
       - name: Update Version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
