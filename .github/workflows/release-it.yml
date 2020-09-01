@@ -36,10 +36,10 @@ jobs:
           git reset --hard
           echo 'Git clean'
           git clean -fd
-          echo "Git checkout $GITHUB_REF_NAME"
-          git checkout $GITHUB_REF_NAME
+          echo "Git checkout $Env:GITHUB_REF_NAME"
+          git checkout $Env:GITHUB_REF_NAME
           echo 'Git pull'
-          git pull origin $GITHUB_REF_NAME
+          git pull origin $Env:GITHUB_REF_NAME
       - name: Update Version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
