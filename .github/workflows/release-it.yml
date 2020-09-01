@@ -41,14 +41,6 @@ jobs:
         working-directory: .
       - name: Publish Nuget Package
         run: dotnet nuget push **/*.nupkg --api-key ${{ secrets.nuget_api_key }} --source https://api.nuget.org/v3/index.json --no-symbols true
-
-  publish:
-    name: Publish to nuget
-    # The type of runner that the job will run on
-    runs-on: windows-latest
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      - uses: actions/checkout@v2
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
