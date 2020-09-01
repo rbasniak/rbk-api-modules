@@ -27,24 +27,24 @@ jobs:
           echo 'git checkout master'
           git checkout master
           echo 'git pull origin master'  
-          git pull origin  
-          echo 'Checkout concluded'
-      - name: Update Version
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          npm ci
-          npx release-it --ci
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 3.1.x
-      - name: Install dependencies
-        run: dotnet restore
-      - name: Build
-        run: dotnet build --configuration Release --no-restore
-      - name: Create NuGet Package
-        run: dotnet pack -c Release
-        working-directory: .
-      - name: Publish Nuget Package
-        run: dotnet nuget push **/*.nupkg --api-key ${{ secrets.nuget_api_key }} --source https://api.nuget.org/v3/index.json --no-symbols true
+#          git pull origin  
+#          echo 'Checkout concluded'
+#      - name: Update Version
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        run: |
+#          npm ci
+#          npx release-it --ci
+#      - name: Setup .NET Core
+#        uses: actions/setup-dotnet@v1
+#        with:
+#          dotnet-version: 3.1.x
+#      - name: Install dependencies
+#        run: dotnet restore
+#      - name: Build
+#        run: dotnet build --configuration Release --no-restore
+#      - name: Create NuGet Package
+#        run: dotnet pack -c Release
+#        working-directory: .
+#      - name: Publish Nuget Package
+#        run: dotnet nuget push **/*.nupkg --api-key ${{ secrets.nuget_api_key }} --source https://api.nuget.org/v3/index.json --no-symbols true
