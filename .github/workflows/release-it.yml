@@ -7,28 +7,21 @@ on:
 name: Create Release and Publish
 
 jobs:
- 
   release:
     name: Create Release
     runs-on: windows-latest
+    if: "!contains(github.event.head_commit.message, '/^Release d+.d+.d+.*/')"
     steps:
-      - uses: FranzDiebold/github-env-vars-action@v1.2.0
       - uses: actions/checkout@v2
       - name: Checkout Code
         run: |
-          echo 'Git config'
           git config user.email "ci@github.com"
           git config user.name "ci"
-          echo 'Git set remote'
           git remote set-url --push origin "https://github.com/rbasniak/rbk-api-modules.git"
-          echo 'Git reset'
           git reset --hard
-          echo 'Git clean'
           git clean -fd
-          echo "Git checkout $Env:GITHUB_REF_NAME"
-          git checkout $Env:GITHUB_REF_NAME
-          echo 'Git pull'
-          git pull origin $Env:GITHUB_REF_NAME
+          git checkout $GITHUB_REF_NAME
+          git pull origin $GITHUB_REF_NAME
       - name: Update Version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
