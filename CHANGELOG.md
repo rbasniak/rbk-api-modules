@@ -1,3 +1,10 @@
+## 1.0.20 (2020-09-01)
+
+
+### Bug Fixes
+
+* ci script not fixed ([d1c1d49](https://github.com/rbasniak/rbk-api-modules/commit/d1c1d49b342e64a238c49e858105a0db2632e801))
+
 ## 1.0.19 (2020-09-01)
 
 ## 1.0.18 (2020-09-01)
