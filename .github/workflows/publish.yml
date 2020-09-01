@@ -1,0 +1,15 @@
+on:
+  push:
+    tags:
+      - '*'
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Setup .NET Core
+      run: echo '${{ github.event.release.tag_name }}'
+
+
+
+
