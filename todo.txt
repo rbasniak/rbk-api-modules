@@ -1,1 +1,1 @@
-- FAz sentido ter command para cria��o de usu�rios?
+- Colocar command de criação de usuários como abstrato
