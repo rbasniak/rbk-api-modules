@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace rbkApiModules.Infrastructure
+namespace rbkApiModules.Infrastructure.MediatR
 {
     /// <summary>
     /// Behavior do MediatR para validação automática dos comandos

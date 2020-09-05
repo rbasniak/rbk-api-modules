@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace rbkApiModules.Infrastructure
+namespace rbkApiModules.Infrastructure.MediatR
 {
     /// <summary>
     /// Classe com os dados de eventos que são salvos no bando de auditoria

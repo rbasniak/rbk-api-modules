@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace rbkApiModules.Infrastructure
+namespace rbkApiModules.Infrastructure.MediatR
 {
     /// <summary>
     /// Classe gnérica de resposta dos comandos do MediatR

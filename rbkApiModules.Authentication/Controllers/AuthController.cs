@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using rbkApiModules.Authentication;
 using rbkApiModules.Infrastructure;
+using rbkApiModules.Infrastructure.Api.Controllers;
 using System;
 using System.Linq;
 using System.Net;

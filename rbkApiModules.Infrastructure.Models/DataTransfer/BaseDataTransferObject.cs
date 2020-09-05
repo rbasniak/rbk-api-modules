@@ -1,4 +1,4 @@
-﻿namespace rbkApiModules.Infrastructure
+﻿namespace rbkApiModules.Infrastructure.Models
 {
     public class BaseDataTransferObject
     {

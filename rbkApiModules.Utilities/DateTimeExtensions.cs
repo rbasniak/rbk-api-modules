@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AspNetCoreApiTemplate.Utilities
+namespace rbkApiModules.Utilities.Extensions
 {
     /// <summary>
     /// Extensões para DateTime

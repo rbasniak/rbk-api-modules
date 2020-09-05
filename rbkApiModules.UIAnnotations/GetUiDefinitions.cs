@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Infrastructure;
+using rbkApiModules.Infrastructure.MediatR;
 using rbkApiModules.UIAnnotations;
 using System;
 using System.Collections.Generic;

@@ -1,11 +1,12 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using rbkApiModules.Infrastructure.Models;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace rbkApiModules.Infrastructure
+namespace rbkApiModules.Infrastructure.MediatR
 {
     public abstract class BaseQueryHandler<TCommand, TDatabase> : IRequestHandler<TCommand, QueryResponse> 
         where TCommand : IRequest<QueryResponse>

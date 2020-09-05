@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using rbkApiModules.Infrastructure.Models;
 using System;
 
 namespace rbkApiModules.Infrastructure

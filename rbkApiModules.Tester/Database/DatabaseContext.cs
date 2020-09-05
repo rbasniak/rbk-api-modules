@@ -3,6 +3,7 @@ using rbkApiModules.Authentication;
 using rbkApiModules.Comments;
 using rbkApiModules.Infrastructure;
 using rbkApiModules.Tester.Models;
+using rbkApiModules.Utilities.Extensions;
 
 namespace rbkApiModules.Tester.Database
 {

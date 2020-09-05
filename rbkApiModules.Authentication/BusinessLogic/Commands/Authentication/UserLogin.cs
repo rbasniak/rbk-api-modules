@@ -1,11 +1,12 @@
 ﻿using AspNetCoreApiTemplate.Utilities;
-using AspNetCoreApiTemplate.Utilities.Authentication;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using rbkApiModules.Infrastructure;
+using rbkApiModules.Infrastructure.MediatR;
+using rbkApiModules.Infrastructure.Models;
 using rbkApiModules.Utilities.Passwords;
 using System;
 using System.Collections.Generic;

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace rbkApiModules.Infrastructure
+namespace rbkApiModules.Utilities.Extensions
 {
     public static class HttpContextExtensions
     {

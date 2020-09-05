@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using rbkApiModules.Infrastructure;
 using Microsoft.AspNetCore.Http;
+using rbkApiModules.Infrastructure.MediatR;
 
 namespace rbkApiModules.Authentication
 {
