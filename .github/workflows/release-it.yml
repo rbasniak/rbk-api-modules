@@ -13,6 +13,7 @@ jobs:
     if: "!contains(github.event.head_commit.message, '/^Release d+.d+.d+.*/')"
     steps: 
       - uses: actions/checkout@v2
+      - uses: FranzDiebold/github-env-vars-action@v1.2.0
       - name: Checkout Code
         run: |
           git config user.email "ci@github.com"
@@ -20,8 +21,6 @@ jobs:
           git remote set-url --push origin "https://github.com/rbasniak/rbk-api-modules.git"
           git reset --hard
           git clean -fd
-          git checkout  
-          git pull origin  
       - name: Update Version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
