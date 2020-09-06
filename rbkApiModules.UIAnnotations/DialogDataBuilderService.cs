@@ -77,23 +77,39 @@ namespace rbkApiModules.UIAnnotations
             DependsOn = dialogDataAttribute.DependsOn;
             Group = dialogDataAttribute.Group;
             Mask = dialogDataAttribute.Mask;
-            Name = dialogDataAttribute.Name;
-            Nullable = dialogDataAttribute.Nullable;
+            Unmask = dialogDataAttribute.Unmask;
+            CharacterPattern = dialogDataAttribute.CharacterPattern;
+            FileAccept = dialogDataAttribute.FileAccept;
+            ShowFilter = dialogDataAttribute.ShowFilter;
+            FilterMatchMode = dialogDataAttribute.FilterMatchMode;
+            Name = dialogDataAttribute.Name; 
 
             var control = dialogDataAttribute.ForcedType != DialogControlTypes.Default ? dialogDataAttribute.ForcedType : GetControlType();
 
             ControlType = new SimpleNamedEntity { Id = ((int)control).ToString(), Name = control.ToString() };
         }
 
-        public string PropertyName { get; set; }
-        public SimpleNamedEntity DataSource { get; set; }
-        public object DefaultValue { get; set; }
-        public string DependsOn { get; set; }
         public SimpleNamedEntity ControlType { get; set; }
+        public SimpleNamedEntity DataSource { get; set; }
+        public string PropertyName { get; set; }
+
+        public string Name { get; set; }
+        public object DefaultValue { get; set; }
         public string Group { get; set; }
+
+        public string DependsOn { get; set; }
+
+        public int TextAreaRows { get; set; }
+        
         public string Mask { get; set; }
-        public string Name { get; set; } 
-        public bool Nullable { get; set; }
+        public string Unmask { get; set; }
+        public string CharacterPattern { get; set; }
+
+        public string FileAccept { get; set; }
+
+        public bool ShowFilter { get; set; }
+        public string FilterMatchMode{ get; set; }
+
         public bool Required { get; set; }
         public int? MinLength { get; set; }
         public int? MaxLength { get; set; }

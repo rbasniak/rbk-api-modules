@@ -35,9 +35,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.UIAnnotations
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.UIAnnotations.Tests", "rbkApiModules.UIAnnotations.Tests\rbkApiModules.UIAnnotations.Tests.csproj", "{3BEB0496-40F7-440C-A66A-CA184EE40975}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.Infrastructure.Models", "rbkApiModules.Infrastructure.Models\rbkApiModules.Infrastructure.Models.csproj", "{5EFECD5A-F9E8-46FC-8C12-C53BFBBF26D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Infrastructure.Models", "rbkApiModules.Infrastructure.Models\rbkApiModules.Infrastructure.Models.csproj", "{5EFECD5A-F9E8-46FC-8C12-C53BFBBF26D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.Infrastructure.Api", "rbkApiModules.Infrastructure.Api\rbkApiModules.Infrastructure.Api.csproj", "{79DF71E2-F410-4879-92C4-9C60BFE22BEA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Infrastructure.Api", "rbkApiModules.Infrastructure.Api\rbkApiModules.Infrastructure.Api.csproj", "{79DF71E2-F410-4879-92C4-9C60BFE22BEA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

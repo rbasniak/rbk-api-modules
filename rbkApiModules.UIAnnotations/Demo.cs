@@ -44,7 +44,7 @@ namespace rbkApiModules.UIAnnotations
 
         // dropdown
         [Required]
-        [DialogData(OperationType.Update, "Relacionamento 2", Group = "Dados Avançados", Nullable = true)]
+        [DialogData(OperationType.Update, "Relacionamento 2", Group = "Dados Avançados")]
         public DemoEntity Navigation2 { get; set; }
 
         // multi select
