@@ -31,7 +31,7 @@
     <ProjectReference Include="..\rbkApiModules.Auditing\rbkApiModules.Auditing.csproj" />
     <ProjectReference Include="..\rbkApiModules.Authentication\rbkApiModules.Authentication.csproj" />
     <ProjectReference Include="..\rbkApiModules.Comments\rbkApiModules.Comments.csproj" />
-    <ProjectReference Include="..\rbkApiModules.Infrastructure\rbkApiModules.Infrastructure.csproj" />
+    <ProjectReference Include="..\rbkApiModules.Infrastructure\rbkApiModules.Infrastructure.MediatR.csproj" />
     <ProjectReference Include="..\rbkApiModules.UIAnnotations\rbkApiModules.UIAnnotations.csproj" />
     <ProjectReference Include="..\rbkApiModules.Utilities\rbkApiModules.Utilities.csproj" />
   </ItemGroup>

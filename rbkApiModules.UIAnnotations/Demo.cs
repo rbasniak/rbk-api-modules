@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using rbkApiModules.Infrastructure;
+using rbkApiModules.Infrastructure.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -43,7 +44,7 @@ namespace rbkApiModules.UIAnnotations
 
         // dropdown
         [Required]
-        [DialogData(OperationType.Update, "Relacionamento 2", Group = "Dados Avançados", Nullable = true)]
+        [DialogData(OperationType.Update, "Relacionamento 2", Group = "Dados Avançados")]
         public DemoEntity Navigation2 { get; set; }
 
         // multi select

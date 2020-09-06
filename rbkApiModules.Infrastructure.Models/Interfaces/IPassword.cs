@@ -1,4 +1,4 @@
-﻿namespace AspNetCoreApiTemplate.Utilities.Authentication
+﻿namespace rbkApiModules.Infrastructure.Models
 {
     public interface IPassword
     {

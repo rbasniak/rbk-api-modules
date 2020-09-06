@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using rbkApiModules.Utilities.Extensions;
 using System.Reflection;
 
 namespace rbkApiModules.Infrastructure
@@ -7,7 +8,7 @@ namespace rbkApiModules.Infrastructure
     {
         public static void AddRbkApiModulesInfrastructure(this IServiceCollection services)
         {
-            services.RegisterApplicationServices(Assembly.GetAssembly(typeof(BaseController)));
+            services.RegisterApplicationServices(Assembly.GetAssembly(typeof(BuilderExtensions)));
         }
     }
 }

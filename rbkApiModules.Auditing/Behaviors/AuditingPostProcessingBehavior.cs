@@ -1,10 +1,11 @@
 ﻿using AspNetCoreApiTemplate.Auditing;
-using AspNetCoreApiTemplate.Utilities.Authentication;
 using MediatR;
 using MediatR.Pipeline;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using rbkApiModules.Infrastructure;
+using rbkApiModules.Infrastructure.MediatR;
+using rbkApiModules.Infrastructure.Models;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;

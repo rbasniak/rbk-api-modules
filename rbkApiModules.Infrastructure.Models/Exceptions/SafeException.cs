@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace rbkApiModules.Infrastructure
+namespace rbkApiModules.Infrastructure.Models
 {
     /// <summary>
     /// Classe para exceções "seguras" que são tratadas no código e devem retornar para o cliente

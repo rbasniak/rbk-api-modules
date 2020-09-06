@@ -1,4 +1,5 @@
 ﻿using rbkApiModules.Infrastructure;
+using rbkApiModules.Infrastructure.Models;
 using System.Collections.Generic;
 using System.Linq;
 

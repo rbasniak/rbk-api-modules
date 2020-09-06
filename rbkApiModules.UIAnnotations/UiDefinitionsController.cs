@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using rbkApiModules.Comments;
 using rbkApiModules.Infrastructure;
+using rbkApiModules.Infrastructure.Api.Controllers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

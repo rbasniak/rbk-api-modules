@@ -22,6 +22,9 @@ using AspNetCoreApiTemplate.Auditing;
 using rbkApiModules.Auditing;
 using rbkApiModules.Analytics;
 using rbkApiModules.Tester.Services;
+using rbkApiModules.Utilities.Extensions;
+using rbkApiModules.Infrastructure.MediatR;
+using rbkApiModules.Infrastructure.Api.Middleware;
 
 namespace rbkApiModules.Tester
 {

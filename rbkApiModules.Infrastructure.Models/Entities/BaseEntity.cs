@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace rbkApiModules.Infrastructure
+namespace rbkApiModules.Infrastructure.Models
 {
     /// <summary>
     /// Clase base para entidades do banco de dados

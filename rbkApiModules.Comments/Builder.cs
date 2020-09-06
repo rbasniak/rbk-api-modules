@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using rbkApiModules.Infrastructure;
+using rbkApiModules.Utilities.Extensions;
 using System.Reflection;
 
 namespace rbkApiModules.Comments

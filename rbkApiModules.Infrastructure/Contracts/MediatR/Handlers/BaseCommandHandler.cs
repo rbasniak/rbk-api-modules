@@ -1,11 +1,12 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using rbkApiModules.Infrastructure.Models;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace rbkApiModules.Infrastructure
+namespace rbkApiModules.Infrastructure.MediatR
 {
     /// <summary>
     /// Classe base que todos os handlers devem herdar. Faz o tratamento de exceções automaticamente

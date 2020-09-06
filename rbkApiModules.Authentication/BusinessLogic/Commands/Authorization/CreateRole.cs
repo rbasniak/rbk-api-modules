@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Infrastructure;
+using rbkApiModules.Infrastructure.MediatR;
 using System;
 using System.Linq;
 using System.Threading;

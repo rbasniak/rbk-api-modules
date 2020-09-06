@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using rbkApiModules.Infrastructure;
+using rbkApiModules.Infrastructure.Api.Controllers;
 using System;
 using System.Threading.Tasks;
 

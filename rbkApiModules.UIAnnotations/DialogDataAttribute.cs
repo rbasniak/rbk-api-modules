@@ -14,12 +14,32 @@ namespace rbkApiModules.UIAnnotations
         public string Name { get; }
         public OperationType Operation { get; }
         public DataSource Source { get; set; }
-        public object DefaultValue { get; set; }
-        public string DependsOn { get; set; }
         public DialogControlTypes ForcedType { get; set; }
+
+        // All controls
+        public object DefaultValue { get; set; }
         public string Group { get; set; }
+
+        // Only for dependent controls
+        public string DependsOn { get; set; }
+
+        // Only for Text Area controls
+        public int TextAreaRows { get; set; }
+
+        // Only for Mask controls
         public string Mask { get; set; }
-        public bool Nullable { get; set; }
+        public string Unmask { get; set; }
+        public string CharacterPattern { get; set; }
+
+        // Only for Upload controls
+        public string FileAccept { get; set; }
+
+        // Only for Dropdown / Multiselect controls
+        public bool ShowFilter { get; set; }
+        public string FilterMatchMode { get; set; }
+
+        // Only for MultiSelect controls
+        public string DefaultLabel { get; set; } // TODO: O que é isso? Não precisa no dropdown tbm?
     }
 
     public enum OperationType

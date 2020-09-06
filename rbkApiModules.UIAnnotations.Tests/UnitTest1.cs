@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using rbkApiModules.Infrastructure;
+using rbkApiModules.Infrastructure.Models;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
@@ -52,7 +53,7 @@ namespace rbkApiModules.UIAnnotations.Tests
 
         // dropdown
         [Required]
-        [DialogData(OperationType.Update, "Relacionamento 2", Group = "Dados Avançados", Nullable = true)]
+        [DialogData(OperationType.Update, "Relacionamento 2", Group = "Dados Avançados", DefaultValue = null)]
         public DemoEntity Navigation2 { get; set; }
 
         // multi select

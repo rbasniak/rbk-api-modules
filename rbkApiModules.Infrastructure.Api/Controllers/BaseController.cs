@@ -4,9 +4,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
+using rbkApiModules.Infrastructure.MediatR;
 using System;
 
-namespace rbkApiModules.Infrastructure
+namespace rbkApiModules.Infrastructure.Api.Controllers
 {
     /// <summary>
     /// Classe de controller da qual os outros controllers do projeto devem herdar
