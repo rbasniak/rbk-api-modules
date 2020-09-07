@@ -1,6 +1,6 @@
 {
   "name": "rbk-api-modules",
-  "version": "1.0.27",
+  "version": "1.0.28",
   "description": "Set of libraries for quickly scaffolding production ready APIs in ASP.NET Core",
   "main": "index.js",
   "scripts": {
@@ -39,7 +39,6 @@
           "rbkApiModules.Authentication/rbkApiModules.Authentication.csproj",
           "rbkApiModules.Comments/rbkApiModules.Comments.csproj",
           "rbkApiModules.UIAnnotations/rbkApiModules.UIAnnotations.csproj"
-
         ]
       }
     },
