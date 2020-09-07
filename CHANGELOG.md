@@ -1,3 +1,10 @@
+## 1.0.28 (2020-09-07)
+
+
+### Bug Fixes
+
+* fixed a bug in the validation pipeline ([ab3700b](https://github.com/rbasniak/rbk-api-modules/commit/ab3700ba91640bb6ce7282a1dd44362a6f96661b))
+
 ## 1.0.26 (2020-09-06)
 
 ## 1.0.25 (2020-09-01)
