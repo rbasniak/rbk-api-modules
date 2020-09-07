@@ -70,10 +70,10 @@ namespace rbkApiModules.Infrastructure.MediatR
             }
             catch (Exception ex)
             {
-                
+                Errors(new List<ValidationFailure> { new ValidationFailure(null, "Erro interno no servidor durante a validação dos dados. Por favor contate o suporte técnico.") });
             }
 
-            return Errors(new List<ValidationFailure> { new ValidationFailure(null, "Erro interno no servidor durante a validação dos dados. Por favor contate o suporte técnico.") });
+            return next();
         }
 
         /// <summary>
