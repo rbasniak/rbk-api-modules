@@ -37,30 +37,43 @@ namespace rbkApiModules.Infrastructure.MediatR
         /// </summary>
         public Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
         {
-            var context = new ValidationContext<object>(request);
-
-            var interfaces = request.GetType().GetInterfaces().Where(x => !x.FullName.Contains("MediatR"));
-
-            var composedValidators = _validators.ToList();
-
-            foreach (var @interface in interfaces)
+            try
             {
-                var ivalidator = typeof(IValidator<>);
-                var generic = ivalidator.MakeGenericType(@interface);
-                var validator = _httpContextAccessor.HttpContext.RequestServices.GetService(generic);
-                composedValidators.Add((IValidator)validator);
+                var context = new ValidationContext<object>(request);
+
+                var interfaces = request.GetType().GetInterfaces().Where(x => !x.FullName.Contains("MediatR"));
+
+                var composedValidators = _validators.ToList();
+
+                foreach (var @interface in interfaces)
+                {
+                    var ivalidator = typeof(IValidator<>);
+                    var generic = ivalidator.MakeGenericType(@interface);
+                    var validator = _httpContextAccessor.HttpContext.RequestServices.GetService(generic);
+
+                    if (validator != null)
+                    {
+                        composedValidators.Add((IValidator)validator);
+                    }
+
+                    // Cuidado com Task.Result, pode ocasionar deadlocks.
+                    var failures = composedValidators
+                        .Select(async v => await v.ValidateAsync(context))
+                        .SelectMany(result => result.Result.Errors)
+                        .Where(f => f != null)
+                        .ToList();
+
+                    return failures.Any()
+                        ? Errors(failures)
+                        : next();
+                }
+            }
+            catch (Exception ex)
+            {
+                
             }
 
-            // Cuidado com Task.Result, pode ocasionar deadlocks.
-            var failures = composedValidators
-                .Select(async v => await v.ValidateAsync(context))
-                .SelectMany(result => result.Result.Errors)
-                .Where(f => f != null)
-                .ToList();
-
-            return failures.Any()
-                ? Errors(failures)
-                : next();
+            return Errors(new List<ValidationFailure> { new ValidationFailure(null, "Erro interno no servidor durante a validação dos dados. Por favor contate o suporte técnico.") });
         }
 
         /// <summary>
