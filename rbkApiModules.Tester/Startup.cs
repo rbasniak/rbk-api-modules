@@ -78,6 +78,7 @@ namespace rbkApiModules.Tester
 
             services.AddRbkApiModulesComments();
 
+            // TODO: Colocar numa extensao da lib
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.ApplyProfiles(new[] {
@@ -127,7 +128,10 @@ namespace rbkApiModules.Tester
 
             services.AddScoped<IUserdataCommentService, UserdataCommentService>();
 
+            // TODO: Colocar numa extensao da lib
             services.AddScoped(typeof(IPipelineBehavior<,>), typeof(FailFastRequestBehavior<,>));
+
+            // TODO: Colocar numa extensao da lib
             services.AddMediatR(
                 Assembly.GetAssembly(typeof(CommentEntity.Command)),
                 Assembly.GetAssembly(typeof(UserLogin.Command)),
