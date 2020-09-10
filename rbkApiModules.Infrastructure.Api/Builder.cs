@@ -60,6 +60,20 @@ namespace rbkApiModules.Infrastructure.Api
                 });
             });
 
+            services.AddHttpClient();
+
+            services.AddMemoryCache();
+
+            services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
+            services.AddResponseCompression(options =>
+            {
+                options.EnableForHttps = true;
+                options.Providers.Add<GzipCompressionProvider>();
+            });
+
+            services.AddRazorPages();
+            services.AddServerSideBlazor();
+
             services.AddRouting(options => options.LowercaseUrls = true);
 
             services.AddControllers();
@@ -98,6 +112,8 @@ namespace rbkApiModules.Infrastructure.Api
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapBlazorHub();
+                endpoints.MapRazorPages();
                 endpoints.MapControllers();
             });
 
@@ -105,3 +121,4 @@ namespace rbkApiModules.Infrastructure.Api
         }
     }
 }
+
