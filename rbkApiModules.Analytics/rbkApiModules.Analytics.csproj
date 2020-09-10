@@ -1,23 +1,34 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <Version>1.0.32</Version>
-    <Authors>rbasniak</Authors>
-    <Product>rbkApiModules</Product>
-    <Copyright>rbasniak</Copyright>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<TargetFramework>netcoreapp3.1</TargetFramework>
+	<Version>1.0.32</Version>
+	<Authors>rbasniak</Authors>
+	<Product>rbkApiModules</Product>
+	<Copyright>rbasniak</Copyright>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
   </PropertyGroup>
 
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.7" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.7" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.7" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.7" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.7" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.7" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\rbkApiModules.Auditing\rbkApiModules.Auditing.csproj" />
-    <ProjectReference Include="..\rbkApiModules.Infrastructure\rbkApiModules.Infrastructure.MediatR.csproj" />
+	<ProjectReference Include="..\rbkApiModules.Auditing\rbkApiModules.Auditing.csproj" />
+	<ProjectReference Include="..\rbkApiModules.Infrastructure\rbkApiModules.Infrastructure.MediatR.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<Content Update="wwwroot\styles.css">
+	  <SubType>Component</SubType>
+	</Content>
   </ItemGroup>
 
 </Project>

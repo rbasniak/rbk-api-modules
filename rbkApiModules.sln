@@ -39,8 +39,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Infrastructur
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Infrastructure.Api", "rbkApiModules.Infrastructure.Api\rbkApiModules.Infrastructure.Api.csproj", "{79DF71E2-F410-4879-92C4-9C60BFE22BEA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.Analytics.Dashboard", "rbkApiModules.Analytics.Dashboard\rbkApiModules.Analytics.Dashboard.csproj", "{15E96AEF-8FA8-4BC2-90D4-DDFE8BCEDD46}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,10 +89,6 @@ Global
 		{79DF71E2-F410-4879-92C4-9C60BFE22BEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{79DF71E2-F410-4879-92C4-9C60BFE22BEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{79DF71E2-F410-4879-92C4-9C60BFE22BEA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{15E96AEF-8FA8-4BC2-90D4-DDFE8BCEDD46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{15E96AEF-8FA8-4BC2-90D4-DDFE8BCEDD46}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{15E96AEF-8FA8-4BC2-90D4-DDFE8BCEDD46}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{15E96AEF-8FA8-4BC2-90D4-DDFE8BCEDD46}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -111,7 +105,6 @@ Global
 		{3BEB0496-40F7-440C-A66A-CA184EE40975} = {F35DF5CD-4270-4087-8307-EE2422CC921B}
 		{5EFECD5A-F9E8-46FC-8C12-C53BFBBF26D1} = {FEB05D26-EA9A-4338-939C-D319053767F7}
 		{79DF71E2-F410-4879-92C4-9C60BFE22BEA} = {FEB05D26-EA9A-4338-939C-D319053767F7}
-		{15E96AEF-8FA8-4BC2-90D4-DDFE8BCEDD46} = {F35DF5CD-4270-4087-8307-EE2422CC921B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9AAC09BF-43DC-408B-8F24-24DAA39DA1E8}

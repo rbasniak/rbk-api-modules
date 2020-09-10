@@ -74,6 +74,8 @@ namespace rbkApiModules.Infrastructure.Api
                 options.Providers.Add<GzipCompressionProvider>();
             });
 
+            services.AddRazorPages();
+
             services.AddRouting(options => options.LowercaseUrls = true);
 
             services.AddControllers();
@@ -137,6 +139,7 @@ namespace rbkApiModules.Infrastructure.Api
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapRazorPages();
                 endpoints.MapControllers();
             });
 
