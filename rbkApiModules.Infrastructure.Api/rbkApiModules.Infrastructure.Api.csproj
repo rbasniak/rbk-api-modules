@@ -6,7 +6,7 @@
 
 	<PropertyGroup>
 		<TargetFramework>netcoreapp3.1</TargetFramework>
-		<Version>1.0.28</Version>
+		<Version>1.0.29</Version>
 		<Authors>rbasniak</Authors>
 		<Product>rbkApiModules</Product>
 		<Copyright>rbasniak</Copyright>
