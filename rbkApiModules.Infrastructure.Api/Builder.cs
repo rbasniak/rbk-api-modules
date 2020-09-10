@@ -75,6 +75,7 @@ namespace rbkApiModules.Infrastructure.Api
             });
 
             services.AddRazorPages();
+            services.AddServerSideBlazor();
 
             services.AddRouting(options => options.LowercaseUrls = true);
 
@@ -139,6 +140,7 @@ namespace rbkApiModules.Infrastructure.Api
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapBlazorHub();
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
             });
@@ -147,3 +149,4 @@ namespace rbkApiModules.Infrastructure.Api
         }
     }
 }
+
