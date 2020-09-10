@@ -1,12 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+	<TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
 	<PropertyGroup>
 		<TargetFramework>netcoreapp3.1</TargetFramework>
-		<Version>1.0.29</Version>
+		<Version>1.0.32</Version>
 		<Authors>rbasniak</Authors>
 		<Product>rbkApiModules</Product>
 		<Copyright>rbasniak</Copyright>
@@ -15,21 +15,21 @@
 	
 
   <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+	<FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="10.0.0" />
-    <PackageReference Include="MediatR" Version="8.1.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="5.5.1" />
-    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUi" Version="5.5.1" />
+	<PackageReference Include="AutoMapper" Version="10.0.0" />
+	<PackageReference Include="MediatR" Version="8.1.0" />
+	<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+	<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="5.5.1" />
+	<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUi" Version="5.5.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\rbkApiModules.Infrastructure.Models\rbkApiModules.Infrastructure.Models.csproj" />
-    <ProjectReference Include="..\rbkApiModules.Infrastructure\rbkApiModules.Infrastructure.MediatR.csproj" />
-    <ProjectReference Include="..\rbkApiModules.Utilities\rbkApiModules.Utilities.csproj" />
+	<ProjectReference Include="..\rbkApiModules.Infrastructure.Models\rbkApiModules.Infrastructure.Models.csproj" />
+	<ProjectReference Include="..\rbkApiModules.Infrastructure\rbkApiModules.Infrastructure.MediatR.csproj" />
+	<ProjectReference Include="..\rbkApiModules.Utilities\rbkApiModules.Utilities.csproj" />
   </ItemGroup>
 
 

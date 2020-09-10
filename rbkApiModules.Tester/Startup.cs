@@ -18,6 +18,7 @@ using rbkApiModules.Tester.Services;
 using rbkApiModules.Infrastructure.MediatR;
 using rbkApiModules.Infrastructure.Api;
 using rbkApiModules.UIAnnotations;
+using Microsoft.Extensions.Hosting;
 
 namespace rbkApiModules.Tester
 {
@@ -74,7 +75,8 @@ namespace rbkApiModules.Tester
             services.TryAddTransient<IHttpContextAccessor, HttpContextAccessor>();
 
             var xmlPath = Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml");
-            services.AddRbkApiInfrastructureModule(AssembliesForServices, AssembliesForAutoMapper, "RbkApiModules Demo API", "v1", xmlPath);
+            services.AddRbkApiInfrastructureModule(AssembliesForServices, AssembliesForAutoMapper, "RbkApiModules Demo API", "v1", 
+                xmlPath, !Environment.IsDevelopment());
 
             services.AddRbkApiMediatRModule(AssembliesForMediatR);
 
@@ -86,7 +88,7 @@ namespace rbkApiModules.Tester
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMapper mapper)
+        public void Configure(IApplicationBuilder app)
         {
             app.UseMiddleware<ErrorLoggingMiddleware>();
 
@@ -95,7 +97,7 @@ namespace rbkApiModules.Tester
                     .LimitToPath("/api")
                     .ExcludeMethod("OPTIONS");
 
-            app.UseRbkApiDefaultSetup(env);
+            app.UseRbkApiDefaultSetup(!Environment.IsDevelopment());
         }
     }
 }

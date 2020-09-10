@@ -28,7 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\rbkApiModules.Analytics.Dashboard\rbkApiModules.Analytics.Dashboard.csproj" />
     <ProjectReference Include="..\rbkApiModules.Analytics\rbkApiModules.Analytics.csproj" />
     <ProjectReference Include="..\rbkApiModules.Auditing\rbkApiModules.Auditing.csproj" />
     <ProjectReference Include="..\rbkApiModules.Authentication\rbkApiModules.Authentication.csproj" />
