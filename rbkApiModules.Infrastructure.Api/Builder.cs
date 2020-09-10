@@ -3,11 +3,14 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.OpenApi.Models;
 using rbkApiModules.Utilities.Extensions;
 using Swashbuckle.AspNetCore.SwaggerUI;
+using System;
+using System.IO.Compression;
 using System.Reflection;
 
 namespace rbkApiModules.Infrastructure.Api
@@ -15,7 +18,7 @@ namespace rbkApiModules.Infrastructure.Api
     public static class BuilderExtensions
     {
         public static void AddRbkApiInfrastructureModule(this IServiceCollection services, Assembly[] assembliesForServices,
-            Assembly[] assembliesForAutoMapper, string applicationName, string version, string swaggerXmlPath)
+            Assembly[] assembliesForAutoMapper, string applicationName, string version, string swaggerXmlPath, bool useHsts)
         {
             services.RegisterApplicationServices(Assembly.GetAssembly(typeof(BuilderExtensions)));
             services.RegisterApplicationServices(assembliesForServices);
@@ -60,18 +63,55 @@ namespace rbkApiModules.Infrastructure.Api
                 });
             });
 
+            services.AddHttpClient();
+
+            services.AddMemoryCache();
+
+            services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
+            services.AddResponseCompression(options =>
+            {
+                options.EnableForHttps = true;
+                options.Providers.Add<GzipCompressionProvider>();
+            });
+
             services.AddRouting(options => options.LowercaseUrls = true);
 
             services.AddControllers();
+
+            services.AddHttpsRedirection(options =>
+            {
+                options.RedirectStatusCode = StatusCodes.Status308PermanentRedirect;
+                options.HttpsPort = 443;
+            });
 
             services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.SuppressModelStateInvalidFilter = true;
             });
+
+            if (useHsts)
+            {
+                // Para outros detalhes de configuração do HSTS e redirecionamento HTTPS
+                // acessar https://aka.ms/aspnetcore-hsts
+                services.AddHsts(options =>
+                {
+                    options.Preload = true;
+                    options.IncludeSubDomains = true;
+                    options.MaxAge = TimeSpan.FromDays(365);
+                });
+            }
         }
 
-        public static IApplicationBuilder UseRbkApiDefaultSetup(this IApplicationBuilder app, IWebHostEnvironment env)
+        public static IApplicationBuilder UseRbkApiDefaultSetup(this IApplicationBuilder app, bool useHsts)
         {
+            if (useHsts)
+            {
+                // Para outros detalhes de configuração do HSTS e redirecionamento HTTPS
+                // acessar https://aka.ms/aspnetcore-hsts
+                app.UseHsts();
+            }
+
+            app.UseHttpsRedirection();
 
             app.UseSwagger();
 
@@ -86,7 +126,6 @@ namespace rbkApiModules.Infrastructure.Api
 
             app.UseCors(c => c.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().WithExposedHeaders("Content-Disposition"));
 
-            app.UseHttpsRedirection();
             app.UseAntiXssMiddleware();
             app.UseAuthentication();
             app.UseDefaultFiles();
