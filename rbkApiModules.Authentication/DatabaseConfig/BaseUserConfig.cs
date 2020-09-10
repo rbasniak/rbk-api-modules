@@ -1,8 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using rbkApiModules.Authentication;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AspNetCoreApiTemplate.Database
+namespace rbkApiModules.Authentication
 {
     public abstract class BaseUserConfig
     {

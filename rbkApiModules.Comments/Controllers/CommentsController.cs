@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using rbkApiModules.Infrastructure;
-using rbkApiModules.Infrastructure.Api.Controllers;
+using rbkApiModules.Infrastructure.Api;
 using System;
 using System.Threading.Tasks;
 
-namespace rbkApiModules.Comments.Controllers
+namespace rbkApiModules.Comments
 {
     [Route("api/[controller]")]
     [ApiController]

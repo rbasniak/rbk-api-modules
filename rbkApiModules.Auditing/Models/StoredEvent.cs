@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using System;
 
-namespace AspNetCoreApiTemplate.Auditing
+namespace rbkApiModules.Auditing
 {
     /// <summary>
     /// Evento de auditoria a ser salvo no banco de dados

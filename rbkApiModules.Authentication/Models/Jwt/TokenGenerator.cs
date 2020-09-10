@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace rbkApiModules.Infrastructure
+namespace rbkApiModules.Authentication
 {
     /// <summary>
     /// Classe para geração do access token JWT
@@ -20,7 +20,7 @@ namespace rbkApiModules.Infrastructure
         {
             var response = new JwtResponse
             {
-                Token= jwtFactory.GenerateEncodedToken(username, roles),
+                AccessToken= jwtFactory.GenerateEncodedToken(username, roles),
                 RefreshToken = refreshToken,
             };
 

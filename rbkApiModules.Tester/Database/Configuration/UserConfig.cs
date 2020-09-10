@@ -1,10 +1,9 @@
-﻿using AspNetCoreApiTemplate.Database;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using rbkApiModules.Authentication;
-using rbkApiModules.Tester.Models; 
+using rbkApiModules.Tester.Models;
 
-namespace rbkApiModules.Tester.Database.Configuration
+namespace rbkApiModules.Tester.Database
 {
     public class UserConfig: BaseUserConfig, IEntityTypeConfiguration<User>
     { 

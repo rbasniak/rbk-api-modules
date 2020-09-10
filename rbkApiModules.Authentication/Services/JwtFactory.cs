@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace rbkApiModules.Infrastructure
+namespace rbkApiModules.Authentication
 {
     public interface IJwtFactory
     {
@@ -35,10 +35,10 @@ namespace rbkApiModules.Infrastructure
         /// <returns>Access token</returns>
         public string GenerateEncodedToken(string username, Dictionary<string, string[]> roles)
         {
-            var claims = new List<Claim>
+            var claims = new List<System.Security.Claims.Claim>
             {
-                 new Claim(JwtRegisteredClaimNames.Sub, username),
-                 new Claim(ClaimTypes.Name, username),
+                 new System.Security.Claims.Claim(JwtRegisteredClaimNames.Sub, username),
+                 new System.Security.Claims.Claim(ClaimTypes.Name, username),
                  // new Claim(JwtRegisteredClaimNames.Iat, _jwtOptions.IssuedAt.ToUnixEpochDate().ToString(), ClaimValueTypes.Integer64),
             };
 
@@ -46,7 +46,7 @@ namespace rbkApiModules.Infrastructure
             {
                 foreach (var value in pair.Value)
                 {
-                    claims.Add(new Claim(pair.Key, value ?? ""));
+                    claims.Add(new System.Security.Claims.Claim(pair.Key, value ?? ""));
                 }
             }
 

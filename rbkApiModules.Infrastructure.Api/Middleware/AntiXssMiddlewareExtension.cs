@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace rbkApiModules.Infrastructure.Api.Middleware
+namespace rbkApiModules.Infrastructure.Api
 {
     public static class AntiXssMiddlewareExtension
     {

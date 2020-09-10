@@ -1,5 +1,4 @@
-﻿using rbkApiModules.Infrastructure;
-using rbkApiModules.Infrastructure.Models;
+﻿using rbkApiModules.Infrastructure.Models;
 using rbkApiModules.Utilities.Passwords;
 using System;
 using System.Collections.Generic;

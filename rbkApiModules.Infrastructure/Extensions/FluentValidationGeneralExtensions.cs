@@ -2,12 +2,12 @@
 using FluentValidation.Validators;
 using System;
 
-namespace AspNetCoreApiTemplate.Utilities
+namespace rbkApiModules.Infrastructure.MediatR
 {
     /// <summary>
     /// Extensões para FluentValidation
     /// </summary>
-    public static class FluentValidationExtensions
+    public static class FluentValidationGeneralExtensions
     {
         public const string ONLY_NUMBERS_REGEX = @"^[0-9]+$";
 

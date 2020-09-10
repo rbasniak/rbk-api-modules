@@ -1,8 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using rbkApiModules.Authentication;
 
-namespace AspNetCoreApiTemplate.Database
+namespace rbkApiModules.Authentication
 {
     public class ClaimConfig : IEntityTypeConfiguration<Claim>
     {

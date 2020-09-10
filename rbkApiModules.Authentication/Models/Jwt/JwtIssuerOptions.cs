@@ -1,7 +1,7 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using System;
 
-namespace rbkApiModules.Infrastructure
+namespace rbkApiModules.Authentication
 {
     /// <summary>
     /// Classe com os dados necessários para geração do token JWT

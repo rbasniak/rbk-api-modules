@@ -1,16 +1,12 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
-using rbkApiModules.Infrastructure.Api.Middleware;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace rbkApiModules.Infrastructure.Api.Middleware
+namespace rbkApiModules.Infrastructure.Api
 {
     // Source: https://www.loginradius.com/engineering/blog/anti-xss-middleware-asp-core/
     public class AntiXssMiddleware

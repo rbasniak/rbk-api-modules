@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using rbkApiModules.Infrastructure;
 using rbkApiModules.Infrastructure.Models;
 using System;
 using System.Collections.Generic;

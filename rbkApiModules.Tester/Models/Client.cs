@@ -1,10 +1,5 @@
-﻿using Microsoft.Data.SqlClient.DataClassification;
-using rbkApiModules.Infrastructure;
-using rbkApiModules.Infrastructure.Models;
+﻿using rbkApiModules.Infrastructure.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace rbkApiModules.Tester.Models
 {

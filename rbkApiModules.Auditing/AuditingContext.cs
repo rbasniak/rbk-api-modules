@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace AspNetCoreApiTemplate.Auditing
+namespace rbkApiModules.Auditing
 {
     /// <summary>
     /// Classe de contexto do banco de dados de auditoria

@@ -1,9 +1,7 @@
-﻿using AspNetCoreApiTemplate.Auditing;
-using MediatR;
+﻿using MediatR;
 using MediatR.Pipeline;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
-using rbkApiModules.Infrastructure;
 using rbkApiModules.Infrastructure.MediatR;
 using rbkApiModules.Infrastructure.Models;
 using System.Diagnostics;

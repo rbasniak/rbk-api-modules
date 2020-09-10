@@ -2,29 +2,22 @@ using System;
 using System.IO;
 using System.Reflection;
 using AutoMapper;
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
 using rbkApiModules.Comments;
 using rbkApiModules.Tester.Database;
-using Swashbuckle.AspNetCore.SwaggerUI;
-using rbkApiModules.Infrastructure;
 using rbkApiModules.Authentication;
-using AspNetCoreApiTemplate.Auditing;
 using rbkApiModules.Auditing;
 using rbkApiModules.Analytics;
 using rbkApiModules.Tester.Services;
-using rbkApiModules.Utilities.Extensions;
 using rbkApiModules.Infrastructure.MediatR;
-using rbkApiModules.Infrastructure.Api.Middleware;
+using rbkApiModules.Infrastructure.Api;
+using rbkApiModules.UIAnnotations;
 
 namespace rbkApiModules.Tester
 {
@@ -47,6 +40,16 @@ namespace rbkApiModules.Tester
 
         private Assembly[] AssembliesForAutoMapper => new Assembly[]
         {
+            Assembly.GetAssembly(typeof(CommentsMappings)),
+            Assembly.GetAssembly(typeof(UserMappings)),
+        };
+
+        private Assembly[] AssembliesForMediatR => new Assembly[]
+        {
+            Assembly.GetAssembly(typeof(CommentEntity.Command)),
+            Assembly.GetAssembly(typeof(UserLogin.Command)),
+            Assembly.GetAssembly(typeof(GetUiDefinitions.Command)),
+            Assembly.GetAssembly(typeof(AuditingPostProcessingBehavior<,>))
         };
 
         public void ConfigureServices(IServiceCollection services)
@@ -66,134 +69,33 @@ namespace rbkApiModules.Tester
                options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Analytics")));
 
-            services.RegisterApplicationServices(AssembliesForServices);
-
             services.AddTransient<DbContext, DatabaseContext>();
 
             services.TryAddTransient<IHttpContextAccessor, HttpContextAccessor>();
 
-            services.AddRbkApiModulesInfrastructure();
+            var xmlPath = Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml");
+            services.AddRbkApiInfrastructureModule(AssembliesForServices, AssembliesForAutoMapper, "RbkApiModules Demo API", "v1", xmlPath);
 
-            services.AddRbkApiModulesAuthentication(Configuration.GetSection(nameof(JwtIssuerOptions)));
+            services.AddRbkApiMediatRModule(AssembliesForMediatR);
 
-            services.AddRbkApiModulesComments();
+            services.AddRbkApiAuthenticationModule(Configuration.GetSection(nameof(JwtIssuerOptions)));
 
-            // TODO: Colocar numa extensao da lib
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.ApplyProfiles(new[] {
-                    Assembly.GetAssembly(typeof(CommentsMappings)),
-                    Assembly.GetAssembly(typeof(UserMappings)),
-                });
-            });
-            var mapper = config.CreateMapper();
-            services.AddSingleton(mapper);
-            mapper.ConfigurationProvider.AssertConfigurationIsValid();
-
-            services.AddRouting(options => options.LowercaseUrls = true);
-
-            services.AddControllers();
-
-            services.AddSwaggerGen(options =>
-            {
-                options.SwaggerDoc("v1", new OpenApiInfo { Title = "RbkApiModules Demo API", Version = "v1" });
-
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                options.IncludeXmlComments(xmlPath);
-
-                options.CustomSchemaIds(x => x.FullName);
-
-                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                {
-                    Type = SecuritySchemeType.ApiKey,
-                    In = ParameterLocation.Header,
-                    Name = "Authorization",
-                    Scheme = "Bearer",
-                    BearerFormat = "JWT",
-                    Description = "Please insert JWT with Bearer into field",
-                });
-
-                options.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
-                        },
-                        new string[] {}
-                    }
-                });
-            });
+            services.AddRbkApiCommentsModule();
 
             services.AddScoped<IUserdataCommentService, UserdataCommentService>();
-
-            // TODO: Colocar numa extensao da lib
-            services.AddScoped(typeof(IPipelineBehavior<,>), typeof(FailFastRequestBehavior<,>));
-
-            // TODO: Colocar numa extensao da lib
-            services.AddMediatR(
-                Assembly.GetAssembly(typeof(CommentEntity.Command)),
-                Assembly.GetAssembly(typeof(UserLogin.Command)),
-                Assembly.GetAssembly(typeof(GetUiDefinitions.Command)),
-                Assembly.GetAssembly(typeof(AuditingPostProcessingBehavior<,>)));
-
-            // Configuração para desabilitar a validação default da API Core para os controllers
-            services.Configure<ApiBehaviorOptions>(options =>
-            {
-                options.SuppressModelStateInvalidFilter = true;
-            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMapper mapper)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            app.UseMiddleware<ErrorLoggingMiddleware>();
 
             app.UseServerSideAnalytics(new SqlServerAnalyticStore(
                 Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Analytics")))
                     .LimitToPath("/api")
                     .ExcludeMethod("OPTIONS");
 
-            app.UseSwagger();
-
-            // Configuração do Swagger
-            app.UseSwaggerUI(c =>
-            {
-                if (env.IsDevelopment())
-                {
-                    // For Debug in Kestrel
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "AspNetCore API Template");
-                }
-                else
-                {
-                    // To deploy on IIS
-                    c.SwaggerEndpoint("/AspNetCoreApiTemplate/swagger/v1/swagger.json", "AspNetCore API Template");
-                }
-
-                c.RoutePrefix = string.Empty;
-                c.DocExpansion(DocExpansion.None);
-            });
-
-            app.UseCors(c => c.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().WithExposedHeaders("Content-Disposition"));
-
-            app.UseHttpsRedirection();
-            app.UseAntiXssMiddleware();
-            app.UseAuthentication();
-            app.UseDefaultFiles();
-            app.UseStaticFiles();
-
-            app.UseRouting();
-
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseRbkApiDefaultSetup(env);
         }
     }
 }

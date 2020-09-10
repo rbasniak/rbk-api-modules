@@ -1,12 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using rbkApiModules.Authentication;
-using rbkApiModules.Infrastructure;
-using rbkApiModules.Infrastructure.Api.Controllers;
-using rbkApiModules.Infrastructure.Models;
+using rbkApiModules.Infrastructure.Api;
 using System;
 using System.Threading.Tasks;
 
-namespace AspNetCoreApiTemplate.Api
+namespace rbkApiModules.Authentication
 {
     /// <summary>
     /// Controller para acessar as funcionalidades de usuário

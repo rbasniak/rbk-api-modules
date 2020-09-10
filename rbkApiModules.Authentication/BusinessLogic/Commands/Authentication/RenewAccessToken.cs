@@ -1,12 +1,10 @@
-﻿using AspNetCoreApiTemplate.Utilities;
-using FluentValidation;
+﻿using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using rbkApiModules.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using rbkApiModules.Infrastructure.MediatR;
 

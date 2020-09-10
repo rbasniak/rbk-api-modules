@@ -2,15 +2,13 @@
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using rbkApiModules.Infrastructure;
 using rbkApiModules.Infrastructure.MediatR;
-using rbkApiModules.UIAnnotations;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace rbkApiModules.Comments
+namespace rbkApiModules.UIAnnotations
 {
     public class GetUiDefinitions
     {

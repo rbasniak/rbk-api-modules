@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using rbkApiModules.Infrastructure;
 using rbkApiModules.Utilities.Extensions;
 using System;
 using System.Reflection;
@@ -13,7 +12,7 @@ namespace rbkApiModules.Authentication
 {
     public static class Builder
     {
-        public static void AddRbkApiModulesAuthentication(this IServiceCollection services, IConfigurationSection applicationConfiguration)
+        public static void AddRbkApiAuthenticationModule(this IServiceCollection services, IConfigurationSection applicationConfiguration)
         {
             var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(applicationConfiguration[nameof(JwtIssuerOptions.SecretKey)]));
 

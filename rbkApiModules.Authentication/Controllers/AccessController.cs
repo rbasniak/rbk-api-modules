@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using rbkApiModules.Authentication;
-using rbkApiModules.Infrastructure;
-using rbkApiModules.Infrastructure.Api.Controllers;
+using rbkApiModules.Infrastructure.Api;
 using rbkApiModules.Infrastructure.Models;
 using System.Threading.Tasks;
 
-namespace AspNetCoreApiTemplate.Api
+namespace rbkApiModules.Authentication
 {
     /// <summary>
     /// Controller para acesso das funcionalidades de autorização e controle de acesso

@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using rbkApiModules.Infrastructure.MediatR;
 using System;
 
-namespace rbkApiModules.Infrastructure.Api.Controllers
+namespace rbkApiModules.Infrastructure.Api
 {
     /// <summary>
     /// Classe de controller da qual os outros controllers do projeto devem herdar

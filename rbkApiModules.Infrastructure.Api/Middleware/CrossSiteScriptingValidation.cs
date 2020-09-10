@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
-namespace rbkApiModules.Infrastructure.Api.Middleware
+namespace rbkApiModules.Infrastructure.Api
 {
     /// <summary>
     /// Imported from System.Web.CrossSiteScriptingValidation Class

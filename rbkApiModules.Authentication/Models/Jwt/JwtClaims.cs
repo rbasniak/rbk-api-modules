@@ -1,4 +1,4 @@
-﻿namespace rbkApiModules.Infrastructure
+﻿namespace rbkApiModules.Authentication
 {
     /// <summary>
     /// Classe para armazenar nomes de propriedades padrão da especificação JWT

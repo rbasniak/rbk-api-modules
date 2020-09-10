@@ -1,14 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using rbkApiModules.Authentication;
-using rbkApiModules.Infrastructure;
-using rbkApiModules.Infrastructure.Api.Controllers;
+using rbkApiModules.Infrastructure.Api;
 using System;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace AspNetCoreApiTemplate.Api
+namespace rbkApiModules.Authentication
 {
     /// <summary>
     /// Controller para acesso das funcionalidades de autenticação

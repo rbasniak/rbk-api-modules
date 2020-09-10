@@ -1,5 +1,4 @@
 using Newtonsoft.Json;
-using rbkApiModules.Infrastructure;
 using rbkApiModules.Infrastructure.Models;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
