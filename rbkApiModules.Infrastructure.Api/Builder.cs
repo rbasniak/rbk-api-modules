@@ -18,7 +18,7 @@ namespace rbkApiModules.Infrastructure.Api
     public static class BuilderExtensions
     {
         public static void AddRbkApiInfrastructureModule(this IServiceCollection services, Assembly[] assembliesForServices,
-            Assembly[] assembliesForAutoMapper, string applicationName, string version, string swaggerXmlPath, bool useHsts)
+            Assembly[] assembliesForAutoMapper, string applicationName, string version, string swaggerXmlPath, bool isProduction)
         {
             services.RegisterApplicationServices(Assembly.GetAssembly(typeof(BuilderExtensions)));
             services.RegisterApplicationServices(assembliesForServices);
@@ -92,7 +92,7 @@ namespace rbkApiModules.Infrastructure.Api
                 options.SuppressModelStateInvalidFilter = true;
             });
 
-            if (useHsts)
+            if (isProduction)
             {
                 // Para outros detalhes de configuração do HSTS e redirecionamento HTTPS
                 // acessar https://aka.ms/aspnetcore-hsts
@@ -105,9 +105,9 @@ namespace rbkApiModules.Infrastructure.Api
             }
         }
 
-        public static IApplicationBuilder UseRbkApiDefaultSetup(this IApplicationBuilder app, bool useHsts)
+        public static IApplicationBuilder UseRbkApiDefaultSetup(this IApplicationBuilder app, bool isProduction)
         {
-            if (useHsts)
+            if (isProduction)
             {
                 // Para outros detalhes de configuração do HSTS e redirecionamento HTTPS
                 // acessar https://aka.ms/aspnetcore-hsts

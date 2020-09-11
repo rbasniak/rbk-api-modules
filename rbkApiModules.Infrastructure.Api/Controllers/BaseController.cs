@@ -56,7 +56,7 @@ namespace rbkApiModules.Infrastructure.Api
         {
             if (response.Status == CommandStatus.Valid)
             {
-                return Ok();
+                return Ok(response.Result);
             }
             else
             {
