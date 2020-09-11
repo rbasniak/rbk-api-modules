@@ -19,6 +19,9 @@ using rbkApiModules.Infrastructure.MediatR;
 using rbkApiModules.Infrastructure.Api;
 using rbkApiModules.UIAnnotations;
 using Microsoft.Extensions.Hosting;
+using Blazorise;
+using Blazorise.Bootstrap;
+using Blazorise.Icons.FontAwesome;
 
 namespace rbkApiModules.Tester
 {
@@ -70,6 +73,8 @@ namespace rbkApiModules.Tester
                options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Analytics")));
 
+            services.AddRbkApiAnalyticsModule();
+
             services.AddTransient<DbContext, DatabaseContext>();
 
             services.TryAddTransient<IHttpContextAccessor, HttpContextAccessor>();
@@ -98,6 +103,8 @@ namespace rbkApiModules.Tester
                     .ExcludeMethod("OPTIONS");
 
             app.UseRbkApiDefaultSetup(!Environment.IsDevelopment());
+
+            app.UseRbkApiAnalyticsModule();
         }
     }
 }
