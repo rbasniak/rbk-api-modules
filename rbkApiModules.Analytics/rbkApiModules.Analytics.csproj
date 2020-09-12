@@ -17,6 +17,7 @@
   <ItemGroup>
 	<PackageReference Include="Blazorise.Bootstrap" Version="0.9.1.2" />
 	<PackageReference Include="Blazorise.Icons.FontAwesome" Version="0.9.1.2" />
+	<PackageReference Include="Blazorise.Sidebar" Version="0.9.1.2" />
 	<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.7" />
 	<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.7" />
 	<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.7" />

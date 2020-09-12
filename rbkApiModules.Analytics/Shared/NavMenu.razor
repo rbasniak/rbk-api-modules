@@ -1,37 +1,45 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="">BlazorApp5</a>
-    <button class="navbar-toggler" @onclick="ToggleNavMenu">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-</div>
+﻿<Sidebar @ref="sidebar">
+    <SidebarContent Class="navmenu__sidebar-content">
+        <SidebarBrand>
+            <a href="https://github.com/rbasniak/rbk-api-modules">
+                <div class="navmenu__title-container">
+                    <Icon Name="@("fa-chart-line")" Margin="Margin.Is3.FromRight"/>
+                    <p class="navmenu__sidebar-title">rbkAnalytics</p>
+                </div>
+            </a>
+        </SidebarBrand>
+        <SidebarNavigation>
+            <SidebarItem>
+                <SidebarLink To="" Title="Home">
+                    <Icon Name="IconName.Home" Margin="Margin.Is3.FromRight" />Home
+                </SidebarLink>
+            </SidebarItem>
+            <SidebarItem>
+                <SidebarLink To="log" Title="Errors">
+                    <Icon Name="IconName.Bug" Margin="Margin.Is3.FromRight" />Errors
+                </SidebarLink>
+            </SidebarItem>
+            <SidebarItem>
+                <SidebarLink To="usage" Title="Usage">
+                    <Icon Name="@("fa-chart-area")" Margin="Margin.Is3.FromRight" />Usage
+                </SidebarLink>
+            </SidebarItem>
+            <SidebarItem>
+                <SidebarLink To="performance" Title="Performance">
+                    <Icon Name="@("fa-tachometer-alt")" Margin="Margin.Is3.FromRight" />Performance
+                </SidebarLink>
+            </SidebarItem>
+        </SidebarNavigation>
+    </SidebarContent>
+</Sidebar>
 
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <ul class="nav flex-column">
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="todo">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Todo
-            </NavLink>
-        </li>
-    </ul>
-</div>
+@code{
+    Sidebar sidebar;
+    SidebarSubItem mailSidebarSubItems;
+    SidebarSubItem appsSidebarSubItems;
 
-@code {
-    private bool collapseNavMenu = true;
-
-    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
+    void ToggleSidebar()
     {
-        collapseNavMenu = !collapseNavMenu;
+        sidebar.Toggle();
     }
 }

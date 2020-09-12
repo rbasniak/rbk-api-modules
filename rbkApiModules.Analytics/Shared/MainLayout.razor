@@ -1,6 +1,6 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="sidebar">
+@*<div class="sidebar">
     <NavMenu />
 </div>
 
@@ -12,4 +12,29 @@
     <div class="content px-4">
         @Body
     </div>
-</div>
+</div>*@
+
+
+<Layout Sider="true">
+    <LayoutSider>
+        <LayoutSiderContent>
+            <NavMenu />
+        </LayoutSiderContent>
+    </LayoutSider>
+    <Layout>
+        <LayoutContent Margin="Margin.Is3.OnAll">
+            @Body
+        </LayoutContent>
+    </Layout>
+</Layout>
+
+@code{
+    Sidebar sidebar;
+    SidebarSubItem mailSidebarSubItems;
+    SidebarSubItem appsSidebarSubItems;
+
+    void ToggleSidebar()
+    {
+        sidebar.Toggle();
+    }
+}
