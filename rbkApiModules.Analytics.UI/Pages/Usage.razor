@@ -1,0 +1,55 @@
+﻿@page "/usage"
+<h1>Usage</h1>
+
+<RadzenCard Style="width:100%; margin-bottom: 20px;">
+    <div class="row">
+        <div class="col-md-4">
+            <h3>TextBox</h3>
+            <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" @bind-Value="multipleValues" Multiple="true" Placeholder="Select..." Data="@data" TextProperty="Name" ValueProperty="Id"
+                           Style="margin-bottom: 20px; width:400px;" />
+        </div>
+        <div class="col-md-4">
+            <h3>TextBox</h3>
+            <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" @bind-Value="multipleValues" Multiple="true" Placeholder="Select..." Data="@data" TextProperty="Name" ValueProperty="Id"
+                           Style="margin-bottom: 20px; width:400px;" />
+        </div>
+        <div class="col-md-4">
+            <h3>TextBox</h3>
+            <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" @bind-Value="multipleValues" Multiple="true" Placeholder="Select..." Data="@data" TextProperty="Name" ValueProperty="Id"
+                            Style="margin-bottom: 20px; width:400px;" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <h3>TextBox</h3>
+            <RadzenDatePicker @bind-Value="value" DateFormat="d" />
+        </div>
+        <div class="col-md-4">
+            <h3>TextBox</h3>
+            <RadzenDatePicker @bind-Value="value" DateFormat="d" />
+        </div>
+        <div class="col-md-4">
+            <h3>TextBox</h3>
+            <RadzenTextBox Style="margin-bottom: 20px" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 filter-button">
+            <RadzenButton Text="Button" ButtonStyle="ButtonStyle.Secondary" Style="margin-bottom: 20px; width: 150px" />
+        </div>
+    </div>
+</RadzenCard>
+
+@code {
+    List<SimpleNamedEntity> data = new List<SimpleNamedEntity>
+    {
+        new SimpleNamedEntity { Id = "1", Name = "Item 1"},
+        new SimpleNamedEntity { Id = "2", Name = "Item 2"},
+        new SimpleNamedEntity { Id = "3", Name = "Item 3"},
+        new SimpleNamedEntity { Id = "4", Name = "Item 4"},
+    };
+
+    IEnumerable<string> multipleValues = new string[] { "Item 1", "Item 2" };
+
+    DateTime value;
+}

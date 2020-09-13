@@ -13,15 +13,12 @@ using rbkApiModules.Comments;
 using rbkApiModules.Tester.Database;
 using rbkApiModules.Authentication;
 using rbkApiModules.Auditing;
-using rbkApiModules.Analytics;
 using rbkApiModules.Tester.Services;
 using rbkApiModules.Infrastructure.MediatR;
 using rbkApiModules.Infrastructure.Api;
 using rbkApiModules.UIAnnotations;
 using Microsoft.Extensions.Hosting;
-using Blazorise;
-using Blazorise.Bootstrap;
-using Blazorise.Icons.FontAwesome;
+using rbkApiModules.Analytics;
 
 namespace rbkApiModules.Tester
 {
@@ -66,14 +63,12 @@ namespace rbkApiModules.Tester
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Auditing")));
 
-            // **************************************************************************
-            // *** Descomentar só para criar novas migrations no projeto de analytics ***
-            // **************************************************************************
-            services.AddDbContext<SqlServerContext>(options =>
-               options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Analytics")));
-
-            services.AddRbkApiAnalyticsModule();
+            //// **************************************************************************
+            //// *** Descomentar só para criar novas migrations no projeto de analytics ***
+            //// **************************************************************************
+            //services.AddDbContext<SqlServerContext>(options =>
+            //   options.UseSqlServer(
+            //        Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Analytics")));
 
             services.AddTransient<DbContext, DatabaseContext>();
 
@@ -95,16 +90,12 @@ namespace rbkApiModules.Tester
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app)
         {
-            app.UseMiddleware<ErrorLoggingMiddleware>();
-
             app.UseServerSideAnalytics(new SqlServerAnalyticStore(
                 Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Analytics")))
                     .LimitToPath("/api")
                     .ExcludeMethod("OPTIONS");
 
             app.UseRbkApiDefaultSetup(!Environment.IsDevelopment());
-
-            app.UseRbkApiAnalyticsModule();
         }
     }
 }

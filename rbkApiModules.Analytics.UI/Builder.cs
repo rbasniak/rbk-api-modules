@@ -1,7 +1,4 @@
-﻿using Blazorise;
-using Blazorise.Bootstrap;
-using Blazorise.Icons.FontAwesome;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -13,10 +10,13 @@ namespace rbkApiModules.Analytics
     {
         public static void AddRbkApiAnalyticsModule(this IServiceCollection services)
         {
+            
         }
 
         public static IApplicationBuilder UseRbkApiAnalyticsModule(this IApplicationBuilder app)
         {
+            
+
             return app;
         }
     }

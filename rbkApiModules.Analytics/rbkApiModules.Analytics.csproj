@@ -28,10 +28,4 @@
 	<ProjectReference Include="..\rbkApiModules.Infrastructure\rbkApiModules.Infrastructure.MediatR.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-	<Content Update="wwwroot\styles.css">
-	  <SubType>Component</SubType>
-	</Content>
-  </ItemGroup>
-
 </Project>
