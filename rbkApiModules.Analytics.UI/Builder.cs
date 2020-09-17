@@ -4,19 +4,17 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace rbkApiModules.Analytics
+namespace rbkApiModules.Analytics.UI
 {
     public static class BuilderExtensions
     {
-        public static void AddRbkApiAnalyticsModule(this IServiceCollection services)
+        public static void AddRbkApiAnalyticsUIModule(this IServiceCollection services)
         {
             
         }
 
-        public static IApplicationBuilder UseRbkApiAnalyticsModule(this IApplicationBuilder app)
+        public static IApplicationBuilder UseRbkApiAnalyticsUIModule(this IApplicationBuilder app)
         {
-            
-
             return app;
         }
     }

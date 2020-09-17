@@ -1,0 +1,82 @@
+﻿@page "/errors"
+<h2>Error log</h2>
+
+<RadzenCard Style="width:100%; margin-bottom: 20px;">
+ 
+    <div class="row" style="margin-bottom: 20px; ">
+        <div class="col-md-4">
+            <h3>Machine Name</h3>
+            <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                            @bind-Value="selectedMachines" Multiple="true" Placeholder="Select..." Data="@machines" TextProperty="Name"
+                            ValueProperty="Id" Style="width:100%;" />
+        </div>
+        <div class="col-md-4">
+            <h3>Application Layer</h3>
+            <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                            @bind-Value="selectedLayers" Multiple="true" Placeholder="Select..." Data="@layers" TextProperty="Name"
+                            ValueProperty="Id" Style="width:100%;" />
+        </div>
+        <div class="col-md-4">
+            <h3>User</h3>
+            <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                            @bind-Value="selectedUsers" Multiple="true" Placeholder="Select..." Data="@users" TextProperty="Name"
+                            ValueProperty="Id" Style="width:100%;" />
+        </div>
+    </div>
+    <div class="row" style="margin-bottom: 20px; ">
+        <div class="col-md-4">
+            <h3>Date from</h3>
+            <RadzenDatePicker @bind-Value="dateFrom" DateFormat="d" Style="width: 100%" />
+        </div>
+        <div class="col-md-4">
+            <h3>Date to</h3>
+            <RadzenDatePicker @bind-Value="dateTo" DateFormat="d" Style="width: 100%" />
+        </div>
+        <div class="col-md-4">
+            <h3>Contains text</h3>
+            <RadzenTextBox @bind-Value="contains" Style="width: 100%" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 filter-button">
+            <RadzenButton Text="Filter" ButtonStyle="ButtonStyle.Secondary" Style="width: 150px" />
+        </div>
+    </div>
+</RadzenCard>
+
+@code {
+    List<SimpleNamedEntity> machines = new List<SimpleNamedEntity>
+{
+        new SimpleNamedEntity { Id = "1", Name = "RB-DESKTOP"},
+        new SimpleNamedEntity { Id = "2", Name = "RB-NOTEBOOK"},
+        new SimpleNamedEntity { Id = "3", Name = "WIN-59JDF64IOMC"},
+    };
+
+    List<SimpleNamedEntity> layers = new List<SimpleNamedEntity>
+{
+        new SimpleNamedEntity { Id = "1", Name = "API"},
+        new SimpleNamedEntity { Id = "2", Name = "Desktop"},
+        new SimpleNamedEntity { Id = "3", Name = "Mobile"},
+    };
+
+    List<SimpleNamedEntity> users = new List<SimpleNamedEntity>
+{
+        new SimpleNamedEntity { Id = "1", Name = "USR1"},
+        new SimpleNamedEntity { Id = "2", Name = "USR2"},
+        new SimpleNamedEntity { Id = "3", Name = "USR3"},
+        new SimpleNamedEntity { Id = "4", Name = "ADM1"},
+        new SimpleNamedEntity { Id = "5", Name = "AMD2"},
+        new SimpleNamedEntity { Id = "6", Name = "USR4"},
+        new SimpleNamedEntity { Id = "7", Name = "USR5"},
+        new SimpleNamedEntity { Id = "8", Name = "ADM3"},
+        new SimpleNamedEntity { Id = "9", Name = "ADM5"},
+    };
+
+    IEnumerable<string> selectedMachines = new string[] { };
+    IEnumerable<string> selectedLayers = new string[] { };
+    IEnumerable<string> selectedUsers = new string[] { };
+
+    DateTime dateFrom = DateTime.Now.AddDays(-7);
+    DateTime dateTo = DateTime.Now;
+    string contains;
+}

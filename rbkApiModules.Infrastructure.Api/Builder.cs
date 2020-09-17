@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -10,6 +10,7 @@ using Microsoft.OpenApi.Models;
 using rbkApiModules.Utilities.Extensions;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using System;
+using System.Collections.Generic;
 using System.IO.Compression;
 using System.Reflection;
 
@@ -18,7 +19,7 @@ namespace rbkApiModules.Infrastructure.Api
     public static class BuilderExtensions
     {
         public static void AddRbkApiInfrastructureModule(this IServiceCollection services, Assembly[] assembliesForServices,
-            Assembly[] assembliesForAutoMapper, string applicationName, string version, string swaggerXmlPath, bool isProduction)
+            Assembly[] assembliesForAutoMapper, List<IActionFilter> filters, string applicationName, string version, string swaggerXmlPath, bool isProduction)
         {
             services.RegisterApplicationServices(Assembly.GetAssembly(typeof(BuilderExtensions)));
             services.RegisterApplicationServices(assembliesForServices);
@@ -79,7 +80,12 @@ namespace rbkApiModules.Infrastructure.Api
 
             services.AddRouting(options => options.LowercaseUrls = true);
 
-            services.AddControllers();
+            services.AddControllers(config => {
+                foreach (var filter in filters)
+                {
+                    config.Filters.Add(filter);
+                }
+            });
 
             services.AddHttpsRedirection(options =>
             {

@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using System;
 
-namespace rbkApiModules.Auditing
+namespace rbkApiModules.Auditing.Core
 {
     /// <summary>
     /// Evento de auditoria a ser salvo no banco de dados

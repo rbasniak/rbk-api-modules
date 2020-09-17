@@ -1,5 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
+using rbkApiModules.Analytics;
+using rbkApiModules.Analytics.Core;
 using rbkApiModules.Infrastructure.Api;
 using System;
 
@@ -10,16 +14,17 @@ namespace rbkApiModules.Tester.Controllers
     [AllowAnonymous]
     public class TestController: BaseController
     {
-        [HttpPost]
+        [ApplicationArea("Test")]
+        [HttpGet]
         [Route("test1")]
         public ActionResult Test1()
         {
-            throw new Exception("xxxxxxxxxxxxxxxxxxx");
-            return Ok("Ok");
+            return StatusCode(500);
         }
 
         [HttpGet]
         [Route("test2/{id}")]
+        [ApplicationArea("Test")]
         public ActionResult Test2(int id)
         {
             return Ok("Ok: " + id);

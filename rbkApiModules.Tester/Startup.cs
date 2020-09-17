@@ -18,7 +18,14 @@ using rbkApiModules.Infrastructure.MediatR;
 using rbkApiModules.Infrastructure.Api;
 using rbkApiModules.UIAnnotations;
 using Microsoft.Extensions.Hosting;
-using rbkApiModules.Analytics;
+using rbkApiModules.Auditing.SqlServer;
+using rbkApiModules.Tester.BusinessLogic;
+using System.Collections.Generic;
+using rbkApiModules.Logging.Core;
+using Microsoft.AspNetCore.Mvc.Filters;
+using rbkApiModules.Analytics.Core;
+using rbkApiModules.Analytics.SqlServer;
+using rbkApiModules.Auditing.Core;
 
 namespace rbkApiModules.Tester
 {
@@ -47,6 +54,7 @@ namespace rbkApiModules.Tester
 
         private Assembly[] AssembliesForMediatR => new Assembly[]
         {
+            Assembly.GetAssembly(typeof(CreateUser.Command)),
             Assembly.GetAssembly(typeof(CommentEntity.Command)),
             Assembly.GetAssembly(typeof(UserLogin.Command)),
             Assembly.GetAssembly(typeof(GetUiDefinitions.Command)),
@@ -57,26 +65,21 @@ namespace rbkApiModules.Tester
         {
             services.AddDbContext<DatabaseContext>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Database")));
+                    Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Database"))
+                .AddInterceptors(new DatabaseLogIntgerceptor())
+                .EnableDetailedErrors()
+                .EnableSensitiveDataLogging());
 
-            services.AddDbContext<AuditingContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Auditing")));
-
-            //// **************************************************************************
-            //// *** Descomentar só para criar novas migrations no projeto de analytics ***
-            //// **************************************************************************
-            //services.AddDbContext<SqlServerContext>(options =>
-            //   options.UseSqlServer(
-            //        Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Analytics")));
+            //services.AddDbContext<AuditingContext>(options =>
+            //    options.UseSqlServer(
+            //        Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Auditing"))); 
 
             services.AddTransient<DbContext, DatabaseContext>();
 
-            services.TryAddTransient<IHttpContextAccessor, HttpContextAccessor>();
-
             var xmlPath = Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml");
-            services.AddRbkApiInfrastructureModule(AssembliesForServices, AssembliesForAutoMapper, "RbkApiModules Demo API", "v1", 
-                xmlPath, !Environment.IsDevelopment());
+            services.AddRbkApiInfrastructureModule(AssembliesForServices, AssembliesForAutoMapper, 
+                new List<IActionFilter> { new AnalyticsMvcFilter() },
+                "RbkApiModules Demo API", "v1", xmlPath, !Environment.IsDevelopment());
 
             services.AddRbkApiMediatRModule(AssembliesForMediatR);
 
@@ -85,15 +88,20 @@ namespace rbkApiModules.Tester
             services.AddRbkApiCommentsModule();
 
             services.AddScoped<IUserdataCommentService, UserdataCommentService>();
+
+            services.AddSqlServerRbkApiAnalyticsModule(Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Analytics"));
+
+            services.AddSqlServerRbkApiAuditingModule(Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Auditing"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app)
         {
-            app.UseServerSideAnalytics(new SqlServerAnalyticStore(
-                Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Analytics")))
-                    .LimitToPath("/api")
-                    .ExcludeMethod("OPTIONS");
+            app.UseSqlServerRbkApiAnalyticsModule()
+                .LimitToPath("/api")
+                .ExcludeMethods("OPTIONS");
+
+            app.UseSqlServerRbkApiAuditingModule();
 
             app.UseRbkApiDefaultSetup(!Environment.IsDevelopment());
         }

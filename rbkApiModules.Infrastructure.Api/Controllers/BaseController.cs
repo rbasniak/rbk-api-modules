@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using rbkApiModules.Infrastructure.MediatR;
+using rbkApiModules.Infrastructure.Models;
 using System;
 
 namespace rbkApiModules.Infrastructure.Api
@@ -56,7 +57,15 @@ namespace rbkApiModules.Infrastructure.Api
         {
             if (response.Status == CommandStatus.Valid)
             {
-                return Ok(response.Result);
+                if (response.Result != null && !(response.Result is BaseEntity))
+                {
+                    return Ok(response.Result);
+                }
+                else
+                {
+                    return Ok();
+                }
+                
             }
             else
             {

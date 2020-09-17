@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace rbkApiModules.Auditing
+namespace rbkApiModules.Auditing.Core
 {
     /// <summary>
     /// Classe de contexto do banco de dados de auditoria

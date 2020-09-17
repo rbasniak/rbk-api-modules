@@ -8,7 +8,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace rbkApiModules.Auditing
+namespace rbkApiModules.Auditing.Core
 {
     /// <summary>
     /// Behavior do MediatR para salvamento automático de dados de auditoria
@@ -31,7 +31,7 @@ namespace rbkApiModules.Auditing
         {
             _audidintContext = auditingContext;
 
-            if (httpContextAccessor.HttpContext == null) // This happens in integration tests
+            if (httpContextAccessor.HttpContext == null)  
             {
                 _user = "-";
             }
