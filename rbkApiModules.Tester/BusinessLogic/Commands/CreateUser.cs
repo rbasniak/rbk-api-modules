@@ -40,7 +40,7 @@ namespace rbkApiModules.Tester.BusinessLogic
 
                 _context.Add(user);
 
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return (null, user);
             }

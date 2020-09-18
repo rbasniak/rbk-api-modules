@@ -4,7 +4,7 @@ using System.Text;
 
 namespace rbkApiModules.Auditing.UI
 {
-    class Class1
+    public class Class2
     {
     }
 }

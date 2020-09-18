@@ -55,9 +55,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UIAnnotations", "UIAnnotati
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Comments", "Comments", "{62B40098-7829-48ED-81B5-4381E4A4849C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.Auditing.SqlServer", "rbkApiModules.Auditing.SqlServer\rbkApiModules.Auditing.SqlServer.csproj", "{0A6A64FA-A8F2-4F89-B8B7-863C952E90A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Auditing.SqlServer", "rbkApiModules.Auditing.SqlServer\rbkApiModules.Auditing.SqlServer.csproj", "{0A6A64FA-A8F2-4F89-B8B7-863C952E90A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.Auditing.UI", "rbkApiModules.Auditing.UI\rbkApiModules.Auditing.UI.csproj", "{3AC3E5BC-76EA-44FD-B37A-FEE934706B54}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Auditing.UI", "rbkApiModules.Auditing.UI\rbkApiModules.Auditing.UI.csproj", "{3AC3E5BC-76EA-44FD-B37A-FEE934706B54}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

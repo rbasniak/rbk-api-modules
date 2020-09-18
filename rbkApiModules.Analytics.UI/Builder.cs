@@ -18,4 +18,9 @@ namespace rbkApiModules.Analytics.UI
             return app;
         }
     }
+
+    public class Class1
+    {
+
+    }
 }
