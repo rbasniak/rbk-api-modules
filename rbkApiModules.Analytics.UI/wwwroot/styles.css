@@ -6,3 +6,7 @@
     align-items: stretch;
     align-content: stretch;
 }
+
+.rbk-auditing-dashboard-red {
+    color: indianred;
+}

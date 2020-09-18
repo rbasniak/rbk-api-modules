@@ -11,15 +11,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="C:\Users\rbasn\.nuget\packages\radzen.blazor\2.12.2\contentFiles\any\netstandard2.1\global.json" />
+    <Content Remove="C:\Users\rbasn\.nuget\packages\radzen.blazor\2.12.2\contentFiles\any\netstandard2.1\Properties\launchSettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Radzen.Blazor" Version="2.12.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Areas\Auditing\Pages\" />
   </ItemGroup>
 
 </Project>
