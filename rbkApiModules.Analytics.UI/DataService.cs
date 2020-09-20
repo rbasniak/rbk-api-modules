@@ -15,6 +15,13 @@ namespace rbkApiModules.Analytics.UI
     {
         Task<FilterOptionListData> GetFilterDataAsync();
         Task<AnalyticsEntry[]> FilterAsync(FilterAnalyticsEntries.Command data);
+        Task<SimpleNamedEntity[]> GetMostActiveDomains(GetMostActiveDomains.Command data);
+        Task<SimpleNamedEntity[]> GetMostActiveUsers(GetMostActiveUsers.Command data);
+        Task<SimpleNamedEntity[]> GetMostFailedEndpoints(GetMostFailedEndpoints.Command data);
+        Task<SimpleNamedEntity[]> GetMostUsedReadEndpoints(GetMostUsedReadEndpoints.Command data);
+        Task<SimpleNamedEntity[]> GetMostUsedWriteEndpoints(GetMostUsedWriteEndpoints.Command data);
+        Task<SimpleNamedEntity[]> GetSlowestReadEndpoints(GetSlowestReadEndpoints.Command data);
+        Task<SimpleNamedEntity[]> GetSlowestWriteEndpoints(GetSlowestWriteEndpoints.Command data);
     }
 
     public class AnalyticsDataService : IAnalyticsDataService

@@ -49,7 +49,7 @@ namespace rbkApiModules.Analytics.Core
 
                 foreach (var itemData in groupedData)
                 {
-                    results.Add(new SimpleNamedEntity(itemData.Key, itemData.Average(x => x.Duration).ToString()));
+                    results.Add(new SimpleNamedEntity(itemData.Key, ((int)itemData.Average(x => x.Duration)).ToString()));
                 }
 
                 return results;

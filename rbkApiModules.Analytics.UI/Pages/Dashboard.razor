@@ -1,0 +1,53 @@
+﻿@page "/analytics/dashboard"
+
+@using System.Net.Http
+@inject IAnalyticsDataService DataService
+
+<h2 class="rbk-auditing-dashboard-red">Server Side Analytics</h2>
+
+<RadzenCard Style="width:100%; margin-bottom: 2em;">
+
+    <div style="display: flex; justify-content: space-between; gap: 1em;">
+        <div style="flex: 1">
+            <h3>Date from</h3>
+            <RadzenDatePicker @bind-Value="dateFrom" DateFormat="d" Style="width: 100%" />
+        </div>
+        <div style="flex: 1">
+            <h3>Date to</h3>
+            <RadzenDatePicker @bind-Value="dateTo" DateFormat="d" Style="width: 100%" />
+        </div>
+    </div>
+    <div style="display: flex; justify-content: flex-end; margin-top: 1em">
+        <RadzenButton Text="Filter" ButtonStyle="ButtonStyle.Secondary" Style="width: 150px" Click="@(Click)" />
+    </div>
+</RadzenCard>
+
+@if (mostActiveDomain != null)
+{
+    <RadzenCard Style="width:100%; margin-bottom: 2em;">
+        <h4>Slowest Endpoints (read)</h4>
+        <RadzenGrid AllowFiltering="false" AllowPaging="true" PageSize="10"
+                    Data="@mostActiveDomain" TItem="SimpleNamedEntity">
+            <Columns>
+                <RadzenGridColumn TItem="SimpleNamedEntity" Property="Id" Title="Endpoint"  Width="200px" />
+                <RadzenGridColumn TItem="SimpleNamedEntity" Property="Name" Title="Duration (ms)"  Width="75px" />
+            </Columns>
+        </RadzenGrid>
+    </RadzenCard>
+}
+
+
+@code {
+    SimpleNamedEntity[] mostActiveDomain;
+
+    DateTime dateFrom = DateTime.Now.AddDays(-7);
+    DateTime dateTo = DateTime.Now;
+
+    async void Click(MouseEventArgs args)
+    {
+        mostActiveDomain = await DataService.GetSlowestReadEndpoints(new GetSlowestReadEndpoints.Command { DateFrom = dateFrom, DateTo = dateTo });
+
+        // Note that the following line is necessary because otherwise Blazor would not recognize the state change and not refresh the UI
+        StateHasChanged();
+    }
+}

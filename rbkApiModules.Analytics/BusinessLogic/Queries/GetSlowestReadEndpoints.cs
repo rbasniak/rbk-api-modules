@@ -40,6 +40,7 @@ namespace rbkApiModules.Analytics.Core
 
             protected override async Task<object> ExecuteAsync(Command request)
             {
+                // TODO: Criar uma entidade para itens numeros de tabelas para poder ordenar
                 var results = new List<SimpleNamedEntity>();
 
                 var data = await _context.InTimeRangeAsync(request.DateFrom, request.DateTo, null, null, null, null, null, null,
@@ -49,7 +50,7 @@ namespace rbkApiModules.Analytics.Core
 
                 foreach (var itemData in groupedData)
                 {
-                    results.Add(new SimpleNamedEntity(itemData.Key, itemData.Average(x => x.Duration).ToString()));
+                    results.Add(new SimpleNamedEntity(itemData.Key, ((int)itemData.Average(x => x.Duration)).ToString()));
                 }
 
                 return results;

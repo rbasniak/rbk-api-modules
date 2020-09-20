@@ -25,7 +25,7 @@ namespace rbkApiModules.Infrastructure.Models
 
         public override string ToString()
         {
-            return Name;
+            return $"[{Id}] {Name}";
         }
     }
 }
