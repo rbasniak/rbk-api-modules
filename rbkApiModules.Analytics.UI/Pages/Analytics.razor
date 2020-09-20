@@ -1,4 +1,4 @@
-﻿@page "/analytics"
+﻿@page "/analytics/filter"
 
 @using System.Net.Http
 @inject IAnalyticsDataService DataService
@@ -17,28 +17,28 @@
             <RadzenDatePicker @bind-Value="dateTo" DateFormat="d" Style="width: 100%" />
         </div>
         <div style="flex: 1">
-            <h3>Application Areas</h3>
+            <h3>Application Versions</h3>
             <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                            @bind-Value="selectedAreas" Multiple="true" Placeholder="Select..." Data="@areas" TextProperty="Name"
+                            @bind-Value="selectedVersions" Multiple="true" Placeholder="Select..." Data="@versions" TextProperty="Name"
                             ValueProperty="Id" Style="width:100%;" />
         </div>
         <div style="flex: 1">
-            <h3>Domains</h3>
+            <h3>Application Areas</h3>
             <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                            @bind-Value="selectedDomains" Multiple="true" Placeholder="Select..." Data="@domains" TextProperty="Name"
+                            @bind-Value="selectedAreas" Multiple="true" Placeholder="Select..." Data="@areas" TextProperty="Name"
                             ValueProperty="Id" Style="width:100%;" />
         </div>
     </div>
 
     <div style="display: flex; justify-content: space-between; gap: 1em;">
         <div style="flex: 1">
-            <h3>Methods</h3>
+            <h3>Domains</h3>
             <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                            @bind-Value="selectedMethods" Multiple="true" Placeholder="Select..." Data="@methods" TextProperty="Name"
+                            @bind-Value="selectedDomains" Multiple="true" Placeholder="Select..." Data="@domains" TextProperty="Name"
                             ValueProperty="Id" Style="width:100%;" />
         </div>
         <div style="flex: 1">
-            <h3>Methods</h3>
+            <h3>Endpoints</h3>
             <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                             @bind-Value="selectedActions" Multiple="true" Placeholder="Select..." Data="@actions" TextProperty="Name"
                             ValueProperty="Id" Style="width:100%;" />
@@ -78,28 +78,124 @@
     </div>
 </RadzenCard>
 
+@if (results != null)
+{
+<div>
+    <h4 style="margin-left: 1em;">@results.Length results found</h4>
+
+    <RadzenDataList WrapItems="false" AllowPaging="true" Data="@results" PageSize="100" TItem="AnalyticsEntry">
+        <Template Context="item">
+            <RadzenCard Style="width:100%;">
+                <div style="display: flex; flex-direction: row">
+                    <div style="flex: 1; display: flex; align-items: center;">
+                        @if (item.Response == 200)
+                        {
+                            <RadzenImage Path="_content/rbkApiModules.Analytics.UI/images/success.png" Style="width: 128px; height: 128px;" />
+                        }
+                        else if (item.Response == 400)
+                        {
+                            <RadzenImage Path="_content/rbkApiModules.Analytics.UI/images/warning.png" Style="width: 128px; height: 128px;" />
+                        }
+                        else if (item.Response == 500)
+                        {
+                            <RadzenImage Path="_content/rbkApiModules.Analytics.UI/images/error.png" Style="width: 128px; height: 128px;" />
+                        }
+                        else
+                        {
+                            <RadzenImage Path="_content/rbkApiModules.Analytics.UI/images/question.png" Style="width: 128px; height: 128px;" />
+                        }
+                    </div>
+                    <div style="flex: 8">
+                        <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: baseline; margin-bottom: 1em;">
+                            <div style="flex: 3">
+                                <div>Timestamp:</div>
+                                <b>@item.Timestamp.ToString()</b>
+                            </div>
+
+                            <div style="flex: 3">
+                                <div>Version:</div>
+                                <b>@item.Version</b>
+                            </div>
+
+                            <div style="flex: 3">
+                                <div>Area:</div>
+                                <b>@item.Area</b>
+                            </div>
+
+                            <div style="flex: 3">
+                                <div>Domain:</div>
+                                <b>@item.Domain</b>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: baseline; margin-bottom: 1em;">
+                            <div style="flex: 6">
+                                <div>Endpoint:</div>
+                                <b>@item.Action</b>
+                                @if (item.Action != item.Path)
+                                {
+                                    <b>@item.Identity</b>
+                                }
+                            </div>
+
+                            <div style="flex: 3">
+                                <div>Response:</div>
+                                <b>@item.Response</b>
+                            </div>
+
+                            <div style="flex: 3">
+                                <div>Duration:</div>
+                                <b>@item.Duration ms</b>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: baseline;">
+                            <div style="flex: 1">
+                                <div>Identity:</div>
+                                <b>@item.Identity</b>
+                            </div>
+
+                            <div style="flex: 2">
+                                <div>Username:</div>
+                                <b>@item.Username</b>
+                            </div>
+
+                            <div style="flex: 3">
+                                <div>IP Address:</div>
+                                <b>@item.RemoteIpAddress</b>
+                            </div>
+
+                            <div style="flex: 6">
+                                <div>User Agent:</div>
+                                <b>@item.UserAgent</b>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </RadzenCard>
+        </Template>
+    </RadzenDataList>
+</div>
+}
+
 @code {
+    AnalyticsEntry[] results;
+    SimpleNamedEntity[] versions;
     SimpleNamedEntity[] areas;
-
     SimpleNamedEntity[] domains;
-
-    SimpleNamedEntity[] methods;
-
     SimpleNamedEntity[] agents;
-
     SimpleNamedEntity[] actions;
-
     SimpleNamedEntity[] responses;
-
     SimpleNamedEntity[] users;
 
     IEnumerable<string> selectedAreas = new string[] { };
     IEnumerable<string> selectedDomains = new string[] { };
-    IEnumerable<string> selectedMethods = new string[] { };
     IEnumerable<string> selectedAgents = new string[] { };
     IEnumerable<string> selectedActions = new string[] { };
     IEnumerable<string> selectedResponses = new string[] { };
     IEnumerable<string> selectedUsers = new string[] { };
+    IEnumerable<string> selectedVersions = new string[] { };
 
     DateTime dateFrom = DateTime.Now.AddDays(-7);
     DateTime dateTo = DateTime.Now;
@@ -111,40 +207,44 @@
         var data = await DataService.GetFilterDataAsync();
 
         areas = data.Areas.Select(x => new SimpleNamedEntity(x, x)).ToArray();
-        domains = data.Domains.Select(x => new SimpleNamedEntity(x, x)).ToArray();
-        methods = data.Methods.Select(x => new SimpleNamedEntity(x, x)).ToArray();
+        domains = data.Domains.Select(x => String.IsNullOrEmpty(x) ? new SimpleNamedEntity(x, "Without domain") : new SimpleNamedEntity(x, x)).ToArray();
         agents = data.Agents.Select(x => new SimpleNamedEntity(x, x)).ToArray();
         actions = data.Actions.Select(x => new SimpleNamedEntity(x, x)).ToArray();
         responses = data.Responses.Select(x => new SimpleNamedEntity(x, x)).ToArray();
-        users = data.Users.Select(x => new SimpleNamedEntity(x, x)).ToArray();
+        users = data.Users.Select(x => String.IsNullOrEmpty(x) ? new SimpleNamedEntity(x, "Anonymous") : new SimpleNamedEntity(x, x)).ToArray();
+        versions = data.Versions.Select(x => new SimpleNamedEntity(x, x)).ToArray();
+
+        selectedActions = actions.Select(x => x.Id);
+        selectedAgents = agents.Select(x => x.Id);
+        selectedAreas = areas.Select(x => x.Id);
+        selectedDomains = domains.Select(x => x.Id);
+        selectedResponses = responses.Select(x => x.Id);
+        selectedUsers = users.Select(x => x.Id);
+        selectedVersions = versions.Select(x => x.Id);
     }
 
     protected override void OnInitialized()
     {
-        selectedAreas = areas.Select(x => x.Id);
-        selectedDomains = domains.Select(x => x.Id);
-        selectedMethods = methods.Select(x => x.Id);
-        selectedAgents = agents.Select(x => x.Id);
-        selectedActions = actions.Select(x => x.Id);
-        selectedResponses = responses.Select(x => x.Id);
-        selectedUsers = users.Select(x => x.Id);
     }
 
     async void Click(MouseEventArgs args)
     {
         var data = new FilterAnalyticsEntries.Command();
-        data.Actions = selectedActions.ToList();
-        data.Agents = selectedAgents.ToList();
-        data.Areas = selectedAreas.ToList();
+        data.Actions = selectedActions.ToArray();
+        data.Agents = selectedAgents.ToArray();
+        data.Areas = selectedAreas.ToArray();
         data.DateFrom = dateFrom;
         data.DateTo = dateTo;
-        data.Domains = selectedDomains.ToList();
+        data.Domains = selectedDomains.ToArray();
         data.Duration = durationThreshold;
         data.EntityId = containsId;
-        data.Methods = selectedMethods.ToList();
-        data.Responses = selectedResponses.ToList();
-        data.Users = selectedUsers.ToList();
+        data.Responses = selectedResponses.ToArray();
+        data.Users = selectedUsers.ToArray();
+        data.Versions = selectedVersions.ToArray();
 
-        var results = await DataService.FilterAsync(data);
+        results = await DataService.FilterAsync(data); 
+
+        // Note that the following line is necessary because otherwise Blazor would not recognize the state change and not refresh the UI
+        StateHasChanged();
     }
 }

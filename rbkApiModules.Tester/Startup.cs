@@ -60,6 +60,7 @@ namespace rbkApiModules.Tester
             Assembly.GetAssembly(typeof(CommentEntity.Command)),
             Assembly.GetAssembly(typeof(UserLogin.Command)),
             Assembly.GetAssembly(typeof(GetUiDefinitions.Command)),
+            Assembly.GetAssembly(typeof(FilterAnalyticsEntries.Command)),
             // Assembly.GetAssembly(typeof(AuditingPostProcessingBehavior<,>))
         };
 

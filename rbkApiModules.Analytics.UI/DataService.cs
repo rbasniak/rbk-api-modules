@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
 using rbkApiModules.Analytics.Core;
+using Microsoft.AspNetCore.Http;
 
 namespace rbkApiModules.Analytics.UI
 {
@@ -19,15 +20,18 @@ namespace rbkApiModules.Analytics.UI
     public class AnalyticsDataService : IAnalyticsDataService
     {
         private readonly IHttpClientFactory _clientFactory;
-        private readonly string _url = "https://localhost:44339";
-        public AnalyticsDataService(IHttpClientFactory clientFactory)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly string _url;
+        public AnalyticsDataService(IHttpClientFactory clientFactory, IHttpContextAccessor httpContextAccessor)
         {
+            _httpContextAccessor = httpContextAccessor;
             _clientFactory = clientFactory;
+            _url = $"{httpContextAccessor.HttpContext.Request.Scheme}://{httpContextAccessor.HttpContext.Request.Host}{httpContextAccessor.HttpContext.Request.PathBase}";
         }
 
         public async Task<FilterOptionListData> GetFilterDataAsync()
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, _url + "/api/analytics/filter-data");
+            var request = new HttpRequestMessage(HttpMethod.Get, _url + "/api/analytics/filter-options");
             // request.Headers.Add("User-Agent", "HttpClientFactory-Sample");
 
             var client = _clientFactory.CreateClient();
@@ -48,8 +52,10 @@ namespace rbkApiModules.Analytics.UI
 
         public async Task<AnalyticsEntry[]> FilterAsync(FilterAnalyticsEntries.Command data)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, _url + "/api/analytics/filter");
+            var request = new HttpRequestMessage(HttpMethod.Post, _url + "/api/analytics/filter");
             // request.Headers.Add("User-Agent", "HttpClientFactory-Sample");
+
+            request.Content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
 
             var client = _clientFactory.CreateClient();
 

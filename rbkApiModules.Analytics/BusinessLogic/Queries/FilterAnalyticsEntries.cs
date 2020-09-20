@@ -17,24 +17,24 @@ namespace rbkApiModules.Analytics.Core
         {
             public Command()
             {
-                Areas = new List<string>();
-                Domains = new List<string>();
-                Methods = new List<string>();
-                Agents = new List<string>();
-                Actions = new List<string>();
-                Responses = new List<string>();
-                Users = new List<string>();
+                Areas = new string[0];
+                Domains = new string[0];
+                Agents = new string[0];
+                Actions = new string[0];
+                Responses = new string[0];
+                Users = new string[0];
+                Versions = new string[0];
             }
 
             public DateTime DateFrom { get; set; }
             public DateTime DateTo { get; set; }
-            public List<string> Areas { get; set; }
-            public List<string> Domains { get; set; }
-            public List<string> Methods { get; set; }
-            public List<string> Actions { get; set; }
-            public List<string> Responses { get; set; }
-            public List<string> Users { get; set; }
-            public List<string> Agents { get; set; }
+            public string[] Areas { get; set; }
+            public string[] Domains { get; set; }
+            public string[] Actions { get; set; }
+            public string[] Responses { get; set; }
+            public string[] Users { get; set; }
+            public string[] Agents { get; set; }
+            public string[] Versions { get; set; }
             public int Duration { get; set; }
             public string EntityId { get; set; }
         }
@@ -59,8 +59,8 @@ namespace rbkApiModules.Analytics.Core
 
             protected override async Task<object> ExecuteAsync(Command request)
             {
-                return await _context.InTimeRangeAsync(request.DateFrom, request.DateTo, request.Areas, request.Domains, request.Actions, 
-                    request.Users, request.Agents, request.Methods, request.Responses, request.Duration, request.EntityId);
+                return await _context.InTimeRangeAsync(request.DateFrom, request.DateTo, request.Versions, request.Areas, request.Domains, request.Actions, 
+                    request.Users, request.Agents, request.Responses, request.Duration, request.EntityId);
             }
         }
     }

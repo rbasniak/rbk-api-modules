@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using rbkApiModules.Analytics.Core;
+using System.Linq;
 
 namespace rbkApiModules.Analytics.SqlServer
 {
@@ -24,6 +26,11 @@ namespace rbkApiModules.Analytics.SqlServer
                 using (var context = scope.ServiceProvider.GetService<SqlServerAnalyticsContext>())
                 {
                     context.Database.EnsureCreated();
+
+                    if (context.Data.Count() == 0)
+                    {
+                        Seed.SeedDatabase(context);
+                    }
                 }
             }
 

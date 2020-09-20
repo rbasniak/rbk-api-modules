@@ -8,7 +8,10 @@ namespace rbkApiModules.Analytics.Core
     public interface IAnalyticModuleStore
     {
         void StoreData(AnalyticsEntry request); 
-        Task<List<AnalyticsEntry>> InTimeRangeAsync(DateTime from, DateTime to, List<string> areas, List<string> domains, List<string> actions, List<string> users, List<string> agents, List<string> methods, List<string> responses, int duration, string entityId);
+        
+        Task<List<AnalyticsEntry>> InTimeRangeAsync(DateTime from, DateTime to, string[] versions, string[] areas, string[] domains, 
+            string[] actions, string[] users, string[] agents, string[] responses, int duration, string entityId);
+
         Task<List<AnalyticsEntry>> AllAsync();
     }
 }

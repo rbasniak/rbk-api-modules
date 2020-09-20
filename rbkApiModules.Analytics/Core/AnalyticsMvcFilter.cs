@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace rbkApiModules.Analytics.Core
 {
+    // TODO: colocar o filtro nas libs com endpoints
     public class AnalyticsMvcFilter : IActionFilter
     {
         public AnalyticsMvcFilter()

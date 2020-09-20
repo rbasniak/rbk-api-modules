@@ -29,17 +29,9 @@ namespace rbkApiModules.Analytics.Core
             var username = user.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
             var domain = user.Claims.FirstOrDefault(c => c.Type == "domain")?.Value;
 
-            var data = new AnalyticsEntry
-            {
-                Identity = identity,
-                Method = context.Request.Method,
-                Path = context.Request.Path,
-                RemoteIpAddress = context.Connection.RemoteIpAddress.ToString(),
-                Timestamp = DateTime.UtcNow,
-                UserAgent = context.Request.Headers["User-Agent"],
-                Username = username,
-                Domain = domain,
-            };
+            // TODO: get version from somewhere
+            var data = new AnalyticsEntry("1.0.0", "", identity, username, domain, context.Connection.RemoteIpAddress.ToString(),
+                context.Request.Headers["User-Agent"], context.Request.Method + " " + context.Request.Path, "", -1, -1);
 
             await next.Invoke();
 
@@ -57,7 +49,7 @@ namespace rbkApiModules.Analytics.Core
 
                 if (pathData.Key != null)
                 {
-                    data.Action = pathData.Value as string;
+                    data.Action = context.Request.Method + " " +  pathData.Value as string;
                 }
 
                 data.Duration = (int)stopwatch.ElapsedMilliseconds;

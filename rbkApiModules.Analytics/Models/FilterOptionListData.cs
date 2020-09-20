@@ -9,18 +9,18 @@ namespace rbkApiModules.Analytics.Core
     {
         public FilterOptionListData()
         {
+            Versions = new List<string>();
             Areas = new List<string>();
             Domains = new List<string>();
-            Methods = new List<string>();
             Agents = new List<string>();
             Actions = new List<string>();
             Responses = new List<string>();
             Users = new List<string>();
         }
 
+        public List<string> Versions { get; set; }
         public List<string> Areas { get; set; }
         public List<string> Domains { get; set; }
-        public List<string> Methods { get; set; }
         public List<string> Actions { get; set; }
         public List<string> Responses { get; set; }
         public List<string> Users { get; set; }
