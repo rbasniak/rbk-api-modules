@@ -105,6 +105,7 @@ namespace rbkApiModules.Analytics.SqlServer
                         ips[random.Next(0, ips.Length)],
                         agents[random.Next(0, agents.Length)],
                         path,
+                        path.Split()[0],
                         path,
                         random.NextDouble() > 0.9 ? responses[random.Next(0, responses.Length)] : 200,
                         random.Next(50, 3000)

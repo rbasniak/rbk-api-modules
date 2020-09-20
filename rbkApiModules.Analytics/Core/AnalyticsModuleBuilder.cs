@@ -31,7 +31,7 @@ namespace rbkApiModules.Analytics.Core
 
             // TODO: get version from somewhere
             var data = new AnalyticsEntry("1.0.0", "", identity, username, domain, context.Connection.RemoteIpAddress.ToString(),
-                context.Request.Headers["User-Agent"], context.Request.Method + " " + context.Request.Path, "", -1, -1);
+                context.Request.Headers["User-Agent"], context.Request.Method + " " + context.Request.Path, context.Request.Method, "", -1, -1);
 
             await next.Invoke();
 

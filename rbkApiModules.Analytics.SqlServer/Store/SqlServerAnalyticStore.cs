@@ -31,7 +31,7 @@ namespace rbkApiModules.Analytics.SqlServer
         }
 
         public async Task<List<AnalyticsEntry>> InTimeRangeAsync(DateTime from, DateTime to, string[] versions, string[] areas, 
-            string[] domains, string[] actions, string[] users, string[] agents, string[] responses, int duration, string entityId)
+            string[] domains, string[] actions, string[] users, string[] agents, string[] responses, string[] methods, int duration, string entityId)
         {
             var query = _context.Data
                 .Where(x => x.Timestamp >= from && x.Timestamp <= to)
@@ -70,6 +70,11 @@ namespace rbkApiModules.Analytics.SqlServer
             if (responses != null && responses.Length > 0)
             {
                 query = query.Where(x => responses.Any(response => x.Response.ToString() == response));
+            }
+
+            if (methods != null && methods.Length > 0)
+            {
+                query = query.Where(x => methods.Any(method => x.Method == method));
             }
 
             if (!String.IsNullOrEmpty(entityId))

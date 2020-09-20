@@ -72,5 +72,166 @@ namespace rbkApiModules.Analytics.UI
                 throw new HttpRequestException();
             }
         }
+
+        public async Task<SimpleNamedEntity[]> GetMostActiveDomains(GetMostActiveDomains.Command data)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, _url + "/api/analytics/most-active-domains");
+            // request.Headers.Add("User-Agent", "HttpClientFactory-Sample");
+
+            request.Content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+
+            var client = _clientFactory.CreateClient();
+
+            var response = await client.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonContent = await response.Content.ReadAsStringAsync();
+                var result = JsonConvert.DeserializeObject<SimpleNamedEntity[]>(jsonContent);
+                return result;
+            }
+            else
+            {
+                throw new HttpRequestException();
+            }
+        }
+
+        public async Task<SimpleNamedEntity[]> GetMostActiveUsers(GetMostActiveUsers.Command data)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, _url + "/api/analytics/most-active-users");
+            // request.Headers.Add("User-Agent", "HttpClientFactory-Sample");
+
+            request.Content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+
+            var client = _clientFactory.CreateClient();
+
+            var response = await client.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonContent = await response.Content.ReadAsStringAsync();
+                var result = JsonConvert.DeserializeObject<SimpleNamedEntity[]>(jsonContent);
+                return result;
+            }
+            else
+            {
+                throw new HttpRequestException();
+            }
+        }
+
+        public async Task<SimpleNamedEntity[]> GetMostFailedEndpoints(GetMostFailedEndpoints.Command data)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, _url + "/api/analytics/most-failed-endpoints");
+            // request.Headers.Add("User-Agent", "HttpClientFactory-Sample");
+
+            request.Content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+
+            var client = _clientFactory.CreateClient();
+
+            var response = await client.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonContent = await response.Content.ReadAsStringAsync();
+                var result = JsonConvert.DeserializeObject<SimpleNamedEntity[]>(jsonContent);
+                return result;
+            }
+            else
+            {
+                throw new HttpRequestException();
+            }
+        }
+
+        public async Task<SimpleNamedEntity[]> GetMostUsedReadEndpoints(GetMostUsedReadEndpoints.Command data)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, _url + "/api/analytics/most-used-read-endpoints");
+            // request.Headers.Add("User-Agent", "HttpClientFactory-Sample");
+
+            request.Content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+
+            var client = _clientFactory.CreateClient();
+
+            var response = await client.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonContent = await response.Content.ReadAsStringAsync();
+                var result = JsonConvert.DeserializeObject<SimpleNamedEntity[]>(jsonContent);
+                return result;
+            }
+            else
+            {
+                throw new HttpRequestException();
+            }
+        }
+
+        public async Task<SimpleNamedEntity[]> GetMostUsedWriteEndpoints(GetMostUsedWriteEndpoints.Command data)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, _url + "/api/analytics/most-used-write-endpoints");
+            // request.Headers.Add("User-Agent", "HttpClientFactory-Sample");
+
+            request.Content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+
+            var client = _clientFactory.CreateClient();
+
+            var response = await client.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonContent = await response.Content.ReadAsStringAsync();
+                var result = JsonConvert.DeserializeObject<SimpleNamedEntity[]>(jsonContent);
+                return result;
+            }
+            else
+            {
+                throw new HttpRequestException();
+            }
+        }
+
+        public async Task<SimpleNamedEntity[]> GetSlowestReadEndpoints(GetSlowestReadEndpoints.Command data)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, _url + "/api/analytics/slowest-read-endpoints");
+            // request.Headers.Add("User-Agent", "HttpClientFactory-Sample");
+
+            request.Content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+
+            var client = _clientFactory.CreateClient();
+
+            var response = await client.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonContent = await response.Content.ReadAsStringAsync();
+                var result = JsonConvert.DeserializeObject<SimpleNamedEntity[]>(jsonContent);
+                return result;
+            }
+            else
+            {
+                throw new HttpRequestException();
+            }
+        }
+
+        public async Task<SimpleNamedEntity[]> GetSlowestWriteEndpoints(GetSlowestWriteEndpoints.Command data)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, _url + "/api/analytics/slowest-write-endpoints");
+            // request.Headers.Add("User-Agent", "HttpClientFactory-Sample");
+
+            request.Content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+
+            var client = _clientFactory.CreateClient();
+
+            var response = await client.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonContent = await response.Content.ReadAsStringAsync();
+                var result = JsonConvert.DeserializeObject<SimpleNamedEntity[]>(jsonContent);
+                return result;
+            }
+            else
+            {
+                throw new HttpRequestException();
+            }
+        }
     }
 }

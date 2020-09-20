@@ -60,7 +60,7 @@ namespace rbkApiModules.Analytics.Core
             protected override async Task<object> ExecuteAsync(Command request)
             {
                 return await _context.InTimeRangeAsync(request.DateFrom, request.DateTo, request.Versions, request.Areas, request.Domains, request.Actions, 
-                    request.Users, request.Agents, request.Responses, request.Duration, request.EntityId);
+                    request.Users, request.Agents, request.Responses, null, request.Duration, request.EntityId);
             }
         }
     }

@@ -20,8 +20,4 @@
 	<ProjectReference Include="..\rbkApiModules.Infrastructure\rbkApiModules.Infrastructure.MediatR.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="BusinessLogic\Commands\" />
-  </ItemGroup>
-
 </Project>
