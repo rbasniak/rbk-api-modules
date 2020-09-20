@@ -1,82 +1,150 @@
 ﻿@page "/analytics"
+
+@using System.Net.Http
+@inject IAnalyticsDataService DataService
+
 <h2 class="rbk-auditing-dashboard-red">Server Side Analytics</h2>
 
-@*<RadzenCard Style="width:100%; margin-bottom: 20px;">
- 
-    <div class="row" style="margin-bottom: 20px; ">
-        <div class="col-md-4">
-            <h3>Machine Name</h3>
+<RadzenCard Style="width:100%; margin-bottom: 2em;">
+
+    <div style="display: flex; justify-content: space-between; gap: 1em;">
+        <div style="flex: 1">
+            <h3>Date from</h3>
+            <RadzenDatePicker @bind-Value="dateFrom" DateFormat="d" Style="width: 100%" />
+        </div>
+        <div style="flex: 1">
+            <h3>Date to</h3>
+            <RadzenDatePicker @bind-Value="dateTo" DateFormat="d" Style="width: 100%" />
+        </div>
+        <div style="flex: 1">
+            <h3>Application Areas</h3>
             <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                            @bind-Value="selectedMachines" Multiple="true" Placeholder="Select..." Data="@machines" TextProperty="Name"
+                            @bind-Value="selectedAreas" Multiple="true" Placeholder="Select..." Data="@areas" TextProperty="Name"
                             ValueProperty="Id" Style="width:100%;" />
         </div>
-        <div class="col-md-4">
-            <h3>Application Layer</h3>
+        <div style="flex: 1">
+            <h3>Domains</h3>
             <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                            @bind-Value="selectedLayers" Multiple="true" Placeholder="Select..." Data="@layers" TextProperty="Name"
+                            @bind-Value="selectedDomains" Multiple="true" Placeholder="Select..." Data="@domains" TextProperty="Name"
                             ValueProperty="Id" Style="width:100%;" />
         </div>
-        <div class="col-md-4">
-            <h3>User</h3>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; gap: 1em;">
+        <div style="flex: 1">
+            <h3>Methods</h3>
+            <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                            @bind-Value="selectedMethods" Multiple="true" Placeholder="Select..." Data="@methods" TextProperty="Name"
+                            ValueProperty="Id" Style="width:100%;" />
+        </div>
+        <div style="flex: 1">
+            <h3>Methods</h3>
+            <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                            @bind-Value="selectedActions" Multiple="true" Placeholder="Select..." Data="@actions" TextProperty="Name"
+                            ValueProperty="Id" Style="width:100%;" />
+        </div>
+        <div style="flex: 1">
+            <h3>Responses</h3>
+            <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                            @bind-Value="selectedResponses" Multiple="true" Placeholder="Select..." Data="@responses" TextProperty="Name"
+                            ValueProperty="Id" Style="width:100%;" />
+        </div>
+        <div style="flex: 1">
+            <h3>Users</h3>
             <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                             @bind-Value="selectedUsers" Multiple="true" Placeholder="Select..." Data="@users" TextProperty="Name"
                             ValueProperty="Id" Style="width:100%;" />
         </div>
     </div>
-    <div class="row" style="margin-bottom: 20px; ">
-        <div class="col-md-4">
-            <h3>Date from</h3>
-            <RadzenDatePicker @bind-Value="dateFrom" DateFormat="d" Style="width: 100%" />
+
+    <div style="display: flex; justify-content: space-between; gap: 1em;">
+        <div style="flex: 2; width: calc(100% + 1em)">
+            <h3>User Agents</h3>
+            <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                            @bind-Value="selectedAgents" Multiple="true" Placeholder="Select..." Data="@agents" TextProperty="Name"
+                            ValueProperty="Id" Style="width:100%;" />
         </div>
-        <div class="col-md-4">
-            <h3>Date to</h3>
-            <RadzenDatePicker @bind-Value="dateTo" DateFormat="d" Style="width: 100%" />
+        <div style="flex: 1">
+            <h3>Duration</h3>
+            <RadzenNumeric TValue="int" @bind-Value="@durationThreshold" Style="width:100%;" />
         </div>
-        <div class="col-md-4">
-            <h3>Contains text</h3>
-            <RadzenTextBox @bind-Value="contains" Style="width: 100%" />
+        <div style="flex: 1">
+            <h3>Contains Id</h3>
+            <RadzenTextBox @bind-Value="containsId" Style="width: 100%" />
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-12 filter-button">
-            <RadzenButton Text="Filter" ButtonStyle="ButtonStyle.Secondary" Style="width: 150px" />
-        </div>
+    <div style="display: flex; justify-content: flex-end; margin-top: 1em">
+        <RadzenButton Text="Filter" ButtonStyle="ButtonStyle.Secondary" Style="width: 150px" Click="@(Click)" />
     </div>
 </RadzenCard>
 
 @code {
-    List<SimpleNamedEntity> machines = new List<SimpleNamedEntity>
-{
-        new SimpleNamedEntity { Id = "1", Name = "RB-DESKTOP"},
-        new SimpleNamedEntity { Id = "2", Name = "RB-NOTEBOOK"},
-        new SimpleNamedEntity { Id = "3", Name = "WIN-59JDF64IOMC"},
-    };
+    SimpleNamedEntity[] areas;
 
-    List<SimpleNamedEntity> layers = new List<SimpleNamedEntity>
-{
-        new SimpleNamedEntity { Id = "1", Name = "API"},
-        new SimpleNamedEntity { Id = "2", Name = "Desktop"},
-        new SimpleNamedEntity { Id = "3", Name = "Mobile"},
-    };
+    SimpleNamedEntity[] domains;
 
-    List<SimpleNamedEntity> users = new List<SimpleNamedEntity>
-{
-        new SimpleNamedEntity { Id = "1", Name = "USR1"},
-        new SimpleNamedEntity { Id = "2", Name = "USR2"},
-        new SimpleNamedEntity { Id = "3", Name = "USR3"},
-        new SimpleNamedEntity { Id = "4", Name = "ADM1"},
-        new SimpleNamedEntity { Id = "5", Name = "AMD2"},
-        new SimpleNamedEntity { Id = "6", Name = "USR4"},
-        new SimpleNamedEntity { Id = "7", Name = "USR5"},
-        new SimpleNamedEntity { Id = "8", Name = "ADM3"},
-        new SimpleNamedEntity { Id = "9", Name = "ADM5"},
-    };
+    SimpleNamedEntity[] methods;
 
-    IEnumerable<string> selectedMachines = new string[] { };
-    IEnumerable<string> selectedLayers = new string[] { };
+    SimpleNamedEntity[] agents;
+
+    SimpleNamedEntity[] actions;
+
+    SimpleNamedEntity[] responses;
+
+    SimpleNamedEntity[] users;
+
+    IEnumerable<string> selectedAreas = new string[] { };
+    IEnumerable<string> selectedDomains = new string[] { };
+    IEnumerable<string> selectedMethods = new string[] { };
+    IEnumerable<string> selectedAgents = new string[] { };
+    IEnumerable<string> selectedActions = new string[] { };
+    IEnumerable<string> selectedResponses = new string[] { };
     IEnumerable<string> selectedUsers = new string[] { };
 
     DateTime dateFrom = DateTime.Now.AddDays(-7);
     DateTime dateTo = DateTime.Now;
-    string contains;
-}*@
+    int durationThreshold = 0;
+    string containsId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var data = await DataService.GetFilterDataAsync();
+
+        areas = data.Areas.Select(x => new SimpleNamedEntity(x, x)).ToArray();
+        domains = data.Domains.Select(x => new SimpleNamedEntity(x, x)).ToArray();
+        methods = data.Methods.Select(x => new SimpleNamedEntity(x, x)).ToArray();
+        agents = data.Agents.Select(x => new SimpleNamedEntity(x, x)).ToArray();
+        actions = data.Actions.Select(x => new SimpleNamedEntity(x, x)).ToArray();
+        responses = data.Responses.Select(x => new SimpleNamedEntity(x, x)).ToArray();
+        users = data.Users.Select(x => new SimpleNamedEntity(x, x)).ToArray();
+    }
+
+    protected override void OnInitialized()
+    {
+        selectedAreas = areas.Select(x => x.Id);
+        selectedDomains = domains.Select(x => x.Id);
+        selectedMethods = methods.Select(x => x.Id);
+        selectedAgents = agents.Select(x => x.Id);
+        selectedActions = actions.Select(x => x.Id);
+        selectedResponses = responses.Select(x => x.Id);
+        selectedUsers = users.Select(x => x.Id);
+    }
+
+    async void Click(MouseEventArgs args)
+    {
+        var data = new FilterAnalyticsEntries.Command();
+        data.Actions = selectedActions.ToList();
+        data.Agents = selectedAgents.ToList();
+        data.Areas = selectedAreas.ToList();
+        data.DateFrom = dateFrom;
+        data.DateTo = dateTo;
+        data.Domains = selectedDomains.ToList();
+        data.Duration = durationThreshold;
+        data.EntityId = containsId;
+        data.Methods = selectedMethods.ToList();
+        data.Responses = selectedResponses.ToList();
+        data.Users = selectedUsers.ToList();
+
+        var results = await DataService.FilterAsync(data);
+    }
+}

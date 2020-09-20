@@ -5,7 +5,7 @@ using System.Text;
 
 namespace rbkApiModules.Analytics.Core
 {
-    public class PerformanceData
+    public class AnalyticsEntry
     {
         public Guid Id { get; set; }
 

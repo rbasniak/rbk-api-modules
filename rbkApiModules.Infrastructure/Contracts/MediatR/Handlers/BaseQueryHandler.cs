@@ -45,4 +45,39 @@ namespace rbkApiModules.Infrastructure.MediatR
 
         protected abstract Task<object> ExecuteAsync(TCommand request);
     }
+
+    public abstract class BaseQueryHandler<TCommand> : IRequestHandler<TCommand, QueryResponse>
+        where TCommand : IRequest<QueryResponse>
+    {
+        protected IHttpContextAccessor _httpContextAccessor;
+
+        public BaseQueryHandler(IHttpContextAccessor httpContextAccessor)
+        {
+            _httpContextAccessor = httpContextAccessor;
+        }
+
+        public async Task<QueryResponse> Handle(TCommand request, CancellationToken cancellationToken)
+        {
+            var response = new QueryResponse();
+
+            try
+            {
+                var result = await ExecuteAsync(request);
+
+                response.Result = result;
+            }
+            catch (SafeException ex)
+            {
+                response.AddHandledError(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                response.AddUnhandledError(ex.Message);
+            }
+
+            return response;
+        }
+
+        protected abstract Task<object> ExecuteAsync(TCommand request);
+    }
 }

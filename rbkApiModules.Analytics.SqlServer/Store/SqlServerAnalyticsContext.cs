@@ -25,7 +25,7 @@ namespace rbkApiModules.Analytics.SqlServer
         {
         }
 
-        public DbSet<PerformanceData> Data { get; set; }
+        public DbSet<AnalyticsEntry> Data { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

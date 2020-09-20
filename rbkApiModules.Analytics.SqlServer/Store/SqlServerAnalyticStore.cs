@@ -19,15 +19,25 @@ namespace rbkApiModules.Analytics.SqlServer
             _context = context;
         }
 
-        public void StoreData(PerformanceData request)
+        public void StoreData(AnalyticsEntry request)
         {
             _context.Data.Add(request);
             _context.SaveChanges();
         }
 
-        public async Task<List<PerformanceData>> InTimeRange(DateTime from, DateTime to)
+        public async Task<List<AnalyticsEntry>> InTimeRangeAsync(DateTime from, DateTime to)
         {
             return await _context.Data.Where(x => x.Timestamp >= from && x.Timestamp <= to).ToListAsync();
+        }
+
+        public async Task<List<AnalyticsEntry>> InTimeRangeAsync(DateTime from, DateTime to, List<string> areas, List<string> domains, List<string> actions, List<string> users, List<string> agents, List<string> methods, List<string> responses, int duration, string entityId)
+        {
+            return new List<AnalyticsEntry>();
+        }
+
+        public async Task<List<AnalyticsEntry>> AllAsync()
+        {
+            return new List<AnalyticsEntry>();
         }
     }
 }

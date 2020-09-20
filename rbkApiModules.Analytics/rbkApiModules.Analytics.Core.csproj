@@ -16,7 +16,12 @@
 
   <ItemGroup>
 	<ProjectReference Include="..\rbkApiModules.Auditing\rbkApiModules.Auditing.Core.csproj" />
+	<ProjectReference Include="..\rbkApiModules.Infrastructure.Api\rbkApiModules.Infrastructure.Api.csproj" />
 	<ProjectReference Include="..\rbkApiModules.Infrastructure\rbkApiModules.Infrastructure.MediatR.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="BusinessLogic\Commands\" />
   </ItemGroup>
 
 </Project>

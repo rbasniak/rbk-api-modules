@@ -10,3 +10,7 @@
 .rbk-auditing-dashboard-red {
     color: indianred;
 }
+
+.rbk-row-1 {
+    display: flex;
+}

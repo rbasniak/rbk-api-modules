@@ -15,6 +15,12 @@ namespace rbkApiModules.Infrastructure.Models
             Name = name;
         }
 
+        public SimpleNamedEntity(string id, string name)
+        {
+            Id = id;
+            Name = name;
+        }
+
         public string Name { get; set; }
 
         public override string ToString()

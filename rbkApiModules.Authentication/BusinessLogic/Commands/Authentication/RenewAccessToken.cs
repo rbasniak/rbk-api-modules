@@ -62,7 +62,6 @@ namespace rbkApiModules.Authentication
         public class Handler : BaseCommandHandler<Command, DbContext>
         {
             private readonly IJwtFactory _jwtFactory;
-            private readonly JwtIssuerOptions _jwtOptions;
 
             public Handler(IJwtFactory jwtFactory, DbContext context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
             {

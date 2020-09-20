@@ -29,7 +29,7 @@ namespace rbkApiModules.Analytics.Core
             var username = user.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
             var domain = user.Claims.FirstOrDefault(c => c.Type == "domain")?.Value;
 
-            var data = new PerformanceData
+            var data = new AnalyticsEntry
             {
                 Identity = identity,
                 Method = context.Request.Method,

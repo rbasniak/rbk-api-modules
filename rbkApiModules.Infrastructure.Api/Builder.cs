@@ -24,6 +24,10 @@ namespace rbkApiModules.Infrastructure.Api
             services.RegisterApplicationServices(Assembly.GetAssembly(typeof(BuilderExtensions)));
             services.RegisterApplicationServices(assembliesForServices);
 
+            services.AddHttpClient();
+
+            services.AddMemoryCache();
+
             services.TryAddTransient<IHttpContextAccessor, HttpContextAccessor>();
 
             var config = new MapperConfiguration(cfg =>
@@ -63,10 +67,6 @@ namespace rbkApiModules.Infrastructure.Api
                     }
                 });
             });
-
-            services.AddHttpClient();
-
-            services.AddMemoryCache();
 
             services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
             services.AddResponseCompression(options =>

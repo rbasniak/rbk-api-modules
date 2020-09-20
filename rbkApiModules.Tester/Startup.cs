@@ -26,6 +26,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using rbkApiModules.Analytics.Core;
 using rbkApiModules.Analytics.SqlServer;
 using rbkApiModules.Auditing.Core;
+using rbkApiModules.Analytics.UI;
 
 namespace rbkApiModules.Tester
 {
@@ -44,6 +45,7 @@ namespace rbkApiModules.Tester
 
         private Assembly[] AssembliesForServices => new Assembly[] 
         {
+            Assembly.GetAssembly(typeof(AnalyticsDataService))
         };
 
         private Assembly[] AssembliesForAutoMapper => new Assembly[]
@@ -58,7 +60,7 @@ namespace rbkApiModules.Tester
             Assembly.GetAssembly(typeof(CommentEntity.Command)),
             Assembly.GetAssembly(typeof(UserLogin.Command)),
             Assembly.GetAssembly(typeof(GetUiDefinitions.Command)),
-            Assembly.GetAssembly(typeof(AuditingPostProcessingBehavior<,>))
+            // Assembly.GetAssembly(typeof(AuditingPostProcessingBehavior<,>))
         };
 
         public void ConfigureServices(IServiceCollection services)
@@ -91,7 +93,7 @@ namespace rbkApiModules.Tester
 
             services.AddSqlServerRbkApiAnalyticsModule(Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Analytics"));
 
-            services.AddSqlServerRbkApiAuditingModule(Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Auditing"));
+            // services.AddSqlServerRbkApiAuditingModule(Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Auditing"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -101,7 +103,7 @@ namespace rbkApiModules.Tester
                 .LimitToPath("/api")
                 .ExcludeMethods("OPTIONS");
 
-            app.UseSqlServerRbkApiAuditingModule();
+            // app.UseSqlServerRbkApiAuditingModule();
 
             app.UseRbkApiDefaultSetup(!Environment.IsDevelopment());
         }
