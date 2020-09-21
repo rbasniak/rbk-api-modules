@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
 using rbkApiModules.Analytics.Core;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Formatters;
 
 namespace rbkApiModules.Analytics.UI
 {
@@ -15,13 +16,13 @@ namespace rbkApiModules.Analytics.UI
     {
         Task<FilterOptionListData> GetFilterDataAsync();
         Task<AnalyticsEntry[]> FilterAsync(FilterAnalyticsEntries.Command data);
-        Task<SimpleNamedEntity[]> GetMostActiveDomains(GetMostActiveDomains.Command data);
-        Task<SimpleNamedEntity[]> GetMostActiveUsers(GetMostActiveUsers.Command data);
-        Task<SimpleNamedEntity[]> GetMostFailedEndpoints(GetMostFailedEndpoints.Command data);
-        Task<SimpleNamedEntity[]> GetMostUsedReadEndpoints(GetMostUsedReadEndpoints.Command data);
-        Task<SimpleNamedEntity[]> GetMostUsedWriteEndpoints(GetMostUsedWriteEndpoints.Command data);
-        Task<SimpleNamedEntity[]> GetSlowestReadEndpoints(GetSlowestReadEndpoints.Command data);
-        Task<SimpleNamedEntity[]> GetSlowestWriteEndpoints(GetSlowestWriteEndpoints.Command data);
+        Task<SimpleLabeledValue<int>[]> GetMostActiveDomains(DateTime from, DateTime to);
+        Task<SimpleLabeledValue<int>[]> GetMostActiveUsers(DateTime from, DateTime to);
+        Task<SimpleLabeledValue<int>[]> GetMostFailedEndpoints(DateTime from, DateTime to);
+        Task<SimpleLabeledValue<int>[]> GetMostUsedReadEndpoints(DateTime from, DateTime to);
+        Task<SimpleLabeledValue<int>[]> GetMostUsedWriteEndpoints(DateTime from, DateTime to);
+        Task<SimpleLabeledValue<int>[]> GetSlowestReadEndpoints(DateTime from, DateTime to);
+        Task<SimpleLabeledValue<int>[]> GetSlowestWriteEndpoints(DateTime from, DateTime to);
     }
 
     public class AnalyticsDataService : IAnalyticsDataService
@@ -80,12 +81,12 @@ namespace rbkApiModules.Analytics.UI
             }
         }
 
-        public async Task<SimpleNamedEntity[]> GetMostActiveDomains(GetMostActiveDomains.Command data)
+        public async Task<SimpleLabeledValue<int>[]> GetMostActiveDomains(DateTime from, DateTime to)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, _url + "/api/analytics/most-active-domains");
             // request.Headers.Add("User-Agent", "HttpClientFactory-Sample");
 
-            request.Content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+            request.Content = new StringContent(JsonConvert.SerializeObject(new GetMostActiveDomains.Command(from, to)), Encoding.UTF8, "application/json");
 
             var client = _clientFactory.CreateClient();
 
@@ -94,7 +95,7 @@ namespace rbkApiModules.Analytics.UI
             if (response.IsSuccessStatusCode)
             {
                 var jsonContent = await response.Content.ReadAsStringAsync();
-                var result = JsonConvert.DeserializeObject<SimpleNamedEntity[]>(jsonContent);
+                var result = JsonConvert.DeserializeObject<SimpleLabeledValue<int>[]>(jsonContent);
                 return result;
             }
             else
@@ -103,12 +104,12 @@ namespace rbkApiModules.Analytics.UI
             }
         }
 
-        public async Task<SimpleNamedEntity[]> GetMostActiveUsers(GetMostActiveUsers.Command data)
+        public async Task<SimpleLabeledValue<int>[]> GetMostActiveUsers(DateTime from, DateTime to)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, _url + "/api/analytics/most-active-users");
             // request.Headers.Add("User-Agent", "HttpClientFactory-Sample");
 
-            request.Content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+            request.Content = new StringContent(JsonConvert.SerializeObject(new GetMostActiveUsers.Command(from, to)), Encoding.UTF8, "application/json");
 
             var client = _clientFactory.CreateClient();
 
@@ -117,7 +118,7 @@ namespace rbkApiModules.Analytics.UI
             if (response.IsSuccessStatusCode)
             {
                 var jsonContent = await response.Content.ReadAsStringAsync();
-                var result = JsonConvert.DeserializeObject<SimpleNamedEntity[]>(jsonContent);
+                var result = JsonConvert.DeserializeObject<SimpleLabeledValue<int>[]>(jsonContent);
                 return result;
             }
             else
@@ -126,12 +127,12 @@ namespace rbkApiModules.Analytics.UI
             }
         }
 
-        public async Task<SimpleNamedEntity[]> GetMostFailedEndpoints(GetMostFailedEndpoints.Command data)
+        public async Task<SimpleLabeledValue<int>[]> GetMostFailedEndpoints(DateTime from, DateTime to)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, _url + "/api/analytics/most-failed-endpoints");
             // request.Headers.Add("User-Agent", "HttpClientFactory-Sample");
 
-            request.Content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+            request.Content = new StringContent(JsonConvert.SerializeObject(new GetMostFailedEndpoints.Command(from, to)), Encoding.UTF8, "application/json");
 
             var client = _clientFactory.CreateClient();
 
@@ -140,7 +141,7 @@ namespace rbkApiModules.Analytics.UI
             if (response.IsSuccessStatusCode)
             {
                 var jsonContent = await response.Content.ReadAsStringAsync();
-                var result = JsonConvert.DeserializeObject<SimpleNamedEntity[]>(jsonContent);
+                var result = JsonConvert.DeserializeObject<SimpleLabeledValue<int>[]>(jsonContent);
                 return result;
             }
             else
@@ -149,12 +150,12 @@ namespace rbkApiModules.Analytics.UI
             }
         }
 
-        public async Task<SimpleNamedEntity[]> GetMostUsedReadEndpoints(GetMostUsedReadEndpoints.Command data)
+        public async Task<SimpleLabeledValue<int>[]> GetMostUsedReadEndpoints(DateTime from, DateTime to)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, _url + "/api/analytics/most-used-read-endpoints");
             // request.Headers.Add("User-Agent", "HttpClientFactory-Sample");
 
-            request.Content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+            request.Content = new StringContent(JsonConvert.SerializeObject(new GetMostUsedReadEndpoints.Command(from, to)), Encoding.UTF8, "application/json");
 
             var client = _clientFactory.CreateClient();
 
@@ -163,7 +164,7 @@ namespace rbkApiModules.Analytics.UI
             if (response.IsSuccessStatusCode)
             {
                 var jsonContent = await response.Content.ReadAsStringAsync();
-                var result = JsonConvert.DeserializeObject<SimpleNamedEntity[]>(jsonContent);
+                var result = JsonConvert.DeserializeObject<SimpleLabeledValue<int>[]>(jsonContent);
                 return result;
             }
             else
@@ -172,12 +173,12 @@ namespace rbkApiModules.Analytics.UI
             }
         }
 
-        public async Task<SimpleNamedEntity[]> GetMostUsedWriteEndpoints(GetMostUsedWriteEndpoints.Command data)
+        public async Task<SimpleLabeledValue<int>[]> GetMostUsedWriteEndpoints(DateTime from, DateTime to)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, _url + "/api/analytics/most-used-write-endpoints");
             // request.Headers.Add("User-Agent", "HttpClientFactory-Sample");
 
-            request.Content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+            request.Content = new StringContent(JsonConvert.SerializeObject(new GetMostUsedWriteEndpoints.Command(from, to)), Encoding.UTF8, "application/json");
 
             var client = _clientFactory.CreateClient();
 
@@ -186,7 +187,7 @@ namespace rbkApiModules.Analytics.UI
             if (response.IsSuccessStatusCode)
             {
                 var jsonContent = await response.Content.ReadAsStringAsync();
-                var result = JsonConvert.DeserializeObject<SimpleNamedEntity[]>(jsonContent);
+                var result = JsonConvert.DeserializeObject<SimpleLabeledValue<int>[]>(jsonContent);
                 return result;
             }
             else
@@ -195,12 +196,12 @@ namespace rbkApiModules.Analytics.UI
             }
         }
 
-        public async Task<SimpleNamedEntity[]> GetSlowestReadEndpoints(GetSlowestReadEndpoints.Command data)
+        public async Task<SimpleLabeledValue<int>[]> GetSlowestReadEndpoints(DateTime from, DateTime to)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, _url + "/api/analytics/slowest-read-endpoints");
             // request.Headers.Add("User-Agent", "HttpClientFactory-Sample");
 
-            request.Content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+            request.Content = new StringContent(JsonConvert.SerializeObject(new GetSlowestReadEndpoints.Command(from, to)), Encoding.UTF8, "application/json");
 
             var client = _clientFactory.CreateClient();
 
@@ -209,7 +210,7 @@ namespace rbkApiModules.Analytics.UI
             if (response.IsSuccessStatusCode)
             {
                 var jsonContent = await response.Content.ReadAsStringAsync();
-                var result = JsonConvert.DeserializeObject<SimpleNamedEntity[]>(jsonContent);
+                var result = JsonConvert.DeserializeObject<SimpleLabeledValue<int>[]>(jsonContent);
                 return result;
             }
             else
@@ -218,12 +219,12 @@ namespace rbkApiModules.Analytics.UI
             }
         }
 
-        public async Task<SimpleNamedEntity[]> GetSlowestWriteEndpoints(GetSlowestWriteEndpoints.Command data)
+        public async Task<SimpleLabeledValue<int>[]> GetSlowestWriteEndpoints(DateTime from, DateTime to)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, _url + "/api/analytics/slowest-write-endpoints");
             // request.Headers.Add("User-Agent", "HttpClientFactory-Sample");
 
-            request.Content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+            request.Content = new StringContent(JsonConvert.SerializeObject(new GetSlowestWriteEndpoints.Command(from, to)), Encoding.UTF8, "application/json");
 
             var client = _clientFactory.CreateClient();
 
@@ -232,7 +233,7 @@ namespace rbkApiModules.Analytics.UI
             if (response.IsSuccessStatusCode)
             {
                 var jsonContent = await response.Content.ReadAsStringAsync();
-                var result = JsonConvert.DeserializeObject<SimpleNamedEntity[]>(jsonContent);
+                var result = JsonConvert.DeserializeObject<SimpleLabeledValue<int>[]>(jsonContent);
                 return result;
             }
             else

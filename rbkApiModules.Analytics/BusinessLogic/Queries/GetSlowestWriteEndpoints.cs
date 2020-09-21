@@ -16,6 +16,16 @@ namespace rbkApiModules.Analytics.Core
     {
         public class Command : IRequest<QueryResponse>
         {
+            public Command()
+            {
+
+            }
+            public Command(DateTime from, DateTime to)
+            {
+                DateFrom = from;
+                DateTo = to;
+            }
+
             public DateTime DateFrom { get; set; }
             public DateTime DateTo { get; set; }
         }
@@ -40,7 +50,7 @@ namespace rbkApiModules.Analytics.Core
 
             protected override async Task<object> ExecuteAsync(Command request)
             {
-                var results = new List<SimpleNamedEntity>();
+                var results = new List<SimpleLabeledValue<int>>();
 
                 var data = await _context.InTimeRangeAsync(request.DateFrom, request.DateTo, null, null, null, null, null, null,
                     new[] { "200", "204" }, new[] { "POST", "PUT", "DELETE" }, 0, null);
@@ -49,10 +59,10 @@ namespace rbkApiModules.Analytics.Core
 
                 foreach (var itemData in groupedData)
                 {
-                    results.Add(new SimpleNamedEntity(itemData.Key, ((int)itemData.Average(x => x.Duration)).ToString()));
+                    results.Add(new SimpleLabeledValue<int>(itemData.Key, (int)itemData.Average(x => x.Duration)));
                 }
 
-                return results;
+                return results.OrderByDescending(x => x.Value).ToArray();
             }
         }
     }

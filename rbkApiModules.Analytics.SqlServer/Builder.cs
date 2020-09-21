@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using rbkApiModules.Analytics.Core;
+using System;
 using System.Linq;
 
 namespace rbkApiModules.Analytics.SqlServer
@@ -17,8 +18,13 @@ namespace rbkApiModules.Analytics.SqlServer
             services.AddTransient<IAnalyticModuleStore, SqlServerAnalyticStore>();
         }
 
-        public static AnalyticsModuleBuilder UseSqlServerRbkApiAnalyticsModule(this IApplicationBuilder app)
+        public static IApplicationBuilder UseSqlServerRbkApiAnalyticsModule(this IApplicationBuilder app, Action<AnalyticsModuleOptions> configureOptions)
         {
+            var options = new AnalyticsModuleOptions();
+            configureOptions(options);
+
+            app.UseMiddleware<AnalyticsModuleMiddleware>(options);
+
             var scopeFactory = app.ApplicationServices.GetService<IServiceScopeFactory>();
 
             using (var scope = scopeFactory.CreateScope())
@@ -34,9 +40,7 @@ namespace rbkApiModules.Analytics.SqlServer
                 }
             }
 
-            var builder = new AnalyticsModuleBuilder();
-            app.Use(builder.Run);
-            return builder; 
+            return app;
         }
     }
 }

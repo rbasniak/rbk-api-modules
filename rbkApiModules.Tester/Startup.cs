@@ -100,11 +100,10 @@ namespace rbkApiModules.Tester
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app)
         {
-            app.UseSqlServerRbkApiAnalyticsModule()
+            app.UseSqlServerRbkApiAnalyticsModule(options => options
                 .LimitToPath("/api")
-                .ExcludeMethods("OPTIONS");
-
-            // app.UseSqlServerRbkApiAuditingModule();
+                .ExcludeMethods("OPTIONS")
+            );
 
             app.UseRbkApiDefaultSetup(!Environment.IsDevelopment());
         }

@@ -8,56 +8,94 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 using Microsoft.AspNetCore.Builder;
+using System.IO;
 
 namespace rbkApiModules.Analytics.Core
 {
-    public class AnalyticsModuleBuilder
+    public class AnalyticsModuleMiddleware
     {
         private List<Func<HttpContext, bool>> _exclude;
-
-        public AnalyticsModuleBuilder()
+        private readonly RequestDelegate _next;
+        public AnalyticsModuleMiddleware(RequestDelegate next, AnalyticsModuleOptions options)
         {
+            _next = next;
+            _exclude = options.ExcludeRules;
         }
 
-        public async Task Run(HttpContext context, Func<Task> next)
+        public async Task Invoke(HttpContext context)
         {
-            var stopwatch = Stopwatch.StartNew();
+            var originalBodyStream = context.Response.Body;
+            context.Request.EnableBuffering();
 
-            var identity = UserIdentity(context);
-
-            var user = (System.Security.Claims.ClaimsIdentity)context.User.Identity;
-            var username = user.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
-            var domain = user.Claims.FirstOrDefault(c => c.Type == "domain")?.Value;
-
-            // TODO: get version from somewhere
-            var data = new AnalyticsEntry("1.0.0", "", identity, username, domain, context.Connection.RemoteIpAddress.ToString(),
-                context.Request.Headers["User-Agent"], context.Request.Method + " " + context.Request.Path, context.Request.Method, "", -1, -1);
-
-            await next.Invoke();
-
-            stopwatch.Stop();
-
-            if (!_exclude?.Any(x => x(context)) ?? true)
+            try
             {
-                var areaData = context.Items.FirstOrDefault(x => x.Key.ToString() == "log-data-area");
-                var pathData = context.Items.FirstOrDefault(x => x.Key.ToString() == "log-data-path");
+                var stopwatch = Stopwatch.StartNew();
 
-                if (areaData.Key != null)
+                var identity = UserIdentity(context);
+
+                var user = (System.Security.Claims.ClaimsIdentity)context.User.Identity;
+                var username = user.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+                var domain = user.Claims.FirstOrDefault(c => c.Type == "domain")?.Value;
+
+                // TODO: get version from somewhere
+                var data = new AnalyticsEntry("1.0.0", "", identity, username, domain, context.Connection.RemoteIpAddress.ToString(),
+                    context.Request.Headers["User-Agent"], context.Request.Method + " " + context.Request.Path, context.Request.Method, "", -1, -1, -1, -1);
+
+                //new MemoryStream. 
+                using (var responseBody = new MemoryStream())
                 {
-                    data.Area = areaData.Value as string;
+                    // temporary response body 
+                    context.Response.Body = responseBody;
+                    //execute the Middleware pipeline 
+                    await _next(context);
+                    //read the response stream from the beginning
+                    context.Response.Body.Seek(0, SeekOrigin.Begin);
+                    //Copy the contents of the new memory stream
+                    await responseBody.CopyToAsync(originalBodyStream);
+
+                    var responseSize = 0L;
+                    if(context.Response.Body.CanSeek && context.Response.Body.CanRead)
+                    {
+                        responseSize = context.Response.Body.Length;
+                    }
+
+                    var requestSize = 0L;
+                    if (context.Request.Body.CanSeek && context.Request.Body.CanRead)
+                    {
+                        requestSize = context.Request.Body.Length;
+                    }
+
+                    stopwatch.Stop();
+
+                    if (!_exclude?.Any(x => x(context)) ?? true)
+                    {
+                        var areaData = context.Items.FirstOrDefault(x => x.Key.ToString() == "log-data-area");
+                        var pathData = context.Items.FirstOrDefault(x => x.Key.ToString() == "log-data-path");
+
+                        if (areaData.Key != null)
+                        {
+                            data.Area = areaData.Value as string;
+                        }
+
+                        if (pathData.Key != null)
+                        {
+                            data.Action = context.Request.Method + " " + pathData.Value as string;
+                        }
+
+                        data.Duration = (int)stopwatch.ElapsedMilliseconds;
+                        data.Response = context.Response.StatusCode;
+                        data.RequestSize = requestSize;
+                        data.ResponseSize = responseSize;
+
+                        var store = context.RequestServices.GetService<IAnalyticModuleStore>();
+
+                        store.StoreData(data);
+                    }
                 }
-
-                if (pathData.Key != null)
-                {
-                    data.Action = context.Request.Method + " " +  pathData.Value as string;
-                }
-
-                data.Duration = (int)stopwatch.ElapsedMilliseconds;
-                data.Response = context.Response.StatusCode;
-
-                var store = context.RequestServices.GetService<IAnalyticModuleStore>();
-
-                store.StoreData(data);
+            }
+            finally
+            {
+                context.Response.Body = originalBodyStream;
             }
         }
 
@@ -88,43 +126,50 @@ namespace rbkApiModules.Analytics.Core
 
             return identity;
         }
+    }
 
-        public AnalyticsModuleBuilder Exclude(Func<HttpContext, bool> filter)
+    public class AnalyticsModuleOptions
+    {
+        private List<Func<HttpContext, bool>> _exclude;
+
+        public AnalyticsModuleOptions Exclude(Func<HttpContext, bool> filter)
         {
             if (_exclude == null) _exclude = new List<Func<HttpContext, bool>>();
             _exclude.Add(filter);
             return this;
         }
 
-        public AnalyticsModuleBuilder Exclude(IPAddress ip) => Exclude(x => Equals(x.Connection.RemoteIpAddress, ip));
+        public List<Func<HttpContext, bool>> ExcludeRules => _exclude;
 
-        public AnalyticsModuleBuilder LimitToPath(string path) => Exclude(x => !x.Request.Path.StartsWithSegments(path));
+        public AnalyticsModuleOptions Exclude(IPAddress ip) => Exclude(x => Equals(x.Connection.RemoteIpAddress, ip));
 
-        public AnalyticsModuleBuilder ExcludePath(params string[] paths)
+        public AnalyticsModuleOptions LimitToPath(string path) => Exclude(x => !x.Request.Path.StartsWithSegments(path));
+
+        public AnalyticsModuleOptions ExcludePath(params string[] paths)
         {
             return Exclude(x => paths.Any(path => x.Request.Path.StartsWithSegments(path)));
         }
 
-        public AnalyticsModuleBuilder ExcludeExtension(params string[] extensions)
+        public AnalyticsModuleOptions ExcludeExtension(params string[] extensions)
         {
             return Exclude(x => extensions.Any(ext => x.Request.Path.Value.EndsWith(ext)));
         }
 
-        public AnalyticsModuleBuilder ExcludeMethods(params string[] methods)
+        public AnalyticsModuleOptions ExcludeMethods(params string[] methods)
         {
             return Exclude(x => methods.Any(ext => x.Request.Method == ext));
         }
 
-        public AnalyticsModuleBuilder ExcludeLoopBack() => Exclude(x => IPAddress.IsLoopback(x.Connection.RemoteIpAddress));
+        public AnalyticsModuleOptions ExcludeLoopBack() => Exclude(x => IPAddress.IsLoopback(x.Connection.RemoteIpAddress));
 
-        public AnalyticsModuleBuilder ExcludeIp(IPAddress address) => Exclude(x => x.Connection.RemoteIpAddress.Equals(address));
+        public AnalyticsModuleOptions ExcludeIp(IPAddress address) => Exclude(x => x.Connection.RemoteIpAddress.Equals(address));
 
-        public AnalyticsModuleBuilder ExcludeStatusCodes(params HttpStatusCode[] codes) => Exclude(context => codes.Contains((HttpStatusCode)context.Response.StatusCode));
+        public AnalyticsModuleOptions ExcludeStatusCodes(params HttpStatusCode[] codes) => Exclude(context => codes.Contains((HttpStatusCode)context.Response.StatusCode));
 
-        public AnalyticsModuleBuilder ExcludeStatusCodes(params int[] codes) => Exclude(context => codes.Contains(context.Response.StatusCode));
+        public AnalyticsModuleOptions ExcludeStatusCodes(params int[] codes) => Exclude(context => codes.Contains(context.Response.StatusCode));
 
-        public AnalyticsModuleBuilder LimitToStatusCodes(params HttpStatusCode[] codes) => Exclude(context => !codes.Contains((HttpStatusCode)context.Response.StatusCode));
+        public AnalyticsModuleOptions LimitToStatusCodes(params HttpStatusCode[] codes) => Exclude(context => !codes.Contains((HttpStatusCode)context.Response.StatusCode));
 
-        public AnalyticsModuleBuilder LimitToStatusCodes(params int[] codes) => Exclude(context => !codes.Contains(context.Response.StatusCode));
+        public AnalyticsModuleOptions LimitToStatusCodes(params int[] codes) => Exclude(context => !codes.Contains(context.Response.StatusCode));
     }
 }

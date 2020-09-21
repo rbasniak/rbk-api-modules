@@ -16,36 +16,135 @@
             <h3>Date to</h3>
             <RadzenDatePicker @bind-Value="dateTo" DateFormat="d" Style="width: 100%" />
         </div>
+        <div style="flex: 2; display: flex; justify-content: flex-start; margin-top: 1em; align-items: flex-end">
+            <RadzenButton Text="Filter" ButtonStyle="ButtonStyle.Secondary" Style="width: 150px" Click="@(Click)" />
+        </div>
     </div>
-    <div style="display: flex; justify-content: flex-end; margin-top: 1em">
-        <RadzenButton Text="Filter" ButtonStyle="ButtonStyle.Secondary" Style="width: 150px" Click="@(Click)" />
-    </div>
+
 </RadzenCard>
 
-@if (mostActiveDomain != null)
-{
-    <RadzenCard Style="width:100%; margin-bottom: 2em;">
-        <h4>Slowest Endpoints (read)</h4>
-        <RadzenGrid AllowFiltering="false" AllowPaging="true" PageSize="10"
-                    Data="@mostActiveDomain" TItem="SimpleNamedEntity">
-            <Columns>
-                <RadzenGridColumn TItem="SimpleNamedEntity" Property="Id" Title="Endpoint"  Width="200px" />
-                <RadzenGridColumn TItem="SimpleNamedEntity" Property="Name" Title="Duration (ms)"  Width="75px" />
-            </Columns>
-        </RadzenGrid>
-    </RadzenCard>
-}
+<div style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: baseline; align-content: flex-start;">
+    @if (mostActiveDomains != null)
+    {
+        <RadzenCard Style="width:500px; margin: 0.5em; min-height: 350px;">
+            <h4>Most active domains</h4>
+            <RadzenGrid AllowFiltering="false" AllowPaging="true" PageSize="5" Data="@mostActiveDomains" TItem="SimpleLabeledValue<int>">
+                <Columns>
+                    <RadzenGridColumn TItem="SimpleLabeledValue<int>" Property="Label" Title="Endpoint"  />
+                    <RadzenGridColumn TItem="SimpleLabeledValue<int>" Property="Value" Title="Hits" Width="100px" TextAlign="TextAlign.Center"/>
+                </Columns>
+            </RadzenGrid>
+        </RadzenCard>
+    }
 
+    @if (mostActiveUsers != null)
+    {
+        <RadzenCard Style="width:500px; margin: 0.5em; min-height: 350px;">
+            <h4>Top users</h4>
+            <RadzenGrid AllowFiltering="false" AllowPaging="true" PageSize="5" Data="@mostActiveUsers" TItem="SimpleLabeledValue<int>">
+                <Columns>
+                    <RadzenGridColumn TItem="SimpleLabeledValue<int>" Property="Label" Title="Endpoint"  />
+                    <RadzenGridColumn TItem="SimpleLabeledValue<int>" Property="Value" Title="Hits" Width="100px" TextAlign="TextAlign.Center"/>
+                </Columns>
+            </RadzenGrid>
+        </RadzenCard>
+    }
+
+    @if (mostFailedEndpoints != null)
+    {
+        <RadzenCard Style="width:500px; margin: 0.5em; min-height: 350px;">
+            <h4>Most failed endpoints</h4>
+            <RadzenGrid AllowFiltering="false" AllowPaging="true" PageSize="5" Data="@mostFailedEndpoints" TItem="SimpleLabeledValue<int>">
+                <Columns>
+                    <RadzenGridColumn TItem="SimpleLabeledValue<int>" Property="Label" Title="Endpoint"  />
+                    <RadzenGridColumn TItem="SimpleLabeledValue<int>" Property="Value" Title="Errors" Width="100px" TextAlign="TextAlign.Center" />
+                </Columns>
+            </RadzenGrid>
+        </RadzenCard>
+    }
+
+    @if (mostUsedReadEndpoints != null)
+    {
+        <RadzenCard Style="width:500px; margin: 0.5em; min-height: 350px;">
+            <h4>Most used endpoints (read)</h4>
+            <RadzenGrid AllowFiltering="false" AllowPaging="true" PageSize="5" Data="@mostUsedReadEndpoints" TItem="SimpleLabeledValue<int>">
+                <Columns>
+                    <RadzenGridColumn TItem="SimpleLabeledValue<int>" Property="Label" Title="Endpoint"  />
+                    <RadzenGridColumn TItem="SimpleLabeledValue<int>" Property="Value" Title="Hits" Width="100px" TextAlign="TextAlign.Center"/>
+                </Columns>
+            </RadzenGrid>
+        </RadzenCard>
+    }
+
+    @if (mostUsedWriteEndpoints != null)
+    {
+        <RadzenCard Style="width:500px; margin: 0.5em; min-height: 350px;">
+            <h4>Most used endpoints (write)</h4>
+            <RadzenGrid AllowFiltering="false" AllowPaging="true" PageSize="5" Data="@mostUsedWriteEndpoints" TItem="SimpleLabeledValue<int>">
+                <Columns>
+                    <RadzenGridColumn TItem="SimpleLabeledValue<int>" Property="Label" Title="Endpoint"  />
+                    <RadzenGridColumn TItem="SimpleLabeledValue<int>" Property="Value" Title="Hits" Width="100px" TextAlign="TextAlign.Center"/>
+                </Columns>
+            </RadzenGrid>
+        </RadzenCard>
+    }
+
+    @if (slowestReadEndpoints != null)
+    {
+        <RadzenCard Style="width:500px; margin: 0.5em; min-height: 350px;">
+            <h4>Slowest endpoints (read, non cached)</h4>
+            <RadzenGrid AllowFiltering="false" AllowPaging="true" PageSize="5" Data="@slowestReadEndpoints" TItem="SimpleLabeledValue<int>">
+                <Columns>
+                    <RadzenGridColumn TItem="SimpleLabeledValue<int>" Property="Label" Title="Endpoint"  />
+                    <RadzenGridColumn TItem="SimpleLabeledValue<int>" Property="Value" Title="Duration" Width="100px" TextAlign="TextAlign.Center">
+                        <Template Context="data">
+                            @String.Format("{0} ms", data.Value)
+                        </Template> 
+                    </RadzenGridColumn>
+                </Columns>
+            </RadzenGrid>
+        </RadzenCard>
+    }
+
+    @if (slowestWriteEndpoints != null)
+    {
+        <RadzenCard Style="width:500px; margin: 0.5em; min-height: 350px;">
+            <h4>Slowest endpoints (write)</h4>
+            <RadzenGrid AllowFiltering="false" AllowPaging="true" PageSize="5" Data="@slowestWriteEndpoints" TItem="SimpleLabeledValue<int>">
+                <Columns>
+                    <RadzenGridColumn TItem="SimpleLabeledValue<int>" Property="Label" Title="Endpoint" />
+                    <RadzenGridColumn TItem="SimpleLabeledValue<int>" Property="Value" Title="Duration" Width="100px" TextAlign="TextAlign.Center">
+                        <Template Context="data">
+                            @String.Format("{0} ms", data.Value)
+                        </Template>
+                    </RadzenGridColumn>
+                </Columns>
+            </RadzenGrid>
+        </RadzenCard>
+    }
+</div>
 
 @code {
-    SimpleNamedEntity[] mostActiveDomain;
+    SimpleLabeledValue<int>[] mostActiveDomains;
+    SimpleLabeledValue<int>[] mostActiveUsers;
+    SimpleLabeledValue<int>[] slowestReadEndpoints;
+    SimpleLabeledValue<int>[] slowestWriteEndpoints;
+    SimpleLabeledValue<int>[] mostFailedEndpoints;
+    SimpleLabeledValue<int>[] mostUsedReadEndpoints;
+    SimpleLabeledValue<int>[] mostUsedWriteEndpoints;
 
     DateTime dateFrom = DateTime.Now.AddDays(-7);
     DateTime dateTo = DateTime.Now;
 
     async void Click(MouseEventArgs args)
     {
-        mostActiveDomain = await DataService.GetSlowestReadEndpoints(new GetSlowestReadEndpoints.Command { DateFrom = dateFrom, DateTo = dateTo });
+        mostActiveDomains = await DataService.GetMostActiveDomains(dateFrom, dateTo);
+        mostActiveUsers = await DataService.GetMostActiveUsers(dateFrom, dateTo);
+        slowestReadEndpoints = await DataService.GetSlowestReadEndpoints(dateFrom, dateTo);
+        slowestWriteEndpoints = await DataService.GetSlowestWriteEndpoints(dateFrom, dateTo);
+        mostFailedEndpoints = await DataService.GetMostFailedEndpoints(dateFrom, dateTo);
+        mostUsedReadEndpoints = await DataService.GetMostUsedReadEndpoints(dateFrom, dateTo);
+        mostUsedWriteEndpoints = await DataService.GetMostUsedWriteEndpoints(dateFrom, dateTo);
 
         // Note that the following line is necessary because otherwise Blazor would not recognize the state change and not refresh the UI
         StateHasChanged();

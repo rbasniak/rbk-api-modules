@@ -11,7 +11,7 @@ namespace rbkApiModules.Analytics.Core
         }
 
         public AnalyticsEntry(string version, string area, string identity, string username, string domain, string ip,   
-            string userAgent, string path, string method, string action, int response, int duration)
+            string userAgent, string path, string method, string action, int response, int duration, int requestSize, int responseSize)
         {
             Version = version;
             Area = area;
@@ -26,6 +26,8 @@ namespace rbkApiModules.Analytics.Core
             Response = response;
             Duration = duration;
             Method = method;
+            RequestSize = requestSize;
+            ResponseSize = responseSize;
         }
 
         public Guid Id { get; set; }
@@ -62,6 +64,8 @@ namespace rbkApiModules.Analytics.Core
         [MaxLength(256)]
         public string Action { get; set; }
 
+        public long ResponseSize { get; set; }
+        public long RequestSize { get; set; }
         public int Response { get; set; }
 
         public int Duration { get; set; }
