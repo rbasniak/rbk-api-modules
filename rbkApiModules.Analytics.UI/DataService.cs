@@ -23,6 +23,10 @@ namespace rbkApiModules.Analytics.UI
         Task<SimpleLabeledValue<int>[]> GetMostUsedWriteEndpoints(DateTime from, DateTime to);
         Task<SimpleLabeledValue<int>[]> GetSlowestReadEndpoints(DateTime from, DateTime to);
         Task<SimpleLabeledValue<int>[]> GetSlowestWriteEndpoints(DateTime from, DateTime to);
+        Task<SimpleLabeledValue<int>[]> GetBiggestResponsesEndpoints(DateTime from, DateTime to);
+        Task<SimpleLabeledValue<int>[]> GetBiggestRequestsEndpoints(DateTime from, DateTime to);
+        Task<SimpleLabeledValue<double>[]> GetCachedRequestsProportion(DateTime from, DateTime to);
+        Task<SimpleLabeledValue<double>[]> GetEndpointErrorRates(DateTime from, DateTime to);
     }
 
     public class AnalyticsDataService : IAnalyticsDataService
@@ -234,6 +238,98 @@ namespace rbkApiModules.Analytics.UI
             {
                 var jsonContent = await response.Content.ReadAsStringAsync();
                 var result = JsonConvert.DeserializeObject<SimpleLabeledValue<int>[]>(jsonContent);
+                return result;
+            }
+            else
+            {
+                throw new HttpRequestException();
+            }
+        }
+
+        public async Task<SimpleLabeledValue<int>[]> GetBiggestResponsesEndpoints(DateTime from, DateTime to)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, _url + "/api/analytics/biggest-responses-endpoints");
+            // request.Headers.Add("User-Agent", "HttpClientFactory-Sample");
+
+            request.Content = new StringContent(JsonConvert.SerializeObject(new GetBiggestResponsesEndpoints.Command(from, to)), Encoding.UTF8, "application/json");
+
+            var client = _clientFactory.CreateClient();
+
+            var response = await client.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonContent = await response.Content.ReadAsStringAsync();
+                var result = JsonConvert.DeserializeObject<SimpleLabeledValue<int>[]>(jsonContent);
+                return result;
+            }
+            else
+            {
+                throw new HttpRequestException();
+            }
+        }
+
+        public async Task<SimpleLabeledValue<int>[]> GetBiggestRequestsEndpoints(DateTime from, DateTime to)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, _url + "/api/analytics/biggest-requests-endpoints");
+            // request.Headers.Add("User-Agent", "HttpClientFactory-Sample");
+
+            request.Content = new StringContent(JsonConvert.SerializeObject(new GetBiggestResquestsEndpoints.Command(from, to)), Encoding.UTF8, "application/json");
+
+            var client = _clientFactory.CreateClient();
+
+            var response = await client.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonContent = await response.Content.ReadAsStringAsync();
+                var result = JsonConvert.DeserializeObject<SimpleLabeledValue<int>[]>(jsonContent);
+                return result;
+            }
+            else
+            {
+                throw new HttpRequestException();
+            }
+        }
+
+        public async Task<SimpleLabeledValue<double>[]> GetCachedRequestsProportion(DateTime from, DateTime to)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, _url + "/api/analytics/cached-requests-proportion");
+            // request.Headers.Add("User-Agent", "HttpClientFactory-Sample");
+
+            request.Content = new StringContent(JsonConvert.SerializeObject(new GetBiggestResquestsEndpoints.Command(from, to)), Encoding.UTF8, "application/json");
+
+            var client = _clientFactory.CreateClient();
+
+            var response = await client.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonContent = await response.Content.ReadAsStringAsync();
+                var result = JsonConvert.DeserializeObject<SimpleLabeledValue<double>[]>(jsonContent);
+                return result;
+            }
+            else
+            {
+                throw new HttpRequestException();
+            }
+        }
+
+        public async Task<SimpleLabeledValue<double>[]> GetEndpointErrorRates(DateTime from, DateTime to)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, _url + "/api/analytics/endpoint-error-rates");
+            // request.Headers.Add("User-Agent", "HttpClientFactory-Sample");
+
+            request.Content = new StringContent(JsonConvert.SerializeObject(new GetBiggestResquestsEndpoints.Command(from, to)), Encoding.UTF8, "application/json");
+
+            var client = _clientFactory.CreateClient();
+
+            var response = await client.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonContent = await response.Content.ReadAsStringAsync();
+                var result = JsonConvert.DeserializeObject<SimpleLabeledValue<double>[]>(jsonContent);
                 return result;
             }
             else

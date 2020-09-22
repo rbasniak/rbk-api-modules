@@ -38,8 +38,10 @@ namespace rbkApiModules.Analytics.Core
                 var domain = user.Claims.FirstOrDefault(c => c.Type == "domain")?.Value;
 
                 // TODO: get version from somewhere
+                // TODO: get was cached from somewhere
                 var data = new AnalyticsEntry("1.0.0", "", identity, username, domain, context.Connection.RemoteIpAddress.ToString(),
-                    context.Request.Headers["User-Agent"], context.Request.Method + " " + context.Request.Path, context.Request.Method, "", -1, -1, -1, -1);
+                    context.Request.Headers["User-Agent"], context.Request.Method + " " + context.Request.Path, context.Request.Method, 
+                    "", -1, -1, -1, -1, false);
 
                 //new MemoryStream. 
                 using (var responseBody = new MemoryStream())
@@ -173,3 +175,4 @@ namespace rbkApiModules.Analytics.Core
         public AnalyticsModuleOptions LimitToStatusCodes(params int[] codes) => Exclude(context => !codes.Contains(context.Response.StatusCode));
     }
 }
+

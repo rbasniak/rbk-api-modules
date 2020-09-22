@@ -112,7 +112,8 @@ namespace rbkApiModules.Analytics.SqlServer
                         random.NextDouble() > 0.9 ? responses[random.Next(0, responses.Length)] : 200,
                         path.GetDuration(random),
                         path.GetRequestSize(random),
-                        path.GetResponseSize(random)
+                        path.GetResponseSize(random),
+                        random.NextDouble() > 0.9
                     );
 
                     data.Timestamp = currentData;
