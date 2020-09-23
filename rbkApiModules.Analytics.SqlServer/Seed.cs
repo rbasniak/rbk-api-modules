@@ -1,7 +1,5 @@
 ﻿using rbkApiModules.Analytics.Core;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace rbkApiModules.Analytics.SqlServer
 {
@@ -14,9 +12,39 @@ namespace rbkApiModules.Analytics.SqlServer
             var users = new[] {
                 "designer",
                 "Designer",
-                "free@gmail.com",
+                "fulano@gmail.com",
                 null,
-                "paid@gmail.com"
+                "beltrano@gmail.com",
+                "elon@tesla.com",
+                "lcheng@hotmail.com",
+                "jugalator@sbcglobal.net",
+                "sburke@icloud.com",
+                "seanq@live.com",
+                "kempsonc@msn.com",
+                "frikazoyd@yahoo.com",
+                "phish@optonline.net",
+                "pdbaby@me.com",
+                "oneiros@me.com",
+                "kevinm@hotmail.com",
+                "mugwump@msn.com",
+                "moinefou@gmail.com",
+                "bahwi@icloud.com",
+                "treit@hotmail.com",
+                "natepuri@mac.com",
+                "dburrows@att.net",
+                "bsikdar@sbcglobal.net",
+                "hoyer@att.net",
+                "jbuchana@optonline.net",
+                "cumarana@comcast.net",
+                "ghaviv@me.com",
+                "wiseb@comcast.net",
+                "mschwartz@yahoo.ca",
+                "jrkorson@optonline.net",
+                "webinc@hotmail.com",
+                "rfisher@att.net",
+                "sassen@gmail.com",
+                "irving@verizon.net",
+                "tezbo@optonline.net",
             };
 
             var versions = new[] {
@@ -83,6 +111,7 @@ namespace rbkApiModules.Analytics.SqlServer
             };
 
             var responses = new[] {
+                401,
                 400,
                 500,
             };
@@ -109,7 +138,7 @@ namespace rbkApiModules.Analytics.SqlServer
                         path.Path,
                         path.Path.Split()[0],
                         path.Path,
-                        random.NextDouble() > 0.9 ? responses[random.Next(0, responses.Length)] : 200,
+                        random.NextDouble() > 0.95 ? responses[random.Next(0, responses.Length)] : 200,
                         path.GetDuration(random),
                         path.GetRequestSize(random),
                         path.GetResponseSize(random),

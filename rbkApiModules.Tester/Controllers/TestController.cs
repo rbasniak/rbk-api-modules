@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using rbkApiModules.Analytics;
 using rbkApiModules.Analytics.Core;
 using rbkApiModules.Infrastructure.Api;
-using System;
 
 namespace rbkApiModules.Tester.Controllers
 {

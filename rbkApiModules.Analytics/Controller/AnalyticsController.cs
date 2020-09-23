@@ -127,5 +127,59 @@ namespace rbkApiModules.Analytics.Core.Controller
 
             return HttpResponse(result);
         }
+
+        [HttpPost]
+        [Route("daily-active-users")]
+        public async Task<ActionResult<DateValuePoint[]>> GetDailyActiveUsers([FromBody] GetDailyActiveUsers.Command data)
+        {
+            var result = await Mediator.Send(data);
+
+            return HttpResponse(result);
+        }
+
+        [HttpPost]
+        [Route("daily-errors")]
+        public async Task<ActionResult<DateValuePoint[]>> GetDailyErrors([FromBody] GetDailyErrors.Command data)
+        {
+            var result = await Mediator.Send(data);
+
+            return HttpResponse(result);
+        }
+
+        [HttpPost]
+        [Route("daily-inbound-traffic")]
+        public async Task<ActionResult<DateValuePoint[]>> GetDailyInboundTraffic([FromBody] GetDailyInboundTraffic.Command data)
+        {
+            var result = await Mediator.Send(data);
+
+            return HttpResponse(result);
+        }
+
+        [HttpPost]
+        [Route("daily-outbound-traffic")]
+        public async Task<ActionResult<DateValuePoint[]>> GetDailyOutboundTraffic([FromBody] GetDailyOutboundTraffic.Command data)
+        {
+            var result = await Mediator.Send(data);
+
+            return HttpResponse(result);
+        }
+
+        [HttpPost]
+        [Route("daily-requests")]
+        public async Task<ActionResult<DateValuePoint[]>> GetDailyRequests([FromBody] GetDailyRequests.Command data)
+        {
+            var result = await Mediator.Send(data);
+
+            return HttpResponse(result);
+        }
+
+        [HttpPost]
+        [Route("daily-authentication-failures")]
+        public async Task<ActionResult<DateValuePoint[]>> GetDailyAuthenticationFailures([FromBody] GetDailyAuthenticationFailures.Command data)
+        {
+            var result = await Mediator.Send(data);
+
+            return HttpResponse(result);
+        }
     }
 }

@@ -3,11 +3,10 @@ using rbkApiModules.Analytics.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 
 namespace rbkApiModules.Analytics.SqlServer
-{ 
+{
     /// <summary>
     /// Store para SQL Server
     /// </summary>

@@ -24,23 +24,30 @@
 </RadzenCard>
 
 <div style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: baseline; align-content: flex-start;">
-    @if (mostActiveDomains != null)
+    @if (dailyActiveUsers != null)
     {
-        <RadzenCard Style="width:500px; margin: 0.5em; min-height: 350px;">
-            <h4>Most active domains</h4>
-            <RadzenGrid AllowFiltering="false" AllowPaging="true" PageSize="5" Data="@mostActiveDomains" TItem="SimpleLabeledValue<int>">
-                <Columns>
-                    <RadzenGridColumn TItem="SimpleLabeledValue<int>" Property="Label" Title="Endpoint" />
-                    <RadzenGridColumn TItem="SimpleLabeledValue<int>" Property="Value" Title="Hits" Width="100px" TextAlign="TextAlign.Center" />
-                </Columns>
-            </RadzenGrid>
+        <RadzenCard Style="width:1100px; margin: 0.5em; min-height: 350px">
+            <h4 style="margin-bottom: 0px; margin-top: 0.5em">Daily active users</h4>
+            <RadzenChart Style="height: 275px;">
+                <RadzenLegend Visible="false" />
+                <RadzenLineSeries Data="@dailyActiveUsers" CategoryProperty="Date" LineType="LineType.Solid" ValueProperty="Value" Title="Active users">
+                    <RadzenMarkers MarkerType="MarkerType.Circle" />
+                </RadzenLineSeries>
+                <RadzenCategoryAxis Padding="20" FormatString="{0:dd/MMM}">
+                    <RadzenGridLines Visible="true" />
+                </RadzenCategoryAxis>
+                <RadzenValueAxis>
+                    <RadzenGridLines Visible="true" />
+                </RadzenValueAxis>
+            </RadzenChart>
+
         </RadzenCard>
     }
 
     @if (mostActiveUsers != null)
     {
         <RadzenCard Style="width:500px; margin: 0.5em; min-height: 350px;">
-            <h4>Top users</h4>
+            <h4 style="margin-top: 0.5em">Top users</h4>
             <RadzenGrid AllowFiltering="false" AllowPaging="true" PageSize="5" Data="@mostActiveUsers" TItem="SimpleLabeledValue<int>">
                 <Columns>
                     <RadzenGridColumn TItem="SimpleLabeledValue<int>" Property="Label" Title="Endpoint" />
@@ -50,10 +57,30 @@
         </RadzenCard>
     }
 
+    @if (dailyErrors != null)
+    {
+        <RadzenCard Style="width:1100px; margin: 0.5em; min-height: 350px">
+            <h4 style="margin-bottom: 0px; margin-top: 0.5em">Daily errors</h4>
+            <RadzenChart Style="height: 275px;">
+                <RadzenLegend Visible="false" />
+                <RadzenLineSeries Data="@dailyErrors" CategoryProperty="Date" LineType="LineType.Solid" ValueProperty="Value" Title="Errors">
+                    <RadzenMarkers MarkerType="MarkerType.Circle" />
+                </RadzenLineSeries>
+                <RadzenCategoryAxis Padding="20" FormatString="{0:dd/MMM}">
+                    <RadzenGridLines Visible="true" />
+                </RadzenCategoryAxis>
+                <RadzenValueAxis>
+                    <RadzenGridLines Visible="true" />
+                </RadzenValueAxis>
+            </RadzenChart>
+
+        </RadzenCard>
+    }
+
     @if (mostFailedEndpoints != null)
     {
         <RadzenCard Style="width:500px; margin: 0.5em; min-height: 350px;">
-            <h4>Most failed endpoints</h4>
+            <h4 style="margin-top: 0.5em">Most failed endpoints</h4>
             <RadzenGrid AllowFiltering="false" AllowPaging="true" PageSize="5" Data="@mostFailedEndpoints" TItem="SimpleLabeledValue<int>">
                 <Columns>
                     <RadzenGridColumn TItem="SimpleLabeledValue<int>" Property="Label" Title="Endpoint" />
@@ -63,10 +90,141 @@
         </RadzenCard>
     }
 
+    @if (endpointErrorRates != null)
+    {
+        <RadzenCard Style="width:500px; margin: 0.5em; min-height: 350px;">
+            <h4 style="margin-top: 0.5em">Endpoint error rates</h4>
+            <RadzenGrid AllowFiltering="false" AllowPaging="true" PageSize="5" Data="@endpointErrorRates" TItem="SimpleLabeledValue<double>">
+                <Columns>
+                    <RadzenGridColumn TItem="SimpleLabeledValue<double>" Property="Label" Title="Endpoint" />
+                    <RadzenGridColumn TItem="SimpleLabeledValue<double>" Property="Value" Title="Value" Width="100px" TextAlign="TextAlign.Center">
+                        <Template Context="data">
+                            @String.Format("{0}%", data.Value.ToString("0.00"))
+                        </Template>
+                    </RadzenGridColumn>
+                </Columns>
+            </RadzenGrid>
+        </RadzenCard>
+    }
+
+    @if (dailyAuthenticationFailures != null)
+    {
+        <RadzenCard Style="width:1100px; margin: 0.5em; min-height: 350px">
+            <h4 style="margin-bottom: 0px; margin-top: 0.5em">Daily authentication failures</h4>
+            <RadzenChart Style="height: 275px;">
+                <RadzenLegend Visible="false" />
+                <RadzenLineSeries Data="@dailyAuthenticationFailures" CategoryProperty="Date" LineType="LineType.Solid" ValueProperty="Value" Title="Requests">
+                    <RadzenMarkers MarkerType="MarkerType.Circle" />
+                </RadzenLineSeries>
+                <RadzenCategoryAxis Padding="20" FormatString="{0:dd/MMM}">
+                    <RadzenGridLines Visible="true" />
+                </RadzenCategoryAxis>
+                <RadzenValueAxis>
+                    <RadzenGridLines Visible="true" />
+                </RadzenValueAxis>
+            </RadzenChart>
+
+        </RadzenCard>
+    }
+
+    @if (dailyInboundTraffic != null)
+    {
+        <RadzenCard Style="width:1100px; margin: 0.5em; min-height: 350px">
+            <h4 style="margin-bottom: 0px; margin-top: 0.5em">Daily inbound traffic (KB)</h4>
+            <RadzenChart Style="height: 275px;">
+                <RadzenLegend Visible="false" />
+                <RadzenLineSeries Data="@dailyInboundTraffic" CategoryProperty="Date" LineType="LineType.Solid" ValueProperty="Value" Title="Inbound traffic">
+                    <RadzenMarkers MarkerType="MarkerType.Circle" />
+                </RadzenLineSeries>
+                <RadzenCategoryAxis Padding="20" FormatString="{0:dd/MMM}">
+                    <RadzenGridLines Visible="true" />
+                </RadzenCategoryAxis>
+                <RadzenValueAxis>
+                    <RadzenGridLines Visible="true" />
+                </RadzenValueAxis>
+            </RadzenChart>
+
+        </RadzenCard>
+    }
+
+    @if (biggestResquestsEndpoints != null)
+    {
+        <RadzenCard Style="width:500px; margin: 0.5em; min-height: 350px;">
+            <h4 style="margin-top: 0.5em">Biggest requests</h4>
+            <RadzenGrid AllowFiltering="false" AllowPaging="true" PageSize="5" Data="@biggestResquestsEndpoints" TItem="SimpleLabeledValue<int>">
+                <Columns>
+                    <RadzenGridColumn TItem="SimpleLabeledValue<int>" Property="Label" Title="Endpoint" />
+                    <RadzenGridColumn TItem="SimpleLabeledValue<int>" Property="Value" Title="Avg. Size" Width="100px" TextAlign="TextAlign.Center">
+                        <Template Context="data">
+                            @String.Format("{0} bytes", data.Value)
+                        </Template>
+                    </RadzenGridColumn>
+                </Columns>
+            </RadzenGrid>
+        </RadzenCard>
+    }
+
+    @if (dailyOutboundTraffic != null)
+    {
+        <RadzenCard Style="width:1100px; margin: 0.5em; min-height: 350px">
+            <h4 style="margin-bottom: 0px; margin-top: 0.5em">Daily outbound traffic  (KB)</h4>
+            <RadzenChart Style="height: 275px;">
+                <RadzenLegend Visible="false" />
+                <RadzenLineSeries Data="@dailyOutboundTraffic" CategoryProperty="Date" LineType="LineType.Solid" ValueProperty="Value" Title="Outbound traffic">
+                    <RadzenMarkers MarkerType="MarkerType.Circle" />
+                </RadzenLineSeries>
+                <RadzenCategoryAxis Padding="20" FormatString="{0:dd/MMM}">
+                    <RadzenGridLines Visible="true" />
+                </RadzenCategoryAxis>
+                <RadzenValueAxis>
+                    <RadzenGridLines Visible="true" />
+                </RadzenValueAxis>
+            </RadzenChart>
+
+        </RadzenCard>
+    }
+
+    @if (biggestResponsesEndpoints != null)
+    {
+        <RadzenCard Style="width:500px; margin: 0.5em; min-height: 350px;">
+            <h4 style="margin-top: 0.5em">Biggest responses</h4>
+            <RadzenGrid AllowFiltering="false" AllowPaging="true" PageSize="5" Data="@biggestResponsesEndpoints" TItem="SimpleLabeledValue<int>">
+                <Columns>
+                    <RadzenGridColumn TItem="SimpleLabeledValue<int>" Property="Label" Title="Endpoint" />
+                    <RadzenGridColumn TItem="SimpleLabeledValue<int>" Property="Value" Title="Avg. Size" Width="100px" TextAlign="TextAlign.Center">
+                        <Template Context="data">
+                            @String.Format("{0} bytes", data.Value)
+                        </Template>
+                    </RadzenGridColumn>
+                </Columns>
+            </RadzenGrid>
+        </RadzenCard>
+    }
+
+    @if (dailyRequests != null)
+    {
+        <RadzenCard Style="width:1100px; margin: 0.5em; min-height: 350px">
+            <h4 style="margin-bottom: 0px; margin-top: 0.5em">Daily requests</h4>
+            <RadzenChart Style="height: 275px;">
+                <RadzenLegend Visible="false" />
+                <RadzenLineSeries Data="@dailyRequests" CategoryProperty="Date" LineType="LineType.Solid" ValueProperty="Value" Title="Requests">
+                    <RadzenMarkers MarkerType="MarkerType.Circle" />
+                </RadzenLineSeries>
+                <RadzenCategoryAxis Padding="20" FormatString="{0:dd/MMM}">
+                    <RadzenGridLines Visible="true" />
+                </RadzenCategoryAxis>
+                <RadzenValueAxis>
+                    <RadzenGridLines Visible="true" />
+                </RadzenValueAxis>
+            </RadzenChart>
+
+        </RadzenCard>
+    }
+
     @if (mostUsedReadEndpoints != null)
     {
         <RadzenCard Style="width:500px; margin: 0.5em; min-height: 350px;">
-            <h4>Most used endpoints (read)</h4>
+            <h4 style="margin-top: 0.5em">Most used endpoints (read)</h4>
             <RadzenGrid AllowFiltering="false" AllowPaging="true" PageSize="5" Data="@mostUsedReadEndpoints" TItem="SimpleLabeledValue<int>">
                 <Columns>
                     <RadzenGridColumn TItem="SimpleLabeledValue<int>" Property="Label" Title="Endpoint" />
@@ -79,7 +237,7 @@
     @if (mostUsedWriteEndpoints != null)
     {
         <RadzenCard Style="width:500px; margin: 0.5em; min-height: 350px;">
-            <h4>Most used endpoints (write)</h4>
+            <h4 style="margin-top: 0.5em">Most used endpoints (write)</h4>
             <RadzenGrid AllowFiltering="false" AllowPaging="true" PageSize="5" Data="@mostUsedWriteEndpoints" TItem="SimpleLabeledValue<int>">
                 <Columns>
                     <RadzenGridColumn TItem="SimpleLabeledValue<int>" Property="Label" Title="Endpoint" />
@@ -89,10 +247,27 @@
         </RadzenCard>
     }
 
+    @if (cachedRequestsProportion != null)
+    {
+        <RadzenCard Style="width:500px; margin: 0.5em; min-height: 350px;">
+            <h4 style="margin-top: 0.5em">Cached responses proportion</h4>
+            <RadzenGrid AllowFiltering="false" AllowPaging="true" PageSize="5" Data="@cachedRequestsProportion" TItem="SimpleLabeledValue<double>">
+                <Columns>
+                    <RadzenGridColumn TItem="SimpleLabeledValue<double>" Property="Label" Title="Endpoint" />
+                    <RadzenGridColumn TItem="SimpleLabeledValue<double>" Property="Value" Title="Value" Width="100px" TextAlign="TextAlign.Center">
+                        <Template Context="data">
+                            @String.Format("{0}%", data.Value.ToString("0.00"))
+                        </Template>
+                    </RadzenGridColumn>
+                </Columns>
+            </RadzenGrid>
+        </RadzenCard>
+    }
+
     @if (slowestReadEndpoints != null)
     {
         <RadzenCard Style="width:500px; margin: 0.5em; min-height: 350px;">
-            <h4>Slowest endpoints (read, non cached)</h4>
+            <h4 style="margin-top: 0.5em">Slowest endpoints (read, non cached)</h4>
             <RadzenGrid AllowFiltering="false" AllowPaging="true" PageSize="5" Data="@slowestReadEndpoints" TItem="SimpleLabeledValue<int>">
                 <Columns>
                     <RadzenGridColumn TItem="SimpleLabeledValue<int>" Property="Label" Title="Endpoint" />
@@ -109,7 +284,7 @@
     @if (slowestWriteEndpoints != null)
     {
         <RadzenCard Style="width:500px; margin: 0.5em; min-height: 350px;">
-            <h4>Slowest endpoints (write)</h4>
+            <h4 style="margin-top: 0.5em">Slowest endpoints (write)</h4>
             <RadzenGrid AllowFiltering="false" AllowPaging="true" PageSize="5" Data="@slowestWriteEndpoints" TItem="SimpleLabeledValue<int>">
                 <Columns>
                     <RadzenGridColumn TItem="SimpleLabeledValue<int>" Property="Label" Title="Endpoint" />
@@ -123,73 +298,19 @@
         </RadzenCard>
     }
 
-    @if (cachedRequestsProportion != null)
+    @if (mostActiveDomains != null)
     {
         <RadzenCard Style="width:500px; margin: 0.5em; min-height: 350px;">
-            <h4>Cached responses proportion</h4>
-            <RadzenGrid AllowFiltering="false" AllowPaging="true" PageSize="5" Data="@cachedRequestsProportion" TItem="SimpleLabeledValue<double>">
-                <Columns>
-                    <RadzenGridColumn TItem="SimpleLabeledValue<double>" Property="Label" Title="Endpoint" />
-                    <RadzenGridColumn TItem="SimpleLabeledValue<double>" Property="Value" Title="Value" Width="100px" TextAlign="TextAlign.Center">
-                        <Template Context="data">
-                            @String.Format("{0}%", data.Value.ToString("0.00"))
-                        </Template>
-                    </RadzenGridColumn>
-                </Columns>
-            </RadzenGrid>
-        </RadzenCard>
-    }
-
-    @if (endpointErrorRates != null)
-    {
-        <RadzenCard Style="width:500px; margin: 0.5em; min-height: 350px;">
-            <h4>Endpoint error rates</h4>
-            <RadzenGrid AllowFiltering="false" AllowPaging="true" PageSize="5" Data="@endpointErrorRates" TItem="SimpleLabeledValue<double>">
-                <Columns>
-                    <RadzenGridColumn TItem="SimpleLabeledValue<double>" Property="Label" Title="Endpoint" />
-                    <RadzenGridColumn TItem="SimpleLabeledValue<double>" Property="Value" Title="Value" Width="100px" TextAlign="TextAlign.Center">
-                        <Template Context="data">
-                            @String.Format("{0}%", data.Value.ToString("0.00"))
-                        </Template>
-                    </RadzenGridColumn>
-                </Columns>
-            </RadzenGrid>
-        </RadzenCard>
-    }
-
-    @if (biggestResquestsEndpoints != null)
-    {
-        <RadzenCard Style="width:500px; margin: 0.5em; min-height: 350px;">
-            <h4>Biggest requests</h4>
-            <RadzenGrid AllowFiltering="false" AllowPaging="true" PageSize="5" Data="@biggestResquestsEndpoints" TItem="SimpleLabeledValue<int>">
+            <h4 style="margin-top: 0.5em">Most active domains</h4>
+            <RadzenGrid AllowFiltering="false" AllowPaging="true" PageSize="5" Data="@mostActiveDomains" TItem="SimpleLabeledValue<int>">
                 <Columns>
                     <RadzenGridColumn TItem="SimpleLabeledValue<int>" Property="Label" Title="Endpoint" />
-                    <RadzenGridColumn TItem="SimpleLabeledValue<int>" Property="Value" Title="Avg. Size" Width="100px" TextAlign="TextAlign.Center">
-                        <Template Context="data">
-                            @String.Format("{0} bytes", data.Value)
-                        </Template>
-                    </RadzenGridColumn>
+                    <RadzenGridColumn TItem="SimpleLabeledValue<int>" Property="Value" Title="Hits" Width="100px" TextAlign="TextAlign.Center" />
                 </Columns>
             </RadzenGrid>
         </RadzenCard>
     }
 
-    @if (biggestResponsesEndpoints != null)
-    {
-        <RadzenCard Style="width:500px; margin: 0.5em; min-height: 350px;">
-            <h4>Biggest responses</h4>
-            <RadzenGrid AllowFiltering="false" AllowPaging="true" PageSize="5" Data="@biggestResponsesEndpoints" TItem="SimpleLabeledValue<int>">
-                <Columns>
-                    <RadzenGridColumn TItem="SimpleLabeledValue<int>" Property="Label" Title="Endpoint" />
-                    <RadzenGridColumn TItem="SimpleLabeledValue<int>" Property="Value" Title="Avg. Size" Width="100px" TextAlign="TextAlign.Center">
-                        <Template Context="data">
-                            @String.Format("{0} bytes", data.Value)
-                        </Template>
-                    </RadzenGridColumn>
-                </Columns>
-            </RadzenGrid>
-        </RadzenCard>
-    }
 </div>
 
 @code {
@@ -205,22 +326,36 @@
     SimpleLabeledValue<double>[] cachedRequestsProportion;
     SimpleLabeledValue<double>[] endpointErrorRates;
 
+    DateValuePoint[] dailyActiveUsers;
+    DateValuePoint[] dailyErrors;
+    DateValuePoint[] dailyInboundTraffic;
+    DateValuePoint[] dailyOutboundTraffic;
+    DateValuePoint[] dailyAuthenticationFailures;
+    DateValuePoint[] dailyRequests;
+
     DateTime dateFrom = DateTime.Now.AddDays(-7);
     DateTime dateTo = DateTime.Now;
 
     async void Click(MouseEventArgs args)
     {
-        mostActiveDomains = await DataService.GetMostActiveDomains(dateFrom, dateTo);
-        mostActiveUsers = await DataService.GetMostActiveUsers(dateFrom, dateTo);
-        slowestReadEndpoints = await DataService.GetSlowestReadEndpoints(dateFrom, dateTo);
-        slowestWriteEndpoints = await DataService.GetSlowestWriteEndpoints(dateFrom, dateTo);
-        mostFailedEndpoints = await DataService.GetMostFailedEndpoints(dateFrom, dateTo);
-        mostUsedReadEndpoints = await DataService.GetMostUsedReadEndpoints(dateFrom, dateTo);
-        mostUsedWriteEndpoints = await DataService.GetMostUsedWriteEndpoints(dateFrom, dateTo);
-        biggestResquestsEndpoints = await DataService.GetBiggestRequestsEndpoints(dateFrom, dateTo);
-        biggestResponsesEndpoints = await DataService.GetBiggestResponsesEndpoints(dateFrom, dateTo);
-        cachedRequestsProportion = await DataService.GetCachedRequestsProportion(dateFrom, dateTo);
-        endpointErrorRates = await DataService.GetEndpointErrorRates(dateFrom, dateTo);
+        mostActiveDomains = (await DataService.GetMostActiveDomains(dateFrom, dateTo)).Data;
+        mostActiveUsers = (await DataService.GetMostActiveUsers(dateFrom, dateTo)).Data;
+        slowestReadEndpoints = (await DataService.GetSlowestReadEndpoints(dateFrom, dateTo)).Data;
+        slowestWriteEndpoints = (await DataService.GetSlowestWriteEndpoints(dateFrom, dateTo)).Data;
+        mostFailedEndpoints = (await DataService.GetMostFailedEndpoints(dateFrom, dateTo)).Data;
+        mostUsedReadEndpoints = (await DataService.GetMostUsedReadEndpoints(dateFrom, dateTo)).Data;
+        mostUsedWriteEndpoints = (await DataService.GetMostUsedWriteEndpoints(dateFrom, dateTo)).Data;
+        biggestResquestsEndpoints = (await DataService.GetBiggestRequestsEndpoints(dateFrom, dateTo)).Data;
+        biggestResponsesEndpoints = (await DataService.GetBiggestResponsesEndpoints(dateFrom, dateTo)).Data;
+        cachedRequestsProportion = (await DataService.GetCachedRequestsProportion(dateFrom, dateTo)).Data;
+        endpointErrorRates = (await DataService.GetEndpointErrorRates(dateFrom, dateTo)).Data;
+        dailyActiveUsers = (await DataService.GetDailyActiveUsers(dateFrom, dateTo)).Data;
+        dailyErrors = (await DataService.GetDailyErrors(dateFrom, dateTo)).Data;
+        dailyInboundTraffic = (await DataService.GetDailyInboundTraffic(dateFrom, dateTo)).Data;
+        dailyOutboundTraffic = (await DataService.GetDailyOutboundTraffic(dateFrom, dateTo)).Data;
+
+        dailyAuthenticationFailures = (await DataService.GetDailyAuthenticationFailures(dateFrom, dateTo)).Data;
+        dailyRequests = (await DataService.GetDailyRequests(dateFrom, dateTo)).Data;
 
         // Note that the following line is necessary because otherwise Blazor would not recognize the state change and not refresh the UI
         StateHasChanged();

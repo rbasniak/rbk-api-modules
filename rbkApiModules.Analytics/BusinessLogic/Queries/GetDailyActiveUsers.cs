@@ -1,18 +1,15 @@
 ﻿using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore.Internal;
 using rbkApiModules.Infrastructure.MediatR;
-using rbkApiModules.Infrastructure.Models;
+using rbkApiModules.Utilities;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace rbkApiModules.Analytics.Core
 {
-    public class GetBiggestResquestsEndpoints
+    public class GetDailyActiveUsers
     {
         public class Command : IRequest<QueryResponse>
         {
@@ -50,21 +47,24 @@ namespace rbkApiModules.Analytics.Core
 
             protected override async Task<object> ExecuteAsync(Command request)
             {
-                var results = new List<SimpleLabeledValue<int>>();
-
                 var data = await _context.InTimeRangeAsync(request.DateFrom, request.DateTo, null, null, null, null, null,
-                    null, new[] { "200", "204" }, null, 0, null);
+                    null, null, null, 0, null);
 
-                var groupedData = data.GroupBy(x => x.Action).ToList();
+                var groupedData = data.GroupBy(x => x.Timestamp.Date).ToList();
+
+                var chartData = ChartingUtilities.BuildLineChartAxis(request.DateFrom, request.DateTo);
 
                 foreach (var itemData in groupedData)
                 {
-                    var name = itemData.Key.ToString();
+                    var date = itemData.Key;
+                    var activeUsers = itemData.GroupBy(x => x.Username).Count();
 
-                    results.Add(new SimpleLabeledValue<int>(name, (int)itemData.Average(x => x.RequestSize)));
+                    var point = chartData.First(x => x.Date == date);
+
+                    point.Value = activeUsers;
                 }
 
-                return results.OrderByDescending(x => x.Value).ToArray();
+                return chartData;
             }
         }
     }

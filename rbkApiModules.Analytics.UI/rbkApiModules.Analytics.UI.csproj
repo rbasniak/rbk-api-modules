@@ -26,6 +26,10 @@
     <ItemGroup>
       <ProjectReference Include="..\rbkApiModules.Analytics\rbkApiModules.Analytics.Core.csproj" />
       <ProjectReference Include="..\rbkApiModules.Infrastructure.Models\rbkApiModules.Infrastructure.Models.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Shared\" />
     </ItemGroup> 
 
 </Project>

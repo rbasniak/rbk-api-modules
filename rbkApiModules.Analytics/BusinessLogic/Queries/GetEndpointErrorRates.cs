@@ -1,18 +1,16 @@
 ﻿using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore.Internal;
 using rbkApiModules.Infrastructure.MediatR;
 using rbkApiModules.Infrastructure.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace rbkApiModules.Analytics.Core
 {
-    public class GetDailyInboundTraffic
+    public class GetEndpointErrorRates
     {
         public class Command : IRequest<QueryResponse>
         {
@@ -50,28 +48,24 @@ namespace rbkApiModules.Analytics.Core
 
             protected override async Task<object> ExecuteAsync(Command request)
             {
-                //var results = new List<SimpleLabeledValue<int>>();
+                var results = new List<SimpleLabeledValue<double>>();
 
-                //var data = await _context.InTimeRangeAsync(request.DateFrom, request.DateTo, null, null, null, null, null,
-                //    null, null, null, 0, null);
+                var data = await _context.InTimeRangeAsync(request.DateFrom, request.DateTo, null, null, null, null, null,
+                    null, null, null, 0, null);
 
-                //var groupedData = data.GroupBy(x => x.Username).ToList();
+                var groupedData = data.GroupBy(x => x.Action).ToList();
 
-                //foreach (var itemData in groupedData)
-                //{
-                //    var name = "Anonymous";
+                foreach (var itemData in groupedData)
+                {
+                    var name = itemData.Key.ToString();
 
-                //    if (itemData.Key != null)
-                //    {
-                //        name = itemData.Key.ToString();
-                //    }
+                    var success = (double)itemData.Count(x => x.Response == 200 || x.Response == 204);
+                    var errors = (double)itemData.Count(x => x.Response != 200 && x.Response != 204 && x.Response != 400 && x.Response != 401 && x.Response != 403);
+                    
+                    results.Add(new SimpleLabeledValue<double>(name, errors / (success + errors) * 100.0));
+                }
 
-                //    results.Add(new SimpleLabeledValue<int>(name, itemData.Count()));
-                //}
-
-                //return results.OrderByDescending(x => x.Value).ToArray();
-
-                return null;
+                return results.OrderByDescending(x => x.Value).ToArray();
             }
         }
     }

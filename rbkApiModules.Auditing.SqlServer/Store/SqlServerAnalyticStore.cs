@@ -1,14 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Auditing.Core;
-using rbkApiModules.Auditing.SqlServer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 
 namespace rbkApiModules.Auditing.SqlServer
-{ 
+{
     /// <summary>
     /// Store para SQL Server
     /// </summary>

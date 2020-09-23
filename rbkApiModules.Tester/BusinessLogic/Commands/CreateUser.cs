@@ -5,11 +5,9 @@ using rbkApiModules.Infrastructure.MediatR;
 using rbkApiModules.Tester.Database;
 using rbkApiModules.Tester.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
-namespace rbkApiModules.Tester.BusinessLogic 
+namespace rbkApiModules.Tester.BusinessLogic
 {
     public class CreateUser
     {

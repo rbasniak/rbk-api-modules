@@ -1,16 +1,8 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Http.Features;
+﻿using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
 
 namespace rbkApiModules.Analytics.Core
 {

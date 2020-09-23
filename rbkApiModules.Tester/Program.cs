@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using rbkApiModules.Auditing;
 using rbkApiModules.Authentication;
 using rbkApiModules.Infrastructure.Models;
 using rbkApiModules.Tester.Database;

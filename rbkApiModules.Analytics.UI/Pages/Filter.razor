@@ -85,7 +85,6 @@
 
     <RadzenDataList WrapItems="false" AllowPaging="true" Data="@results" PageSize="100" TItem="AnalyticsEntry">
         <Template Context="item">
-            <RadzenCard Style="width:100%;">
                 <div style="display: flex; flex-direction: row">
                     <div style="flex: 1; display: flex; align-items: center;">
                         @if (item.Response == 200)
@@ -173,7 +172,6 @@
                     </div>
                 </div>
 
-            </RadzenCard>
         </Template>
     </RadzenDataList>
 </div>
@@ -204,7 +202,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var data = await DataService.GetFilterDataAsync();
+        var data = (await DataService.GetFilterDataAsync()).Data;
 
         areas = data.Areas.Select(x => new SimpleNamedEntity(x, x)).ToArray();
         domains = data.Domains.Select(x => String.IsNullOrEmpty(x) ? new SimpleNamedEntity(x, "Without domain") : new SimpleNamedEntity(x, x)).ToArray();
@@ -242,7 +240,7 @@
         data.Users = selectedUsers.ToArray();
         data.Versions = selectedVersions.ToArray();
 
-        results = await DataService.FilterAsync(data); 
+        results = (await DataService.FilterAsync(data)).Data; 
 
         // Note that the following line is necessary because otherwise Blazor would not recognize the state change and not refresh the UI
         StateHasChanged();
