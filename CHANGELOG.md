@@ -1,3 +1,10 @@
+# 1.1.0 (2020-09-24)
+
+
+### Features
+
+* :sparkles: added new analytics library ([d3b965a](https://github.com/rbasniak/rbk-api-modules/commit/d3b965ac355dcc5978bb268737581fa5c8ad7d08))
+
 ## 1.0.35 (2020-09-24)
 
 ## 1.0.34 (2020-09-10)
