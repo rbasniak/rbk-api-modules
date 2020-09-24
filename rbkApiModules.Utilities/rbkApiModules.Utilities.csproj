@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
-        <Version>1.0.34</Version>
-        <Authors>rbasniak</Authors>
-        <Product>rbkApiModules</Product>
-        <Copyright>rbasniak</Copyright>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Version>1.0.34</Version>
+    <Authors>rbasniak</Authors>
+    <Product>rbkApiModules</Product>
+    <Copyright>rbasniak</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
 
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />

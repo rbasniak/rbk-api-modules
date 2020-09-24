@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
-    <PropertyGroup>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
-        <Version>1.0.34</Version>
-        <Authors>rbasniak</Authors>
-        <Product>rbkApiModules</Product>
-        <Copyright>rbasniak</Copyright>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Version>1.0.34</Version>
+    <Authors>rbasniak</Authors>
+    <Product>rbkApiModules</Product>
+    <Copyright>rbasniak</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+  </PropertyGroup>
 
     <ItemGroup>
       <Content Remove="C:\Users\rbasn\.nuget\packages\radzen.blazor\2.12.2\contentFiles\any\netstandard2.1\global.json" />
