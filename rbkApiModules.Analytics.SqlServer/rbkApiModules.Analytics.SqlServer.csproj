@@ -9,10 +9,6 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\rbkApiModules.Analytics\rbkApiModules.Analytics.Core.csproj" />
-  </ItemGroup>
-
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>
@@ -24,6 +20,10 @@
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.7" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.7" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.7" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\rbkApiModules.Analytics.Core\rbkApiModules.Analytics.Core.csproj" />
 	</ItemGroup>
 
 </Project>

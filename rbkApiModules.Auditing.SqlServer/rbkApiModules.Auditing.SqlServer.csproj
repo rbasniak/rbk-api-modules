@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\rbkApiModules.Auditing\rbkApiModules.Auditing.Core.csproj" />
+    <ProjectReference Include="..\rbkApiModules.Auditing.Core\rbkApiModules.Auditing.Core.csproj" />
   </ItemGroup>
   
 </Project>

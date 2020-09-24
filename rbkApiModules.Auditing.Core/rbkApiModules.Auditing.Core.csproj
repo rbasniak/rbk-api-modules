@@ -10,7 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\rbkApiModules.Infrastructure.Api\rbkApiModules.Infrastructure.Api.csproj" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" /> 
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\rbkApiModules.Infrastructure.MediatR\rbkApiModules.Infrastructure.MediatR.csproj" />
   </ItemGroup>
 
