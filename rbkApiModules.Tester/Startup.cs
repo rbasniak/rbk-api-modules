@@ -16,7 +16,6 @@ using rbkApiModules.UIAnnotations;
 using Microsoft.Extensions.Hosting;
 using rbkApiModules.Tester.BusinessLogic;
 using System.Collections.Generic;
-using rbkApiModules.Logging.Core;
 using Microsoft.AspNetCore.Mvc.Filters;
 using rbkApiModules.Analytics.Core;
 using rbkApiModules.Analytics.SqlServer;
@@ -37,7 +36,7 @@ namespace rbkApiModules.Tester
         public IWebHostEnvironment Environment { get; }
 
 
-        private Assembly[] AssembliesForServices => new Assembly[] 
+        private Assembly[] AssembliesForServices => new Assembly[]
         {
             Assembly.GetAssembly(typeof(AnalyticsDataService))
         };
@@ -63,18 +62,18 @@ namespace rbkApiModules.Tester
             services.AddDbContext<DatabaseContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Database"))
-                .AddInterceptors(new DatabaseLogIntgerceptor())
+//                 .AddInterceptors(new DatabaseLogIntgerceptor())
                 .EnableDetailedErrors()
                 .EnableSensitiveDataLogging());
 
             //services.AddDbContext<AuditingContext>(options =>
             //    options.UseSqlServer(
-            //        Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Auditing"))); 
+            //        Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Auditing")));
 
             services.AddTransient<DbContext, DatabaseContext>();
 
             var xmlPath = Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml");
-            services.AddRbkApiInfrastructureModule(AssembliesForServices, AssembliesForAutoMapper, 
+            services.AddRbkApiInfrastructureModule(AssembliesForServices, AssembliesForAutoMapper,
                 new List<IActionFilter> { new AnalyticsMvcFilter() },
                 "RbkApiModules Demo API", "v1", xmlPath, !Environment.IsDevelopment());
 

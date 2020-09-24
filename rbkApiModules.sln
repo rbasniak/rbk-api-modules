@@ -41,8 +41,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Infrastructur
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Analytics.UI", "rbkApiModules.Analytics.UI\rbkApiModules.Analytics.UI.csproj", "{63996FA6-2E28-4E0E-A2C6-241962642E04}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Logging.Core", "rbkApiModules.Log.Core\rbkApiModules.Logging.Core.csproj", "{1FBC7BE3-5D40-44DA-B869-125A58F58C93}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Analytics.SqlServer", "rbkApiModules.Analytics.SqlServer\rbkApiModules.Analytics.SqlServer.csproj", "{49A64AA7-6DA4-4C06-8184-C3439A3C9E6E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Analytics", "Analytics", "{5F8D4FC8-7520-4734-AF20-6B87C10F59DD}"
