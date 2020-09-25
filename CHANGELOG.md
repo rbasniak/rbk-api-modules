@@ -1,3 +1,10 @@
+## 1.2.2 (2020-09-25)
+
+
+### Bug Fixes
+
+* fixed bug in the option to use analytics demo data ([b8829d7](https://github.com/rbasniak/rbk-api-modules/commit/b8829d7f97afb35db8eb20c01d18aea222833a48))
+
 ## 1.2.1 (2020-09-25)
 
 # 1.2.0 (2020-09-25)
