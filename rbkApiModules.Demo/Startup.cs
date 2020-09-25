@@ -73,11 +73,7 @@ namespace rbkApiModules.Demo
                     Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Database"))
 //                 .AddInterceptors(new DatabaseLogIntgerceptor())
                 .EnableDetailedErrors()
-                .EnableSensitiveDataLogging());
-
-            //services.AddDbContext<AuditingContext>(options =>
-            //    options.UseSqlServer(
-            //        Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Auditing")));
+                .EnableSensitiveDataLogging()); 
 
             services.AddTransient<DbContext, DatabaseContext>();
 
@@ -97,8 +93,6 @@ namespace rbkApiModules.Demo
             services.AddScoped<IUserdataCommentService, UserdataCommentService>();
 
             services.AddSqlServerRbkApiAnalyticsModule(Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Analytics").Replace("rbkUtilitiesDemo", "Libra"));
-
-            // services.AddSqlServerRbkApiAuditingModule(Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Auditing"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
