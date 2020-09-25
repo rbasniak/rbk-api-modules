@@ -202,23 +202,38 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var data = (await DataService.GetFilterDataAsync()).Data;
+        var response = await DataService.GetFilterDataAsync();
 
-        areas = data.Areas.Select(x => new SimpleNamedEntity(x, x)).ToArray();
-        domains = data.Domains.Select(x => String.IsNullOrEmpty(x) ? new SimpleNamedEntity(x, "Without domain") : new SimpleNamedEntity(x, x)).ToArray();
-        agents = data.Agents.Select(x => new SimpleNamedEntity(x, x)).ToArray();
-        actions = data.Actions.Select(x => new SimpleNamedEntity(x, x)).ToArray();
-        responses = data.Responses.Select(x => new SimpleNamedEntity(x, x)).ToArray();
-        users = data.Users.Select(x => String.IsNullOrEmpty(x) ? new SimpleNamedEntity(x, "Anonymous") : new SimpleNamedEntity(x, x)).ToArray();
-        versions = data.Versions.Select(x => new SimpleNamedEntity(x, x)).ToArray();
+        if (response.Success)
+        {
+            var data = response.Data;
 
-        selectedActions = actions.Select(x => x.Id);
-        selectedAgents = agents.Select(x => x.Id);
-        selectedAreas = areas.Select(x => x.Id);
-        selectedDomains = domains.Select(x => x.Id);
-        selectedResponses = responses.Select(x => x.Id);
-        selectedUsers = users.Select(x => x.Id);
-        selectedVersions = versions.Select(x => x.Id);
+            areas = data.Areas.Select(x => new SimpleNamedEntity(x, x)).ToArray();
+            domains = data.Domains.Select(x => String.IsNullOrEmpty(x) ? new SimpleNamedEntity(x, "Without domain") : new SimpleNamedEntity(x, x)).ToArray();
+            agents = data.Agents.Select(x => new SimpleNamedEntity(x, x)).ToArray();
+            actions = data.Actions.Select(x => new SimpleNamedEntity(x, x)).ToArray();
+            responses = data.Responses.Select(x => new SimpleNamedEntity(x, x)).ToArray();
+            users = data.Users.Select(x => String.IsNullOrEmpty(x) ? new SimpleNamedEntity(x, "Anonymous") : new SimpleNamedEntity(x, x)).ToArray();
+            versions = data.Versions.Select(x => new SimpleNamedEntity(x, x)).ToArray();
+
+            selectedActions = actions.Select(x => x.Id);
+            selectedAgents = agents.Select(x => x.Id);
+            selectedAreas = areas.Select(x => x.Id);
+            selectedDomains = domains.Select(x => x.Id);
+            selectedResponses = responses.Select(x => x.Id);
+            selectedUsers = users.Select(x => x.Id);
+            selectedVersions = versions.Select(x => x.Id);
+        }
+        else
+        {
+            areas = new[] { new SimpleNamedEntity("0", "ERROR") };
+            domains = new[] { new SimpleNamedEntity("0", "ERROR") };
+            agents = new[] { new SimpleNamedEntity("0", "ERROR") };
+            actions = new[] { new SimpleNamedEntity("0", "ERROR") };
+            responses = new[] { new SimpleNamedEntity("0", "ERROR") };
+            users = new[] { new SimpleNamedEntity("0", "ERROR") };
+            versions = new[] { new SimpleNamedEntity("0", "ERROR") };
+        }
     }
 
     protected override void OnInitialized()
@@ -240,7 +255,7 @@
         data.Users = selectedUsers.ToArray();
         data.Versions = selectedVersions.ToArray();
 
-        results = (await DataService.FilterAsync(data)).Data; 
+        results = (await DataService.FilterAsync(data)).Data;
 
         // Note that the following line is necessary because otherwise Blazor would not recognize the state change and not refresh the UI
         StateHasChanged();

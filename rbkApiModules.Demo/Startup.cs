@@ -96,7 +96,7 @@ namespace rbkApiModules.Demo
 
             services.AddScoped<IUserdataCommentService, UserdataCommentService>();
 
-            services.AddSqlServerRbkApiAnalyticsModule(Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Analytics"));
+            services.AddSqlServerRbkApiAnalyticsModule(Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Analytics").Replace("rbkUtilitiesDemo", "Libra"));
 
             // services.AddSqlServerRbkApiAuditingModule(Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Auditing"));
         }
@@ -107,6 +107,7 @@ namespace rbkApiModules.Demo
             app.UseSqlServerRbkApiAnalyticsModule(options => options
                 .LimitToPath("/api")
                 .ExcludeMethods("OPTIONS")
+                .UseDemoData()
             );
 
             app.UseRbkApiDefaultSetup(!Environment.IsDevelopment());

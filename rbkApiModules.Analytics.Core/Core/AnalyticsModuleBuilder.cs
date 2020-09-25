@@ -131,6 +131,7 @@ namespace rbkApiModules.Analytics.Core
     public class AnalyticsModuleOptions
     {
         private List<Func<HttpContext, bool>> _exclude;
+        private bool _seedSampleDatabase;
 
         public AnalyticsModuleOptions Exclude(Func<HttpContext, bool> filter)
         {
@@ -140,6 +141,14 @@ namespace rbkApiModules.Analytics.Core
         }
 
         public List<Func<HttpContext, bool>> ExcludeRules => _exclude;
+
+        public bool SeedSampleDatabase => _seedSampleDatabase;
+
+        public AnalyticsModuleOptions UseDemoData()
+        {
+            _seedSampleDatabase = true;
+            return this;
+        }
 
         public AnalyticsModuleOptions Exclude(IPAddress ip) => Exclude(x => Equals(x.Connection.RemoteIpAddress, ip));
 
