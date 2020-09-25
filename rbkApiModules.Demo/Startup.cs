@@ -20,6 +20,8 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using rbkApiModules.Analytics.Core;
 using rbkApiModules.Analytics.SqlServer;
 using rbkApiModules.Analytics.UI;
+using rbkApiModules.Auditing.UI;
+using rbkApiModules.SharedUI;
 
 namespace rbkApiModules.Demo
 {
@@ -47,6 +49,13 @@ namespace rbkApiModules.Demo
             Assembly.GetAssembly(typeof(UserMappings)),
         };
 
+        private Assembly[] AssembliesBlazorRouting => new Assembly[]
+        {
+            Assembly.GetAssembly(typeof(Class1)),
+            Assembly.GetAssembly(typeof(Class2)),
+        };
+
+
         private Assembly[] AssembliesForMediatR => new Assembly[]
         {
             Assembly.GetAssembly(typeof(CreateUser.Command)),
@@ -71,6 +80,8 @@ namespace rbkApiModules.Demo
             //        Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Auditing")));
 
             services.AddTransient<DbContext, DatabaseContext>();
+
+            services.AddRbkSharedUIModule(AssembliesBlazorRouting);
 
             var xmlPath = Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml");
             services.AddRbkApiInfrastructureModule(AssembliesForServices, AssembliesForAutoMapper,

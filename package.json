@@ -42,7 +42,8 @@
           "rbkApiModules.Auditing.UI/rbkApiModules.Auditing.UI.csproj",
           "rbkApiModules.Authentication/rbkApiModules.Authentication.csproj",
           "rbkApiModules.Comments/rbkApiModules.Comments.csproj",
-          "rbkApiModules.UIAnnotations/rbkApiModules.UIAnnotations.csproj"
+          "rbkApiModules.UIAnnotations/rbkApiModules.UIAnnotations.csproj",
+          "rbkApiModules.SharedUI/rbkApiModules.SharedUI.csproj"
         ]
       }
     },

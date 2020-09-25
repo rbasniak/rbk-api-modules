@@ -1,0 +1,16 @@
+﻿@inject BlazorRoutesLocator RoutesLocator
+
+<Router AppAssembly="@typeof(Builder).Assembly" AdditionalAssemblies="RoutesLocator.RoutingAssemblies">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainContainer)" />
+    </Found>
+    <NotFound>
+        <LayoutView Layout="@typeof(MainContainer)">
+
+        </LayoutView>
+    </NotFound>
+</Router>
+
+@code {
+    
+}

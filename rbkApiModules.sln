@@ -57,6 +57,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Demo", "rbkAp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Infrastructure.Utilities", "rbkApiModules.Infrastructure.Utilities\rbkApiModules.Infrastructure.Utilities.csproj", "{D49C8C9B-868E-439A-BBB7-3B77AF706E1A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SharedUI", "SharedUI", "{A3867976-7854-45E2-8AAD-86C00FBC7AFE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.SharedUI", "rbkApiModules.SharedUI\rbkApiModules.SharedUI.csproj", "{C7B01EEE-DFE4-4728-B0CD-7F78F4F82BFA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -123,6 +127,10 @@ Global
 		{D49C8C9B-868E-439A-BBB7-3B77AF706E1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D49C8C9B-868E-439A-BBB7-3B77AF706E1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D49C8C9B-868E-439A-BBB7-3B77AF706E1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7B01EEE-DFE4-4728-B0CD-7F78F4F82BFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7B01EEE-DFE4-4728-B0CD-7F78F4F82BFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7B01EEE-DFE4-4728-B0CD-7F78F4F82BFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7B01EEE-DFE4-4728-B0CD-7F78F4F82BFA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -148,6 +156,8 @@ Global
 		{1CE2F00B-8338-4FCC-BD6F-DE534D033883} = {28AEC725-3257-4A72-BC8B-C6ABB827A897}
 		{7CDE465B-FBB6-44FB-AE94-D36066F63E49} = {F4880E1B-B3C1-404F-B6C9-4D712A0DAA3F}
 		{D49C8C9B-868E-439A-BBB7-3B77AF706E1A} = {28AEC725-3257-4A72-BC8B-C6ABB827A897}
+		{A3867976-7854-45E2-8AAD-86C00FBC7AFE} = {A1A68EE5-8E91-449C-96A8-CCC5BF135D48}
+		{C7B01EEE-DFE4-4728-B0CD-7F78F4F82BFA} = {A3867976-7854-45E2-8AAD-86C00FBC7AFE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9AAC09BF-43DC-408B-8F24-24DAA39DA1E8}
