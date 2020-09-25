@@ -202,6 +202,17 @@
 
     protected override async Task OnInitializedAsync()
     {
+        if (DataService == null)
+        {
+            areas = new[] { new SimpleNamedEntity("0", "NULL") };
+            domains = new[] { new SimpleNamedEntity("0", "NULL") };
+            agents = new[] { new SimpleNamedEntity("0", "NULL") };
+            actions = new[] { new SimpleNamedEntity("0", "NULL") };
+            responses = new[] { new SimpleNamedEntity("0", "NULL") };
+            users = new[] { new SimpleNamedEntity("0", "NULL") };
+            versions = new[] { new SimpleNamedEntity("0", "NULL") };
+        }
+
         var response = await DataService.GetFilterDataAsync();
 
         if (response.Success)
