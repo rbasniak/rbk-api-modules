@@ -1,3 +1,10 @@
+## 1.1.4 (2020-09-25)
+
+
+### Bug Fixes
+
+* updated to 3.1.8 .NET Core ([afe42ee](https://github.com/rbasniak/rbk-api-modules/commit/afe42ee765c17f11a262ea844f0da2a94d53cfba))
+
 ## 1.1.3 (2020-09-24)
 
 ## 1.1.2 (2020-09-24)
