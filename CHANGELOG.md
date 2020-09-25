@@ -1,3 +1,10 @@
+# 1.2.0 (2020-09-25)
+
+
+### Features
+
+* added SharedUI library ([545dd26](https://github.com/rbasniak/rbk-api-modules/commit/545dd263f29783a8098f7af008eaf578c1015a52))
+
 ## 1.1.5 (2020-09-25)
 
 ## 1.1.4 (2020-09-25)
