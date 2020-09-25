@@ -32,7 +32,7 @@ namespace rbkApiModules.Analytics.SqlServer
                 {
                     context.Database.EnsureCreated();
 
-                    if (context.Data.Count() == 0)
+                    if (context.Data.Count() == 0 && options.SeedSampleDatabase)
                     {
                         Seed.SeedDatabase(context);
                     }
