@@ -11,7 +11,7 @@ jobs:
     name: Create Release
     runs-on: windows-latest
     if: "!contains(github.event.head_commit.message, '/^Release d+.d+.d+.*/')"
-    steps: 
+    steps:
       - uses: actions/checkout@v2
       - uses: FranzDiebold/github-env-vars-action@v1.2.0
       - name: Checkout Code
@@ -36,7 +36,7 @@ jobs:
       - name: Build
         run: dotnet build --configuration Release --no-restore
       - name: Create NuGet Package
-        run: dotnet pack -c Release
+        run: dotnet pack -c Release --include-symbols --include-source
         working-directory: .
       - name: Publish Nuget Package
         run: dotnet nuget push **/*.nupkg --api-key ${{ secrets.nuget_api_key }} --source https://api.nuget.org/v3/index.json --no-symbols true
