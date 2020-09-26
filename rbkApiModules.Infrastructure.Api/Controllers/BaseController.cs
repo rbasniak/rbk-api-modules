@@ -35,11 +35,18 @@ namespace rbkApiModules.Infrastructure.Api
         /// </summary>
         /// <typeparam name="T">Tipo de retorno (apenas para aparecer corretamente no Swagger)</typeparam>
         /// <param name="response">Resultada da execução de um request do MediatR</param>
-        protected ActionResult<T> HttpResponse<T>(BaseResponse response)
+        protected ActionResult<T> HttpResponse<T>(BaseResponse response, string cacheId = null)
         {
             if (response.Status == CommandStatus.Valid)
             {
-                return Ok(Mapper.Map<T>(response.Result));
+                var results = Mapper.Map<T>(response.Result);
+
+                if (cacheId != null)
+                {
+                    Cache.Set(cacheId, response.Result);
+                }
+
+                return Ok(results);
             }
             else
             {
@@ -53,12 +60,17 @@ namespace rbkApiModules.Infrastructure.Api
         /// Usar a versão não genérica apenas quando o comando não retornar uma entidade no payload do resultado
         /// </summary>
         /// <param name="response">Resultada da execução de um request do MediatR</param>
-        protected ActionResult HttpResponse(BaseResponse response)
+        protected ActionResult HttpResponse(BaseResponse response, string cacheId = null)
         {
             if (response.Status == CommandStatus.Valid)
             {
                 if (response.Result != null && !(response.Result is BaseEntity))
                 {
+                    if (cacheId != null)
+                    {
+                        Cache.Set(cacheId, response.Result);
+                    }
+
                     return Ok(response.Result);
                 }
                 else

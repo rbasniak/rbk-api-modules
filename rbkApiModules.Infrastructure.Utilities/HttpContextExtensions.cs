@@ -8,5 +8,10 @@ namespace rbkApiModules.Utilities.Extensions
         {
             return httpContextAccessor.HttpContext.User.Identity.Name.ToLower();
         }
+
+        public static void SetResponseSource(this HttpContext context)
+        {
+            context.Items.Add("was-cached", true);
+        }
     }
 }

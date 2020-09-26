@@ -7,30 +7,8 @@ namespace rbkApiModules.Analytics.Core
     {
         public AnalyticsEntry()
         {
-
-        }
-
-        public AnalyticsEntry(string version, string area, string identity, string username, string domain, string ip,   
-            string userAgent, string path, string method, string action, int response, int duration, int requestSize, 
-            int responseSize, bool wasCached)
-        {
-            Version = version;
-            Area = area;
             Timestamp = DateTime.UtcNow;
-            Identity = identity;
-            Username = username;
-            Domain = domain;
-            IpAddress = ip;
-            UserAgent = userAgent;
-            Path = path;
-            Action = action;
-            Response = response;
-            Duration = duration;
-            Method = method;
-            RequestSize = requestSize;
-            ResponseSize = responseSize;
-            WasCached = wasCached;
-        }
+        } 
 
         public Guid Id { get; set; }
 
@@ -72,5 +50,8 @@ namespace rbkApiModules.Analytics.Core
 
         public int Duration { get; set; }
         public bool WasCached { get; set; }
+
+        public int TotalTransactionTime { get; set; }
+        public int TransactionCount { get; set; }
     }
 }

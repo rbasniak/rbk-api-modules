@@ -9,9 +9,6 @@ using rbkApiModules.Authentication;
 using rbkApiModules.Infrastructure.Models;
 using rbkApiModules.Demo.Database;
 using rbkApiModules.Demo.Models;
-using Serilog;
-using Serilog.Events;
-using Serilog.Formatting.Compact;
 
 namespace rbkApiModules.Demo
 {
@@ -19,21 +16,21 @@ namespace rbkApiModules.Demo
     {
         public static int Main(string[] args)
         {
-            // Create the Serilog logger, and configure the sinks
-            Serilog.Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Information()
-                .MinimumLevel.Override("Microsoft", LogEventLevel.Error)
-                // .Enrich.FromLogContext()
-                // .Enrich.With<ReleaseNumberEnricher>()
-                .WriteTo.Console()
-                .WriteTo.File(new CompactJsonFormatter(), "d:\\serilog.json")
-                .CreateLogger();
+            //// Create the Serilog logger, and configure the sinks
+            //Serilog.Log.Logger = new LoggerConfiguration()
+            //    .MinimumLevel.Information()
+            //    .MinimumLevel.Override("Microsoft", LogEventLevel.Error)
+            //    // .Enrich.FromLogContext()
+            //    // .Enrich.With<ReleaseNumberEnricher>()
+            //    .WriteTo.Console()
+            //    .WriteTo.File(new CompactJsonFormatter(), "d:\\serilog.json")
+            //    .CreateLogger();
 
             try
             {
                 var test = new SimpleNamedEntity { Id = "1", Name = "Oi" };
 
-                Serilog.Log.Logger.Information("Starting host {@SimpleNamedEntity}", test);
+                // Serilog.Log.Logger.Information("Starting host {@SimpleNamedEntity}", test);
 
                 var host = CreateHostBuilder(args).Build();
 
@@ -72,7 +69,7 @@ namespace rbkApiModules.Demo
                     }
                     catch (Exception ex)
                     {
-                        Serilog.Log.Logger.Fatal(ex, "An error occurred while seeding the database.");
+                        // Serilog.Log.Logger.Fatal(ex, "An error occurred while seeding the database.");
                     }
                 }
 
@@ -82,7 +79,7 @@ namespace rbkApiModules.Demo
             }
             catch (Exception ex)
             {
-                Serilog.Log.Logger.Fatal(ex, "Host terminated unexpectedly");
+                // Serilog.Log.Logger.Fatal(ex, "Host terminated unexpectedly");
                 return 1;
             }
             finally
@@ -96,6 +93,6 @@ namespace rbkApiModules.Demo
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                }).UseSerilog();
+                });
     }
 }

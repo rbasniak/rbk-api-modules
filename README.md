@@ -14,6 +14,8 @@ The `rbkApiModules.Infrastructure.MediatR` must be referenced in the `BusinessLo
 
 The `rbkApiModules.Infrastructure.Api` must be referenced in the `Api` project.
 
+The `rbkApiModules.Infrastructure.Utilities` must be referenced in the `Database` project.
+
 All other libraries are optional and need to be referenced only in the `Api` project, with exception to the `rbkApiModules.Authentication`, which if is used needs to referenced in the `Models` project.
 
 
@@ -234,7 +236,7 @@ This library contains the following helping classes:
 * `SafeException`: when this exception is thrown in a command handler, it will be treated as `400` return code to the cliente application.
 * `IPassword`: this interface should be implemented in all commands containing a password property if the `rbkApiModules.Auditing` is used. This will ensure that the password will be anonymized when saved in the auditing database.
 
-# 5. rbkApiModules.Utilities
+# 5. rbkApiModules.Infrastructure.Utilities
 
 Most of the contents of this library is meant be used by the other libraries in this repository, even though they have a few usefull extension methods:
 
@@ -326,3 +328,52 @@ services.AddTransient<DbContext, DatabaseContext>();
                 .HasForeignKey<User>(x => x.Id);
         }
     }
+
+
+# TODO DOC
+
+.API
+  HttpResponse<T> e HttpResponse, quando eles retornam valores e quando não, como funciona o cache. Quando retorna 400 e 500
+  AntiXXS middleware
+
+
+MediatR
+  Base Command Handler x2 mostrar o try/catch
+  BaseQueryHandler x2
+  Validators
+  Validadores de interface
+
+Models
+  explicar cada classe
+
+Utilities
+  tudo
+
+# TODO
+- Localizar todas as mensagens
+- Transformar cards do radzor em componentes de grafico e tabela, cada um com seu request
+- Transformar tableas biggest responses/requests em string/string com pipe no size
+- Escolher a unidade
+- Criar readio nos graficos de tamanho para escolher a unidade mb, kg, gb
+- Na tabela de most used read endpoint tem um endpoint em branco com muitos acessos
+- Unificar most used endpoints
+- Adicionar graficos de
+  - Daily Average Requests Per Hour'
+  - Geolocation data
+  - Most active days (grafico de coluna) como tratar timezone?
+  - Most active hours (grafico de coluna) como tratar timezone?
+  - Criar conceito de sessão de uso (automatica? colocar no fonrt por interceptor?)
+- Pegar a versão da aplicação de algum lugar
+- Adicionar campos extras no filtro de analytics
+- Melhorar a UI geral
+- Ver se é possivel colocar o filtro ApplicationArea no controller
+- Pensar em autenticacao no front geral (custom authorize com user/password?)
+- Criar validador com interface para todos os dates de filtro. Tem que estar em utc
+- Fazer tratamento de erros nas paginas
+- Fazer spinner nas paginas
+
+
+
+
+
+

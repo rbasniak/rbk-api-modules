@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using rbkApiModules.Analytics.Core;
 using rbkApiModules.Infrastructure.Api;
+using rbkApiModules.Utilities.Extensions;
 
 namespace rbkApiModules.Demo.Controllers
 {
@@ -16,6 +17,7 @@ namespace rbkApiModules.Demo.Controllers
         [Route("test1")]
         public ActionResult Test1()
         {
+            HttpContext.SetResponseSource();
             return StatusCode(500);
         }
 

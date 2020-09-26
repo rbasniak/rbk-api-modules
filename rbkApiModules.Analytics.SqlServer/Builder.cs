@@ -11,6 +11,8 @@ namespace rbkApiModules.Analytics.SqlServer
     {
         public static void AddSqlServerRbkApiAnalyticsModule(this IServiceCollection services, string connectionString)
         {
+            services.AddTransient<ITransactionCounter, TransactionCounter>();
+
             services.AddDbContext<SqlServerAnalyticsContext>(options =>
                 options.UseSqlServer(connectionString));
 

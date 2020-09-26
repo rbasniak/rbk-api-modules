@@ -22,6 +22,7 @@ using rbkApiModules.Analytics.SqlServer;
 using rbkApiModules.Analytics.UI;
 using rbkApiModules.Auditing.UI;
 using rbkApiModules.SharedUI;
+using rbkApiModules.Diagnostics.SqlServer;
 
 namespace rbkApiModules.Demo
 {
@@ -51,7 +52,7 @@ namespace rbkApiModules.Demo
 
         private Assembly[] AssembliesBlazorRouting => new Assembly[]
         {
-            Assembly.GetAssembly(typeof(Class1)),
+            Assembly.GetAssembly(typeof(IAnalyticsDataService)),
             Assembly.GetAssembly(typeof(Class2)),
         };
 
@@ -68,12 +69,21 @@ namespace rbkApiModules.Demo
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DatabaseContext>(options =>
-                options.UseSqlServer(
+            //services.AddDbContext<DatabaseContext>(options =>
+            //    options.UseSqlServer(
+            //        Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Database"))
+            //    .EnableDetailedErrors()
+            //    .EnableSensitiveDataLogging());
+
+            services.AddTransient<DatabaseLogInterceptor>();
+
+            services.AddDbContext<DatabaseContext>((scope, options) => options
+                .UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Database"))
-//                 .AddInterceptors(new DatabaseLogIntgerceptor())
+                .AddInterceptors(scope.GetRequiredService<DatabaseLogInterceptor>())
                 .EnableDetailedErrors()
-                .EnableSensitiveDataLogging()); 
+                .EnableSensitiveDataLogging()
+            );
 
             services.AddTransient<DbContext, DatabaseContext>();
 
@@ -92,7 +102,9 @@ namespace rbkApiModules.Demo
 
             services.AddScoped<IUserdataCommentService, UserdataCommentService>();
 
-            services.AddSqlServerRbkApiAnalyticsModule(Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Analytics").Replace("rbkUtilitiesDemo", "Libra"));
+            services.AddSqlServerRbkApiAnalyticsModule(Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Analytics"));
+
+            services.AddSqlServerRbkApiDiagnosticsModule(Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Diagnostics"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -103,6 +115,8 @@ namespace rbkApiModules.Demo
                 .ExcludeMethods("OPTIONS")
                 .UseDemoData()
             );
+
+            app.UseSqlServerRbkApiDiagnosticsModule();
 
             app.UseRbkApiDefaultSetup(!Environment.IsDevelopment());
         }

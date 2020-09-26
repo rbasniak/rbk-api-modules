@@ -15,6 +15,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\rbkApiModules.Infrastructure.MediatR\rbkApiModules.Infrastructure.MediatR.csproj" />
-  </ItemGroup>
+  </ItemGroup> 
 
 </Project>

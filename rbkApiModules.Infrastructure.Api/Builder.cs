@@ -16,12 +16,12 @@ using System.Reflection;
 
 namespace rbkApiModules.Infrastructure.Api
 {
-    public static class BuilderExtensions
+    public static class Builder
     {
         public static void AddRbkApiInfrastructureModule(this IServiceCollection services, Assembly[] assembliesForServices,
             Assembly[] assembliesForAutoMapper, List<IActionFilter> filters, string applicationName, string version, string swaggerXmlPath, bool isProduction)
         {
-            services.RegisterApplicationServices(Assembly.GetAssembly(typeof(BuilderExtensions)));
+            services.RegisterApplicationServices(Assembly.GetAssembly(typeof(Builder)));
             services.RegisterApplicationServices(assembliesForServices);
 
             services.AddHttpClient();

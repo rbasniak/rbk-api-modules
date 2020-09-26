@@ -15,20 +15,27 @@ namespace rbkApiModules.Analytics.UI
         Task<HttpResponse<SimpleLabeledValue<int>[]>> GetMostActiveDomains(DateTime from, DateTime to);
         Task<HttpResponse<SimpleLabeledValue<int>[]>> GetMostActiveUsers(DateTime from, DateTime to);
         Task<HttpResponse<SimpleLabeledValue<int>[]>> GetMostFailedEndpoints(DateTime from, DateTime to);
-        Task<HttpResponse<SimpleLabeledValue<int>[]>> GetMostUsedReadEndpoints(DateTime from, DateTime to);
-        Task<HttpResponse<SimpleLabeledValue<int>[]>> GetMostUsedWriteEndpoints(DateTime from, DateTime to);
+        Task<HttpResponse<SimpleLabeledValue<int>[]>> GetMostUsedEndpoints(DateTime from, DateTime to);
+        Task<HttpResponse<SimpleLabeledValue<int>[]>> GetMostResourceHungryEndpoints(DateTime from, DateTime to);
         Task<HttpResponse<SimpleLabeledValue<int>[]>> GetSlowestReadEndpoints(DateTime from, DateTime to);
         Task<HttpResponse<SimpleLabeledValue<int>[]>> GetSlowestWriteEndpoints(DateTime from, DateTime to);
         Task<HttpResponse<SimpleLabeledValue<int>[]>> GetBiggestResponsesEndpoints(DateTime from, DateTime to);
         Task<HttpResponse<SimpleLabeledValue<int>[]>> GetBiggestRequestsEndpoints(DateTime from, DateTime to);
+        Task<HttpResponse<SimpleLabeledValue<int>[]>> GetAverageTransactionsPerEndpoint(DateTime from, DateTime to);
+        Task<HttpResponse<SimpleLabeledValue<int>[]>> GetMostActiveDays(DateTime from, DateTime to);
+        Task<HttpResponse<SimpleLabeledValue<int>[]>> GetMostActiveHours(DateTime from, DateTime to);
         Task<HttpResponse<SimpleLabeledValue<double>[]>> GetCachedRequestsProportion(DateTime from, DateTime to);
         Task<HttpResponse<SimpleLabeledValue<double>[]>> GetEndpointErrorRates(DateTime from, DateTime to);
+        Task<HttpResponse<SimpleLabeledValue<int>[]>> GetTotalTimeComsumptionPerWriteEndpoint(DateTime from, DateTime to);
+        Task<HttpResponse<SimpleLabeledValue<int>[]>> GetTotalTimeComsumptionPerReadEndpoint(DateTime from, DateTime to);
         Task<HttpResponse<DateValuePoint[]>> GetDailyActiveUsers(DateTime from, DateTime to);
         Task<HttpResponse<DateValuePoint[]>> GetDailyErrors(DateTime from, DateTime to);
         Task<HttpResponse<DateValuePoint[]>> GetDailyInboundTraffic(DateTime from, DateTime to);
         Task<HttpResponse<DateValuePoint[]>> GetDailyOutboundTraffic(DateTime from, DateTime to);
         Task<HttpResponse<DateValuePoint[]>> GetDailyAuthenticationFailures(DateTime from, DateTime to);
         Task<HttpResponse<DateValuePoint[]>> GetDailyRequests(DateTime from, DateTime to);
+        Task<HttpResponse<DateValuePoint[]>> GetDailyTransactions(DateTime from, DateTime to);
+        Task<HttpResponse<DateValuePoint[]>> GetDailyDatabaseUsage(DateTime from, DateTime to);
     }
 
     public class AnalyticsDataService : BaseHttpService, IAnalyticsDataService
@@ -63,16 +70,6 @@ namespace rbkApiModules.Analytics.UI
         public async Task<HttpResponse<SimpleLabeledValue<int>[]>> GetMostFailedEndpoints(DateTime from, DateTime to)
         {
             return await SendAsync<SimpleLabeledValue<int>[]>(HttpMethod.Post, _url + "/api/analytics/most-failed-endpoints", new GetMostFailedEndpoints.Command(from, to));
-        }
-
-        public async Task<HttpResponse<SimpleLabeledValue<int>[]>> GetMostUsedReadEndpoints(DateTime from, DateTime to)
-        {
-            return await SendAsync<SimpleLabeledValue<int>[]>(HttpMethod.Post, _url + "/api/analytics/most-used-read-endpoints", new GetMostUsedReadEndpoints.Command(from, to));
-        }
-
-        public async Task<HttpResponse<SimpleLabeledValue<int>[]>> GetMostUsedWriteEndpoints(DateTime from, DateTime to)
-        {
-            return await SendAsync<SimpleLabeledValue<int>[]>(HttpMethod.Post, _url + "/api/analytics/most-used-write-endpoints", new GetMostUsedWriteEndpoints.Command(from, to));
         }
 
         public async Task<HttpResponse<SimpleLabeledValue<int>[]>> GetSlowestReadEndpoints(DateTime from, DateTime to)
@@ -133,6 +130,51 @@ namespace rbkApiModules.Analytics.UI
         public async Task<HttpResponse<DateValuePoint[]>> GetDailyRequests(DateTime from, DateTime to)
         {
             return await SendAsync<DateValuePoint[]>(HttpMethod.Post, _url + "/api/analytics/daily-requests", new GetDailyRequests.Command(from, to));
+        }
+
+        public async Task<HttpResponse<SimpleLabeledValue<int>[]>> GetMostUsedEndpoints(DateTime from, DateTime to)
+        {
+            return await SendAsync<SimpleLabeledValue<int>[]>(HttpMethod.Post, _url + "/api/analytics/most-used-read-endpoints", new GetMostUsedEndpoints.Command(from, to));
+        }
+
+        public async Task<HttpResponse<SimpleLabeledValue<int>[]>> GetMostResourceHungryEndpoints(DateTime from, DateTime to)
+        {
+            return await SendAsync<SimpleLabeledValue<int>[]>(HttpMethod.Post, _url + "/api/analytics/most-resource-hungry-endpoints", new GetMostResourceHungryEndpoints.Command(from, to));
+        }
+
+        public async Task<HttpResponse<SimpleLabeledValue<int>[]>> GetAverageTransactionsPerEndpoint(DateTime from, DateTime to)
+        {
+            return await SendAsync<SimpleLabeledValue<int>[]>(HttpMethod.Post, _url + "/api/analytics/average-transactions-per-endpoint", new GetAverageTransactionsPerEndpoint.Command(from, to));
+        }
+
+        public async Task<HttpResponse<DateValuePoint[]>> GetDailyTransactions(DateTime from, DateTime to)
+        {
+            return await SendAsync<DateValuePoint[]>(HttpMethod.Post, _url + "/api/analytics/daily-transactions", new GetDailyTransactions.Command(from, to));
+        }
+
+        public async Task<HttpResponse<DateValuePoint[]>> GetDailyDatabaseUsage(DateTime from, DateTime to)
+        {
+            return await SendAsync<DateValuePoint[]>(HttpMethod.Post, _url + "/api/analytics/daily-database-time", new GetDailyDatabaseUsage.Command(from, to));
+        }
+
+        public async Task<HttpResponse<SimpleLabeledValue<int>[]>> GetMostActiveDays(DateTime from, DateTime to)
+        {
+            return await SendAsync<SimpleLabeledValue<int>[]>(HttpMethod.Post, _url + "/api/analytics/most-active-days", new GetMostActiveDays.Command(from, to));
+        }
+
+        public async Task<HttpResponse<SimpleLabeledValue<int>[]>> GetMostActiveHours(DateTime from, DateTime to)
+        {
+            return await SendAsync<SimpleLabeledValue<int>[]>(HttpMethod.Post, _url + "/api/analytics/most-active-hours", new GetMostActiveHours.Command(from, to));
+        }
+
+        public async Task<HttpResponse<SimpleLabeledValue<int>[]>> GetTotalTimeComsumptionPerWriteEndpoint(DateTime from, DateTime to)
+        {
+            return await SendAsync<SimpleLabeledValue<int>[]>(HttpMethod.Post, _url + "/api/analytics/total-time-comsumption-per-write-endpoint", new GetTotalTimeComsumptionPerWriteEndpoint.Command(from, to));
+        }
+
+        public async Task<HttpResponse<SimpleLabeledValue<int>[]>> GetTotalTimeComsumptionPerReadEndpoint(DateTime from, DateTime to)
+        {
+            return await SendAsync<SimpleLabeledValue<int>[]>(HttpMethod.Post, _url + "/api/analytics/total-time-comsumption-per-read-endpoint", new GetTotalTimeComsumptionPerReadEndpoint.Command(from, to));
         }
     }
 }

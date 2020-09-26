@@ -50,7 +50,7 @@ namespace rbkApiModules.Analytics.Core
             {
                 var results = new List<SimpleLabeledValue<int>>();
 
-                var data = await _context.InTimeRangeAsync(request.DateFrom, request.DateTo, null, null, null, null, null,
+                var data = await _context.FilterAsync(request.DateFrom, request.DateTo, null, null, null, null, null,
                     null, null, null, 0, null);
 
                 var groupedData = data.GroupBy(x => x.Username).ToList();

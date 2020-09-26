@@ -24,6 +24,6 @@ namespace rbkApiModules.Demo.Database
                 typeof(CommentEntity.Command).Assembly,
                 typeof(UserLogin.Command).Assembly,
             });
-        }
+        } 
     }
 }

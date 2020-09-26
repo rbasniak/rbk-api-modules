@@ -29,7 +29,7 @@ namespace rbkApiModules.Analytics.SqlServer
             return await _context.Data.Where(x => x.Timestamp >= from && x.Timestamp <= to).ToListAsync();
         }
 
-        public async Task<List<AnalyticsEntry>> InTimeRangeAsync(DateTime from, DateTime to, string[] versions, string[] areas, 
+        public async Task<List<AnalyticsEntry>> FilterAsync(DateTime from, DateTime to, string[] versions, string[] areas, 
             string[] domains, string[] actions, string[] users, string[] agents, string[] responses, string[] methods, int duration, string entityId)
         {
             var query = _context.Data

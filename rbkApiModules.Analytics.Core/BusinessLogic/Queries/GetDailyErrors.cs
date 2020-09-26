@@ -47,7 +47,7 @@ namespace rbkApiModules.Analytics.Core
 
             protected override async Task<object> ExecuteAsync(Command request)
             {
-                var data = await _context.InTimeRangeAsync(request.DateFrom, request.DateTo, null, null, null, null, null,
+                var data = await _context.FilterAsync(request.DateFrom, request.DateTo, null, null, null, null, null,
                     null, new[] { "500" }, null, 0, null);
 
                 var groupedData = data.GroupBy(x => x.Timestamp.Date).ToList();

@@ -25,8 +25,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Serilog.AspNetCore" Version="3.4.0" />
-    <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
   </ItemGroup>
 
@@ -39,6 +37,9 @@
     <ProjectReference Include="..\rbkApiModules.Auditing.UI\rbkApiModules.Auditing.UI.csproj" />
     <ProjectReference Include="..\rbkApiModules.Authentication\rbkApiModules.Authentication.csproj" />
     <ProjectReference Include="..\rbkApiModules.Comments\rbkApiModules.Comments.csproj" />
+    <ProjectReference Include="..\rbkApiModules.Diganostics.Core\rbkApiModules.Diagnostics.Core.csproj" />
+    <ProjectReference Include="..\rbkApiModules.Diganostics.SqlServer\rbkApiModules.Diagnostics.SqlServer.csproj" />
+    <ProjectReference Include="..\rbkApiModules.Diganostics.UI\rbkApiModules.Diagnostics.UI.csproj" />
     <ProjectReference Include="..\rbkApiModules.Infrastructure.Api\rbkApiModules.Infrastructure.Api.csproj" />
     <ProjectReference Include="..\rbkApiModules.Infrastructure.MediatR\rbkApiModules.Infrastructure.MediatR.csproj" />
     <ProjectReference Include="..\rbkApiModules.Infrastructure.Models\rbkApiModules.Infrastructure.Models.csproj" />
