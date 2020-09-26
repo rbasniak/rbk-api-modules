@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace rbkApiModules.Analytics.Core.Controller
 {
+    [ApplicationArea("analytics")]
     [AllowAnonymous]
     [ApiController]
     [Route("api/[controller]")]
@@ -58,7 +59,7 @@ namespace rbkApiModules.Analytics.Core.Controller
 
         [HttpPost]
         [Route("most-used-read-endpoints")]
-        public async Task<ActionResult<SimpleLabeledValue<int>[]>> GetMostUsedReadEndpoints([FromBody] GetMostUsedReadEndpoints.Command data)
+        public async Task<ActionResult<SimpleLabeledValue<int>[]>> GetMostUsedReadEndpoints([FromBody] GetMostUsedEndpoints.Command data)
         {
             var result = await Mediator.Send(data);
 
@@ -66,8 +67,8 @@ namespace rbkApiModules.Analytics.Core.Controller
         }
 
         [HttpPost]
-        [Route("most-used-write-endpoints")]
-        public async Task<ActionResult<SimpleLabeledValue<int>[]>> GetMostUsedWriteEndpoints([FromBody] GetMostUsedWriteEndpoints.Command data)
+        [Route("most-resource-hungry-endpoints")]
+        public async Task<ActionResult<SimpleLabeledValue<int>[]>> GetMostResourceHungryEndpoints([FromBody] GetMostResourceHungryEndpoints.Command data)
         {
             var result = await Mediator.Send(data);
 
@@ -104,6 +105,24 @@ namespace rbkApiModules.Analytics.Core.Controller
         [HttpPost]
         [Route("biggest-responses-endpoints")]
         public async Task<ActionResult<SimpleLabeledValue<int>[]>> GetBiggestResponsesEndpoints([FromBody] GetBiggestResponsesEndpoints.Command data)
+        {
+            var result = await Mediator.Send(data);
+
+            return HttpResponse(result);
+        }
+
+        [HttpPost]
+        [Route("most-active-days")]
+        public async Task<ActionResult<SimpleLabeledValue<int>[]>> GetMostActiveDays([FromBody] GetMostActiveDays.Command data)
+        {
+            var result = await Mediator.Send(data);
+
+            return HttpResponse(result);
+        }
+
+        [HttpPost]
+        [Route("most-active-hours")]
+        public async Task<ActionResult<SimpleLabeledValue<int>[]>> GetMostActiveHours([FromBody] GetMostActiveHours.Command data)
         {
             var result = await Mediator.Send(data);
 
@@ -174,8 +193,53 @@ namespace rbkApiModules.Analytics.Core.Controller
         }
 
         [HttpPost]
+        [Route("daily-transactions")]
+        public async Task<ActionResult<DateValuePoint[]>> GetDailyTransactions([FromBody] GetDailyTransactions.Command data)
+        {
+            var result = await Mediator.Send(data);
+
+            return HttpResponse(result);
+        }
+
+        [HttpPost]
+        [Route("daily-database-time")]
+        public async Task<ActionResult<DateValuePoint[]>> GetDailyDatabaseUsage([FromBody] GetDailyDatabaseUsage.Command data)
+        {
+            var result = await Mediator.Send(data);
+
+            return HttpResponse(result);
+        }
+
+        [HttpPost]
         [Route("daily-authentication-failures")]
         public async Task<ActionResult<DateValuePoint[]>> GetDailyAuthenticationFailures([FromBody] GetDailyAuthenticationFailures.Command data)
+        {
+            var result = await Mediator.Send(data);
+
+            return HttpResponse(result);
+        }
+
+        [HttpPost]
+        [Route("average-transactions-per-endpoint")]
+        public async Task<ActionResult<DateValuePoint[]>> GetAverageTransactionsPerEndpoint([FromBody] GetAverageTransactionsPerEndpoint.Command data)
+        {
+            var result = await Mediator.Send(data);
+
+            return HttpResponse(result);
+        }
+
+        [HttpPost]
+        [Route("total-time-comsumption-per-write-endpoint")]
+        public async Task<ActionResult<SimpleLabeledValue<int>[]>> GetTotalTimeComsumptionPerWriteEndpoint([FromBody] GetTotalTimeComsumptionPerWriteEndpoint.Command data)
+        {
+            var result = await Mediator.Send(data);
+
+            return HttpResponse(result);
+        }
+
+        [HttpPost]
+        [Route("total-time-comsumption-per-read-endpoint")]
+        public async Task<ActionResult<SimpleLabeledValue<int>[]>> GetTotalTimeComsumptionPerReadEndpoint([FromBody] GetTotalTimeComsumptionPerReadEndpoint.Command data)
         {
             var result = await Mediator.Send(data);
 
