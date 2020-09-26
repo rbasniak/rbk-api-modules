@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
+using rbkApiModules.Infrastructure.Api;
 using System.Linq;
 
 namespace rbkApiModules.Analytics.Core
@@ -32,11 +33,19 @@ namespace rbkApiModules.Analytics.Core
             var action = context.ActionDescriptor as ControllerActionDescriptor;
             if (action != null)
             {
-                var attribute = action.MethodInfo.GetCustomAttributes(inherit: true).FirstOrDefault(x => x.GetType() == typeof(ApplicationAreaAttribute));
+                var controller = action.ControllerTypeInfo;
 
-                if (attribute != null)
+                var controllerAttribute = action.ControllerTypeInfo.GetCustomAttributes(inherit: true).FirstOrDefault(x => x.GetType() == typeof(ApplicationAreaAttribute));
+
+                var actionAttribute = action.MethodInfo.GetCustomAttributes(inherit: true).FirstOrDefault(x => x.GetType() == typeof(ApplicationAreaAttribute));
+
+                if (actionAttribute != null)
                 {
-                    area = (attribute as ApplicationAreaAttribute).Area;
+                    area = (actionAttribute as ApplicationAreaAttribute).Area;
+                }
+                else if (controllerAttribute != null)
+                {
+                    area = (controllerAttribute as ApplicationAreaAttribute).Area;
                 }
             }
 

@@ -36,10 +36,16 @@ namespace rbkApiModules.Analytics.Core
                 var domain = user.Claims.FirstOrDefault(c => c.Type == "domain")?.Value;
 
                 // TODO: get version from somewhere
-                // TODO: get was cached from somewhere
-                var data = new AnalyticsEntry("1.0.0", "", identity, username, domain, context.Connection.RemoteIpAddress.ToString(),
-                    context.Request.Headers["User-Agent"], context.Request.Method + " " + context.Request.Path, context.Request.Method, 
-                    "", -1, -1, -1, -1, false);
+                var data = new AnalyticsEntry(); 
+
+                data.Version = "1.0.0";
+                data.Identity = identity;
+                data.Username = username;
+                data.Domain = domain;
+                data.IpAddress = context.Connection.RemoteIpAddress.ToString();
+                data.UserAgent = context.Request.Headers["User-Agent"];
+                data.Path = context.Request.Method + " " + context.Request.Path;
+                data.Method = context.Request.Method;
 
                 //new MemoryStream. 
                 using (var responseBody = new MemoryStream())
@@ -71,6 +77,7 @@ namespace rbkApiModules.Analytics.Core
                     {
                         var areaData = context.Items.FirstOrDefault(x => x.Key.ToString() == "log-data-area");
                         var pathData = context.Items.FirstOrDefault(x => x.Key.ToString() == "log-data-path");
+                        var wasCached = context.Items.FirstOrDefault(x => x.Key.ToString() == "was-cached");
 
                         if (areaData.Key != null)
                         {
@@ -86,6 +93,12 @@ namespace rbkApiModules.Analytics.Core
                         data.Response = context.Response.StatusCode;
                         data.RequestSize = requestSize;
                         data.ResponseSize = responseSize;
+
+
+                        var transactionsCounter = context.RequestServices.GetService<ITransactionCounter>();
+
+                        data.TransactionCount = transactionsCounter.Transactions;
+                        data.TotalTransactionTime = (int)transactionsCounter.TotalTime;
 
                         var store = context.RequestServices.GetService<IAnalyticModuleStore>();
 
