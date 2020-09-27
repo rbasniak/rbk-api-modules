@@ -63,11 +63,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.SharedUI", "r
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Diagnostics", "Diagnostics", "{358BD923-4922-4B95-913F-2E237C55B122}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Diagnostics.Core", "rbkApiModules.Diganostics.Core\rbkApiModules.Diagnostics.Core.csproj", "{143E6CCD-8CF8-41B5-BD1F-FEDC65A134EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Diagnostics.Core", "rbkApiModules.Diagnostics.Core\rbkApiModules.Diagnostics.Core.csproj", "{143E6CCD-8CF8-41B5-BD1F-FEDC65A134EC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Diagnostics.SqlServer", "rbkApiModules.Diganostics.SqlServer\rbkApiModules.Diagnostics.SqlServer.csproj", "{6EF3EE57-1EC5-42E7-B5A7-0370A06B45C3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Diagnostics.SqlServer", "rbkApiModules.Diagnostics.SqlServer\rbkApiModules.Diagnostics.SqlServer.csproj", "{6EF3EE57-1EC5-42E7-B5A7-0370A06B45C3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Diagnostics.UI", "rbkApiModules.Diganostics.UI\rbkApiModules.Diagnostics.UI.csproj", "{6C43C363-718F-4C52-94F6-125339EB1B6B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Diagnostics.UI", "rbkApiModules.Diagnostics.UI\rbkApiModules.Diagnostics.UI.csproj", "{6C43C363-718F-4C52-94F6-125339EB1B6B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.Diagnostics.Commons", "rbkApiModules.Diagnostics.Commons\rbkApiModules.Diagnostics.Commons.csproj", "{F68D9D60-3456-4834-BD3A-068FCC124F17}"
 EndProject
