@@ -13,6 +13,8 @@ namespace rbkApiModules.Analytics.SqlServer
         {
             services.AddTransient<ITransactionCounter, TransactionCounter>();
 
+            services.AddTransient<DatabaseLogInterceptor>();
+
             services.AddDbContext<SqlServerAnalyticsContext>(options =>
                 options.UseSqlServer(connectionString));
 

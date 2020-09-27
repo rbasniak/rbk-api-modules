@@ -23,6 +23,8 @@ using rbkApiModules.Analytics.UI;
 using rbkApiModules.Auditing.UI;
 using rbkApiModules.SharedUI;
 using rbkApiModules.Diagnostics.SqlServer;
+using rbkApiModules.Diagnostics.UI;
+using rbkApiModules.Diagnostics.Core;
 
 namespace rbkApiModules.Demo
 {
@@ -41,7 +43,8 @@ namespace rbkApiModules.Demo
 
         private Assembly[] AssembliesForServices => new Assembly[]
         {
-            Assembly.GetAssembly(typeof(AnalyticsDataService))
+            Assembly.GetAssembly(typeof(AnalyticsDataService)),
+            Assembly.GetAssembly(typeof(DiagnosticsDataService))
         };
 
         private Assembly[] AssembliesForAutoMapper => new Assembly[]
@@ -53,9 +56,9 @@ namespace rbkApiModules.Demo
         private Assembly[] AssembliesBlazorRouting => new Assembly[]
         {
             Assembly.GetAssembly(typeof(IAnalyticsDataService)),
+            Assembly.GetAssembly(typeof(IDiagnosticsDataService)),
             Assembly.GetAssembly(typeof(Class2)),
         };
-
 
         private Assembly[] AssembliesForMediatR => new Assembly[]
         {
@@ -64,6 +67,7 @@ namespace rbkApiModules.Demo
             Assembly.GetAssembly(typeof(UserLogin.Command)),
             Assembly.GetAssembly(typeof(GetUiDefinitions.Command)),
             Assembly.GetAssembly(typeof(FilterAnalyticsEntries.Command)),
+            Assembly.GetAssembly(typeof(FilterDiagnosticsEntries.Command)),
             // Assembly.GetAssembly(typeof(AuditingPostProcessingBehavior<,>))
         };
 
@@ -75,8 +79,6 @@ namespace rbkApiModules.Demo
             //    .EnableDetailedErrors()
             //    .EnableSensitiveDataLogging());
 
-            services.AddTransient<DatabaseLogInterceptor>();
-
             services.AddDbContext<DatabaseContext>((scope, options) => options
                 .UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Database"))
@@ -87,7 +89,16 @@ namespace rbkApiModules.Demo
 
             services.AddTransient<DbContext, DatabaseContext>();
 
-            services.AddRbkSharedUIModule(AssembliesBlazorRouting);
+            services.AddRbkSharedUIModule(AssembliesBlazorRouting, new RbkSharedUIModuleOptions 
+            {
+                UseAnalyticsRoutes = true,
+                UseAuditingRoutes = true,
+                UseDiagnosticsRoutes = true,
+                CustomRoutes = new List<RouteDefinition>
+                {
+                    new RouteDefinition("/swagger/index.html", "Swagger")
+                }
+            });
 
             var xmlPath = Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml");
             services.AddRbkApiInfrastructureModule(AssembliesForServices, AssembliesForAutoMapper,
