@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\rbkApiModules.Diganostics.Core\rbkApiModules.Diagnostics.Core.csproj" />
+    <ProjectReference Include="..\rbkApiModules.Diagnostics.Core\rbkApiModules.Diagnostics.Core.csproj" />
     <ProjectReference Include="..\rbkApiModules.Infrastructure.Models\rbkApiModules.Infrastructure.Models.csproj" />
   </ItemGroup>
 
