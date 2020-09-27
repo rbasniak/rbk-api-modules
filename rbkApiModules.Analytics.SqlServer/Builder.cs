@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using rbkApiModules.Analytics.Core;
+using rbkApiModules.Diagnostics.Core;
 using System;
 using System.Linq;
 
@@ -13,10 +14,14 @@ namespace rbkApiModules.Analytics.SqlServer
         {
             services.AddTransient<ITransactionCounter, TransactionCounter>();
 
-            services.AddTransient<DatabaseLogInterceptor>();
+            services.AddTransient<DatabaseAnalyticsInterceptor>();
 
-            services.AddDbContext<SqlServerAnalyticsContext>(options =>
-                options.UseSqlServer(connectionString));
+            services.AddDbContext<SqlServerAnalyticsContext>((scope, options) => options
+                .UseSqlServer(connectionString)
+                .AddInterceptors(scope.GetRequiredService<DatabaseDiagnosticsInterceptor>())
+                //.EnableDetailedErrors()
+                //.EnableSensitiveDataLogging()
+            );
 
             services.AddTransient<IAnalyticModuleStore, SqlServerAnalyticStore>();
         }

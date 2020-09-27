@@ -20,7 +20,6 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\rbkApiModules.Analytics.Core\rbkApiModules.Analytics.Core.csproj" />
     <ProjectReference Include="..\rbkApiModules.Diganostics.Core\rbkApiModules.Diagnostics.Core.csproj" />
   </ItemGroup>
 

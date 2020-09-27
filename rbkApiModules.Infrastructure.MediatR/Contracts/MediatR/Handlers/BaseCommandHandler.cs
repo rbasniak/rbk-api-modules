@@ -1,7 +1,11 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using rbkApiModules.Diagnostics.Commons;
 using rbkApiModules.Infrastructure.Models;
+using rbkApiModules.Infrastructure.Utilities;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,11 +22,13 @@ namespace rbkApiModules.Infrastructure.MediatR
     {
         protected TDatabase _context;
         protected IHttpContextAccessor _httpContextAccessor;
+        private readonly IDiagnosticsModuleStore _diagnosticsStore;
 
         public BaseCommandHandler(TDatabase context, IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
             _context = context;
+            _diagnosticsStore = httpContextAccessor.HttpContext.RequestServices.GetService<IDiagnosticsModuleStore>();
         }
 
         /// <summary>
@@ -47,6 +53,9 @@ namespace rbkApiModules.Infrastructure.MediatR
             catch (Exception ex)
             {
                 response.AddUnhandledError(ex.Message);
+
+                var exceptionData = new DiagnosticsEntry(_httpContextAccessor.HttpContext, request.GetType().FullName, ex, request);
+                _diagnosticsStore.StoreData(exceptionData);
             }
 
             return response;
@@ -67,10 +76,12 @@ namespace rbkApiModules.Infrastructure.MediatR
         where TCommand : IRequest<CommandResponse>
     {
         protected IHttpContextAccessor _httpContextAccessor;
+        private readonly IDiagnosticsModuleStore _diagnosticsStore;
 
         public BaseCommandHandler(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
+            _diagnosticsStore = httpContextAccessor.HttpContext.RequestServices.GetService<IDiagnosticsModuleStore>();
         }
 
         /// <summary>
@@ -94,6 +105,9 @@ namespace rbkApiModules.Infrastructure.MediatR
             catch (Exception ex)
             {
                 response.AddUnhandledError(ex.Message);
+
+                var exceptionData = new DiagnosticsEntry(_httpContextAccessor.HttpContext, request.GetType().FullName, ex, request);
+                _diagnosticsStore.StoreData(exceptionData);
             }
 
             return response;

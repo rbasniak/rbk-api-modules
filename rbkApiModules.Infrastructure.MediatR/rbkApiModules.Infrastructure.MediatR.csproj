@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\rbkApiModules.Diagnostics.Commons\rbkApiModules.Diagnostics.Commons.csproj" />
     <ProjectReference Include="..\rbkApiModules.Infrastructure.Models\rbkApiModules.Infrastructure.Models.csproj" />
     <ProjectReference Include="..\rbkApiModules.Infrastructure.Utilities\rbkApiModules.Infrastructure.Utilities.csproj" />
   </ItemGroup>

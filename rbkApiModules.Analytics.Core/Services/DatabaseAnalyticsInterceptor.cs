@@ -8,43 +8,13 @@ using System.Threading.Tasks;
 
 namespace rbkApiModules.Analytics.Core
 {
-    public class DatabaseLogInterceptor : DbCommandInterceptor
-    {
-        //private Exception WrapEntityFrameworkException(DbCommand command, Exception ex)
-        //{
-        //    var newException = new Exception("EntityFramework command failed!", ex);
-        //    AddParamsToException(command.Parameters, newException);
-        //    return newException;
-        //}
-
-        //private void AddParamsToException(DbParameterCollection parameters, Exception exception)
-        //{
-        //    foreach (DbParameter param in parameters)
-        //    {
-        //        exception.Data.Add(param.ParameterName, param.Value.ToString());
-        //    }
-        //}
-
+    public class DatabaseAnalyticsInterceptor : DbCommandInterceptor
+    { 
         private readonly ITransactionCounter _transactionCounter;
 
-        public DatabaseLogInterceptor(ITransactionCounter transactionCounter)
+        public DatabaseAnalyticsInterceptor(ITransactionCounter transactionCounter)
         {
             _transactionCounter = transactionCounter;
-        }
-
-        private Exception WrapEntityFrameworkException(DbCommand command, Exception ex)
-        {
-            var newException = new Exception("EFCore command failed", ex);
-            AddParamsToException(command.Parameters, newException);
-            return newException;
-        }
-
-        private void AddParamsToException(DbParameterCollection parameters, Exception exception)
-        {
-            foreach (DbParameter param in parameters)
-            {
-                exception.Data.Add(param.ParameterName, param.Value.ToString());
-            }
         }
 
         public override DbCommand CommandCreated(CommandEndEventData eventData, DbCommand result)
@@ -100,21 +70,6 @@ namespace rbkApiModules.Analytics.Core
             _transactionCounter.Transactions++;
 
             return base.ReaderExecutedAsync(command, eventData, result, cancellationToken);
-        }
-         
-        public override void CommandFailed(DbCommand command, CommandErrorEventData eventData)
-        {
-            var parameters = command.Parameters;
-            var exception = eventData.Exception;
-            var type = eventData.Command.CommandType;
-        }
-
-        public override Task CommandFailedAsync(DbCommand command, CommandErrorEventData eventData, CancellationToken cancellationToken = default)
-        {
-            var parameters = command.Parameters;
-            var exception = eventData.Exception;
-            var type = eventData.Command.CommandType;
-            return base.CommandFailedAsync(command, eventData, cancellationToken);
-        }
+        } 
     }
 }

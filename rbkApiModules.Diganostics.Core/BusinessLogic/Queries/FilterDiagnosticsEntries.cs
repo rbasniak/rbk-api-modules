@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using rbkApiModules.Diagnostics.Commons;
 using rbkApiModules.Diagnostics.Core;
 using rbkApiModules.Infrastructure.MediatR;
 using System;

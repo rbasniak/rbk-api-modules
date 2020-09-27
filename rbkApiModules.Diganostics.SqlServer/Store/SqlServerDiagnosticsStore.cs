@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using rbkApiModules.Diagnostics.Commons;
 using rbkApiModules.Diagnostics.Core;
 using System;
 using System.Collections.Generic;
@@ -53,7 +54,7 @@ namespace rbkApiModules.Diagnostics.SqlServer
 
             if (sources != null && sources.Length > 0)
             {
-                query = query.Where(x => sources.Any(action => x.Source == action));
+                query = query.Where(x => sources.Any(action => x.ExceptionSource == action));
             }
 
             if (users != null && users.Length > 0)
@@ -63,27 +64,27 @@ namespace rbkApiModules.Diagnostics.SqlServer
 
             if (browsers != null && browsers.Length > 0)
             {
-                query = query.Where(x => agents.Any(browser => x.Browser == browser));
+                query = query.Where(x => agents.Any(browser => x.ClientBrowser == browser));
             }
 
             if (agents != null && agents.Length > 0)
             {
-                query = query.Where(x => agents.Any(agent => x.UserAgent == agent));
+                query = query.Where(x => agents.Any(agent => x.ClientUserAgent == agent));
             }
 
             if (devices != null && devices.Length > 0)
             {
-                query = query.Where(x => devices.Any(device => x.Device == device));
+                query = query.Where(x => devices.Any(device => x.ClientDevice == device));
             }
 
             if (operatinSystems != null && operatinSystems.Length > 0)
             {
-                query = query.Where(x => operatinSystems.Any(os => x.OperatinSystem + " " + x.OperatinSystemVersion  == os));
+                query = query.Where(x => operatinSystems.Any(os => x.ClientOperatingSystem + " " + x.ClientOperatingSystemVersion  == os));
             }
 
             if (!String.IsNullOrEmpty(messageContains))
             {
-                query = query.Where(x => EF.Functions.Like(x.Message, $"%{messageContains}%"));
+                query = query.Where(x => EF.Functions.Like(x.ExceptionMessage, $"%{messageContains}%"));
             }
 
             if (!String.IsNullOrEmpty(requestId))

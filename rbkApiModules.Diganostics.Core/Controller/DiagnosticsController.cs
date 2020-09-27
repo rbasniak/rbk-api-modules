@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using rbkApiModules.Diagnostics.Commons;
 using rbkApiModules.Infrastructure.Api;
 using System.Threading.Tasks;
 

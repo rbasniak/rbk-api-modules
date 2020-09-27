@@ -73,16 +73,11 @@ namespace rbkApiModules.Demo
 
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddDbContext<DatabaseContext>(options =>
-            //    options.UseSqlServer(
-            //        Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Database"))
-            //    .EnableDetailedErrors()
-            //    .EnableSensitiveDataLogging());
-
             services.AddDbContext<DatabaseContext>((scope, options) => options
                 .UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Database"))
-                .AddInterceptors(scope.GetRequiredService<DatabaseLogInterceptor>())
+                .AddInterceptors(scope.GetRequiredService<DatabaseAnalyticsInterceptor>())
+                .AddInterceptors(scope.GetRequiredService<DatabaseDiagnosticsInterceptor>())
                 .EnableDetailedErrors()
                 .EnableSensitiveDataLogging()
             );

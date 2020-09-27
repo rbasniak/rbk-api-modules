@@ -1,9 +1,8 @@
-﻿using rbkApiModules.Diagnostics.Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace rbkApiModules.Diagnostics.Core
+namespace rbkApiModules.Diagnostics.Commons
 {
     public interface IDiagnosticsModuleStore
     {

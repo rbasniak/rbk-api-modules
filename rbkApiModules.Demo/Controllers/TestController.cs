@@ -17,6 +17,7 @@ namespace rbkApiModules.Demo.Controllers
         [Route("test1")]
         public ActionResult Test1()
         {
+            throw new System.DivideByZeroException("WTF?!");
             HttpContext.SetResponseSource();
             return StatusCode(500);
         }

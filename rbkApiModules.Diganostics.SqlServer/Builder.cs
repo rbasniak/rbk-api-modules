@@ -3,8 +3,11 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Extensions;
 using Newtonsoft.Json;
+using rbkApiModules.Diagnostics.Commons;
 using rbkApiModules.Diagnostics.Core;
+using rbkApiModules.Infrastructure.Utilities;
 using System;
 using System.Linq;
 using System.Net;
@@ -15,8 +18,14 @@ namespace rbkApiModules.Diagnostics.SqlServer
     {
         public static void AddSqlServerRbkApiDiagnosticsModule(this IServiceCollection services, string connectionString)
         {
-            services.AddDbContext<SqlServerDiagnosticsContext>(options =>
-                options.UseSqlServer(connectionString));
+            services.AddTransient<DatabaseDiagnosticsInterceptor>();
+
+            services.AddDbContext<SqlServerDiagnosticsContext>((scope, options) => options
+                .UseSqlServer(connectionString)
+                .AddInterceptors(scope.GetRequiredService<DatabaseDiagnosticsInterceptor>())
+                //.EnableDetailedErrors()
+                //.EnableSensitiveDataLogging()
+            );
 
             services.AddTransient<IDiagnosticsModuleStore, SqlServerDiagnosticsStore>();
         }
@@ -30,11 +39,26 @@ namespace rbkApiModules.Diagnostics.SqlServer
                     context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                     context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
 
-                    var error = context.Features.Get<IExceptionHandlerFeature>();
-                    if (error != null)
+                    var errorHandler = context.Features.Get<IExceptionHandlerFeature>();
+                    if (errorHandler != null)
                     {
+                        var scopeFactory = app.ApplicationServices.GetService<IServiceScopeFactory>();
+
+                        // Must create a new scope because if we have any errors while saving the diagnostics data, the
+                        // invalid data will be kept in the context and EF will tries to save it again
+                        using (var scope = scopeFactory.CreateScope())
+                        {
+                            using (var database = scope.ServiceProvider.GetService<SqlServerDiagnosticsContext>())
+                            {
+                                var data = new DiagnosticsEntry(context, "GlobalExceptionHandler", errorHandler.Error, null);
+
+                                await database.AddAsync(data);
+                                await database.SaveChangesAsync();
+                            }
+                        }
+
                         await context.Response.WriteAsync(
-                            JsonConvert.SerializeObject(new { Errors = new string[] { error.Error.Message } }))
+                            JsonConvert.SerializeObject(new { Errors = new string[] { "Erro interno no servidor." } }))
                                 .ConfigureAwait(false);
                     }
                 });

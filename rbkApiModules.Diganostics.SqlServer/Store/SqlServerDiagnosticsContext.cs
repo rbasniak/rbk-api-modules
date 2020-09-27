@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using rbkApiModules.Diagnostics.Commons;
 using rbkApiModules.Diagnostics.Core;
 using System;
 

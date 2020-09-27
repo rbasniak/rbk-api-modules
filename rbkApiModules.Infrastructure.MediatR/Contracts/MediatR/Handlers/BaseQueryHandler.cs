@@ -1,10 +1,13 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using rbkApiModules.Diagnostics.Commons;
 using rbkApiModules.Infrastructure.Models;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace rbkApiModules.Infrastructure.MediatR
 {
@@ -14,11 +17,13 @@ namespace rbkApiModules.Infrastructure.MediatR
     {
         protected readonly TDatabase _context;
         protected IHttpContextAccessor _httpContextAccessor;
+        private readonly IDiagnosticsModuleStore _diagnosticsStore;
 
         public BaseQueryHandler(TDatabase context, IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
             _context = context;
+            _diagnosticsStore = httpContextAccessor.HttpContext.RequestServices.GetService<IDiagnosticsModuleStore>();
         }
 
         public async Task<QueryResponse> Handle(TCommand request, CancellationToken cancellationToken)
@@ -38,6 +43,9 @@ namespace rbkApiModules.Infrastructure.MediatR
             catch (Exception ex)
             {
                 response.AddUnhandledError(ex.Message);
+
+                var exceptionData = new DiagnosticsEntry(_httpContextAccessor.HttpContext, request.GetType().FullName, ex, request);
+                _diagnosticsStore.StoreData(exceptionData);
             }
 
             return response;
@@ -50,10 +58,12 @@ namespace rbkApiModules.Infrastructure.MediatR
         where TCommand : IRequest<QueryResponse>
     {
         protected IHttpContextAccessor _httpContextAccessor;
+        private readonly IDiagnosticsModuleStore _diagnosticsStore;
 
         public BaseQueryHandler(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
+            _diagnosticsStore = httpContextAccessor.HttpContext.RequestServices.GetService<IDiagnosticsModuleStore>();
         }
 
         public async Task<QueryResponse> Handle(TCommand request, CancellationToken cancellationToken)
@@ -73,6 +83,9 @@ namespace rbkApiModules.Infrastructure.MediatR
             catch (Exception ex)
             {
                 response.AddUnhandledError(ex.Message);
+
+                var exceptionData = new DiagnosticsEntry(_httpContextAccessor.HttpContext, request.GetType().FullName, ex, request);
+                _diagnosticsStore.StoreData(exceptionData);
             }
 
             return response;

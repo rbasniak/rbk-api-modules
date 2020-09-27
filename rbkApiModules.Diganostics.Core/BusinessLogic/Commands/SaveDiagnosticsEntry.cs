@@ -1,6 +1,8 @@
 ﻿using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using rbkApiModules.Diagnostics.Commons;
 using rbkApiModules.Infrastructure.MediatR;
 using rbkApiModules.Utilities;
 using System;
@@ -17,14 +19,36 @@ namespace rbkApiModules.Diagnostics.Core
             {
 
             }
-            public Command(DateTime from, DateTime to)
-            {
-                DateFrom = from;
-                DateTo = to;
-            }
 
-            public DateTime DateFrom { get; set; }
-            public DateTime DateTo { get; set; }
+            public string StackTrace { get; set; }
+
+            public string InputData { get; set; }
+
+            public string ApplicationArea { get; set; }
+
+            public string ApplicationVersion { get; set; }
+
+            public string ApplicationLayer { get; set; }
+
+            public string DatabaseExceptions { get; set; }
+            
+            public string ExceptionMessage { get; set; }
+
+            public string Username { get; set; }
+
+            public string Domain { get; set; }
+
+            public string ExceptionSource { get; set; }
+
+            public string ClientBrowser { get; set; }
+
+            public string ClientUserAgent { get; set; }
+
+            public string ClientOperatingSystem { get; set; }
+
+            public string ClientOperatingSystemVersion { get; set; }
+
+            public string ClientDevice { get; set; }
         }
 
         public class Validator : AbstractValidator<Command>
@@ -45,9 +69,29 @@ namespace rbkApiModules.Diagnostics.Core
                 _context = context;
             }
 
-            protected override async Task<object> ExecuteAsync(Command request)
+            protected override Task<object> ExecuteAsync(Command request)
             {
-                return null;
+                var data = new DiagnosticsEntry();
+
+                data.ApplicationArea = request.ApplicationArea;
+                data.ApplicationLayer = request.ApplicationLayer;
+                data.ApplicationVersion = request.ApplicationVersion;
+                data.ClientBrowser = request.ClientBrowser;
+                data.DatabaseExceptions = request.DatabaseExceptions;
+                data.ClientDevice = request.ClientDevice;
+                data.Domain = request.Domain;
+                data.StackTrace = request.StackTrace;
+                data.InputData = request.InputData;
+                data.ExceptionMessage = request.ExceptionMessage;
+                data.ClientOperatingSystem = request.ClientOperatingSystem;
+                data.ClientOperatingSystemVersion = request.ClientOperatingSystemVersion;
+                data.ExceptionSource = request.ExceptionSource;
+                data.ClientUserAgent = request.ClientUserAgent;
+                data.Username = request.Username;
+
+                _context.StoreData(data);
+
+                return Task.FromResult<object>(null);
             }
         }
     }
