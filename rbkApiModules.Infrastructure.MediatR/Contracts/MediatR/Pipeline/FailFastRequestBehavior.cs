@@ -55,18 +55,18 @@ namespace rbkApiModules.Infrastructure.MediatR
                     {
                         composedValidators.Add((IValidator)validator);
                     }
-
-                    // Cuidado com Task.Result, pode ocasionar deadlocks.
-                    var failures = composedValidators
-                        .Select(async v => await v.ValidateAsync(context))
-                        .SelectMany(result => result.Result.Errors)
-                        .Where(f => f != null)
-                        .ToList();
-
-                    return failures.Any()
-                        ? Errors(failures)
-                        : next();
                 }
+
+                // Cuidado com Task.Result, pode ocasionar deadlocks.
+                var failures = composedValidators
+                    .Select(async v => await v.ValidateAsync(context))
+                    .SelectMany(result => result.Result.Errors)
+                    .Where(f => f != null)
+                    .ToList();
+
+                return failures.Any()
+                    ? Errors(failures)
+                    : next();
             }
             catch (Exception ex)
             {

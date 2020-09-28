@@ -6,6 +6,8 @@ using rbkApiModules.Demo.Database;
 using rbkApiModules.Demo.Models;
 using System;
 using System.Threading.Tasks;
+using System.Threading;
+using Microsoft.EntityFrameworkCore;
 
 namespace rbkApiModules.Demo.BusinessLogic
 {
@@ -19,9 +21,21 @@ namespace rbkApiModules.Demo.BusinessLogic
 
         public class Validator : AbstractValidator<Command>
         {
-            public Validator()
+            private readonly DatabaseContext _context;
+
+            public Validator(DatabaseContext context)
             {
+                _context = context;
+
                 CascadeMode = CascadeMode.Stop;
+
+                RuleFor(x => x.Username)
+                    .MustAsync(MustNotExist).WithMessage("Usuário já existente");
+            }
+
+            private async Task<bool> MustNotExist(Command command, string username, CancellationToken arg2)
+            {
+                return !(await _context.Users.AnyAsync(x => EF.Functions.Like(x.Username, username)));
             }
         }
 
