@@ -54,8 +54,11 @@ namespace rbkApiModules.Infrastructure.MediatR
             {
                 response.AddUnhandledError(ex.Message);
 
-                var exceptionData = new DiagnosticsEntry(_httpContextAccessor.HttpContext, request.GetType().FullName, ex, request);
-                _diagnosticsStore.StoreData(exceptionData);
+                if (_httpContextAccessor != null)
+                {
+                    var exceptionData = new DiagnosticsEntry(_httpContextAccessor.HttpContext, request.GetType().FullName, ex, request);
+                    _diagnosticsStore.StoreData(exceptionData);
+                }
             }
 
             return response;
@@ -106,8 +109,11 @@ namespace rbkApiModules.Infrastructure.MediatR
             {
                 response.AddUnhandledError(ex.Message);
 
-                var exceptionData = new DiagnosticsEntry(_httpContextAccessor.HttpContext, request.GetType().FullName, ex, request);
-                _diagnosticsStore.StoreData(exceptionData);
+                if (_httpContextAccessor != null)
+                {
+                    var exceptionData = new DiagnosticsEntry(_httpContextAccessor.HttpContext, request.GetType().FullName, ex, request);
+                    _diagnosticsStore.StoreData(exceptionData);
+                }
             }
 
             return response;
