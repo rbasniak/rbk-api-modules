@@ -3,8 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using rbkApiModules.Analytics.Core;
 using rbkApiModules.Diagnostics.Core;
+using rbkApiModules.Utilities.Extensions;
 using System;
 using System.Linq;
+using System.Reflection;
 
 namespace rbkApiModules.Analytics.SqlServer
 {
