@@ -1,3 +1,10 @@
+## 1.2.10 (2020-09-29)
+
+
+### Bug Fixes
+
+*  fixed internal injection in tue base handlers ([119b6fb](https://github.com/rbasniak/rbk-api-modules/commit/119b6fb0072bad91d3c3548ca4e44684b3cc870b))
+
 ## 1.2.9 (2020-09-29)
 
 ## 1.2.8 (2020-09-28)
