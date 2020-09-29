@@ -34,9 +34,9 @@ jobs:
       - name: Install dependencies
         run: dotnet restore
       - name: Build
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build --configuration Debug --no-restore
       - name: Create NuGet Package
-        run: dotnet pack -c Release --include-symbols --include-source
+        run: dotnet pack -c Debug --include-symbols --include-source
         working-directory: .
       - name: Publish Nuget Package
         run: dotnet nuget push **/*.symbols.nupkg --api-key ${{ secrets.nuget_api_key }} --source https://api.nuget.org/v3/index.json

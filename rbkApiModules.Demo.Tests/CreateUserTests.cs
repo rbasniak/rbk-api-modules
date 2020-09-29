@@ -9,25 +9,8 @@ using Xunit;
 
 namespace rbkApiModules.Demo.Tests
 {
-    public class CreateUserTests
-    {
-        protected DbContextOptions<DatabaseContext> SetupInMemoryDatabase(out SqliteConnection connection)
-        {
-            // In-memory database only exists while the connection is open
-            connection = new SqliteConnection("DataSource=:memory:");
-
-            return new DbContextOptionsBuilder<DatabaseContext>()
-                    .UseSqlite(connection)
-                    .Options;
-        }
-
-        protected void SeedInMemoryDatabase(DbContextOptions<DatabaseContext> databaseOptions)
-        {
-            using (var context = new DatabaseContext(databaseOptions))
-            {
-                context.Database.EnsureCreated();
-            }
-        }
+    public class CreateUserTests: BaseDatabaseTestProvider
+    { 
 
         [Fact]
         public async void Should_create_new_block()

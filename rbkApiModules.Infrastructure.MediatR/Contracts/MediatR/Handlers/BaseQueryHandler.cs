@@ -23,7 +23,6 @@ namespace rbkApiModules.Infrastructure.MediatR
         {
             _httpContextAccessor = httpContextAccessor;
             _context = context;
-            _diagnosticsStore = httpContextAccessor?.HttpContext.RequestServices.GetService<IDiagnosticsModuleStore>();
         }
 
         public async Task<QueryResponse> Handle(TCommand request, CancellationToken cancellationToken)
@@ -44,10 +43,12 @@ namespace rbkApiModules.Infrastructure.MediatR
             {
                 response.AddUnhandledError(ex.Message);
 
-                if (_httpContextAccessor != null)
+                var diagnosticsStore = _httpContextAccessor?.HttpContext?.RequestServices?.GetService<IDiagnosticsModuleStore>();
+
+                if (diagnosticsStore != null)
                 {
                     var exceptionData = new DiagnosticsEntry(_httpContextAccessor.HttpContext, request.GetType().FullName, ex, request);
-                    _diagnosticsStore.StoreData(exceptionData);
+                    diagnosticsStore.StoreData(exceptionData);
                 }
             }
 
@@ -85,12 +86,12 @@ namespace rbkApiModules.Infrastructure.MediatR
             }
             catch (Exception ex)
             {
-                response.AddUnhandledError(ex.Message);
+                var diagnosticsStore = _httpContextAccessor?.HttpContext?.RequestServices?.GetService<IDiagnosticsModuleStore>();
 
-                if (_httpContextAccessor != null)
+                if (diagnosticsStore != null)
                 {
                     var exceptionData = new DiagnosticsEntry(_httpContextAccessor.HttpContext, request.GetType().FullName, ex, request);
-                    _diagnosticsStore.StoreData(exceptionData);
+                    diagnosticsStore.StoreData(exceptionData);
                 }
             }
 

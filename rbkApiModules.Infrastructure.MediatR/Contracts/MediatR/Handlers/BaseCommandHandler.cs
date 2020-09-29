@@ -54,10 +54,12 @@ namespace rbkApiModules.Infrastructure.MediatR
             {
                 response.AddUnhandledError(ex.Message);
 
-                if (_httpContextAccessor != null)
+                var diagnosticsStore = _httpContextAccessor?.HttpContext?.RequestServices?.GetService<IDiagnosticsModuleStore>();
+
+                if (diagnosticsStore != null)
                 {
                     var exceptionData = new DiagnosticsEntry(_httpContextAccessor.HttpContext, request.GetType().FullName, ex, request);
-                    _diagnosticsStore.StoreData(exceptionData);
+                    diagnosticsStore.StoreData(exceptionData);
                 }
             }
 
@@ -79,12 +81,10 @@ namespace rbkApiModules.Infrastructure.MediatR
         where TCommand : IRequest<CommandResponse>
     {
         protected IHttpContextAccessor _httpContextAccessor;
-        private readonly IDiagnosticsModuleStore _diagnosticsStore;
 
         public BaseCommandHandler(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
-            _diagnosticsStore = httpContextAccessor?.HttpContext.RequestServices.GetService<IDiagnosticsModuleStore>();
         }
 
         /// <summary>
@@ -109,10 +109,12 @@ namespace rbkApiModules.Infrastructure.MediatR
             {
                 response.AddUnhandledError(ex.Message);
 
-                if (_httpContextAccessor != null)
+                var diagnosticsStore = _httpContextAccessor?.HttpContext?.RequestServices?.GetService<IDiagnosticsModuleStore>();
+
+                if (diagnosticsStore != null)
                 {
                     var exceptionData = new DiagnosticsEntry(_httpContextAccessor.HttpContext, request.GetType().FullName, ex, request);
-                    _diagnosticsStore.StoreData(exceptionData);
+                    diagnosticsStore.StoreData(exceptionData);
                 }
             }
 
