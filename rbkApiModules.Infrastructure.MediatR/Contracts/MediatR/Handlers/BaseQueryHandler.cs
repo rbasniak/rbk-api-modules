@@ -23,7 +23,7 @@ namespace rbkApiModules.Infrastructure.MediatR
         {
             _httpContextAccessor = httpContextAccessor;
             _context = context;
-            _diagnosticsStore = httpContextAccessor.HttpContext.RequestServices.GetService<IDiagnosticsModuleStore>();
+            _diagnosticsStore = httpContextAccessor?.HttpContext.RequestServices.GetService<IDiagnosticsModuleStore>();
         }
 
         public async Task<QueryResponse> Handle(TCommand request, CancellationToken cancellationToken)
@@ -66,7 +66,7 @@ namespace rbkApiModules.Infrastructure.MediatR
         public BaseQueryHandler(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
-            _diagnosticsStore = httpContextAccessor.HttpContext.RequestServices.GetService<IDiagnosticsModuleStore>();
+            _diagnosticsStore = httpContextAccessor?.HttpContext.RequestServices.GetService<IDiagnosticsModuleStore>();
         }
 
         public async Task<QueryResponse> Handle(TCommand request, CancellationToken cancellationToken)
