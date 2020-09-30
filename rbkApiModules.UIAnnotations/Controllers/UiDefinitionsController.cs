@@ -18,7 +18,17 @@ namespace rbkApiModules.UIAnnotations
         [HttpGet]
         public async Task<ActionResult<Dictionary<string, FormDefinition>>> All()
         {
-            return HttpResponse<Dictionary<string, FormDefinition>> (await Mediator.Send(new GetUiDefinitions.Command()));
+            var response = await Mediator.Send(new GetUiDefinitions.Command());
+
+            var temp = new JsonResult(response.Result, new System.Text.Json.JsonSerializerOptions()
+            {
+                IgnoreNullValues = true,
+                PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase
+            });
+
+            return temp;
+
+            // return HttpResponse<Dictionary<string, FormDefinition>> ();
         }
     } 
 }

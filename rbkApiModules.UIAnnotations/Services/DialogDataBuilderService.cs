@@ -1,6 +1,7 @@
 ﻿using rbkApiModules.Infrastructure.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
@@ -61,17 +62,19 @@ namespace rbkApiModules.UIAnnotations
     {
         private readonly Type _type;
 
-        public InputControl(string propertyName, Type type, RequiredAttribute requiredAttribute, MinLengthAttribute minlengAttribute, 
+        public InputControl(string propertyName, Type type, RequiredAttribute requiredAttribute, MinLengthAttribute minlengAttribute,
             MaxLengthAttribute maxlengAttribute, DialogDataAttribute dialogDataAttribute)
         {
             _type = type;
 
             PropertyName = propertyName;
             Required = requiredAttribute != null;
-            MinLength = minlengAttribute?.Length;
-            MaxLength = maxlengAttribute?.Length;
+            MinLength = minlengAttribute != null ? (int?)minlengAttribute.Length : null;
+            MaxLength = maxlengAttribute != null ? (int?)maxlengAttribute.Length : null;
 
-            DataSource = new SimpleNamedEntity { Id = ((int)dialogDataAttribute.Source).ToString(), Name = dialogDataAttribute.Source.ToString() };
+            DataSource = dialogDataAttribute.Source != UIAnnotations.DataSource.None
+                ? new SimpleNamedEntity { Id = ((int)dialogDataAttribute.Source).ToString(), Name = dialogDataAttribute.Source.ToString() }
+                : null;
             DefaultValue = dialogDataAttribute.DefaultValue;
             DependsOn = dialogDataAttribute.DependsOn;
             Group = dialogDataAttribute.Group;
@@ -79,13 +82,27 @@ namespace rbkApiModules.UIAnnotations
             Unmask = dialogDataAttribute.Unmask;
             CharacterPattern = dialogDataAttribute.CharacterPattern;
             FileAccept = dialogDataAttribute.FileAccept;
-            ShowFilter = dialogDataAttribute.ShowFilter;
-            FilterMatchMode = dialogDataAttribute.FilterMatchMode;
-            Name = dialogDataAttribute.Name; 
+            Name = dialogDataAttribute.Name;
 
             var control = dialogDataAttribute.ForcedType != DialogControlTypes.Default ? dialogDataAttribute.ForcedType : GetControlType();
 
             ControlType = new SimpleNamedEntity { Id = ((int)control).ToString(), Name = control.ToString() };
+
+            if (control == DialogControlTypes.DropDown || control == DialogControlTypes.MultiSelect || control == DialogControlTypes.LinkedDropDown)
+            {
+                ShowFilter = dialogDataAttribute.ShowFilter;
+                FilterMatchMode = dialogDataAttribute.FilterMatchMode;
+            }
+
+            if (control == DialogControlTypes.TextArea)
+            {
+                TextAreaRows = dialogDataAttribute.TextAreaRows > 0 ? dialogDataAttribute.TextAreaRows: 5;
+            }
+
+            if (_type.IsEnum)
+            {
+                Data = EnumToSimpleNamedList(_type);
+            }
         }
 
         public SimpleNamedEntity ControlType { get; set; }
@@ -98,7 +115,7 @@ namespace rbkApiModules.UIAnnotations
 
         public string DependsOn { get; set; }
 
-        public int TextAreaRows { get; set; }
+        public int? TextAreaRows { get; set; }
         
         public string Mask { get; set; }
         public string Unmask { get; set; }
@@ -106,12 +123,13 @@ namespace rbkApiModules.UIAnnotations
 
         public string FileAccept { get; set; }
 
-        public bool ShowFilter { get; set; }
+        public bool? ShowFilter { get; set; }
         public string FilterMatchMode{ get; set; }
 
         public bool Required { get; set; }
         public int? MinLength { get; set; }
         public int? MaxLength { get; set; }
+        public List<SimpleNamedEntity> Data { get; set; }
 
         private DialogControlTypes GetControlType()
         {
@@ -142,6 +160,10 @@ namespace rbkApiModules.UIAnnotations
             {
                 return DialogControlTypes.Number;
             }
+            else if (_type.FullName == typeof(DateTime).FullName)
+            {
+                return DialogControlTypes.Calendar;
+            }
             else if (typeof(BaseEntity).IsAssignableFrom(_type))
             {
                 return DialogControlTypes.DropDown;
@@ -159,6 +181,30 @@ namespace rbkApiModules.UIAnnotations
                 var type = _type;
                 throw new NotSupportedException("Type not supported: " + _type.FullName);
             }
+        }
+
+        private List<SimpleNamedEntity> EnumToSimpleNamedList(Type type)
+        {
+            var results = new List<SimpleNamedEntity>();
+            var names = Enum.GetNames(type);
+            for (int i = 0; i < names.Length; i++)
+            {
+                var name = names[i];
+                var field = type.GetField(name);
+                var fds = field.GetCustomAttributes(typeof(DescriptionAttribute), true).FirstOrDefault();
+                var id = Enum.Parse(type, name);
+
+                if (fds != null)
+                {
+                    results.Add(new SimpleNamedEntity { Id = ((int)id).ToString(), Name = (fds as DescriptionAttribute).Description });
+                }
+                else
+                {
+                    results.Add(new SimpleNamedEntity { Id = ((int)id).ToString(), Name = field.Name });
+                }
+            }
+
+            return results;
         }
     }
 }

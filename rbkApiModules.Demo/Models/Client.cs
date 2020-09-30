@@ -1,5 +1,7 @@
 ﻿using rbkApiModules.Infrastructure.Models;
+using rbkApiModules.UIAnnotations;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace rbkApiModules.Demo.Models
 {
@@ -15,8 +17,12 @@ namespace rbkApiModules.Demo.Models
 
         }
 
+        [Required, MinLength(3), MaxLength(20)]
+        [DialogData(OperationType.CreateAndUpdate, "Nome")]
         public string Name { get; private set; }
 
+        [Required]
+        [DialogData(OperationType.CreateAndUpdate, "Data de Nascimento")]
         public DateTime Birthdate { get; private set; }
 
         public User User { get; private set; }

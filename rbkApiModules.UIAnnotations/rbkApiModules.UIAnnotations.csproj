@@ -10,8 +10,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\rbkApiModules.Infrastructure.Api\rbkApiModules.Infrastructure.Api.csproj" />
-    <ProjectReference Include="..\rbkApiModules.Infrastructure.MediatR\rbkApiModules.Infrastructure.MediatR.csproj" />
+    <PackageReference Include="rbkApiModules.Infrastructure.Api" Version="1.2.10" />
+    <PackageReference Include="rbkApiModules.Infrastructure.MediatR" Version="1.2.10" />
   </ItemGroup>
 
 </Project>

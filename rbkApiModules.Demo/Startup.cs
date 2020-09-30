@@ -25,6 +25,7 @@ using rbkApiModules.SharedUI;
 using rbkApiModules.Diagnostics.SqlServer;
 using rbkApiModules.Diagnostics.UI;
 using rbkApiModules.Diagnostics.Core;
+using rbkApiModules.Demo.Models;
 
 namespace rbkApiModules.Demo
 {
@@ -39,7 +40,6 @@ namespace rbkApiModules.Demo
         public IConfiguration Configuration { get; }
 
         public IWebHostEnvironment Environment { get; }
-
 
         private Assembly[] AssembliesForServices => new Assembly[]
         {
@@ -69,6 +69,11 @@ namespace rbkApiModules.Demo
             Assembly.GetAssembly(typeof(FilterAnalyticsEntries.Command)),
             Assembly.GetAssembly(typeof(FilterDiagnosticsEntries.Command)),
             // Assembly.GetAssembly(typeof(AuditingPostProcessingBehavior<,>))
+        };
+
+        private Assembly[] AssembliesUIDefinitions => new Assembly[]
+        {
+            Assembly.GetAssembly(typeof(Client)),
         };
 
         public void ConfigureServices(IServiceCollection services)
@@ -107,6 +112,8 @@ namespace rbkApiModules.Demo
             services.AddRbkApiCommentsModule();
 
             services.AddScoped<IUserdataCommentService, UserdataCommentService>();
+
+            services.AddRbkUIDefinitions(AssembliesUIDefinitions);
 
             services.AddSqlServerRbkApiAnalyticsModule(Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Analytics"));
 

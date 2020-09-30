@@ -24,7 +24,7 @@ namespace rbkApiModules.UIAnnotations
         public string DependsOn { get; set; }
 
         // Only for Text Area controls
-        public int TextAreaRows { get; set; }
+        public int? TextAreaRows { get; set; }
 
         // Only for Mask controls
         public string Mask { get; set; }

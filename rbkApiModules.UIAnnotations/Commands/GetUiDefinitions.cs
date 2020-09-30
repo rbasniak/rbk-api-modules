@@ -25,16 +25,18 @@ namespace rbkApiModules.UIAnnotations
 
         public class Handler : BaseQueryHandler<Command, DbContext>
         {
-            public Handler(DbContext context, IHttpContextAccessor httpContextAccessor)
+            private readonly UIDefinitionOptions _options;
+            public Handler(DbContext context, IHttpContextAccessor httpContextAccessor, UIDefinitionOptions options)
                 : base(context, httpContextAccessor)
             {
+                _options = options;
             }
 
             protected override async Task<object> ExecuteAsync(Command request)
             {
                 var result = new Dictionary<string, FormDefinition>();
 
-                var assemblies = new[] { Assembly.GetAssembly(typeof(DemoEntity)) };
+                var assemblies = _options.Assemblies;
 
                 var builder = new DialogDataBuilderService();
 
