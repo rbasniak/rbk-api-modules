@@ -12,7 +12,7 @@ namespace rbkApiModules.SharedUI
         {
             var routeLocator = new BlazorRoutesLocator(blazorRoutingAssemblies);
 
-            options.BaseHref = options.BaseHref?.Trim('/');
+            options.BaseHref = !string.IsNullOrEmpty(options.BaseHref) ?  "/" + options.BaseHref.Trim('/') : "";
 
             services.AddSingleton(routeLocator);
 
@@ -39,6 +39,18 @@ namespace rbkApiModules.SharedUI
         public bool UseAuditingRoutes { get; set; }
         public List<RouteDefinition> CustomRoutes { get; set; }
         public string BaseHref { get; set; }
+
+        public string FormatUrl(string url)
+        {
+            if(string.IsNullOrEmpty(BaseHref))
+            {
+                return "/" + url.Trim('/');
+            }
+            else
+            {
+                return BaseHref + "/" + url.Trim('/');
+            }
+        }
     }
 
     public class RouteDefinition
