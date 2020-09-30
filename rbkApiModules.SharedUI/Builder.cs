@@ -12,7 +12,7 @@ namespace rbkApiModules.SharedUI
         {
             var routeLocator = new BlazorRoutesLocator(blazorRoutingAssemblies);
 
-            options.BaseHref = options.BaseHref.Trim('/');
+            options.BaseHref = options.BaseHref?.Trim('/');
 
             services.AddSingleton(routeLocator);
 
