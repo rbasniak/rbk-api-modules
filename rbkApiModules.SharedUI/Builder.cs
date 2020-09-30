@@ -11,7 +11,9 @@ namespace rbkApiModules.SharedUI
         public static void AddRbkSharedUIModule(this IServiceCollection services, Assembly[] blazorRoutingAssemblies, RbkSharedUIModuleOptions options)
         {
             var routeLocator = new BlazorRoutesLocator(blazorRoutingAssemblies);
-            
+
+            options.BaseHref = options.BaseHref.Trim('/');
+
             services.AddSingleton(routeLocator);
 
             if (options != null)
