@@ -1,3 +1,10 @@
+## 1.2.11 (2020-09-29)
+
+
+### Bug Fixes
+
+* basehref configuration ([e582a9d](https://github.com/rbasniak/rbk-api-modules/commit/e582a9db06f13b0bf408422e636ed5e3ea6d35b1))
+
 ## 1.2.10 (2020-09-29)
 
 

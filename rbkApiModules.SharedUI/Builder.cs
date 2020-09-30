@@ -36,6 +36,7 @@ namespace rbkApiModules.SharedUI
         public bool UseAnalyticsRoutes { get; set; }
         public bool UseAuditingRoutes { get; set; }
         public List<RouteDefinition> CustomRoutes { get; set; }
+        public string BaseHref { get; set; }
     }
 
     public class RouteDefinition
