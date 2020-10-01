@@ -4,7 +4,6 @@
 @{
     Layout = null;
 }
-@inject RbkSharedUIModuleOptions Options
 
 <!DOCTYPE html>
 <html lang="en">
@@ -12,15 +11,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RBK SHARED UI</title>
-    @if (string.IsNullOrEmpty(Options.BaseHref))
-    {
-        <base href="~/" />
-    }
-    else
-    {
-        <base href="/@Options.BaseHref.Trim('/')/" />
-    }
-
+    <base href="~/" />
     <link rel="stylesheet" href="_content/Radzen.Blazor/css/default-base.css">
 
     <link rel="stylesheet" href="_content/rbkApiModules.Analytics.UI/styles.css">

@@ -127,7 +127,7 @@ namespace rbkApiModules.Infrastructure.Api
             // Configuração do Swagger
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Default");
+                c.SwaggerEndpoint("v1/swagger.json", "Default");
                 
                 c.RoutePrefix = "swagger";
                 c.DocExpansion(DocExpansion.None);

@@ -3,26 +3,26 @@
 <div class="sidenav">
     @if (Options.UseAnalyticsRoutes)
     {
-        <a href="/analytics/filter">Analytics Log</a>
-        <a href="/analytics/dashboard">Analytics Dashboard</a>
+        <a href="@Options.BaseHref/analytics/filter">Analytics Log</a>
+        <a href="@Options.BaseHref/analytics/dashboard">Analytics Dashboard</a>
     }
 
     @if (Options.UseDiagnosticsRoutes)
     {
-        <a href="/diagnostics/filter">Diagnostics Log</a>
-        <a href="/diagnostics/dashboard">Diagnostics Dashboard</a>
+        <a href="@Options.BaseHref/diagnostics/filter">Diagnostics Log</a>
+        <a href="@Options.BaseHref/diagnostics/dashboard">Diagnostics Dashboard</a>
     }
 
     @if (Options.UseAuditingRoutes)
     {
-        <a href="/auditing">Data Auditing</a>
+        <a href="@Options.BaseHref/auditing">Data Auditing</a>
     }
 
     @if (Options.CustomRoutes != null && Options.CustomRoutes.Count > 0)
     {
         @for (int i = 0; i < Options.CustomRoutes.Count; i++)
         {
-            <a href="@Options.CustomRoutes[i].Url">@Options.CustomRoutes[i].Name</a>
+            <a href="@Options.FormatUrl(Options.CustomRoutes[i].Url)">@Options.CustomRoutes[i].Name</a>
         }
     }
 
