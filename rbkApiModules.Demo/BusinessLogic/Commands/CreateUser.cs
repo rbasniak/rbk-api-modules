@@ -17,6 +17,7 @@ namespace rbkApiModules.Demo.BusinessLogic
         {
             public string Username { get; set; }
             public string Password { get; set; }
+            public string Name { get; set; }
         }
 
         public class Validator : AbstractValidator<Command>
@@ -48,7 +49,7 @@ namespace rbkApiModules.Demo.BusinessLogic
 
             protected override async Task<(Guid? entityId, object result)> ExecuteAsync(Command request)
             {
-                var user = new User(request.Username, request.Password, true, new Client("", DateTime.Now));
+                var user = new User(request.Username, request.Password, true, new Client(request.Name, DateTime.Now));
 
                 _context.Add(user);
 

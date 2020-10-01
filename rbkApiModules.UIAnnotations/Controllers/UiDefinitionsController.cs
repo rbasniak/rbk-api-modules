@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using rbkApiModules.Infrastructure.Api;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -27,8 +28,6 @@ namespace rbkApiModules.UIAnnotations
             });
 
             return temp;
-
-            // return HttpResponse<Dictionary<string, FormDefinition>> ();
         }
     } 
 }

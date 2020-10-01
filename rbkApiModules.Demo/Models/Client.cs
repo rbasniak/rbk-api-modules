@@ -14,7 +14,8 @@ namespace rbkApiModules.Demo.Models
 
         public Client(string name, DateTime birthdate)
         {
-
+            Name = name;
+            Birthdate = birthdate;
         }
 
         [Required, MinLength(3), MaxLength(20)]

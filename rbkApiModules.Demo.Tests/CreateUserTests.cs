@@ -13,7 +13,7 @@ namespace rbkApiModules.Demo.Tests
     { 
 
         [Fact]
-        public async void Should_create_new_block()
+        public async void Should_create_new_user()
         {
             var databaseOptions = SetupInMemoryDatabase(out var connection);
 
@@ -27,7 +27,8 @@ namespace rbkApiModules.Demo.Tests
                 var command = new CreateUser.Command
                 {
                     Username = "test",
-                    Password = "test"
+                    Password = "test",
+                    Name = "Client Name"
                 };
 
                 CommandResponse response;
