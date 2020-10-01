@@ -83,6 +83,9 @@ namespace rbkApiModules.UIAnnotations
             CharacterPattern = dialogDataAttribute.CharacterPattern;
             FileAccept = dialogDataAttribute.FileAccept;
             Name = dialogDataAttribute.Name;
+            IsVisible = dialogDataAttribute.IsVisible ? null : (bool?)false;
+            ExcludeFromResponse = dialogDataAttribute.ExcludeFromResponse;
+            SourceName = dialogDataAttribute.SourceName;
 
             var control = dialogDataAttribute.ForcedType != DialogControlTypes.Default ? dialogDataAttribute.ForcedType : GetControlType();
 
@@ -107,18 +110,21 @@ namespace rbkApiModules.UIAnnotations
 
         public SimpleNamedEntity ControlType { get; set; }
         public SimpleNamedEntity DataSource { get; set; }
+        public string SourceName { get; set; }
         public string PropertyName { get; set; }
 
         public string Name { get; set; }
         public object DefaultValue { get; set; }
         public string Group { get; set; }
+        public bool? IsVisible { get; set; }
+        public bool? ExcludeFromResponse { get; set; }
 
         public string DependsOn { get; set; }
 
         public int? TextAreaRows { get; set; }
         
         public string Mask { get; set; }
-        public string Unmask { get; set; }
+        public bool? Unmask { get; set; }
         public string CharacterPattern { get; set; }
 
         public string FileAccept { get; set; }
@@ -150,7 +156,7 @@ namespace rbkApiModules.UIAnnotations
             }
             else if (_type.FullName == typeof(Boolean).FullName)
             {
-                return DialogControlTypes.Number;
+                return DialogControlTypes.CheckBox;
             }
             else if (_type.FullName == typeof(Int32).FullName || _type.FullName == typeof(Int64).FullName)
             {

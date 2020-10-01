@@ -9,6 +9,7 @@ namespace rbkApiModules.UIAnnotations
         {
             Operation = operation;
             Name = name;
+            IsVisible = true;
         }
 
         public string Name { get; }
@@ -19,6 +20,8 @@ namespace rbkApiModules.UIAnnotations
         // All controls
         public object DefaultValue { get; set; }
         public string Group { get; set; }
+        public bool IsVisible { get; set; }
+        public bool? ExcludeFromResponse { get; set; }
 
         // Only for dependent controls
         public string DependsOn { get; set; }
@@ -28,7 +31,7 @@ namespace rbkApiModules.UIAnnotations
 
         // Only for Mask controls
         public string Mask { get; set; }
-        public string Unmask { get; set; }
+        public bool? Unmask { get; set; }
         public string CharacterPattern { get; set; }
 
         // Only for Upload controls
@@ -40,6 +43,9 @@ namespace rbkApiModules.UIAnnotations
 
         // Only for MultiSelect controls
         public string DefaultLabel { get; set; } // TODO: O que é isso? Não precisa no dropdown tbm?
+
+        // Only for controls that have Options (dropdown, multiselect, etc)
+        public string SourceName { get; set; }
     }
 
     public enum OperationType

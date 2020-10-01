@@ -2,8 +2,8 @@
 {
     public enum DataSource
     {
-        None,
-        Store,
-        ChildForm
+        None = 0,
+        Store = 1,
+        ChildForm = 2
     }
 }
