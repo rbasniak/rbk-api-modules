@@ -97,5 +97,10 @@ namespace rbkApiModules.Infrastructure.Api
                     throw new ArgumentException("Unknow error status code.");
             }
         }
+
+        protected void InvalidateCache(string cacheId)
+        {
+            Cache.Remove(cacheId);
+        }
     }
 }
