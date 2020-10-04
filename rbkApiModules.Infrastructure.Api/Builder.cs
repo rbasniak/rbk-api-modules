@@ -149,7 +149,7 @@ namespace rbkApiModules.Infrastructure.Api
                 endpoints.MapBlazorHub();
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
-                endpoints.MapFallbackToPage("/_Host");
+                // endpoints.MapFallbackToPage("/_Host");
             });
 
             return app;
