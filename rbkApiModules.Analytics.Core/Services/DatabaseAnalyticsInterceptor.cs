@@ -20,6 +20,8 @@ namespace rbkApiModules.Analytics.Core
 
         private void AddTransactionCount()
         {
+            if (_httpContextAccessor.HttpContext == null) return;
+
             if (_httpContextAccessor.HttpContext.Items.TryGetValue("transaction-count", out object rawCount))
             {
                 var count = (int)rawCount;
@@ -34,6 +36,8 @@ namespace rbkApiModules.Analytics.Core
 
         private void AddTransactionTime(int duration)
         {
+            if (_httpContextAccessor.HttpContext == null) return;
+
             if (_httpContextAccessor.HttpContext.Items.TryGetValue("transaction-time", out object rawTime))
             {
                 var time = (int)rawTime;
