@@ -1,3 +1,10 @@
+## 1.2.17 (2020-10-04)
+
+
+### Bug Fixes
+
+* fixed transactions counters in analytics ([eb9c0d8](https://github.com/rbasniak/rbk-api-modules/commit/eb9c0d8b7cb7689d60e2f3225df76d825e8a05e8))
+
 ## 1.2.16 (2020-10-03)
 
 ## 1.2.15 (2020-10-01)
