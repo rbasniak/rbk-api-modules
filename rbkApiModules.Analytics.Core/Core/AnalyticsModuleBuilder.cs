@@ -94,11 +94,23 @@ namespace rbkApiModules.Analytics.Core
                         data.RequestSize = requestSize;
                         data.ResponseSize = responseSize;
 
+                        var transactionTime = -1;
+                        var transactionCount = -1;
 
-                        var transactionsCounter = context.RequestServices.GetService<ITransactionCounter>();
+                        if (context.Items.TryGetValue("transaction-time", out object rawTime))
+                        {
+                            var time = (int)rawTime;
+                            transactionTime = time;
+                        }
 
-                        data.TransactionCount = transactionsCounter.Transactions;
-                        data.TotalTransactionTime = (int)transactionsCounter.TotalTime;
+                        if (context.Items.TryGetValue("transaction-count", out object rawCount))
+                        {
+                            var count = (int)rawCount;
+                            transactionCount = count;
+                        }
+
+                        data.TransactionCount = transactionCount;
+                        data.TotalTransactionTime = transactionTime;
 
                         var store = context.RequestServices.GetService<IAnalyticModuleStore>();
 
