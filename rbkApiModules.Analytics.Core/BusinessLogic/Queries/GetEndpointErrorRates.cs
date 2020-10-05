@@ -57,6 +57,8 @@ namespace rbkApiModules.Analytics.Core
 
                 foreach (var itemData in groupedData)
                 {
+                    if (itemData.Key == null) continue;
+
                     var name = itemData.Key.ToString();
 
                     var success = (double)itemData.Count(x => x.Response == 200 || x.Response == 204);

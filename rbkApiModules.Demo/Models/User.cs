@@ -17,6 +17,8 @@ namespace rbkApiModules.Demo.Models
 
         public bool IsConfirmed { get; set; }
 
+        public string Test { get; set; }
+
         public Client Client { get; private set; }
     }
 }

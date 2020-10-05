@@ -38,6 +38,30 @@ namespace rbkApiModules.Infrastructure.Api
             services.AddSingleton(mapper);
             mapper.ConfigurationProvider.AssertConfigurationIsValid();
 
+            services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
+            services.AddResponseCompression(options =>
+            {
+                options.EnableForHttps = true;
+                options.Providers.Add<GzipCompressionProvider>();
+            });
+
+            services.AddHttpsRedirection(options =>
+            {
+                options.RedirectStatusCode = StatusCodes.Status308PermanentRedirect;
+                options.HttpsPort = 443;
+            });
+
+            services.AddControllers(config => {
+                foreach (var filter in filters)
+                {
+                    config.Filters.Add(filter);
+                }
+            });
+            services.AddRazorPages();
+            services.AddServerSideBlazor();
+
+            services.AddRouting(options => options.LowercaseUrls = true);
+
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = applicationName, Version = version });
@@ -68,31 +92,6 @@ namespace rbkApiModules.Infrastructure.Api
                 });
             });
 
-            services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
-            services.AddResponseCompression(options =>
-            {
-                options.EnableForHttps = true;
-                options.Providers.Add<GzipCompressionProvider>();
-            });
-
-            services.AddRazorPages();
-            services.AddServerSideBlazor();
-
-            services.AddRouting(options => options.LowercaseUrls = true);
-
-            services.AddControllers(config => {
-                foreach (var filter in filters)
-                {
-                    config.Filters.Add(filter);
-                }
-            });
-
-            services.AddHttpsRedirection(options =>
-            {
-                options.RedirectStatusCode = StatusCodes.Status308PermanentRedirect;
-                options.HttpsPort = 443;
-            });
-
             services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.SuppressModelStateInvalidFilter = true;
@@ -111,7 +110,7 @@ namespace rbkApiModules.Infrastructure.Api
             }
         }
 
-        public static IApplicationBuilder UseRbkApiDefaultSetup(this IApplicationBuilder app, bool isProduction)
+        public static IApplicationBuilder UseRbkApiDefaultSetup(this IApplicationBuilder app, bool isProduction, bool useAntiXxsProtection = true)
         {
             if (isProduction)
             {
@@ -135,7 +134,11 @@ namespace rbkApiModules.Infrastructure.Api
 
             app.UseCors(c => c.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().WithExposedHeaders("Content-Disposition"));
 
-            app.UseAntiXssMiddleware();
+            if (useAntiXxsProtection)
+            {
+                app.UseAntiXssMiddleware();
+            }
+            
             app.UseAuthentication();
             app.UseDefaultFiles();
             app.UseStaticFiles();
@@ -146,10 +149,10 @@ namespace rbkApiModules.Infrastructure.Api
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapBlazorHub();
-                endpoints.MapRazorPages();
                 endpoints.MapControllers();
-                // endpoints.MapFallbackToPage("/_Host");
+                endpoints.MapBlazorHub();
+                // endpoints.MapRazorPages();
+                endpoints.MapFallbackToPage("/_Host");
             });
 
             return app;

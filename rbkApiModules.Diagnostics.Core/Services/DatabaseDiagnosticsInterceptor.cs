@@ -37,6 +37,9 @@ namespace rbkApiModules.Diagnostics.Core
 
         private void AddExceptionToContext(DbCommand command, Exception exception)
         {
+            // TODO: When an exception occurs in the migration phase there is no context, how could we log in this scenario?
+            if (_httpContextAccessor.HttpContext == null) return;
+
             var exceptionData = WrapEntityFrameworkException(command, exception);
 
             if (_httpContextAccessor.HttpContext.Items.TryGetValue("sql-exception", out object exceptions))
