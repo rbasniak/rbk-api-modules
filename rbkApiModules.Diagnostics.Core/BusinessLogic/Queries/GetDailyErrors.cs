@@ -1,15 +1,16 @@
 ﻿using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using rbkApiModules.Diagnostics.Commons;
 using rbkApiModules.Infrastructure.MediatR;
 using rbkApiModules.Utilities;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace rbkApiModules.Analytics.Core
+namespace rbkApiModules.Diagnostics.Core
 {
-    public class GetDailyTransactions
+    public class GetDailyErrors
     {
         public class Command : IRequest<QueryResponse>
         {
@@ -37,9 +38,9 @@ namespace rbkApiModules.Analytics.Core
 
         public class Handler : BaseQueryHandler<Command>
         {
-            private readonly IAnalyticModuleStore _context;
+            private readonly IDiagnosticsModuleStore _context;
 
-            public Handler(IHttpContextAccessor httpContextAccessor, IAnalyticModuleStore context)
+            public Handler(IHttpContextAccessor httpContextAccessor, IDiagnosticsModuleStore context)
                 : base(httpContextAccessor)
             {
                 _context = context;
@@ -47,8 +48,7 @@ namespace rbkApiModules.Analytics.Core
 
             protected override async Task<object> ExecuteAsync(Command request)
             {
-                var data = await _context.FilterAsync(request.DateFrom, request.DateTo, null, null, null, null, null,
-                    null, null, null, 0, null);
+                var data = await _context.FilterAsync(request.DateFrom, request.DateTo, null, null, null, null, null, null, null, null, null, null, null, null);
 
                 var groupedData = data.GroupBy(x => x.Timestamp.Date).ToList();
 
@@ -57,11 +57,11 @@ namespace rbkApiModules.Analytics.Core
                 foreach (var itemData in groupedData)
                 {
                     var date = itemData.Key;
-                    var value = itemData.Sum(x => x.TransactionCount);
+                    var errors = itemData.Count();
 
                     var point = chartData.First(x => x.Date == date);
 
-                    point.Value = value;
+                    point.Value = errors;
                 }
 
                 return chartData;

@@ -1,13 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using rbkApiModules.Diagnostics.Commons;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace rbkApiModules.Diagnostics.Core
 {

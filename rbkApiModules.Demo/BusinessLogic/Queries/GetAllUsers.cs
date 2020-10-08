@@ -3,10 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using rbkApiModules.Infrastructure.MediatR;
 using rbkApiModules.Demo.Database;
-using rbkApiModules.Demo.Models;
-using System;
 using System.Threading.Tasks;
-using System.Threading;
 using Microsoft.EntityFrameworkCore;
 
 namespace rbkApiModules.Demo.BusinessLogic

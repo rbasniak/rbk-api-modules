@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using rbkApiModules.Diagnostics.Commons;
 using rbkApiModules.Infrastructure.Models;
 using System;

@@ -3,13 +3,9 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi.Extensions;
 using Newtonsoft.Json;
 using rbkApiModules.Diagnostics.Commons;
 using rbkApiModules.Diagnostics.Core;
-using rbkApiModules.Infrastructure.Utilities;
-using System;
-using System.Linq;
 using System.Net;
 
 namespace rbkApiModules.Diagnostics.SqlServer

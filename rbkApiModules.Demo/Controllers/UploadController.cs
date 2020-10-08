@@ -2,11 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Primitives;
-using Newtonsoft.Json;
-using rbkApiModules.Analytics.Core;
 using rbkApiModules.Demo.Controllers.Abstract;
-using rbkApiModules.Infrastructure.Api;
-using rbkApiModules.Utilities.Extensions;
 using System.Threading.Tasks;
 
 namespace rbkApiModules.Demo.Controllers

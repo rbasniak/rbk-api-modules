@@ -10,7 +10,7 @@ namespace rbkApiModules.Diagnostics.Commons
         
         Task<List<DiagnosticsEntry>> FilterAsync(DateTime from, DateTime to, string[] versions, string[] areas, string[] layers,
             string[] domains, string[] sources, string[] users, string[] browsers, string[] userAgents, string[] operatinSystems, string[] devices,
-            string messageContains, string requestId);
+            string[] messages, string requestId);
 
         Task<List<DiagnosticsEntry>> AllAsync();
     }

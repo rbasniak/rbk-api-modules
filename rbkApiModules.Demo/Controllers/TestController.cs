@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using rbkApiModules.Analytics.Core;
 using rbkApiModules.Infrastructure.Api;
 using rbkApiModules.Utilities.Extensions;
 

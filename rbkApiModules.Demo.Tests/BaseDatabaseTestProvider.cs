@@ -1,12 +1,6 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using Moq;
 using rbkApiModules.Demo.Database;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Security.Principal;
 
 namespace rbkApiModules.Demo.Tests
 {

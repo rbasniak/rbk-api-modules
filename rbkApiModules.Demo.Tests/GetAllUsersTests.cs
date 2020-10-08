@@ -1,13 +1,9 @@
 using Microsoft.AspNetCore.Http;
-using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
 using Moq;
-using rbkApiModules.Authentication;
 using rbkApiModules.Demo.BusinessLogic;
 using rbkApiModules.Demo.Database;
 using rbkApiModules.Infrastructure.MediatR;
 using Shouldly;
-using System;
 using Xunit;
 
 namespace rbkApiModules.Demo.Tests

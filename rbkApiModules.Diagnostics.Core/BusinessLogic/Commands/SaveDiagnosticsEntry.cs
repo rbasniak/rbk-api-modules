@@ -1,12 +1,8 @@
 ﻿using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using rbkApiModules.Diagnostics.Commons;
 using rbkApiModules.Infrastructure.MediatR;
-using rbkApiModules.Utilities;
-using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace rbkApiModules.Diagnostics.Core

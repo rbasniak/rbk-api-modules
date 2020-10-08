@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 
 namespace rbkApiModules.SharedUI
@@ -16,14 +14,12 @@ namespace rbkApiModules.SharedUI
 
             services.AddSingleton(routeLocator);
 
-            if (options != null)
+            if (options == null)
             {
-                services.AddSingleton(options);
+                options = new RbkSharedUIModuleOptions();
             }
-            else
-            {
-                services.AddSingleton(new RbkSharedUIModuleOptions());
-            }
+
+            services.AddSingleton(options);
         }
     }
 

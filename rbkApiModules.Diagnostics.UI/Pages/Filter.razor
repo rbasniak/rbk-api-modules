@@ -3,9 +3,9 @@
 @using System.Net.Http
 @inject IDiagnosticsDataService DataService
 
-<h2 class="rbk-auditing-dashboard-red">Diagnostics logs</h2>
+<h2 style="color: #424242">Diagnostics log</h2>
 
-<RadzenCard Style="width:100%; margin-bottom: 2em;">
+<RadzenCard Style="width: 100%; margin-bottom: 2em;">
 
     <div style="display: flex; justify-content: space-between; gap: 1em;">
         <div style="flex: 1">
@@ -20,6 +20,12 @@
             <h3>Application Versions</h3>
             <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                             @bind-Value="selectedVersions" Multiple="true" Placeholder="Select..." Data="@versions" TextProperty="Name"
+                            ValueProperty="Id" Style="width:100%;" />
+        </div>
+        <div style="flex: 1">
+            <h3>Application Layers</h3>
+            <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                            @bind-Value="selectedLayers" Multiple="true" Placeholder="Select..." Data="@layers" TextProperty="Name"
                             ValueProperty="Id" Style="width:100%;" />
         </div>
         <div style="flex: 1">
@@ -38,39 +44,53 @@
                             ValueProperty="Id" Style="width:100%;" />
         </div>
         <div style="flex: 1">
-            <h3>Endpoints</h3>
-            <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                            @bind-Value="selectedActions" Multiple="true" Placeholder="Select..." Data="@actions" TextProperty="Name"
-                            ValueProperty="Id" Style="width:100%;" />
-        </div>
-        <div style="flex: 1">
-            <h3>Responses</h3>
-            <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                            @bind-Value="selectedResponses" Multiple="true" Placeholder="Select..." Data="@responses" TextProperty="Name"
-                            ValueProperty="Id" Style="width:100%;" />
-        </div>
-        <div style="flex: 1">
             <h3>Users</h3>
             <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                             @bind-Value="selectedUsers" Multiple="true" Placeholder="Select..." Data="@users" TextProperty="Name"
                             ValueProperty="Id" Style="width:100%;" />
         </div>
-    </div>
-
-    <div style="display: flex; justify-content: space-between; gap: 1em;">
-        <div style="flex: 2; width: calc(100% + 1em)">
+        <div style="flex: 1">
+            <h3>Browsers</h3>
+            <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                            @bind-Value="selectedBrowsers" Multiple="true" Placeholder="Select..." Data="@browsers" TextProperty="Name"
+                            ValueProperty="Id" Style="width:100%;" />
+        </div>
+        <div style="flex: 1; max-width: 300px">
             <h3>User Agents</h3>
             <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                             @bind-Value="selectedAgents" Multiple="true" Placeholder="Select..." Data="@agents" TextProperty="Name"
                             ValueProperty="Id" Style="width:100%;" />
         </div>
         <div style="flex: 1">
-            <h3>Duration</h3>
-            <RadzenNumeric TValue="int" @bind-Value="@durationThreshold" Style="width:100%;" />
+            <h3>Devices</h3>
+            <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                            @bind-Value="selectedDevices" Multiple="true" Placeholder="Select..." Data="@devices" TextProperty="Name"
+                            ValueProperty="Id" Style="width:100%;" />
+        </div>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; gap: 1em;">
+        <div style="flex: 1">
+            <h3>Operating Systems</h3>
+            <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                            @bind-Value="selectedOperatingSystems" Multiple="true" Placeholder="Select..." Data="@operatingSystems" TextProperty="Name"
+                            ValueProperty="Id" Style="width:100%;" />
         </div>
         <div style="flex: 1">
-            <h3>Contains Id</h3>
-            <RadzenTextBox @bind-Value="containsId" Style="width: 100%" />
+            <h3>Sources</h3>
+            <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                            @bind-Value="selectedSources" Multiple="true" Placeholder="Select..." Data="@sources" TextProperty="Name"
+                            ValueProperty="Id" Style="width:100%;" />
+        </div>
+        <div style="flex: 1">
+            <h3>Messages</h3>
+            <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                            @bind-Value="selectedMessages" Multiple="true" Placeholder="Select..." Data="@messages" TextProperty="Name"
+                            ValueProperty="Id" Style="width:100%;" />
+        </div>
+        <div style="flex: 1">
+            <h3>Contains Text</h3>
+            <RadzenTextBox @bind-Value="containsText" Style="width: 100%" />
         </div>
     </div>
     <div style="display: flex; justify-content: flex-end; margin-top: 1em">
@@ -80,156 +100,268 @@
 
 @if (results != null)
 {
-<div>
-    <h4 style="margin-left: 1em;">@results.Length results found</h4>
+    <div>
+        <h4 style="margin-left: 1em;">@results.Length results found</h4>
 
-    <RadzenDataList WrapItems="false" AllowPaging="true" Data="@results" PageSize="100" TItem="DiagnosticsEntry">
-        <Template Context="item">
+        <RadzenDataList WrapItems="false" AllowPaging="true" Data="@results" PageSize="100" TItem="DiagnosticsEntry">
+            <Template Context="item">
                 <div style="display: flex; flex-direction: row">
-                    <div style="flex: 1; display: flex; align-items: center;">
-                         
-                    </div>
-                    @*<div style="flex: 8">
+                    <div style="flex: 1">
                         <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: baseline; margin-bottom: 1em;">
-                            <div style="flex: 3">
-                                <div>Timestamp:</div>
-                                <b>@item.Timestamp.ToString()</b>
-                            </div>
 
-                            <div style="flex: 3">
-                                <div>Version:</div>
-                                <b>@item.Version</b>
-                            </div>
-
-                            <div style="flex: 3">
-                                <div>Area:</div>
-                                <b>@item.Area</b>
-                            </div>
-
-                            <div style="flex: 3">
-                                <div>Domain:</div>
-                                <b>@item.Domain</b>
-                            </div>
-                        </div>
-
-                        <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: baseline; margin-bottom: 1em;">
-                            <div style="flex: 6">
-                                <div>Endpoint:</div>
-                                <b>@item.Action</b>
-                                @if (item.Action != item.Path)
-                                {
-                                    <b>@item.Identity</b>
-                                }
-                            </div>
-
-                            <div style="flex: 3">
-                                <div>Response:</div>
-                                <b>@item.Response</b>
-                            </div>
-
-                            <div style="flex: 3">
-                                <div>Duration:</div>
-                                <b>@item.Duration ms</b>
-                            </div>
-                        </div>
-
-                        <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: baseline;">
-                            <div style="flex: 1">
-                                <div>Identity:</div>
-                                <b>@item.Identity</b>
+                            <div style="flex: 2; margin-left: 2em">
+                                <div style="display: flex;">
+                                    <RadzenIcon Icon="watch_later" Style="color: #479cc8; margin-right: 0.15em;" />
+                                    <p style="color: #479cc8; font-weight: 600; line-height: 1.5rem; margin: 0; margin-left: 1em">Timestamp</p>
+                                </div>
+                                <p style=" margin: 0; margin-top: 0.25em;">@item.Timestamp.ToString()</p>
                             </div>
 
                             <div style="flex: 2">
-                                <div>Username:</div>
-                                <b>@item.Username</b>
+                                <div style="display: flex;">
+                                    <RadzenIcon Icon="vertical_split" Style="color: #479cc8; margin-right: 0.15em;" />
+                                    <p style="color: #479cc8; font-weight: 600; line-height: 1.5rem; margin: 0; margin-left: 1em">Application layer</p>
+                                </div>
+                                <p style=" margin: 0; margin-top: 0.25em;">@item.ApplicationLayer</p>
                             </div>
 
-                            <div style="flex: 3">
-                                <div>IP Address:</div>
-                                <b>@item.IpAddress</b>
+                            <div style="flex: 2">
+                                <div style="display: flex;">
+                                    <RadzenIcon Icon="web" Style="color: #479cc8; margin-right: 0.15em;" />
+                                    <p style="color: #479cc8; font-weight: 600; line-height: 1.5rem; margin: 0; margin-left: 1em">Application area</p>
+                                </div>
+                                <p style=" margin: 0; margin-top: 0.25em;">@item.ApplicationArea</p>
+                            </div>
+
+                            <div style="flex: 2">
+                                <div style="display: flex;">
+                                    <RadzenIcon Icon="phonelink_setup" Style="color: #479cc8; margin-right: 0.15em;" />
+                                    <p style="color: #479cc8; font-weight: 600; line-height: 1.5rem; margin: 0; margin-left: 1em">Application version</p>
+                                </div>
+                                <p style=" margin: 0; margin-top: 0.25em;">@item.ApplicationVersion</p>
+                            </div>
+
+                            <div style="flex: 2">
+                                <div style="display: flex;">
+                                    <RadzenIcon Icon="group_work" Style="color: #479cc8; margin-right: 0.15em;" />
+                                    <p style="color: #479cc8; font-weight: 600; line-height: 1.5rem; margin: 0; margin-left: 1em">Domain</p>
+                                </div>
+                                @if (!String.IsNullOrEmpty(item.Domain))
+                                {
+                                    <p style=" margin: 0; margin-top: 0.25em;">@item.Domain</p>
+                                }
+                                else
+                                {
+                                    <p style=" margin: 0; margin-top: 0.25em;">-</p>
+                                }
+                            </div>
+
+                        </div>
+
+                        <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: baseline; margin-bottom: 1em;">
+
+                            <div style="flex: 4;  margin-left: 2em;">
+                                <div style="display: flex;">
+                                    <RadzenIcon Icon="account_box" Style="color: #479cc8; margin-right: 0.15em;" />
+                                    <p style="color: #479cc8; font-weight: 600; line-height: 1.5rem; margin: 0; margin-left: 1em">Username</p>
+                                </div>
+                                @if (!String.IsNullOrEmpty(item.Username))
+                                {
+                                    <p style=" margin: 0; margin-top: 0.25em;">@item.Username</p>
+                                }
+                                else
+                                {
+                                    <p style=" margin: 0; margin-top: 0.25em;">Anonymous</p>
+                                }
+                            </div>
+
+                            <div style="flex: 2">
+                                <div style="display: flex;">
+                                    <RadzenIcon Icon="devices" Style="color: #479cc8; margin-right: 0.15em;" />
+                                    <p style="color: #479cc8; font-weight: 600; line-height: 1.5rem; margin: 0; margin-left: 1em">Device</p>
+                                </div>
+                                <p style=" margin: 0; margin-top: 0.25em;">@item.ClientDevice</p>
+                            </div>
+
+                            <div style="flex: 4">
+                                <div style="display: flex;">
+                                    <RadzenIcon Icon="widgets" Style="color: #479cc8; margin-right: 0.15em;" />
+                                    <p style="color: #479cc8; font-weight: 600; line-height: 1.5rem; margin: 0; margin-left: 1em">Operating System</p>
+                                </div>
+                                <p style=" margin: 0; margin-top: 0.25em;">@item.ClientOperatingSystem - @item.ClientOperatingSystemVersion</p>
+                            </div>
+
+                        </div>
+
+                        <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: baseline; margin-bottom: 1em;">
+
+                            <div style="flex: 4;  margin-left: 2em;">
+                                <div style="display: flex;">
+                                    <RadzenIcon Icon="public" Style="color: #479cc8; margin-right: 0.15em;" />
+                                    <p style="color: #479cc8; font-weight: 600; line-height: 1.5rem; margin: 0; margin-left: 1em">Browser</p>
+                                </div>
+                                @if (!String.IsNullOrEmpty(item.ClientBrowser))
+                                {
+                                    <p style=" margin: 0; margin-top: 0.25em;">@item.ClientBrowser</p>
+                                }
+                                else
+                                {
+                                    <p style=" margin: 0; margin-top: 0.25em;">-</p>
+                                }
                             </div>
 
                             <div style="flex: 6">
-                                <div>User Agent:</div>
-                                <b>@item.UserAgent</b>
+                                <div style="display: flex;">
+                                    <RadzenIcon Icon="vpn_lock" Style="color: #479cc8; margin-right: 0.15em;" />
+                                    <p style="color: #479cc8; font-weight: 600; line-height: 1.5rem; margin: 0; margin-left: 1em">User Agent</p>
+                                </div>
+                                <p style=" margin: 0; margin-top: 0.25em;">@item.ClientUserAgent</p>
                             </div>
                         </div>
-                    </div>*@
+
+                        <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: baseline; margin-bottom: 1em;">
+
+                            <div style="flex: 4; margin-left: 2em;">
+                                <div style="display: flex;">
+                                    <RadzenIcon Icon="source" Style="color: #479cc8; margin-right: 0.15em;" />
+                                    <p style="color: #479cc8; font-weight: 600; line-height: 1.5rem; margin: 0; margin-left: 1em">Exception source</p>
+                                </div>
+                                <p style=" margin: 0; margin-top: 0.25em;">@item.ExceptionSource</p>
+                            </div>
+
+                            <div style="flex: 6">
+                                <div style="display: flex;">
+                                    <RadzenIcon Icon="chat" Style="color: #479cc8; margin-right: 0.15em;" />
+                                    <p style="color: #479cc8; font-weight: 600; line-height: 1.5rem; margin: 0; margin-left: 1em">Exception message</p>
+                                </div>
+                                @if (!String.IsNullOrEmpty(item.Domain))
+                                {
+                                    <p style=" margin: 0; margin-top: 0.25em;">@item.ExceptionMessage</p>
+                                }
+                                else
+                                {
+                                    <p style=" margin: 0; margin-top: 0.25em;">-</p>
+                                }
+                            </div>
+
+                        </div>
+
+                        @if (!String.IsNullOrEmpty(item.StackTrace))
+                        {
+                            <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: baseline; margin-bottom: 1em;">
+
+                                <RadzenAccordion Multiple="true">
+                                    <Items>
+                                        <RadzenAccordionItem Text="Exception details" Icon="warning">
+                                            <p style="white-space: break-spaces; margin: 0em; font-family: monospace; overflow-wrap: anywhere;">@item.StackTrace</p>
+                                        </RadzenAccordionItem>
+                                    </Items>
+                                </RadzenAccordion>
+                            </div>
+                        }
+
+                        @if (!String.IsNullOrEmpty(item.DatabaseExceptions))
+                        {
+                            <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: baseline; margin-bottom: 1em;">
+
+                                <RadzenAccordion Multiple="true">
+                                    <Items>
+                                        <RadzenAccordionItem Text="Database exceptions" Icon="storage">
+                                            <p style="white-space: break-spaces; margin: 0em; font-family: monospace; overflow-wrap: anywhere;">@item.DatabaseExceptions</p>
+                                        </RadzenAccordionItem>
+                                    </Items>
+                                </RadzenAccordion>
+                            </div>
+                        }
+
+                        @if (!String.IsNullOrEmpty(item.InputData))
+                        {
+                            <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: baseline; margin-bottom: 1em;">
+
+                                <RadzenAccordion Multiple="true">
+                                    <Items>
+                                        <RadzenAccordionItem Text="Input data" Icon="description">
+                                            <p style="white-space: break-spaces; margin: 0em; font-family: monospace; overflow-wrap: anywhere;">@item.InputData</p>
+                                        </RadzenAccordionItem>
+                                    </Items>
+                                </RadzenAccordion>
+
+                            </div>
+                        }
+                    </div>
                 </div>
 
-        </Template>
-    </RadzenDataList>
-</div>
+            </Template>
+        </RadzenDataList>
+    </div>
 }
 
 @code {
     DiagnosticsEntry[] results;
     SimpleNamedEntity[] versions;
     SimpleNamedEntity[] areas;
+    SimpleNamedEntity[] layers;
     SimpleNamedEntity[] domains;
-    SimpleNamedEntity[] agents;
-    SimpleNamedEntity[] actions;
-    SimpleNamedEntity[] responses;
     SimpleNamedEntity[] users;
+    SimpleNamedEntity[] browsers;
+    SimpleNamedEntity[] agents;
+    SimpleNamedEntity[] devices;
+    SimpleNamedEntity[] operatingSystems;
+    SimpleNamedEntity[] messages;
+    SimpleNamedEntity[] sources;
 
-    IEnumerable<string> selectedAreas = new string[] { };
-    IEnumerable<string> selectedDomains = new string[] { };
-    IEnumerable<string> selectedAgents = new string[] { };
-    IEnumerable<string> selectedActions = new string[] { };
-    IEnumerable<string> selectedResponses = new string[] { };
-    IEnumerable<string> selectedUsers = new string[] { };
     IEnumerable<string> selectedVersions = new string[] { };
+    IEnumerable<string> selectedAreas = new string[] { };
+    IEnumerable<string> selectedLayers = new string[] { };
+    IEnumerable<string> selectedDomains = new string[] { };
+    IEnumerable<string> selectedUsers = new string[] { };
+    IEnumerable<string> selectedBrowsers = new string[] { };
+    IEnumerable<string> selectedAgents = new string[] { };
+    IEnumerable<string> selectedDevices = new string[] { };
+    IEnumerable<string> selectedOperatingSystems = new string[] { };
+    IEnumerable<string> selectedMessages = new string[] { };
+    IEnumerable<string> selectedSources = new string[] { };
 
     DateTime dateFrom = DateTime.Now.AddDays(-7);
     DateTime dateTo = DateTime.Now;
-    int durationThreshold = 0;
-    string containsId;
+    string containsText;
 
     protected override async Task OnInitializedAsync()
     {
-        //if (DataService == null)
-        //{
-        //    areas = new[] { new SimpleNamedEntity("0", "NULL") };
-        //    domains = new[] { new SimpleNamedEntity("0", "NULL") };
-        //    agents = new[] { new SimpleNamedEntity("0", "NULL") };
-        //    actions = new[] { new SimpleNamedEntity("0", "NULL") };
-        //    responses = new[] { new SimpleNamedEntity("0", "NULL") };
-        //    users = new[] { new SimpleNamedEntity("0", "NULL") };
-        //    versions = new[] { new SimpleNamedEntity("0", "NULL") };
-        //}
+        var response = await DataService.GetFilterDataAsync();
 
-        //var response = await DataService.GetFilterDataAsync();
+        if (response.Success)
+        {
+            var data = response.Data;
 
-        //if (response.Success)
-        //{
-        //    var data = response.Data;
+            versions = data.Versions.Select(x => new SimpleNamedEntity(x, x)).ToArray();
+            areas = data.Areas.Select(x => String.IsNullOrEmpty(x) ? new SimpleNamedEntity(x, "Unspecified") : new SimpleNamedEntity(x, x)).ToArray();
+            layers = data.Layers.Select(x => String.IsNullOrEmpty(x) ? new SimpleNamedEntity(x, "Unspecified") : new SimpleNamedEntity(x, x)).ToArray();
+            domains = data.Domains.Select(x => String.IsNullOrEmpty(x) ? new SimpleNamedEntity(x, "Unspecified") : new SimpleNamedEntity(x, x)).ToArray();
+            users = data.Users.Select(x => String.IsNullOrEmpty(x) ? new SimpleNamedEntity(x, "Anonymous") : new SimpleNamedEntity(x, x)).ToArray();
+            browsers = data.Browsers.Select(x => String.IsNullOrEmpty(x) ? new SimpleNamedEntity(x, "Unspecified") : new SimpleNamedEntity(x, x)).ToArray();
+            agents = data.Agents.Select(x => String.IsNullOrEmpty(x) ? new SimpleNamedEntity(x, "Unspecified") : new SimpleNamedEntity(x, x)).ToArray();
+            devices = data.Devices.Select(x => String.IsNullOrEmpty(x) ? new SimpleNamedEntity(x, "Unspecified") : new SimpleNamedEntity(x, x)).ToArray();
+            operatingSystems = data.OperatinSystems.Select(x => String.IsNullOrEmpty(x) ? new SimpleNamedEntity(x, "Unspecified") : new SimpleNamedEntity(x, x)).ToArray();
+            messages = data.Messages.Select(x => String.IsNullOrEmpty(x) ? new SimpleNamedEntity(x, "Empty") : new SimpleNamedEntity(x, x)).ToArray();
+            sources = data.Sources.Select(x => String.IsNullOrEmpty(x) ? new SimpleNamedEntity(x, "Unspecified") : new SimpleNamedEntity(x, x)).ToArray();
 
-        //    areas = data.Areas.Select(x => new SimpleNamedEntity(x, x)).ToArray();
-        //    domains = data.Domains.Select(x => String.IsNullOrEmpty(x) ? new SimpleNamedEntity(x, "Without domain") : new SimpleNamedEntity(x, x)).ToArray();
-        //    agents = data.Agents.Select(x => new SimpleNamedEntity(x, x)).ToArray();
-        //    actions = data.Actions.Select(x => new SimpleNamedEntity(x, x)).ToArray();
-        //    responses = data.Responses.Select(x => new SimpleNamedEntity(x, x)).ToArray();
-        //    users = data.Users.Select(x => String.IsNullOrEmpty(x) ? new SimpleNamedEntity(x, "Anonymous") : new SimpleNamedEntity(x, x)).ToArray();
-        //    versions = data.Versions.Select(x => new SimpleNamedEntity(x, x)).ToArray();
-
-        //    selectedActions = actions.Select(x => x.Id);
-        //    selectedAgents = agents.Select(x => x.Id);
-        //    selectedAreas = areas.Select(x => x.Id);
-        //    selectedDomains = domains.Select(x => x.Id);
-        //    selectedResponses = responses.Select(x => x.Id);
-        //    selectedUsers = users.Select(x => x.Id);
-        //    selectedVersions = versions.Select(x => x.Id);
-        //}
-        //else
-        //{
-        //    areas = new[] { new SimpleNamedEntity("0", "ERROR") };
-        //    domains = new[] { new SimpleNamedEntity("0", "ERROR") };
-        //    agents = new[] { new SimpleNamedEntity("0", "ERROR") };
-        //    actions = new[] { new SimpleNamedEntity("0", "ERROR") };
-        //    responses = new[] { new SimpleNamedEntity("0", "ERROR") };
-        //    users = new[] { new SimpleNamedEntity("0", "ERROR") };
-        //    versions = new[] { new SimpleNamedEntity("0", "ERROR") };
-        //}
+            selectedVersions = versions.Select(x => x.Id);
+            selectedAreas = areas.Select(x => x.Id);
+            selectedLayers = layers.Select(x => x.Id);
+            selectedDomains = domains.Select(x => x.Id);
+            selectedUsers = users.Select(x => x.Id);
+            selectedBrowsers = browsers.Select(x => x.Id);
+            selectedAgents = agents.Select(x => x.Id);
+            selectedDevices = devices.Select(x => x.Id);
+            selectedOperatingSystems = operatingSystems.Select(x => x.Id);
+            selectedMessages = messages.Select(x => x.Id);
+            selectedSources = sources.Select(x => x.Id);
+        }
+        else
+        {
+            // TODO: error handling
+        }
     }
 
     protected override void OnInitialized()
@@ -238,20 +370,48 @@
 
     async void Click(MouseEventArgs args)
     {
-        //var data = new FilterAnalyticsEntries.Command();
-        //data.Actions = selectedActions.ToArray();
-        //data.Agents = selectedAgents.ToArray();
-        //data.Areas = selectedAreas.ToArray();
-        //data.DateFrom = dateFrom;
-        //data.DateTo = dateTo;
-        //data.Domains = selectedDomains.ToArray();
-        //data.Duration = durationThreshold;
-        //data.EntityId = containsId;
-        //data.Responses = selectedResponses.ToArray();
-        //data.Users = selectedUsers.ToArray();
-        //data.Versions = selectedVersions.ToArray();
+        var data = new FilterDiagnosticsEntries.Command()
+        {
+            Agents = selectedAgents.ToArray(),
+            Areas = selectedAreas.ToArray(),
+            Browsers = selectedBrowsers.ToArray(),
+            DateFrom = dateFrom,
+            DateTo = dateTo,
+            Devices = selectedDevices.ToArray(),
+            Domains = selectedDomains.ToArray(),
+            Layers = selectedLayers.ToArray(),
+            Messages = selectedMessages.ToArray(),
+            OperatinSystems = selectedOperatingSystems.ToArray(),
+            Sources = selectedSources.ToArray(),
+            Users = selectedUsers.ToArray(),
+            Versions = selectedVersions.ToArray(),
+        };
 
-        //results = (await DataService.FilterAsync(data)).Data;
+        var response = await DataService.FilterAsync(data);
+
+        if (response.Success)
+        {
+            var rawResults = new List<DiagnosticsEntry>();
+
+            foreach (var item in response.Data)
+            {
+                if (!String.IsNullOrEmpty(item.DatabaseExceptions))
+                {
+                    item.DatabaseExceptions = item.DatabaseExceptions.Replace("\\r\\n", "\n").Replace("\\n", "\n");
+                }
+
+                item.InputData = item.InputData == "null" ? null : item.InputData;
+
+                rawResults.Add(item);
+            }
+
+            results = rawResults.ToArray();
+        }
+        else
+        {
+            // TODO: error handling
+        }
+
 
         // Note that the following line is necessary because otherwise Blazor would not recognize the state change and not refresh the UI
         StateHasChanged();

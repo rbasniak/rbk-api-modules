@@ -2,10 +2,8 @@
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using rbkApiModules.Diagnostics.Commons;
-using rbkApiModules.Diagnostics.Core;
 using rbkApiModules.Infrastructure.MediatR;
 using System;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace rbkApiModules.Diagnostics.Core
@@ -26,6 +24,7 @@ namespace rbkApiModules.Diagnostics.Core
                 Layers = new string[0];
                 OperatinSystems = new string[0];
                 Devices = new string[0];
+                Messages = new string[0];
             }
 
             public DateTime DateFrom { get; set; }
@@ -40,7 +39,7 @@ namespace rbkApiModules.Diagnostics.Core
             public string[] Versions { get; set; }
             public string[] OperatinSystems { get; set; }
             public string[] Devices { get; set; }
-            public string MessageContains { get; set; }
+            public string[] Messages { get; set; }
             public string RequestId { get; set; }
         }
 
@@ -64,9 +63,11 @@ namespace rbkApiModules.Diagnostics.Core
 
             protected override async Task<object> ExecuteAsync(Command request)
             {
-                return await _context.FilterAsync(request.DateFrom, request.DateTo, request.Versions, request.Areas, request.Layers,
+                var results = await _context.FilterAsync(request.DateFrom, request.DateTo, request.Versions, request.Areas, request.Layers,
                     request.Domains, request.Sources, request.Users, request.Browsers, request.Agents, request.OperatinSystems, 
-                    request.Devices, request.MessageContains, request.RequestId);
+                    request.Devices, request.Messages, request.RequestId);
+
+                return results;
             }
         }
     }

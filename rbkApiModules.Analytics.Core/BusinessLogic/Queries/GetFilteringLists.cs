@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore.Internal;
 using rbkApiModules.Infrastructure.MediatR;
 using System.Linq;
 using System.Threading.Tasks;

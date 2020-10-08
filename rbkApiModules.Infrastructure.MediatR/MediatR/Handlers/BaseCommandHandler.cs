@@ -1,10 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using rbkApiModules.Diagnostics.Commons;
 using rbkApiModules.Infrastructure.Models;
-using rbkApiModules.Infrastructure.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading;

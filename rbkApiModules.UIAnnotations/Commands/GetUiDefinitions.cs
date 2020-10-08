@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Infrastructure.MediatR;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace rbkApiModules.UIAnnotations
