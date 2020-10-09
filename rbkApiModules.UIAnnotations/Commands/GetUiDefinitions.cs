@@ -3,8 +3,11 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Infrastructure.MediatR;
+using rbkApiModules.Infrastructure.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace rbkApiModules.UIAnnotations
@@ -45,6 +48,21 @@ namespace rbkApiModules.UIAnnotations
                     {
                         var createInputs = builder.Build(type, OperationType.Create);
                         var updateInputs = builder.Build(type, OperationType.Update);
+
+                        if (typeof(BaseEntity).IsAssignableFrom(type) && updateInputs.Any())
+                        {
+                            updateInputs.Insert(0, new FormGroup 
+                            {
+                                Controls = new List<InputControl>()
+                                {
+                                    new InputControl("id", typeof(string), new RequiredAttribute(), null, null, 
+                                        new DialogDataAttribute(OperationType.Update, "Id") 
+                                        { 
+                                            IsVisible = false,
+                                        })
+                                }
+                            });
+                        }
 
                         if (createInputs.Count > 0 || updateInputs.Count > 0)
                         {

@@ -73,7 +73,7 @@ namespace rbkApiModules.UIAnnotations
             MaxLength = maxlengAttribute != null ? (int?)maxlengAttribute.Length : null;
 
             DataSource = dialogDataAttribute.Source != UIAnnotations.DataSource.None
-                ? new SimpleNamedEntity { Id = ((int)dialogDataAttribute.Source).ToString(), Name = dialogDataAttribute.Source.ToString() }
+                ? new KeyValuePair<string, string> (((int)dialogDataAttribute.Source).ToString(), dialogDataAttribute.Source.ToString())
                 : null;
             DefaultValue = dialogDataAttribute.DefaultValue;
             DependsOn = dialogDataAttribute.DependsOn;
@@ -89,7 +89,7 @@ namespace rbkApiModules.UIAnnotations
 
             var control = dialogDataAttribute.ForcedType != DialogControlTypes.Default ? dialogDataAttribute.ForcedType : GetControlType();
 
-            ControlType = new SimpleNamedEntity { Id = ((int)control).ToString(), Name = control.ToString() };
+            ControlType = new KeyValuePair<string, string> (((int)control).ToString(), control.ToString());
 
             if (control == DialogControlTypes.DropDown || control == DialogControlTypes.MultiSelect || control == DialogControlTypes.LinkedDropDown)
             {
@@ -108,8 +108,8 @@ namespace rbkApiModules.UIAnnotations
             }
         }
 
-        public SimpleNamedEntity ControlType { get; set; }
-        public SimpleNamedEntity DataSource { get; set; }
+        public KeyValuePair<string, string>? ControlType { get; set; }
+        public KeyValuePair<string, string>? DataSource { get; set; }
         public string SourceName { get; set; }
         public string PropertyName { get; set; }
 
@@ -154,19 +154,21 @@ namespace rbkApiModules.UIAnnotations
                     return DialogControlTypes.Text;
                 }
             }
-            else if (_type.FullName == typeof(Boolean).FullName)
+            else if (_type.FullName == typeof(Boolean).FullName || _type.FullName == typeof(Boolean?).FullName)
             {
                 return DialogControlTypes.CheckBox;
             }
-            else if (_type.FullName == typeof(Int32).FullName || _type.FullName == typeof(Int64).FullName)
+            else if (_type.FullName == typeof(Int32).FullName || _type.FullName == typeof(Int64).FullName ||
+                     _type.FullName == typeof(Int32?).FullName || _type.FullName == typeof(Int64?).FullName)
             {
                 return DialogControlTypes.Number;
             }
-            else if (_type.FullName == typeof(Single).FullName || _type.FullName == typeof(Double).FullName)
+            else if (_type.FullName == typeof(Single).FullName || _type.FullName == typeof(Double).FullName ||
+                     _type.FullName == typeof(Single?).FullName || _type.FullName == typeof(Double?).FullName)
             {
                 return DialogControlTypes.Number;
             }
-            else if (_type.FullName == typeof(DateTime).FullName)
+            else if (_type.FullName == typeof(DateTime).FullName || _type.FullName == typeof(DateTime?).FullName)
             {
                 return DialogControlTypes.Calendar;
             }
@@ -181,6 +183,10 @@ namespace rbkApiModules.UIAnnotations
             else if (_type.FullName.StartsWith("System.Collections.Generic.List`1"))
             {
                 return DialogControlTypes.MultiSelect;
+            }
+            else if (_type.FullName == typeof(Guid).FullName || _type.FullName == typeof(Guid?).FullName)
+            {
+                return DialogControlTypes.Text;
             }
             else
             {
