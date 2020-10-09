@@ -2,4 +2,3 @@ dotnet restore
 dotnet build --configuration Release --no-restore
 dotnet pack -c Release -P:IncludeSymbols=true -p:SymbolPackageFormat=snupkg
 dotnet nuget push **/*.nupkg   --api-key oy2npjxnc5m4i5ex67pqbipihb6zgutu3fumnbyhuim4xi --source https://api.nuget.org/v3/index.json
-del /s *.*pkg

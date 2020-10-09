@@ -56,7 +56,7 @@ namespace rbkApiModules.Diagnostics.Commons
         [MaxLength(64)]
         public string ApplicationLayer { get; set; }
 
-        [MaxLength(512)]
+        [Column(TypeName = "varchar(MAX)")]
         public string ExceptionMessage { get; set; }
 
         [MaxLength(256)]
