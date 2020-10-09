@@ -73,7 +73,7 @@ namespace rbkApiModules.UIAnnotations
             MaxLength = maxlengAttribute != null ? (int?)maxlengAttribute.Length : null;
 
             DataSource = dialogDataAttribute.Source != UIAnnotations.DataSource.None
-                ? new KeyValuePair<string, string> (((int)dialogDataAttribute.Source).ToString(), dialogDataAttribute.Source.ToString())
+                ? new SimpleNamedEntity { Id = ((int)dialogDataAttribute.Source).ToString(), Name = dialogDataAttribute.Source.ToString() }
                 : null;
             DefaultValue = dialogDataAttribute.DefaultValue;
             DependsOn = dialogDataAttribute.DependsOn;
@@ -89,7 +89,7 @@ namespace rbkApiModules.UIAnnotations
 
             var control = dialogDataAttribute.ForcedType != DialogControlTypes.Default ? dialogDataAttribute.ForcedType : GetControlType();
 
-            ControlType = new KeyValuePair<string, string> (((int)control).ToString(), control.ToString());
+            ControlType = new SimpleNamedEntity { Id = ((int)control).ToString(), Name = control.ToString() };
 
             if (control == DialogControlTypes.DropDown || control == DialogControlTypes.MultiSelect || control == DialogControlTypes.LinkedDropDown)
             {
@@ -108,8 +108,8 @@ namespace rbkApiModules.UIAnnotations
             }
         }
 
-        public KeyValuePair<string, string>? ControlType { get; set; }
-        public KeyValuePair<string, string>? DataSource { get; set; }
+        public SimpleNamedEntity ControlType { get; set; }
+        public SimpleNamedEntity DataSource { get; set; }
         public string SourceName { get; set; }
         public string PropertyName { get; set; }
 

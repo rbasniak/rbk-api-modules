@@ -9,12 +9,6 @@ namespace rbkApiModules.Infrastructure.Models
 
         }
 
-        public SimpleNamedEntity(Guid id, string name)
-        {
-            Id = id.ToString();
-            Name = name;
-        }
-
         public SimpleNamedEntity(string id, string name)
         {
             Id = id;
