@@ -135,7 +135,7 @@ namespace rbkApiModules.UIAnnotations
         public bool Required { get; set; }
         public int? MinLength { get; set; }
         public int? MaxLength { get; set; }
-        public List<SimpleNamedEntity> Data { get; set; }
+        public List<SimpleNamedEntity<int>> Data { get; set; }
 
         private DialogControlTypes GetControlType()
         {
@@ -195,24 +195,24 @@ namespace rbkApiModules.UIAnnotations
             }
         }
 
-        private List<SimpleNamedEntity> EnumToSimpleNamedList(Type type)
+        private List<SimpleNamedEntity<int>> EnumToSimpleNamedList(Type type)
         {
-            var results = new List<SimpleNamedEntity>();
+            var results = new List<SimpleNamedEntity<int>>();
             var names = Enum.GetNames(type);
             for (int i = 0; i < names.Length; i++)
             {
                 var name = names[i];
                 var field = type.GetField(name);
                 var fds = field.GetCustomAttributes(typeof(DescriptionAttribute), true).FirstOrDefault();
-                var id = Enum.Parse(type, name);
+                var id = (int)Enum.Parse(type, name);
 
                 if (fds != null)
                 {
-                    results.Add(new SimpleNamedEntity { Id = ((int)id).ToString(), Name = (fds as DescriptionAttribute).Description });
+                    results.Add(new SimpleNamedEntity<int> { Id = id, Name = (fds as DescriptionAttribute).Description });
                 }
                 else
                 {
-                    results.Add(new SimpleNamedEntity { Id = ((int)id).ToString(), Name = field.Name });
+                    results.Add(new SimpleNamedEntity<int> { Id = id, Name = field.Name });
                 }
             }
 
