@@ -18,6 +18,7 @@ namespace rbkApiModules.Demo.BusinessLogic
             public string Username { get; set; }
             public string Password { get; set; }
             public string Name { get; set; }
+            public Guid UserId { get; set; }
         }
 
         public class Validator : AbstractValidator<Command>
@@ -29,6 +30,9 @@ namespace rbkApiModules.Demo.BusinessLogic
                 _context = context;
 
                 CascadeMode = CascadeMode.Stop;
+
+                RuleFor(x => x.UserId)
+                    .MustExistInDatabase<Command, User>(context);
 
                 RuleFor(x => x.Username)
                     .MustAsync(MustNotExist).WithMessage("Usuário já existente");

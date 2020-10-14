@@ -86,6 +86,7 @@ namespace rbkApiModules.UIAnnotations
             IsVisible = dialogDataAttribute.IsVisible ? null : (bool?)false;
             ExcludeFromResponse = dialogDataAttribute.ExcludeFromResponse;
             SourceName = dialogDataAttribute.SourceName;
+            EntityLabelPropertyName = dialogDataAttribute.EntityLabelPropertyName;
 
             var control = dialogDataAttribute.ForcedType != DialogControlTypes.Default ? dialogDataAttribute.ForcedType : GetControlType();
 
@@ -136,6 +137,8 @@ namespace rbkApiModules.UIAnnotations
         public int? MinLength { get; set; }
         public int? MaxLength { get; set; }
         public List<SimpleNamedEntity<int>> Data { get; set; }
+
+        public string EntityLabelPropertyName { get; set; }
 
         private DialogControlTypes GetControlType()
         {

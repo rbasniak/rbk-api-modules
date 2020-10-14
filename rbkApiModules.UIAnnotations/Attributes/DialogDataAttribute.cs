@@ -46,6 +46,8 @@ namespace rbkApiModules.UIAnnotations
 
         // Only for controls that have Options (dropdown, multiselect, etc)
         public string SourceName { get; set; }
+
+        public string EntityLabelPropertyName { get; set; }
     }
 
     public enum OperationType
