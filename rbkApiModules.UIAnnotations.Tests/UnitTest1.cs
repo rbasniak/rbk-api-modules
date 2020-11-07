@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using rbkApiModules.Infrastructure.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
@@ -15,7 +16,7 @@ namespace rbkApiModules.UIAnnotations.Tests
         {
             var builder = new DialogDataBuilderService();
 
-            var results = builder.Build(typeof(DemoEntity), OperationType.Create);
+            var results = builder.Build(typeof(DemoEntity), OperationType.Update);
 
             Debug.WriteLine(JsonConvert.SerializeObject(results, Formatting.Indented));
         }
@@ -84,6 +85,10 @@ namespace rbkApiModules.UIAnnotations.Tests
         public NavigationEntity Delivery { get; set; }
 
         public IEnumerable<string> NonCrudProperty => _list?.ToList();
+
+        // dropdown from store
+        [DialogData(OperationType.Update, "LinkedEntity", Group = "Dados Extras", Source = DataSource.Store, SourceName = "stateName", ForcedType = DialogControlTypes.DropDown)]
+        public Guid LinkedEntityId { get; set; }
     }
 
     public class NavigationEntity : BaseEntity

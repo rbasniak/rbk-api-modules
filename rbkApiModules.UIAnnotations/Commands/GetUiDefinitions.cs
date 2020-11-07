@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using rbkApiModules.Infrastructure.MediatR.Core;
 
 namespace rbkApiModules.UIAnnotations
 {
@@ -25,11 +26,11 @@ namespace rbkApiModules.UIAnnotations
             }
         }
 
-        public class Handler : BaseQueryHandler<Command, DbContext>
+        public class Handler : BaseQueryHandler<Command>
         {
             private readonly UIDefinitionOptions _options;
-            public Handler(DbContext context, IHttpContextAccessor httpContextAccessor, UIDefinitionOptions options)
-                : base(context, httpContextAccessor)
+            public Handler(IHttpContextAccessor httpContextAccessor, UIDefinitionOptions options)
+                : base(httpContextAccessor)
             {
                 _options = options;
             }

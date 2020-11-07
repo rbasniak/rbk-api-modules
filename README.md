@@ -2,21 +2,61 @@
 
 # 1. Introduction
 
-These are a set of libraries to help scaffold production ready APIs in ASP.NET Core.
+These are a set of libraries to help scaffold production ready APIs in ASP.NET Core, using SQL Server or MongoDB. They can be used individually, but to take most benefit of all features, it should be used with [ngx-rbk-utils](https://github.com/rbasniak/ngx-rbk-utils) and [ngx-smz-dialogs](https://github.com/smarza/ngx-smz). These two requires Angular and PrimeNG for the frontend part. If this is not suitable for you, the API libraries can be used as well, but some feature won't be available.
+
+The libraries must always be used in the exact same version and the package is composed by the following libraries:
+
+* Required libraries, contains all basic API infrastructure needed:
+  * `rbkApiModules.Infrastructure.Api`
+  * `rbkApiModules.Infrastructure.MediatR.Core`
+  * `rbkApiModules.Infrastructure.MediatR.SqlServer` and/or `rbkApiModules.Infrastructure.MediatR.MongoDB`
+  * `rbkApiModules.Infrastructure.Utilities`
+* Analytics libraries, contains server side analytics (database usage and requests statistics):
+  * `rbkApiModules.Infrastructure.Analytics.Core`
+  * `rbkApiModules.Infrastructure.Analytics.SqlServer`
+  * `rbkApiModules.Infrastructure.Analytics.UI`
+
+* Audiring libraries, contains database auditing features (under development):
+  * `rbkApiModules.Infrastructure.Auditing.Core`
+  * `rbkApiModules.Infrastructure.Auditing.SqlServer`
+  * `rbkApiModules.Infrastructure.Auditing.UI`
+
+* Diagnostic libraries, contains API error loging and endpoints for client side error log:
+  * `rbkApiModules.Infrastructure.Diagnostics.Commons`
+  * `rbkApiModules.Infrastructure.Diagnostics.Core`
+  * `rbkApiModules.Infrastructure.Diagnostics.SqlServer`
+  * `rbkApiModules.Infrastructure.Diagnostics.UI`
+
+* Authentication libraries, contains authentication features and roles/claims based authorization:
+  * `rbkApiModules.Infrastructure.Authnetication`
+
+* Centralized UI for all all other UI libraries:
+  * `rbkApiModules.Infrastructure.SharedUI`
+
+* UI Data Annotations for automatic dialogs/forms generation in frontend project using Angular and PrimeNG
+  * `rbkApiModules.Infrastructure.UIAnnotations`
 
 The suggested API architecture to be used with this library is the following:
 
 ![image](https://user-images.githubusercontent.com/10734059/92814257-4ae09700-f399-11ea-8a0d-c13da7e75119.png)
 
-The `rbkApiModules.Infrastructure.Models` must be referenced in the `Database`, `BusinessLogic`, `Models`, and `DataTransfer` projects.
+The `rbkApiModules.Infrastructure.Models` must be referenced in the `{MyProject}.Models` project.
 
-The `rbkApiModules.Infrastructure.MediatR` must be referenced in the `BusinessLogic` project.
+The `rbkApiModules.Infrastructure.MediatR.Core` must be referenced in the `{MyProject}.BusinessLogic` project.
 
-The `rbkApiModules.Infrastructure.Api` must be referenced in the `Api` project.
+The `rbkApiModules.Infrastructure.MediatR.Core.SqlServer` and/or `rbkApiModules.Infrastructure.MediatR.Core.MongoDB` must be referenced in the `{MyProject}.BusinessLogic` project.
 
-The `rbkApiModules.Infrastructure.Utilities` must be referenced in the `Database` project.
+The `rbkApiModules.Infrastructure.Api` must be referenced in the `{MyProject}.Api` project.
 
-All other libraries are optional and need to be referenced only in the `Api` project, with exception to the `rbkApiModules.Authentication`, which if is used needs to referenced in the `Models` project.
+The `rbkApiModules.Infrastructure.Utilities` must be referenced in the `{MyProject}.Database` project.
+
+The `rbkApiModules.Infrastructure.Utilities.MongoDB` must be referenced in the `{MyProject}.Database` and `{MyProject}.BusinessLogic` projects if the project uses MongoDB.
+
+All other libraries are optional and need to be referenced only in the `{MyProject}.Api` project, with exception to the :
+
+* `rbkApiModules.Authentication`, which also needs to be referenced in the `{MyProject}.Models` and `{MyProject}.Database` projects.
+
+* `rbkApiModules.UIAnnotations`, which also needs to be referenced in the `{MyProject}.Models` projects.
 
 
 # 2. rbkApiModules.Infrastructure.Api
@@ -30,16 +70,15 @@ services.AddRbkApiInfrastructureModule(AssembliesForServices, AssembliesForAutoM
 ```
 The parameters for this method are the following:
 
-* assembliesForServices: array of `Assembly` objects containing services to be registered in the dependency injection container.
-* assembliesForAutoMapper: array of `Assembly` objects containing `AutoMapper` configuration files to be registered.
-* applicationName: application name (to be shown in the swagger page)
-* version: API version (to be shown in the swagger page).
-* xmlPath: disk path to the swagger xml file.
-* isProduction: a boolean indicating whether the API is running in the `production` or `development` model.
+* `assembliesForServices`: array of `Assembly` objects containing services to be registered in the dependency injection container.
+* `assembliesForAutoMapper`: array of `Assembly` objects containing `AutoMapper` configuration files to be registered.
+* `applicationName`: application name (to be shown in the swagger page)
+* `version`: API version (to be shown in the swagger page).
+* `xmlPath`: disk path to the swagger xml file.
+* `isProduction`: a boolean indicating whether the API is running in the `production` or `development` model.
 
 By using this configuration method the following services will be setup in the API:
 
-* Cross Site Scripting Protection: based on the implementation in `https://www.loginradius.com/engineering/blog/anti-xss-middleware-asp-core/`.
 * HttpContextAccessor
 * AutoMapper
 * Swagger UI
@@ -77,7 +116,8 @@ public async Task<ActionResult> Delete(Guid id)
 
 ```
 
-In both cases if an unhandled exception ocurred, the response to the client will be a code `500` and if a handled exception or a validation error ocurred, a code `400` will be returnded. In both cases the request body contains a list of errors in `string[]` format.
+If an unhandled exception ocurred, the response to the client will be a code `500` and if a handled exception or a validation error ocurred, a code `400` will be returnded. In both cases the request body contains a list of errors in `string[]` format.
+
 
 # 3. rbApiModules.Infrastructure.MediatR
 
@@ -95,7 +135,7 @@ The library also exposed the follwing for the user:
 
 For organization purposes the MediatR commands were split in two types: commands and queries. Each one has an abstract class that should be used in the actual implementations. The main objective of these classes is to provide a general `try/catch` for error handling. If an unhandled exception occurs in the execution of the command, the result in the action will be a code `500` and if a `SafeException` is thrown in the command execution the result in the action will be a code `400`.
 
-### 3.2.1. BaseCommandHandler
+### 3.2.1. BaseCommandHandler (for SQL Server)
 The response will be of type `CommandResponse`. Following is an example of a command inheriting from this class:
 
 ```c#
@@ -136,6 +176,8 @@ public class CreateCategory
 ```
 
 The result that should be returned is a `Tupple<Guid?, object>`, in which the first parameter is the id of the agregate entity related to this operation, if it exists or is used. If not, you can pass a `null` value. The second parameter is the actual result that should be returned to the action. If the command doesn't return a value, you can pass a `null` value. The `aggregateId` is needed only if you are also using the `rbkApiModules.Auditing` library and can be safely ignored if you are not using it.
+
+There are versions of `BaseCommandHandler` for MongoDB and for non database commands.
 
 ### 3.1.2. BaseQueryHandler
 
@@ -181,6 +223,8 @@ The result that should be returned is an `object` containing the actual result t
 The validation pipeline is also setup with this library. All command inputs should be validated in the validation step, this way when the command execution actually begins you can be sure that you are working with safe data. For instance, you can be sure that a given id exists in the database and if you need to query it, you can do it by using a `Single` statement instead of a `SingleOrDefault` followed by an `if` statement to check for `null`. This makes the command code very short and easy to read/maintain.
 
 The `Validator` class will be the main resource of validations, but you can also use interface validator to validade common properties. For instance if you have many command using an `OrderId` property, you create and `IOrder` interface and a validator for this interface, then it will be automatically used in the validation step. The following snipped shows an example:"
+
+There are versions of `BaseCommandHandler` for MongoDB and for non database commands.
 
 ```c#
 public interface IOrder
@@ -231,7 +275,7 @@ The library also exposes the following validators:
 This library contains the following helping classes:
 
 * `BaseDataTransferObject`: class containing a `string` id to be inherited by DTOs
-* `SimpleNamedEntity`: utility class helpful to exchange data with the client application, containing an `id` and `name` properties.
+* `SimpleNamedEntity` and `SimpleNamedEntity<T>`: utility class helpful to exchange data with the client application, containing an `id` and `name` properties.
 * `BaseEntity`: base class to be used for entities that will be stored in the database with a `Guid` id.
 * `SafeException`: when this exception is thrown in a command handler, it will be treated as `400` return code to the cliente application.
 * `IPassword`: this interface should be implemented in all commands containing a password property if the `rbkApiModules.Auditing` is used. This will ensure that the password will be anonymized when saved in the auditing database.
@@ -247,24 +291,158 @@ Most of the contents of this library is meant be used by the other libraries in 
 
 # 6. rbkApiModules.Analytics
 
-TODO
+The analytics libraries are a set of libraries containing all infrastructure needed for server side analytics logging with SQL Server, MongoDB (under development) or SQLite (under development) data stores.
+
+## 6.1 Installation
+
+Add the `rbkApiModules.Analytics.{SqlServer/MongoDB/SQLite}` to the API project. This will store all analytics data in the database. If you want to expose the UI with all the charts and query features, also add the `rbkApiModules.Analytics.UI` library.
+
+## 6.2 How to use
+
+In your `Startup.cs` add the following code to your `ConfigureServices` method, after the call of `AddRbkApiInfrastructureModule`:
+
+```c#
+    services.AddSqlServerRbkApiAnalyticsModule(Configuration.GetConnectionString("AnalyticsConnection");
+```
+
+In your `Startup.cs` add the following code to you `Configure` method:
+
+```c#
+    app.UseSqlServerRbkApiAnalyticsModule();
+```
+
+You can pass an options object to the above method to configure what will be logged, for instance the following code will only log statistics of `/api` endpoints and exclude all `OPTIONS` requests.
+
+```c#
+    app.UseSqlServerRbkApiAnalyticsModule(options => options
+        .LimitToPath("/api")
+        .ExcludeMethods("OPTIONS")
+    );
+```
+
+The following methods can be chained in the options object:
+
+* `.Exclude(IPAddress ip)`
+* `.LimitToPath(string path)`
+* `.ExcludePath(params string[] paths)`
+* `.ExcludeExtensions(params string[] extensions)`
+* `.ExcludeMethods(params string[] methods)`
+* `.ExcludeLoopback()`
+* `.ExcludeIp(IPAddress address)`
+* `.ExcludeStatusCodes(params HttpStatusCode[] codes)`
+* `.ExcludeStatusCodes(params int[] codes)`
+* `.LimitToStatusCodes(params HttpStatusCode[] codes)`
+* `.LimitToStatusCodes(params int[] codes)`
+
+## 6.2 Features
+
+Besides all analytics logging you will have access to an `/api/analytics` route with many endpoints to retrieve the data. If you are using the UI library you will also have access to the `/analytics/filter` and `/analytics/dashboard` routes.
+
+The filter route allows for querying all the analytics data in an easy way:
+
+![image](https://user-images.githubusercontent.com/22370391/98444471-98a32280-20f0-11eb-8fc9-5b27cff87fff.png)
+
+The dashboard route provides a set os charts about the API usage:
+
+![image](https://user-images.githubusercontent.com/22370391/98444544-06e7e500-20f1-11eb-8cfa-b9d179e716f5.png)
+
+The following data is provided in the dashboard UI:
+
+* Daily active users
+* Daily errors
+* Top users
+* Most failed endpoints
+* Endpoints error rates
+* Daily authentication failures
+* Daily inbound traffic
+* Daily outbound traffic
+* Biggest requests
+* Beggest responses
+* Daily requests
+* Mostu used endpoints
+* Slowest endpoints
+* Total processing time
+* Total database time
+* Daily database transactions
+* Average transactions per endpoint
+* Application most active hours
+* Application most active week days
+
+For every request, the following information is stored:
+
+* Version: application version (not implemented yet)
+* Area: application area, gathered form the `ApplicationArea` attribute, that can decorate Actions or Controllers
+* Timestamp: UTC time of the request
+* Identity: request identity (from ASP.NET Core)
+* Username: username from the JWT token if the request is authenticated
+* Domain: from the JWT token in a `domain` claim
+* IpAddress: client application IP address
+* UserAgent: client application User Agent
+* Method: HTTP method
+* Path: requested URL
+* Action: action path that handled the request
+* Response size: size of the response body
+* Request size: size of the request body
+* Response: request response code
+* Duration: total time for handling the request
+* WasCached: if the request was retrieved from `MemoryCache` or database
+* Total database time: total time spent with database processing
+* Transaction count: total travels made to the database
 
 # 7. rbkApiModules.Auditing
 
-TODO
+Under development.
 
 # 8. rbkApiModules.Authentication
 
-TODO
+The authentication library contains all infrastructure needed for authentication and authorization in the application. These features are availabe for SQL Server databases as for the time being.
 
+## 8.1 Installation
+
+Add the `rbkApiModules.Authentication` library to you API and Database projects.
+
+## 8.2 How to use
+
+In your `Startup.cs` file, in the `ConfigureServices` method, add the following code after the call to `AddRbkApiInfrastructureModule`:
 
 ```c#
 services.AddRbkApiAuthenticationModule(Configuration.GetSection(nameof(JwtIssuerOptions)));
 ```
 
+In your `DatabaseContext`, add and entry in the `ApplyConfigurations` method to scan the authentication entities in the library:
+
+```c#
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.ApplyConfigurations(new []
+        {
+            typeof(DatabaseContext).Assembly,
+            typeof(UserLogin.Command).Assembly, // <-- Add this line
+        });
+    }
+```
+
+Add a new migration to the project and all authentication classes will be mapped by EF Core. The classes in the library are the following:
+
+![image](https://user-images.githubusercontent.com/22370391/98446209-ae1d4a00-20fa-11eb-8709-8a676af3e095.png)
+
+Basically there is an abstract `BaseUser` that must be implemented in your application. This user can have multiple roles. A role represents a group of claims, and a claim is the smallest authorization unit in your application. You can use them to control access to your controllers/actions or control access to actions in your frontend. Besides that, you can also override claims directly to a user (either allowing it or denying it).
+
+The library will expose the following endpoints:
+
+![image](https://user-images.githubusercontent.com/22370391/98447172-6d74ff00-2101-11eb-95d5-23510308ae3f.png)
+![image](https://user-images.githubusercontent.com/22370391/98447173-7534a380-2101-11eb-8cfc-653d5cb867a8.png)
+![image](https://user-images.githubusercontent.com/22370391/98447176-7d8cde80-2101-11eb-97ba-5d6842b5b148.png)
+![image](https://user-images.githubusercontent.com/22370391/98447183-87aedd00-2101-11eb-9bb9-58cf82455884.png)
+![image](https://user-images.githubusercontent.com/22370391/98447190-94333580-2101-11eb-99ab-813111f713b2.png)
+
+
+
 # 9. rbkApiModules.Comments
 
-TODO
+Under development.
 
 # 10. rbkApiModules.UIAnnotations
 
@@ -302,7 +480,7 @@ TODO
 
 --------------------------------------------------------------------
 
-# Drafts
+# Incluir no readme
 
 4 Chamar o ApplyConfigurantions no DatabaseContext
 

@@ -1,22 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="rbkApiModules.Authentication.User">
+  <Class Name="rbkApiModules.Authentication.BaseUser">
     <Position X="3" Y="0.75" Width="2" />
     <Members>
       <Field Name="_claims" Hidden="true" />
       <Field Name="_roles" Hidden="true" />
       <Method Name="AddClaim" Hidden="true" />
       <Method Name="AddRole" Hidden="true" />
+      <Method Name="BaseUser" Hidden="true" />
       <Method Name="GetAccessClaims" Hidden="true" />
       <Method Name="RemoveRole" Hidden="true" />
       <Method Name="SetPassword" Hidden="true" />
       <Method Name="SetRefreshToken" Hidden="true" />
       <Method Name="SetRole" Hidden="true" />
-      <Method Name="User" Hidden="true" />
     </Members>
     <TypeIdentifier>
       <HashCode>ABAAIAAAQAAABAQAgQAAAAAAAgAAAAACAgAxgAAgAAA=</HashCode>
-      <FileName>Models\User.cs</FileName>
+      <FileName>Models\BaseUser.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
       <Property Name="Roles" />
@@ -52,8 +52,8 @@
       <FileName>Models\Claim.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
-      <Property Name="Roles" />
       <Property Name="Users" />
+      <Property Name="Roles" />
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="rbkApiModules.Authentication.RoleToClaim">
@@ -66,8 +66,8 @@
       <FileName>Models\Relationships\RoleToClaim.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Property Name="Claim" />
       <Property Name="Role" />
+      <Property Name="Claim" />
     </ShowAsAssociation>
   </Class>
   <Class Name="rbkApiModules.Authentication.UserToClaim">
@@ -80,8 +80,8 @@
       <FileName>Models\Relationships\UserToClaim.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Property Name="Claim" />
       <Property Name="User" />
+      <Property Name="Claim" />
       <Property Name="Access" />
     </ShowAsAssociation>
   </Class>
@@ -95,8 +95,8 @@
       <FileName>Models\Relationships\UserToRole.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Property Name="Role" />
       <Property Name="User" />
+      <Property Name="Role" />
     </ShowAsAssociation>
   </Class>
   <Enum Name="rbkApiModules.Authentication.ClaimAcessType">

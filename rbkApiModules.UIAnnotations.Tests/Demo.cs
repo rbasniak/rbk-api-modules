@@ -70,6 +70,8 @@ namespace rbkApiModules.UIAnnotations
         public NavigationEntity Delivery { get; set; }
 
         public IEnumerable<string> NonCrudProperty => _list?.ToList();
+
+
     }
 
     public class NavigationEntity : BaseEntity

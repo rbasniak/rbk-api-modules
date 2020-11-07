@@ -6,6 +6,7 @@ using rbkApiModules.Utilities;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using rbkApiModules.Infrastructure.MediatR.Core;
 
 namespace rbkApiModules.Analytics.Core
 {

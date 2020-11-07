@@ -33,6 +33,8 @@ namespace rbkApiModules.Infrastructure.Api
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.ApplyProfiles(assembliesForAutoMapper);
+                cfg.CreateMap<Guid?, string>().ConvertUsing(g => g.HasValue ? g.Value.ToString().ToLower() : null);
+                cfg.CreateMap<Guid, string>().ConvertUsing(g => g.ToString().ToLower());
             });
             var mapper = config.CreateMapper();
             services.AddSingleton(mapper);
@@ -135,11 +137,6 @@ namespace rbkApiModules.Infrastructure.Api
 
             app.UseCors(c => c.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().WithExposedHeaders("Content-Disposition"));
 
-            if (useAntiXxsProtection)
-            {
-                app.UseAntiXssMiddleware();
-            }
-            
             app.UseAuthentication();
             app.UseDefaultFiles();
             app.UseStaticFiles();

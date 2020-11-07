@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Infrastructure.MediatR;
+using rbkApiModules.Infrastructure.MediatR.SqlServer;
 using rbkApiModules.Utilities.Extensions;
 using System;
 using System.Threading.Tasks;

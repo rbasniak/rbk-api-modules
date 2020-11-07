@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using rbkApiModules.Diagnostics.Commons;
 using rbkApiModules.Infrastructure.MediatR;
+using rbkApiModules.Infrastructure.MediatR.Core;
 using rbkApiModules.Utilities;
 using System;
 using System.Linq;

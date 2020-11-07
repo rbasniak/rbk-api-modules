@@ -48,6 +48,7 @@ namespace rbkApiModules.UIAnnotations
         public string SourceName { get; set; }
 
         public string EntityLabelPropertyName { get; set; }
+        public string OverridePropertyName { get; set; }
     }
 
     public enum OperationType

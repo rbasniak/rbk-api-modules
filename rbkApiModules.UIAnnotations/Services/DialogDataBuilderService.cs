@@ -67,7 +67,7 @@ namespace rbkApiModules.UIAnnotations
         {
             _type = type;
 
-            PropertyName = propertyName;
+            PropertyName = String.IsNullOrEmpty(dialogDataAttribute.OverridePropertyName) ? propertyName : dialogDataAttribute.OverridePropertyName;
             Required = requiredAttribute != null;
             MinLength = minlengAttribute != null ? (int?)minlengAttribute.Length : null;
             MaxLength = maxlengAttribute != null ? (int?)maxlengAttribute.Length : null;
@@ -94,6 +94,7 @@ namespace rbkApiModules.UIAnnotations
 
             if (control == DialogControlTypes.DropDown || control == DialogControlTypes.MultiSelect || control == DialogControlTypes.LinkedDropDown)
             {
+                PropertyName = FixDropDownName(propertyName);
                 ShowFilter = dialogDataAttribute.ShowFilter;
                 FilterMatchMode = dialogDataAttribute.FilterMatchMode;
             }
@@ -138,7 +139,7 @@ namespace rbkApiModules.UIAnnotations
         public int? MaxLength { get; set; }
         public List<SimpleNamedEntity<int>> Data { get; set; }
 
-        public string EntityLabelPropertyName { get; set; }
+        public string EntityLabelPropertyName { get; set; } 
 
         private DialogControlTypes GetControlType()
         {
@@ -177,6 +178,7 @@ namespace rbkApiModules.UIAnnotations
             }
             else if (typeof(BaseEntity).IsAssignableFrom(_type))
             {
+                PropertyName = FixDropDownName(PropertyName);
                 return DialogControlTypes.DropDown;
             }
             else if (_type.IsEnum)
@@ -193,9 +195,13 @@ namespace rbkApiModules.UIAnnotations
             }
             else
             {
-                var type = _type;
                 throw new NotSupportedException("Type not supported: " + _type.FullName);
             }
+        }
+
+        private string FixDropDownName(string propertyName)
+        {
+            return propertyName.EndsWith("Id") ? propertyName.Substring(0, propertyName.Length - 2) : propertyName;
         }
 
         private List<SimpleNamedEntity<int>> EnumToSimpleNamedList(Type type)

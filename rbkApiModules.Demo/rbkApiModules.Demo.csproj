@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>D:\Repositories\pessoal\rbkApiModules.Comments\rbkApiModules.Demo\rbkApiModules.Demo.xml</DocumentationFile>
+    <DocumentationFile>D:\Repositories\pessoal\rbk-api-modules-next\rbkApiModules.Demo\rbkApiModules.Demo.xml</DocumentationFile>
     <NoWarn>1701;1702;1591</NoWarn>
   </PropertyGroup>
 
@@ -41,7 +41,7 @@
     <ProjectReference Include="..\rbkApiModules.Diagnostics.SqlServer\rbkApiModules.Diagnostics.SqlServer.csproj" />
     <ProjectReference Include="..\rbkApiModules.Diagnostics.UI\rbkApiModules.Diagnostics.UI.csproj" />
     <ProjectReference Include="..\rbkApiModules.Infrastructure.Api\rbkApiModules.Infrastructure.Api.csproj" />
-    <ProjectReference Include="..\rbkApiModules.Infrastructure.MediatR\rbkApiModules.Infrastructure.MediatR.csproj" />
+    <ProjectReference Include="..\rbkApiModules.Infrastructure.MediatR\rbkApiModules.Infrastructure.MediatR.Core.csproj" />
     <ProjectReference Include="..\rbkApiModules.Infrastructure.Models\rbkApiModules.Infrastructure.Models.csproj" />
     <ProjectReference Include="..\rbkApiModules.Infrastructure.Utilities\rbkApiModules.Infrastructure.Utilities.csproj" />
     <ProjectReference Include="..\rbkApiModules.SharedUI\rbkApiModules.SharedUI.csproj" />

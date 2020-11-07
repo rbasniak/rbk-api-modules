@@ -5,6 +5,7 @@ using rbkApiModules.Infrastructure.MediatR;
 using rbkApiModules.Demo.Database;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using rbkApiModules.Infrastructure.MediatR.SqlServer;
 
 namespace rbkApiModules.Demo.BusinessLogic
 {

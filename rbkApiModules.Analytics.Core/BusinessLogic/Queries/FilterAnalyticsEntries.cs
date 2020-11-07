@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using rbkApiModules.Infrastructure.MediatR;
 using System;
 using System.Threading.Tasks;
+using rbkApiModules.Infrastructure.MediatR.Core;
 
 namespace rbkApiModules.Analytics.Core
 {

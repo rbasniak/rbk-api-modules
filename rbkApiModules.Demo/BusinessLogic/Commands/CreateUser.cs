@@ -8,6 +8,7 @@ using System;
 using System.Threading.Tasks;
 using System.Threading;
 using Microsoft.EntityFrameworkCore;
+using rbkApiModules.Infrastructure.MediatR.SqlServer;
 
 namespace rbkApiModules.Demo.BusinessLogic
 {
