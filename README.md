@@ -438,7 +438,7 @@ The library will expose the following endpoints:
 ![image](https://user-images.githubusercontent.com/22370391/98447183-87aedd00-2101-11eb-9bb9-58cf82455884.png)
 ![image](https://user-images.githubusercontent.com/22370391/98447190-94333580-2101-11eb-99ab-813111f713b2.png)
 
-
+The library [ngx-rbk-utils](https://github.com/rbasniak/ngx-rbk-utils) has some utility features to use this roles/claims architecture to handle authorization in the frontend.
 
 # 9. rbkApiModules.Comments
 
@@ -446,16 +446,68 @@ Under development.
 
 # 10. rbkApiModules.UIAnnotations
 
-TODO
+The UI Annotation library is meant to be used with both [ngx-rbk-utils](https://github.com/rbasniak/ngx-rbk-utils) and [ngx-smz-dialogs](https://github.com/smarza/ngx-smz). The objective of this library is to provide an endpoint with all information needed to create the forms for the creation and update of the entities in the Angular frontend.
 
+This is very useful in heavy CRUD applications, because with only 2 lines of code you have the entire UI for the form and the backend is always the source of truth for the models.
 
+I had one common issue in all companies and projects I have worked in the past: it's very hard to keep the UI synchronized with the backend model, specially the validations like required, minimun length or maximum length. To solve this problem we came up with a solution that evolved to this library.
 
+Following is an example of a property using Data Annotations and in the frontend will be translated to: a required input radio, visible only in the update dialog of the entity, labeled 'Active' in a group called 'Extra Data'.
 
+```c#
+    [Required]
+    [DialogData(OperationType.Update, "Active", Group = "Extra Data", ForcedType = DialogControlTypes.Radio)]
+    public bool IsActive { get; private set; }
+```
 
+For the `required`, `minimum lenght` and `maximum length` validations, the native .NET data annotations are used, because EF Core will also use them to create the database schema. All other options must be set in the `DialogData` attribute.
 
+Only two properties are required in the attribute: the operation type in which the input should appear in the frontend and the label of the input.
 
+The `OperationType` uses the following enum:
 
+```c#
+    public enum OperationType
+    {
+        Create,
+        Update,
+        CreateAndUpdate
+    }
+```
 
+This is enough for basic forms, everything else is infered by conventions, but can also be individually overriden. The conventions used are the following:
+
+* properties of type `string` with maximum length less than 100 are shown as input texts
+* properties of type `string` with maximum length greater than 100 are shown as text areas
+* properties of type `bool` are shown as checkboxes
+* properties of type `int`, `long`, `single` and `double` are shown as numeric inputs
+* properties of type `DateTime` are shown as calendar inputs
+* properties of type `Enum` are shown as dropdowns and the items are automatically get from the enum values as a `SimpleNamedEntity[]`. If the enum value has a `Description` attribute, it will be used instead of the value name.
+* properties of type `Guid` are shown as input texts
+* properties of type `List<Type>` will be shown as multiselect dropdowns
+* properties of type inherithing from `BaseEntity` are shown as dropdowns or child forms depending on the `Source` property
+
+The following properties can be optionally set in the `DialogData` attribute:
+
+* `FordedType`: can be used to override the default input types, like changing an input text by a text area input. The available types are the ones present in the `DialogControlTypes` enum.
+* `Source`: source for properties inheriting from `BaseEntity`:
+  * `ChildForm`: instead of the input for the property, a child form will be used instead
+  * `Store`: the dropdown items comes from a NGXS database state in the frontend
+* `DefaultValue`: default value for the input
+* `Group`: name of the group for the inputs
+* `IsVisible`: visibility of the input
+* `ExcludeFromResponse`: flag indicating if the value of the property should be excluded from the form response
+* `DependsOn`: used for linked dropdowns and must be set with the name of the linked input
+* `TextAreaRows`: number of rows for text area inputs
+* `Mask`: PrimeNG mask pattern for masked inputs
+* `Unmask`: PrimeNG unmask pattern for masked inputs
+* `CharacterPattern`: PrimeNG character patterns for masked inputs
+* `FileAccept`: types of accepted files for file input
+* `ShowFilter`: flag indicating if the dropdown has a filter for the items
+* `FilterMatchMode`: filter match mode for PrimeNG filtered dropdowns
+* `SourceName`: name of the state to be used as item source for dropdowns
+* `EntityLabelPropertyName`: by default the `Name` property of an entity is used to create the dropdown items. If the class doesn't have a `Name` property you need to specify which property will be used for the display name of the items
+* `OverridePropertyName`: by default the name of the properties are the name of the property but starting in lower case, if you need to override the property name it can be done by this property
 
 
 
