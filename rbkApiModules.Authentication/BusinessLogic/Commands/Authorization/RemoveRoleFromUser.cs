@@ -2,11 +2,11 @@
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using rbkApiModules.Infrastructure.MediatR;
 using rbkApiModules.Infrastructure.MediatR.SqlServer;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using rbkApiModules.Infrastructure.MediatR.Core;
 
 namespace rbkApiModules.Authentication
 {

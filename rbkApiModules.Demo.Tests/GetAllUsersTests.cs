@@ -2,8 +2,8 @@ using Microsoft.AspNetCore.Http;
 using Moq;
 using rbkApiModules.Demo.BusinessLogic;
 using rbkApiModules.Demo.Database;
-using rbkApiModules.Infrastructure.MediatR;
 using Shouldly;
+using rbkApiModules.Infrastructure.MediatR.Core;
 using Xunit;
 
 namespace rbkApiModules.Demo.Tests

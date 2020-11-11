@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace rbkApiModules.Infrastructure.Models
+﻿namespace rbkApiModules.Infrastructure.Models
 {
     public class SimpleNamedEntity : BaseDataTransferObject
     {

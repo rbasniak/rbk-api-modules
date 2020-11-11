@@ -6,8 +6,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
-using rbkApiModules.Infrastructure.MediatR;
 using rbkApiModules.Infrastructure.MediatR.SqlServer;
+using rbkApiModules.Infrastructure.MediatR.Core;
 
 namespace rbkApiModules.Authentication
 {

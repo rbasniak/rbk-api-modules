@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Demo.BusinessLogic;
 using rbkApiModules.Demo.Database;
-using rbkApiModules.Infrastructure.MediatR;
 using Shouldly;
 using Xunit;
+using rbkApiModules.Infrastructure.MediatR.Core;
 
 namespace rbkApiModules.Demo.Tests
 {

@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Http;
 using rbkApiModules.Utilities;
 using rbkApiModules.Diagnostics.Core;
 using rbkApiModules.Diagnostics.Commons;
-using System.Collections.Generic;
 
 namespace rbkApiModules.Diagnostics.UI
 {

@@ -2,7 +2,7 @@
 using FluentValidation.Validators;
 using System;
 
-namespace rbkApiModules.Infrastructure.MediatR
+namespace rbkApiModules.Infrastructure.MediatR.Core
 {
     /// <summary>
     /// Extensões para FluentValidation

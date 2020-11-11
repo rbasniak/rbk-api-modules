@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Infrastructure.Models;
 using System;
 
-namespace rbkApiModules.Infrastructure.MediatR
+namespace rbkApiModules.Infrastructure.MediatR.Core
 {
     public static class FlutentValidatorExtensions
     {

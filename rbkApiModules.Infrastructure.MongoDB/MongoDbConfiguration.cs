@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace rbkApiModules.Infrastructure.Utilities.MongoDB
+﻿namespace rbkApiModules.Infrastructure.Utilities.MongoDB
 {
     public class MongoDbConfiguration
     {

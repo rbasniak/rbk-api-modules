@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using rbkApiModules.Diagnostics.Commons;
 using rbkApiModules.Infrastructure.Api;
 using rbkApiModules.Infrastructure.Models;
-using System;
 using System.Threading.Tasks;
 
 namespace rbkApiModules.Diagnostics.Core

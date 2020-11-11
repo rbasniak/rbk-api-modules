@@ -1,13 +1,12 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using rbkApiModules.Diagnostics.Commons;
 using rbkApiModules.Infrastructure.Models;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using rbkApiModules.Infrastructure.MediatR.Abstract;
+using rbkApiModules.Infrastructure.MediatR.Core;
 
 namespace rbkApiModules.Infrastructure.MediatR.SqlServer
 {

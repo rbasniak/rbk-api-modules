@@ -1,4 +1,4 @@
-﻿namespace rbkApiModules.Infrastructure.MediatR
+﻿namespace rbkApiModules.Infrastructure.MediatR.Core
 {
     /// <summary>
     /// Classe gnérica de resposta de queries realizadas através do MediatR

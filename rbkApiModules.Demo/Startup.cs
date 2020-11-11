@@ -10,7 +10,6 @@ using rbkApiModules.Comments;
 using rbkApiModules.Demo.Database;
 using rbkApiModules.Authentication;
 using rbkApiModules.Demo.Services;
-using rbkApiModules.Infrastructure.MediatR;
 using rbkApiModules.Infrastructure.Api;
 using rbkApiModules.UIAnnotations;
 using Microsoft.Extensions.Hosting;
@@ -26,6 +25,7 @@ using rbkApiModules.Diagnostics.SqlServer;
 using rbkApiModules.Diagnostics.UI;
 using rbkApiModules.Diagnostics.Core;
 using rbkApiModules.Demo.Models;
+using rbkApiModules.Infrastructure.MediatR.Core;
 
 namespace rbkApiModules.Demo
 {

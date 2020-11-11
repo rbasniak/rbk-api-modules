@@ -1,4 +1,4 @@
-﻿namespace rbkApiModules.Infrastructure.MediatR
+﻿namespace rbkApiModules.Infrastructure.MediatR.Core
 {
     /// <summary>
     /// Possíveis status do comando depois da execução

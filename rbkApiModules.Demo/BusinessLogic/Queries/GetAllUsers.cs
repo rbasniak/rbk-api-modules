@@ -1,11 +1,11 @@
 ﻿using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using rbkApiModules.Infrastructure.MediatR;
 using rbkApiModules.Demo.Database;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Infrastructure.MediatR.SqlServer;
+using rbkApiModules.Infrastructure.MediatR.Core;
 
 namespace rbkApiModules.Demo.BusinessLogic
 {

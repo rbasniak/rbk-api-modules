@@ -3,7 +3,6 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using rbkApiModules.Infrastructure.MediatR;
 using rbkApiModules.Infrastructure.MediatR.SqlServer;
 using rbkApiModules.Infrastructure.Models;
 using rbkApiModules.Utilities.Passwords;
@@ -12,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using rbkApiModules.Infrastructure.MediatR.Core;
 
 namespace rbkApiModules.Authentication
 {

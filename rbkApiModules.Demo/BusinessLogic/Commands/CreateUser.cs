@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using rbkApiModules.Infrastructure.MediatR;
 using rbkApiModules.Demo.Database;
 using rbkApiModules.Demo.Models;
 using System;
@@ -9,6 +8,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Infrastructure.MediatR.SqlServer;
+using rbkApiModules.Infrastructure.MediatR.Core;
 
 namespace rbkApiModules.Demo.BusinessLogic
 {

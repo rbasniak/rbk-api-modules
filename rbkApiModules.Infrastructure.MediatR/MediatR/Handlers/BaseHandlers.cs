@@ -1,13 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using rbkApiModules.Diagnostics.Commons;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
-using System.Threading.Tasks;
 using MediatR;
-using System.Threading;
-using rbkApiModules.Infrastructure.Models;
+using rbkApiModules.Infrastructure.MediatR.Core;
 
 namespace rbkApiModules.Infrastructure.MediatR.Abstract
 {

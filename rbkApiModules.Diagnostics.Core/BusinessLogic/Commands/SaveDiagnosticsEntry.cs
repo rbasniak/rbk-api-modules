@@ -2,7 +2,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using rbkApiModules.Diagnostics.Commons;
-using rbkApiModules.Infrastructure.MediatR;
 using System.Threading.Tasks;
 using rbkApiModules.Infrastructure.MediatR.Core;
 

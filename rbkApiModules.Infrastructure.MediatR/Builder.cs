@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using rbkApiModules.Utilities.Extensions;
 using System.Reflection;
 
-namespace rbkApiModules.Infrastructure.MediatR
+namespace rbkApiModules.Infrastructure.MediatR.Core
 {
     public static class BuilderExtensions
     {

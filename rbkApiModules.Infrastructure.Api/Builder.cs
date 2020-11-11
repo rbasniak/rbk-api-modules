@@ -21,6 +21,14 @@ namespace rbkApiModules.Infrastructure.Api
         public static void AddRbkApiInfrastructureModule(this IServiceCollection services, Assembly[] assembliesForServices,
             Assembly[] assembliesForAutoMapper, List<IActionFilter> filters, string applicationName, string version, string swaggerXmlPath, bool isProduction)
         {
+            services.AddResponseCompression(options =>
+            {
+                options.EnableForHttps = true;
+                options.Providers.Add<GzipCompressionProvider>();
+            });
+
+            services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
+
             services.RegisterApplicationServices(Assembly.GetAssembly(typeof(Builder)));
             services.RegisterApplicationServices(assembliesForServices);
 
@@ -39,14 +47,6 @@ namespace rbkApiModules.Infrastructure.Api
             var mapper = config.CreateMapper();
             services.AddSingleton(mapper);
             mapper.ConfigurationProvider.AssertConfigurationIsValid();
-
-            services.AddResponseCompression(options =>
-            {
-                options.EnableForHttps = true;
-                options.Providers.Add<GzipCompressionProvider>();
-            });
-
-            services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
 
             services.AddHttpsRedirection(options =>
             {
@@ -121,6 +121,8 @@ namespace rbkApiModules.Infrastructure.Api
                 // acessar https://aka.ms/aspnetcore-hsts
                 app.UseHsts();
             }
+
+            app.UseResponseCompression();
 
             app.UseHttpsRedirection();
 

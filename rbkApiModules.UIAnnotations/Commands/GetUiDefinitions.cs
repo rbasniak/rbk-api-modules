@@ -1,8 +1,6 @@
 ﻿using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using rbkApiModules.Infrastructure.MediatR;
 using rbkApiModules.Infrastructure.Models;
 using System;
 using System.Collections.Generic;

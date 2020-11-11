@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
-using rbkApiModules.Infrastructure.MediatR;
+using rbkApiModules.Infrastructure.MediatR.Core;
 using rbkApiModules.Infrastructure.Models;
 using System;
 
