@@ -11,11 +11,13 @@ using rbkApiModules.Utilities.Extensions;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO.Compression;
 using System.Reflection;
 
 namespace rbkApiModules.Infrastructure.Api
 {
+    [ExcludeFromCodeCoverage]
     public static class Builder
     {
         public static void AddRbkApiInfrastructureModule(this IServiceCollection services, Assembly[] assembliesForServices,

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using rbkApiModules.Infrastructure.Utilities;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace rbkApiModules.Infrastructure.MediatR.Core
@@ -56,6 +58,13 @@ namespace rbkApiModules.Infrastructure.MediatR.Core
             Status = CommandStatus.HasUnhandledError;
 
             AddError(message);
+        }
+
+        public void AddUnhandledError(Exception exception)
+        {
+            Status = CommandStatus.HasUnhandledError;
+
+            AddError(exception.ToBetterString());
         }
 
         /// <summary>

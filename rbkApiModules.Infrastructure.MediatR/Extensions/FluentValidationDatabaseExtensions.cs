@@ -30,7 +30,7 @@ namespace rbkApiModules.Infrastructure.MediatR.Core
         /// </summary>
         public static IRuleBuilderOptions<T, Guid> MustExistInDatabaseWhenNotNull<T, T2>(this IRuleBuilder<T, Guid> rule, DbContext context) where T2 : BaseEntity
         {
-            return rule.MustAsync(async (command, id, cancelation) => await context.Set<T2>().AnyAsync(x => id == null || x.Id == id))
+            return rule.MustAsync(async (command, id, cancelation) => await context.Set<T2>().AnyAsync(x => x.Id == id))
                 .WithMessage("'{PropertyName}' não encontrado no banco de dados");
         }
     }
