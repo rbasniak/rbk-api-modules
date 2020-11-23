@@ -7,6 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.github\workflows\build-and-test.yml = .github\workflows\build-and-test.yml
+		package.json = package.json
 		publish.bat = publish.bat
 		publish_pre-release.txt = publish_pre-release.txt
 		README.md = README.md
@@ -82,7 +83,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Infrastructur
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Infrastructure.MediatR.SqlServer", "rbkApiModules.Infrastructure.MediatR.SqlServer\rbkApiModules.Infrastructure.MediatR.SqlServer.csproj", "{B3442E91-46CB-4C98-9443-F88983710476}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.Infrastructure.Utilities.MongoDB", "rbkApiModules.Infrastructure.MongoDB\rbkApiModules.Infrastructure.Utilities.MongoDB.csproj", "{416FEBBA-0035-4DED-BE14-B571054F7F49}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Infrastructure.Utilities.MongoDB", "rbkApiModules.Infrastructure.MongoDB\rbkApiModules.Infrastructure.Utilities.MongoDB.csproj", "{416FEBBA-0035-4DED-BE14-B571054F7F49}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MediatR", "MediatR", "{CE528D07-7ED5-44E8-8887-E1D59CE52D8A}"
 EndProject
