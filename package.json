@@ -36,7 +36,7 @@
           "rbkApiModules.Infrastructure.MediatR.SqlServer/rbkApiModules.Infrastructure.MediatR.SqlServer.csproj",
           "rbkApiModules.Infrastructure.Models/rbkApiModules.Infrastructure.Models.csproj",
           "rbkApiModules.Infrastructure.Utilities/rbkApiModules.Infrastructure.Utilities.csproj",
-          "rbkApiModules.Infrastructure.MongoDB\rbkApiModules.Infrastructure.Utilities.MongoDB.csproj",
+          "rbkApiModules.Infrastructure.MongoDB/rbkApiModules.Infrastructure.Utilities.MongoDB.csproj",
           "rbkApiModules.Analytics.Core/rbkApiModules.Analytics.Core.csproj",
           "rbkApiModules.Analytics.SqlServer/rbkApiModules.Analytics.SqlServer.csproj",
           "rbkApiModules.Analytics.UI/rbkApiModules.Analytics.UI.csproj",
