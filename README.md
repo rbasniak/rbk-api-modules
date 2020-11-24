@@ -287,6 +287,7 @@ Most of the contents of this library is meant be used by the other libraries in 
 * `ApplyConfigurations`: extension for the `ModelBuilder` class to automatically scan assemblies for `EF Core` contiguration files.
 * `GetUsername`: extensions for the `IHttpContextAccessor` to get the username of the authenticated user from the JWT token.
 * `ToUnixEpochDate`: extension for `DateTime` objects to convert them to Unix epoch dates (in seconds)
+* `EmailHandler.SendMail`: Method for sending email via SMTP containing attachments and images in the body of the email, which can be in text, HTML, or both formats.
 
 
 # 6. rbkApiModules.Analytics

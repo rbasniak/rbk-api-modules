@@ -91,6 +91,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{EED248A8-163
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utilities", "Utilities", "{AF2C6107-8BCB-4EE3-8D8F-AE098050947F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.Infrastructure.Utilities.Tests", "rbkApiModules.Infrastructure.Utilities.Tests\rbkApiModules.Infrastructure.Utilities.Tests.csproj", "{34D9690F-C93F-4D53-974B-7FC1E99933D2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -197,6 +199,10 @@ Global
 		{416FEBBA-0035-4DED-BE14-B571054F7F49}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{416FEBBA-0035-4DED-BE14-B571054F7F49}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{416FEBBA-0035-4DED-BE14-B571054F7F49}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34D9690F-C93F-4D53-974B-7FC1E99933D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34D9690F-C93F-4D53-974B-7FC1E99933D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34D9690F-C93F-4D53-974B-7FC1E99933D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34D9690F-C93F-4D53-974B-7FC1E99933D2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -237,6 +243,7 @@ Global
 		{CE528D07-7ED5-44E8-8887-E1D59CE52D8A} = {28AEC725-3257-4A72-BC8B-C6ABB827A897}
 		{EED248A8-1633-4007-916D-06F063189180} = {28AEC725-3257-4A72-BC8B-C6ABB827A897}
 		{AF2C6107-8BCB-4EE3-8D8F-AE098050947F} = {28AEC725-3257-4A72-BC8B-C6ABB827A897}
+		{34D9690F-C93F-4D53-974B-7FC1E99933D2} = {AF2C6107-8BCB-4EE3-8D8F-AE098050947F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9AAC09BF-43DC-408B-8F24-24DAA39DA1E8}
