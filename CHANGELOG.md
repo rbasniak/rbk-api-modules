@@ -1,3 +1,10 @@
+# 2.1.0 (2020-11-24)
+
+
+### Features
+
+* adicionada classe estática utilitária para o envio de emails ([fc9bf25](https://github.com/rbasniak/rbk-api-modules/commit/fc9bf2580c7b3425111bd58ae8b9dd959eefce12))
+
 ## 2.0.7 (2020-11-23)
 
 ## 2.0.5 (2020-11-23)
