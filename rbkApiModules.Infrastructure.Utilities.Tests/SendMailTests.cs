@@ -36,6 +36,27 @@ namespace rbkApiModules.Infrastructure.Utilities.Tests
         private static readonly string EmailsDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\mail_test";
 
         [Fact]
+        public void Should_send_mail_with_subject_only()
+        {
+            UnityTestEnviromentChecker.OnTestEnviroment = true;
+
+            EmailHandler.SendEmail(
+                "smtp.test.com",
+                false,
+                587,
+                new MailAddress(SenderMail, SenderName),
+                new MailAddress(ReceiverMail),
+                Subject);
+
+            var mailString = File.ReadAllText(Directory.GetFiles(EmailsDirectory).First());
+            mailString.Contains($"X-Sender: \"{SenderName}\" <{SenderMail}>").ShouldBeTrue();
+            mailString.Contains($"X-Receiver: {ReceiverMail}").ShouldBeTrue();
+            mailString.Contains($"From: \"{SenderName}\" <{SenderMail}>").ShouldBeTrue();
+            mailString.Contains($"To: {ReceiverMail}").ShouldBeTrue();
+            mailString.Contains($"Subject: {Subject}").ShouldBeTrue();
+        }
+
+            [Fact]
         public void Should_send_mail_with_attachments()
         {
             UnityTestEnviromentChecker.OnTestEnviroment = true;
@@ -47,13 +68,25 @@ namespace rbkApiModules.Infrastructure.Utilities.Tests
                 new MailAddress(SenderMail, SenderName),
                 new MailAddress(ReceiverMail),
                 Subject,
-                new MailAttachment[] { new MailAttachment(new ContentType("image/png"), StarImageBase64) },
-                BasicHtml,
                 TextBody,
+                BasicHtml,
+                null,
+                new MailAttachment[] { new MailAttachment(new ContentType("image/png"), StarImageBase64) },
                 new NetworkCredential("test", "password"));
 
             var mailString = File.ReadAllText(Directory.GetFiles(EmailsDirectory).First());
-            CheckEmailContent(mailString, BasicHtml, 1);
+
+            mailString.Contains($"X-Sender: \"{SenderName}\" <{SenderMail}>").ShouldBeTrue();
+            mailString.Contains($"X-Receiver: {ReceiverMail}").ShouldBeTrue();
+            mailString.Contains($"From: \"{SenderName}\" <{SenderMail}>").ShouldBeTrue();
+            mailString.Contains($"To: {ReceiverMail}").ShouldBeTrue();
+            mailString.Contains($"Subject: {Subject}").ShouldBeTrue();
+            mailString.Contains(TextBody).ShouldBeTrue();
+
+            CheckStringInChunks(mailString, StarImageBase64, 68, 1);
+
+            var base64HtmlBody = Convert.ToBase64String(Encoding.UTF8.GetBytes(BasicHtml));
+            CheckStringInChunks(mailString, base64HtmlBody, 68, 1);
         }
 
         [Fact]
@@ -68,29 +101,25 @@ namespace rbkApiModules.Infrastructure.Utilities.Tests
                 new MailAddress(SenderMail, SenderName),
                 new MailAddress(ReceiverMail),
                 Subject,
+                TextBody,
+                InlineHtml,
                 new InlineImage[] { new InlineImage("star_01", new ContentType("image/png"), StarImageBase64) },
                 new MailAttachment[] { new MailAttachment(new ContentType("image/png"), StarImageBase64) },
-                InlineHtml,
-                TextBody,
                 new NetworkCredential("test", "password"));
 
             var mailString = File.ReadAllText(Directory.GetFiles(EmailsDirectory).First());
-            CheckEmailContent(mailString, InlineHtml, 2);
-        }
 
-        private static void CheckEmailContent(string mail, string htmlBody, int attachmentOccurences)
-        {
-            mail.Contains($"X-Sender: \"{SenderName}\" <{SenderMail}>").ShouldBeTrue();
-            mail.Contains($"X-Receiver: {ReceiverMail}").ShouldBeTrue();
-            mail.Contains($"From: \"{SenderName}\" <{SenderMail}>").ShouldBeTrue();
-            mail.Contains($"To: {ReceiverMail}").ShouldBeTrue();
-            mail.Contains($"Subject: {Subject}").ShouldBeTrue();
-            mail.Contains(TextBody).ShouldBeTrue();
+            mailString.Contains($"X-Sender: \"{SenderName}\" <{SenderMail}>").ShouldBeTrue();
+            mailString.Contains($"X-Receiver: {ReceiverMail}").ShouldBeTrue();
+            mailString.Contains($"From: \"{SenderName}\" <{SenderMail}>").ShouldBeTrue();
+            mailString.Contains($"To: {ReceiverMail}").ShouldBeTrue();
+            mailString.Contains($"Subject: {Subject}").ShouldBeTrue();
+            mailString.Contains(TextBody).ShouldBeTrue();
 
-            CheckStringInChunks(mail, StarImageBase64, 68, attachmentOccurences);
+            CheckStringInChunks(mailString, StarImageBase64, 68, 2);
 
-            var base64HtmlBody = Convert.ToBase64String(Encoding.UTF8.GetBytes(htmlBody));
-            CheckStringInChunks(mail, base64HtmlBody, 68, 1);
+            var base64HtmlBody = Convert.ToBase64String(Encoding.UTF8.GetBytes(InlineHtml));
+            CheckStringInChunks(mailString, base64HtmlBody, 68, 1);
         }
 
         private static void CheckStringInChunks(string mainString, string ToCheckString, int maxChunkSize, int occurences)
