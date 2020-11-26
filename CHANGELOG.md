@@ -1,3 +1,10 @@
+## 2.1.2 (2020-11-26)
+
+
+### Bug Fixes
+
+* fixed analytics middleware to not run when the path is in the exclude rules ([5c9bc37](https://github.com/rbasniak/rbk-api-modules/commit/5c9bc37a84d5cff699e74bf78f7fba3c20b2ea47))
+
 ## 2.1.1 (2020-11-24)
 
 # 2.1.0 (2020-11-24)
