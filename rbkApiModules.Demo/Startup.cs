@@ -26,6 +26,7 @@ using rbkApiModules.Diagnostics.UI;
 using rbkApiModules.Diagnostics.Core;
 using rbkApiModules.Demo.Models;
 using rbkApiModules.Infrastructure.MediatR.Core;
+using Microsoft.AspNetCore.Http;
 
 namespace rbkApiModules.Demo
 {
@@ -123,10 +124,16 @@ namespace rbkApiModules.Demo
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app)
         {
+            //app.Use(async (context, next) => {
+            //    context.Request.EnableBuffering();
+            //    await next();
+            //});
+
             app.UseSqlServerRbkApiAnalyticsModule(options => options
                 .LimitToPath("/api")
                 .ExcludeMethods("OPTIONS")
-                .UseDemoData()
+                .ExcludePath(new[] { "/api/test/download" })
+                //.UseDemoData()
             );
 
             app.UseSqlServerRbkApiDiagnosticsModule();

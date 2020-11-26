@@ -64,7 +64,12 @@ namespace rbkApiModules.Infrastructure.Api
         {
             if (response.Status == CommandStatus.Valid)
             {
-                if (response.Result != null && !(response.Result is BaseEntity))
+                if (response.Result is Models.FileResult dto)
+                {
+                    HttpContext.Items.Add("response-size", dto.FileStream.Length);
+                    return File(dto.FileStream, dto.ContentType, dto.FileName);
+                }
+                else if (response.Result != null && !(response.Result is BaseEntity))
                 {
                     if (cacheId != null)
                     {

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 using System.IO;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace rbkApiModules.Analytics.Core
 {
@@ -22,12 +23,20 @@ namespace rbkApiModules.Analytics.Core
 
         public async Task Invoke(HttpContext context)
         {
-            var originalBodyStream = context.Response.Body;
+            var bodyStream = context.Response.Body;
             context.Request.EnableBuffering();
 
             try
             {
                 var stopwatch = Stopwatch.StartNew();
+
+                var originalBodyFeature = context.Features.Get<IHttpResponseBodyFeature>();
+                var temp1 = context.Features.Get<IHttpBodyControlFeature>();
+                //var temp2 = context.Features.Get<IHttpResponseControl>();
+
+                //var compressionBody = new ResponseCompressionBody(context, _provider, originalBodyFeature);
+                //context.Features.Set<IHttpResponseBodyFeature>(compressionBody);
+                //context.Features.Set<IHttpsCompressionFeature>(compressionBody);
 
                 var identity = UserIdentity(context);
 
@@ -36,7 +45,7 @@ namespace rbkApiModules.Analytics.Core
                 var domain = user.Claims.FirstOrDefault(c => c.Type == "domain")?.Value;
 
                 // TODO: get version from somewhere
-                var data = new AnalyticsEntry(); 
+                var data = new AnalyticsEntry();
 
                 data.Version = "1.0.0";
                 data.Identity = identity;
@@ -50,31 +59,37 @@ namespace rbkApiModules.Analytics.Core
                 //new MemoryStream. 
                 using (var responseBody = new MemoryStream())
                 {
-                    // temporary response body 
-                    context.Response.Body = responseBody;
+                    if (!_exclude?.Any(x => x(context)) ?? true)
+                    {
+                        // temporary response body 
+                        context.Response.Body = responseBody;
+                    }
+
                     //execute the Middleware pipeline 
                     await _next(context);
-                    //read the response stream from the beginning
-                    context.Response.Body.Seek(0, SeekOrigin.Begin);
-                    //Copy the contents of the new memory stream
-                    await responseBody.CopyToAsync(originalBodyStream);
-
-                    var responseSize = 0L;
-                    if(context.Response.Body.CanSeek && context.Response.Body.CanRead)
-                    {
-                        responseSize = context.Response.Body.Length;
-                    }
-
-                    var requestSize = 0L;
-                    if (context.Request.Body.CanSeek && context.Request.Body.CanRead)
-                    {
-                        requestSize = context.Request.Body.Length;
-                    }
-
-                    stopwatch.Stop();
 
                     if (!_exclude?.Any(x => x(context)) ?? true)
                     {
+                        //read the response stream from the beginning
+                        context.Response.Body.Seek(0, SeekOrigin.Begin);
+                        //Copy the contents of the new memory stream
+                        await responseBody.CopyToAsync(bodyStream);
+
+                        var responseSize = 0L;
+                        if (context.Response.Body.CanSeek && context.Response.Body.CanRead)
+                        {
+                            responseSize = context.Response.Body.Length;
+                        }
+
+                        var requestSize = 0L;
+                        if (context.Request.Body.CanSeek && context.Request.Body.CanRead)
+                        {
+                            requestSize = context.Request.Body.Length;
+                        }
+
+                        stopwatch.Stop();
+
+
                         var areaData = context.Items.FirstOrDefault(x => x.Key.ToString() == "log-data-area");
                         var pathData = context.Items.FirstOrDefault(x => x.Key.ToString() == "log-data-path");
                         var wasCached = context.Items.FirstOrDefault(x => x.Key.ToString() == "was-cached");
@@ -120,7 +135,7 @@ namespace rbkApiModules.Analytics.Core
             }
             finally
             {
-                context.Response.Body = originalBodyStream;
+                context.Response.Body = bodyStream;
             }
         }
 
