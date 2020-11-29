@@ -8,6 +8,12 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
 {
     public class ChartJsData<T>
     {
+        public ChartJsData()
+        {
+            Data = new ChartJsChartData<T>();
+            Options = new ChartJsChartOptions();
+        }
+
         public ChartJsChartData<T> Data { get; set; }
         public ChartJsChartOptions Options { get; set; }
     }

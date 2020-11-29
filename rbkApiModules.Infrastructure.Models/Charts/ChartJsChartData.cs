@@ -20,7 +20,12 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
 
     public class ChartJsDataset<T>
     {
-        public ChartPoint<T>[] Data { get; set; }
+        public ChartJsDataset()
+        {
+            Data = new List<ChartPoint<T>>();
+        }
+
+        public List<ChartPoint<T>> Data { get; set; }
         public string Label { get; set; }
         public double LineTension { get; set; }
         public string BorderColor { get; set; }
