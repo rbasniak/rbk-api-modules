@@ -34,6 +34,13 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
 
     public class ChartPoint<T>
     {
+        public ChartPoint(T x, double y, object data = null)
+        {
+            X = x;
+            Y = y;
+            Data = data;
+        }
+
         public T X { get; set; }
         public double Y { get; set; }
         public object Data { get; set; }

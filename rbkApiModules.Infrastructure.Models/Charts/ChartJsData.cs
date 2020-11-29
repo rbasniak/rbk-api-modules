@@ -14,6 +14,12 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
             Options = new ChartJsChartOptions();
         }
 
+        public ChartJsData(string title): this()
+        {
+            Options.Title.Text = title;
+        }
+
+        public string Id { get; set; }
         public ChartJsChartData<T> Data { get; set; }
         public ChartJsChartOptions Options { get; set; }
     }

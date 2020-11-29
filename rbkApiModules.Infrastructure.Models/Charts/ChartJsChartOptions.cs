@@ -27,7 +27,7 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
 
     public class ChartJsTitleOptions
     {
-        public bool Display { get; set; }
+        public bool Display => !String.IsNullOrEmpty(Text);
         public string Text { get; set; }
     }
 
