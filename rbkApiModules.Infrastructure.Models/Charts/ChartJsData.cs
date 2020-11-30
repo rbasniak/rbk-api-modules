@@ -41,7 +41,7 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
 
             foreach (var item in axisData)
             {
-                dataset.Data.Add(new ChartPoint<T>((T)((object)item), 0, null));
+                dataset.Data.Add(new ChartPoint<T>((T)((object)item.X), 0, null));
             }
 
             Data.Datasets.Add(dataset);
