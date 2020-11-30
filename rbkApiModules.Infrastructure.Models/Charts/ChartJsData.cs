@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -45,6 +46,8 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
             }
 
             Data.Datasets.Add(dataset);
+
+            Data.Labels = dataset.Data.Select(x => ((DateTime)((object)x.X)).ToString(@"dd/MMM", new CultureInfo("PT-br"))).ToList();
 
             return dataset;
         }
