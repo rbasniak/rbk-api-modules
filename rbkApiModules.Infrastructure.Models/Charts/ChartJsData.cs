@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,7 +29,7 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
         public ChartJsChartData<T> Data { get; set; }
         public ChartJsChartOptions Options { get; set; }
 
-        public void AddSeries(string name, DateTime startDate, DateTime endDate, string borderColor, string backgroundColor, double lineTension = 0)
+        public ChartJsDataset<T> AddSeries(string name, DateTime startDate, DateTime endDate, string borderColor, string backgroundColor, double lineTension = 0)
         {
             var dataset = new ChartJsDataset<T>();
             var axisData = BuildLineChartAxis(startDate, endDate);
@@ -44,6 +45,8 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
             }
 
             Data.Datasets.Add(dataset);
+
+            return dataset;
         }
 
         private List<ChartPoint<DateTime>> BuildLineChartAxis(DateTime startDate, DateTime endDate)
