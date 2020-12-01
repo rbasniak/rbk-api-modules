@@ -10,35 +10,48 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
 {
     public class ChartJsData<T>
     {
-        public ChartJsData()
+        private int _colorIndex = 0;
+
+        public ChartJsData(ColorPallete pallete)
         {
             Data = new ChartJsChartData<T>();
             Options = new ChartJsChartOptions();
+            ColorPallete = pallete;
         }
 
-        public ChartJsData(string title) : this()
+        public ChartJsData(ColorPallete pallete, string title) : this(pallete)
         {
             Options.Title.Text = title;
         } 
 
-        public ChartJsData(string id, string title): this(title)
+        public ChartJsData(ColorPallete pallete, string id, string title): this(pallete, title)
         {
             Id = id;
         }
 
         public string Id { get; set; }
+        public ColorPallete ColorPallete { get; set; }
         public ChartJsChartData<T> Data { get; set; }
         public ChartJsChartOptions Options { get; set; }
 
-        public ChartJsDataset<T> AddSeries(string name, DateTime startDate, DateTime endDate, string borderColor, string backgroundColor, double lineTension = 0)
+        public ChartJsDataset<T> AddSeries(string name, DateTime startDate, DateTime endDate, string color = null, double lineTension = 0)
         {
             var dataset = new ChartJsDataset<T>();
             var axisData = BuildLineChartAxis(startDate, endDate);
 
             dataset.Label = name;
             dataset.LineTension = lineTension;
-            dataset.BackgroundColor = backgroundColor;
-            dataset.BorderColor = borderColor;
+            
+            if (String.IsNullOrEmpty(color))
+            {
+                dataset.BackgroundColor = ChartCollorPicker.NextColor(ColorPallete, _colorIndex++);
+                dataset.BackgroundColor = dataset.BorderColor;
+            }
+            else
+            {
+                dataset.BackgroundColor = color;
+                dataset.BorderColor = color;
+            }
 
             foreach (var item in axisData)
             {
