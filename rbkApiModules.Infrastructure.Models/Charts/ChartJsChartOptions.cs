@@ -22,6 +22,11 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
 
     public class ChartJsLegendOptions
     {
+        public ChartJsLegendOptions()
+        {
+            Position = "bottom";
+        }
+
         public string Position { get; set; }
     }
 
