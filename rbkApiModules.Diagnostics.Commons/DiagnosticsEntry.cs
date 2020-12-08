@@ -94,5 +94,8 @@ namespace rbkApiModules.Diagnostics.Commons
 
         [Column(TypeName = "varchar(MAX)")]
         public string InputData { get; set; }
+
+        [Column(TypeName = "varchar(MAX)")]
+        public string ExtraData { get; set; }
     }
 }

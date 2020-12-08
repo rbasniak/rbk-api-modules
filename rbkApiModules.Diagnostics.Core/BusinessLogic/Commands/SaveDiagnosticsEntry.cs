@@ -45,6 +45,8 @@ namespace rbkApiModules.Diagnostics.Core
             public string ClientOperatingSystemVersion { get; set; }
 
             public string ClientDevice { get; set; }
+            
+            public string ExtraData { get; set; }
         }
 
         public class Validator : AbstractValidator<Command>
@@ -84,6 +86,7 @@ namespace rbkApiModules.Diagnostics.Core
                 data.ExceptionSource = request.ExceptionSource;
                 data.ClientUserAgent = request.ClientUserAgent;
                 data.Username = request.Username;
+                data.ExtraData = request.ExtraData;
 
                 _context.StoreData(data);
 
