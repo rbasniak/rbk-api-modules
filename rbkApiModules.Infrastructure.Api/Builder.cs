@@ -56,12 +56,17 @@ namespace rbkApiModules.Infrastructure.Api
                 options.HttpsPort = 443;
             });
 
-            services.AddControllers(config => {
-                foreach (var filter in filters)
+            if (filters != null)
+            {
+                services.AddControllers(config =>
                 {
-                    config.Filters.Add(filter);
-                }
-            });
+                    foreach (var filter in filters)
+                    {
+                        config.Filters.Add(filter);
+                    }
+                });
+            }
+
             services.AddRazorPages();
             services.AddServerSideBlazor();
 
@@ -115,7 +120,7 @@ namespace rbkApiModules.Infrastructure.Api
             }
         }
 
-        public static IApplicationBuilder UseRbkApiDefaultSetup(this IApplicationBuilder app, bool isProduction, bool useAntiXxsProtection = true)
+        public static IApplicationBuilder UseRbkApiDefaultSetup(this IApplicationBuilder app, bool isProduction, bool useSharedUI = true)
         {
             if (isProduction)
             {
@@ -154,7 +159,10 @@ namespace rbkApiModules.Infrastructure.Api
                 endpoints.MapControllers();
                 endpoints.MapBlazorHub();
                 // endpoints.MapRazorPages();
-                endpoints.MapFallbackToPage("/_Host");
+                if (useSharedUI)
+                {
+                    endpoints.MapFallbackToPage("/_Host");
+                }
             });
 
             return app;
