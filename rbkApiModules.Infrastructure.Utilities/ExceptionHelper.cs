@@ -11,18 +11,18 @@ namespace rbkApiModules.Infrastructure.Utilities
         {
             var exceptionMessage = new StringBuilder();
 
-            exceptionMessage.Append("\n" + prepend + "Exception:" + ex.GetType());
-            exceptionMessage.Append("\n" + prepend + "Message:" + ex.Message);
+            exceptionMessage.Append(Environment.NewLine + prepend + "Exception:" + ex.GetType());
+            exceptionMessage.Append(Environment.NewLine + prepend + "Message:" + ex.Message);
 
-            exceptionMessage.Append(GetOtherExceptionProperties(ex, "\n" + prepend));
+            exceptionMessage.Append(GetOtherExceptionProperties(ex, Environment.NewLine + prepend));
 
-            exceptionMessage.Append("\n" + prepend + "Source:" + ex.Source);
-            exceptionMessage.Append("\n" + prepend + "StackTrace:" + ex.StackTrace);
+            exceptionMessage.Append(Environment.NewLine + prepend + "Source:" + ex.Source);
+            exceptionMessage.Append(Environment.NewLine + prepend + "StackTrace:" + ex.StackTrace);
 
-            exceptionMessage.Append(GetExceptionData("\n" + prepend, ex));
+            exceptionMessage.Append(GetExceptionData(Environment.NewLine + prepend, ex));
 
             if (ex.InnerException != null)
-                exceptionMessage.Append("\n" + prepend + "InnerException: "
+                exceptionMessage.Append(Environment.NewLine + prepend + "InnerException: "
                     + ex.InnerException.ToBetterString(prepend + "    "));
 
             return exceptionMessage.ToString();

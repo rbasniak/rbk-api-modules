@@ -33,7 +33,7 @@ namespace rbkApiModules.Infrastructure.MediatR.Core
             catch (Exception ex)
             {
                 response.AddUnhandledError(ex.Message);
-                StoreDiagnosticsData(request, ex);
+                StoreDiagnosticsData(request, ex);                                                      
             }
 
             return response;

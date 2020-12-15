@@ -2,12 +2,14 @@
 using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using rbkApiModules.Diagnostics.Commons;
 using rbkApiModules.Infrastructure.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace rbkApiModules.Infrastructure.MediatR.Core
 {
@@ -75,7 +77,15 @@ namespace rbkApiModules.Infrastructure.MediatR.Core
             }
             catch (Exception ex)
             {
-                return Errors(new List<ValidationFailure> { new ValidationFailure(null, "Erro interno no servidor durante a validação dos dados: " + ex.Message) });
+                var diagnosticsStore = _httpContextAccessor.HttpContext.RequestServices.GetService<IDiagnosticsModuleStore>();
+
+                if (diagnosticsStore != null)
+                {
+                    var exceptionData = new DiagnosticsEntry(_httpContextAccessor.HttpContext, request.GetType().FullName + " (Validator)", ex, request);
+                    diagnosticsStore.StoreData(exceptionData);
+                }
+
+                return Errors(new List<ValidationFailure> { new ValidationFailure(null, "Erro interno no servidor durante a validação dos dados") });
             }
         }
 
@@ -96,4 +106,4 @@ namespace rbkApiModules.Infrastructure.MediatR.Core
             return Task.FromResult(response as TResponse);
         }
     }
-}
+} 
