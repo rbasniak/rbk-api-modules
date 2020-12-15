@@ -2,6 +2,7 @@
 using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using rbkApiModules.Infrastructure.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -68,9 +69,13 @@ namespace rbkApiModules.Infrastructure.MediatR.Core
                     ? Errors(failures)
                     : next();
             }
-            catch
+            catch (SafeException ex)
             {
-                return Errors(new List<ValidationFailure> { new ValidationFailure(null, "Erro interno no servidor durante a validação dos dados.") });
+                return Errors(new List<ValidationFailure> { new ValidationFailure(null, ex.Message) });
+            }
+            catch (Exception ex)
+            {
+                return Errors(new List<ValidationFailure> { new ValidationFailure(null, "Erro interno no servidor durante a validação dos dados: " + ex.Message) });
             }
         }
 
