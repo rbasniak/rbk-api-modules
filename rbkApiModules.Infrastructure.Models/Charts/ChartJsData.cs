@@ -34,7 +34,7 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
         public ChartJsChartData<T> Data { get; set; }
         public ChartJsChartOptions Options { get; set; }
 
-        public ChartJsDataset<T> AddSeries(string name, DateTime startDate, DateTime endDate, GroupingType groupingType, string color = null, double lineTension = 0)
+        public ChartJsDataset<T> AddSeries(string name, DateTime startDate, DateTime endDate, GroupingType groupingType, string transparency = "ff", string color = null, double lineTension = 0)
         {
             var dataset = new ChartJsDataset<T>();
             var axisData = BuildLineChartAxis(startDate, endDate, groupingType);
@@ -44,14 +44,11 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
             
             if (String.IsNullOrEmpty(color))
             {
-                dataset.BackgroundColor = ChartCollorPicker.NextColor(ColorPallete, _colorIndex++);
-                dataset.BackgroundColor = dataset.BorderColor;
+                color = ChartCollorPicker.NextColor(ColorPallete, _colorIndex++);
             }
-            else
-            {
-                dataset.BackgroundColor = color;
-                dataset.BorderColor = color;
-            }
+            
+            dataset.BackgroundColor = color + transparency;
+            dataset.BorderColor = color;
 
             foreach (var item in axisData)
             {
