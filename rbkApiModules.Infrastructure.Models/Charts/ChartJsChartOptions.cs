@@ -80,10 +80,21 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
         public ChartJsYAxisOptions()
         {
             Ticks = new ChartJsAxisTickOptions();
+            GridLines = new ChartJsGridLineOptions();
         }
 
         public bool Display { get; set; }
         public ChartJsAxisTickOptions Ticks { get; set; }
+        public ChartJsGridLineOptions GridLines { get; set; }
+    }
+
+    public class ChartJsGridLineOptions
+    {
+        public ChartJsGridLineOptions()
+        {
+            Display = true;
+        }
+        public bool Display { get; set; }
     }
 
     public class ChartJsAxisTickOptions
