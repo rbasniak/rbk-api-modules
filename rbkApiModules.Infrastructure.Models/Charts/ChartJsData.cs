@@ -34,10 +34,10 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
         public ChartJsChartData<T> Data { get; set; }
         public ChartJsChartOptions Options { get; set; }
 
-        public ChartJsDataset<T> AddSeries(string name, DateTime startDate, DateTime endDate, string color = null, double lineTension = 0)
+        public ChartJsDataset<T> AddSeries(string name, DateTime startDate, DateTime endDate, GroupingType groupingType, string color = null, double lineTension = 0)
         {
             var dataset = new ChartJsDataset<T>();
-            var axisData = BuildLineChartAxis(startDate, endDate);
+            var axisData = BuildLineChartAxis(startDate, endDate, groupingType);
 
             dataset.Label = name;
             dataset.LineTension = lineTension;
@@ -60,21 +60,82 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
 
             Data.Datasets.Add(dataset);
 
-            Data.Labels = dataset.Data.Select(x => ((DateTime)((object)x.X)).ToString(@"dd/MMM", new CultureInfo("PT-br"))).ToList();
+            switch (groupingType)
+            {
+                case GroupingType.None:
+                    break;
+                case GroupingType.Daily:
+                    Data.Labels = dataset.Data.Select(x => ((DateTime)((object)x.X)).ToString(@"dd/MMM", new CultureInfo("PT-br"))).ToList();
+                    break;
+                case GroupingType.Hourly:
+                    break;
+                case GroupingType.Weekly:
+                    Data.Labels = dataset.Data.Select(x => ((DateTime)((object)x.X)).ToString(@"dd/MMM", new CultureInfo("PT-br"))).ToList();
+                    break;
+                case GroupingType.Monthly:
+                    Data.Labels = dataset.Data.Select(x => ((DateTime)((object)x.X)).ToString(@"MMM/yy", new CultureInfo("PT-br"))).ToList();
+                    break;
+                case GroupingType.Yearly:
+                    Data.Labels = dataset.Data.Select(x => ((DateTime)((object)x.X)).ToString(@"yyyy", new CultureInfo("PT-br"))).ToList();
+                    break;
+                default:
+                    break;
+            }
 
             return dataset;
         }
 
-        private List<ChartPoint<DateTime>> BuildLineChartAxis(DateTime startDate, DateTime endDate)
+        private List<ChartPoint<DateTime>> BuildLineChartAxis(DateTime startDate, DateTime endDate, GroupingType groupingType)
         {
-            var date = startDate;
+            DateTime date;
+
+            switch (groupingType)
+            {
+                case GroupingType.None:
+                    throw new NotSupportedException();
+                case GroupingType.Hourly:
+                    throw new NotImplementedException();
+                case GroupingType.Daily:
+                    date = startDate;
+                    break;
+                case GroupingType.Weekly:
+                    throw new NotImplementedException();
+                case GroupingType.Monthly:
+                    date = new DateTime(startDate.Year, startDate.Month, 1);
+                    break;
+                case GroupingType.Yearly:
+                    date = new DateTime(startDate.Year, 1, 1);
+                    break;
+                default:
+                    throw new NotSupportedException();
+            } 
 
             var axis = new List<ChartPoint<DateTime>>();
 
             while (date <= endDate.Date)
             {
                 axis.Add(new ChartPoint<DateTime>(date.Date, 0));
-                date = date.AddDays(1);
+
+                switch (groupingType)
+                {
+                    case GroupingType.None:
+                        throw new NotSupportedException();
+                    case GroupingType.Hourly:
+                        throw new NotImplementedException();
+                    case GroupingType.Daily:
+                        date = date.AddDays(1);
+                        break;
+                    case GroupingType.Weekly:
+                        throw new NotImplementedException();
+                    case GroupingType.Monthly:
+                        date = date.AddMonths(1);
+                        break;
+                    case GroupingType.Yearly:
+                        date = date.AddYears(1);
+                        break;
+                    default:
+                        throw new NotSupportedException();
+                }
             }
 
             if (axis.Last().X.Date != endDate.Date)

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -10,7 +11,7 @@ namespace rbkApiModules.SharedUI
         {
             var routeLocator = new BlazorRoutesLocator(blazorRoutingAssemblies);
 
-            options.BaseHref = !string.IsNullOrEmpty(options.BaseHref) ?  "/" + options.BaseHref.Trim('/') : "";
+            options.BaseHref = !String.IsNullOrEmpty(options.BaseHref) ?  "/" + options.BaseHref.Trim('/') : "";
 
             services.AddSingleton(routeLocator);
 
