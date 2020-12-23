@@ -25,9 +25,15 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
         public ChartJsLegendOptions()
         {
             Position = "bottom";
+            FullWidth = true;
+            Display = true;
+            Align = "center";
         }
 
         public string Position { get; set; }
+        public bool Display { get; set; }
+        public string Align { get; set; }
+        public bool FullWidth { get; set; }
     }
 
     public class ChartJsTitleOptions
