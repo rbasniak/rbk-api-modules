@@ -49,7 +49,7 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
     //        Scales = new AxisOptions();
     //    }
 
-    //    public AxisOptions Scales { get; set; }
+    //    public AxisOptions Scales { get; set; } 
     //}
 
     public class AxisOptions
