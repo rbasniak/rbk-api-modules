@@ -114,7 +114,5 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
         public bool? AutoSkip { get; set; }
         public int? MaxRotation { get; set; }
         public int? MinRotation { get; set; }
-        public double? Min { get; set; }
-        public double? Max { get; set; }
     }
 }
