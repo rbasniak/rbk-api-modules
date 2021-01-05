@@ -84,6 +84,7 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
         {
             Ticks = new AxisTickOptions();
             GridLines = new GridLineOptions();
+            Display = true;
         }
 
         public bool Display { get; set; }
