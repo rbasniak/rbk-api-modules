@@ -104,17 +104,13 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
     {
         public AxisTickOptions()
         {
-            MaxTicksLimit = 0;
-            AutoSkip = true;
-            MinRotation = 0;
-            MaxRotation = 50;
         }
 
-        public int MaxTicksLimit { get; set; }
-        public bool AutoSkip { get; set; }
-        public int MaxRotation { get; set; }
-        public int MinRotation { get; set; }
-        public double Min { get; set; }
-        public double Max { get; set; }
+        public int? MaxTicksLimit { get; set; }
+        public bool? AutoSkip { get; set; }
+        public int? MaxRotation { get; set; }
+        public int? MinRotation { get; set; }
+        public double? Min { get; set; }
+        public double? Max { get; set; }
     }
 }

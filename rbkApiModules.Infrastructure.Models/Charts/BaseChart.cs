@@ -69,9 +69,9 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
 
         public void UseDefaultCategoryAxes()
         {
-            Options.Scales.XAxes.First().Ticks.AutoSkip = true;
-            Options.Scales.XAxes.First().Ticks.MinRotation = 0;
-            Options.Scales.XAxes.First().Ticks.MaxRotation = 50;
+            Options.Scales.XAxes.First().Ticks.AutoSkip = null;
+            Options.Scales.XAxes.First().Ticks.MinRotation = null;
+            Options.Scales.XAxes.First().Ticks.MaxRotation = null;
         }
 
         public void UseCompactCategoryAxes()
