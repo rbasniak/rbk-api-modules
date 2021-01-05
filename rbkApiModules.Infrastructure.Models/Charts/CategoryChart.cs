@@ -8,33 +8,28 @@ using System.Threading.Tasks;
 
 namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
 {
-    public class CategoryChart
+    public class CategoryChart: BaseChart
     {
-        private int _colorIndex = 0;
-
-        public CategoryChart(ColorPallete pallete)
+        public CategoryChart(ColorPallete pallete): base(pallete)
         {
             Data = new CategoryChartData();
             Options = new ChartOptions();
             ColorPallete = pallete;
         }
 
-        public CategoryChart(ColorPallete pallete, string title) : this(pallete)
+        public CategoryChart(ColorPallete pallete, string title) : base(pallete, title)
         {
             Options.Title.Text = title;
         } 
 
-        public CategoryChart(ColorPallete pallete, string id, string title): this(pallete, title)
+        public CategoryChart(ColorPallete pallete, string id, string title): base(pallete, id, title)
         {
             Id = id;
         }
 
-        public string Id { get; set; }
-        public ColorPallete ColorPallete { get; set; }
         public CategoryChartData Data { get; set; }
-        public ChartOptions Options { get; set; }
 
-        public void AddData(string label, double value, string transparency = "ff", string color = null, double lineTension = 0)
+        public void AddData(string label, double value, string transparency = "ff", string color = null)
         {
             var dataset = new CategoryDataSet();
 
