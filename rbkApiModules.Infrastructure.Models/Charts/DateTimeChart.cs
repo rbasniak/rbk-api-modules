@@ -3,40 +3,31 @@ using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
 {
-    public class ChartJsData<T>
+    public class DateTimeChart: BaseChart
     {
-        private int _colorIndex = 0;
-
-        public ChartJsData(ColorPallete pallete)
+        public DateTimeChart(ColorPallete pallete): base(pallete)
         {
-            Data = new ChartJsChartData<T>();
-            Options = new ChartJsChartOptions();
+            Data = new DateTimeChartData();
+            Options = new ChartOptions();
             ColorPallete = pallete;
         }
 
-        public ChartJsData(ColorPallete pallete, string title) : this(pallete)
+        public DateTimeChart(ColorPallete pallete, string title) : base(pallete, title)
         {
-            Options.Title.Text = title;
         } 
 
-        public ChartJsData(ColorPallete pallete, string id, string title): this(pallete, title)
+        public DateTimeChart(ColorPallete pallete, string id, string title): base(pallete, id, title)
         {
-            Id = id;
         }
 
-        public string Id { get; set; }
-        public ColorPallete ColorPallete { get; set; }
-        public ChartJsChartData<T> Data { get; set; }
-        public ChartJsChartOptions Options { get; set; }
+        public DateTimeChartData Data { get; set; }
 
-        public ChartJsDataset<T> AddSeries(string name, DateTime startDate, DateTime endDate, GroupingType groupingType, string transparency = "ff", string color = null, double lineTension = 0)
+        public DateTimeDataSet AddSeries(string name, DateTime startDate, DateTime endDate, GroupingType groupingType, string transparency = "ff", string color = null, double lineTension = 0)
         {
-            var dataset = new ChartJsDataset<T>();
+            var dataset = new DateTimeDataSet();
             var axisData = BuildLineChartAxis(startDate, endDate, groupingType);
 
             dataset.Label = name;
@@ -44,7 +35,7 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
             
             if (String.IsNullOrEmpty(color))
             {
-                color = ChartCollorPicker.NextColor(ColorPallete, _colorIndex++);
+                color = ChartCollorSelector.NextColor(ColorPallete, _colorIndex++);
             }
             
             dataset.BackgroundColor = color + transparency;
@@ -52,7 +43,7 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
 
             foreach (var item in axisData)
             {
-                dataset.Data.Add(new ChartPoint<T>((T)((object)item.X), 0, null));
+                dataset.Data.Add(new DateTimePoint(item.X, 0, null));
             }
 
             Data.Datasets.Add(dataset);
@@ -82,27 +73,7 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
             return dataset;
         }
 
-        public ChartJsDataset<T> AddSeries(string name, string transparency = "ff", string color = null, double lineTension = 0)
-        {
-            var dataset = new ChartJsDataset<T>();
-
-            dataset.Label = name;
-            dataset.LineTension = lineTension;
-
-            if (String.IsNullOrEmpty(color))
-            {
-                color = ChartCollorPicker.NextColor(ColorPallete, _colorIndex++);
-            }
-
-            dataset.BackgroundColor = color + transparency;
-            dataset.BorderColor = color;
-
-            Data.Datasets.Add(dataset);
-                         
-            return dataset;
-        }
-
-        private List<ChartPoint<DateTime>> BuildLineChartAxis(DateTime startDate, DateTime endDate, GroupingType groupingType)
+        private List<DateTimePoint> BuildLineChartAxis(DateTime startDate, DateTime endDate, GroupingType groupingType)
         {
             DateTime date;
 
@@ -127,11 +98,11 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
                     throw new NotSupportedException();
             } 
 
-            var axis = new List<ChartPoint<DateTime>>();
+            var axis = new List<DateTimePoint>();
 
             while (date <= endDate.Date)
             {
-                axis.Add(new ChartPoint<DateTime>(date.Date, 0));
+                axis.Add(new DateTimePoint(date.Date, 0));
 
                 switch (groupingType)
                 {
@@ -157,7 +128,7 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
 
             if (axis.Last().X.Date != endDate.Date)
             {
-                axis.Add(new ChartPoint<DateTime>(endDate.Date, 0));
+                axis.Add(new DateTimePoint(endDate.Date, 0));
             }
 
             return axis;

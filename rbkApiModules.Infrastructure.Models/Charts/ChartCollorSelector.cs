@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
 { 
-    public static class ChartCollorPicker
+    public static class ChartCollorSelector
     {
         private static readonly string[] _pallete1 = new[] 
         {
