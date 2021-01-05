@@ -19,11 +19,13 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
 
         public CategoryChart(ColorPallete pallete, string title) : base(pallete, title)
         {
+            Data = new CategoryChartData();
             Options.Title.Text = title;
         } 
 
         public CategoryChart(ColorPallete pallete, string id, string title): base(pallete, id, title)
         {
+            Data = new CategoryChartData();
             Id = id;
         }
 
