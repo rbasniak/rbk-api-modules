@@ -45,6 +45,42 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
         public void SetTitle(string title)
         {
             Options.Title.Text = title;
-        } 
+        }
+
+        public void SetMinX(double value)
+        {
+            Options.Scales.XAxes.First().Ticks.Min = value;
+        }
+
+        public void SetMaxX(double value)
+        {
+            Options.Scales.XAxes.First().Ticks.Max = value;
+        }
+
+        public void SetMinY(double value)
+        {
+            Options.Scales.YAxes.First().Ticks.Min = value;
+        }
+
+        public void SetMaxY(double value)
+        {
+            Options.Scales.YAxes.First().Ticks.Max = value;
+        }
+
+        public void UseDefaultCategoryAxes()
+        {
+            Options.Scales.XAxes.First().Ticks.AutoSkip = true;
+            Options.Scales.XAxes.First().Ticks.MinRotation = 0;
+            Options.Scales.XAxes.First().Ticks.MaxRotation = 50;
+        }
+
+        public void UseCompactCategoryAxes()
+        {
+            Options.Scales.XAxes.First().Ticks.AutoSkip = false;
+            Options.Scales.XAxes.First().Ticks.MinRotation = 90;
+            Options.Scales.XAxes.First().Ticks.MaxRotation = 90;
+        }
+
+
     }
 }

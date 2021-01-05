@@ -56,12 +56,15 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
     {
         public AxisOptions()
         {
-            XAxes = new XAxisOptions();
-            YAxes = new YAxisOptions();
+            XAxes = new List<XAxisOptions>();
+            YAxes = new List<YAxisOptions>();
+
+            XAxes.Add(new XAxisOptions());
+            YAxes.Add(new YAxisOptions());
         }
 
-        public XAxisOptions XAxes { get; set; }
-        public YAxisOptions YAxes { get; set; }
+        public List<XAxisOptions> XAxes { get; set; }
+        public List<YAxisOptions> YAxes { get; set; }
     }
 
     public class XAxisOptions
@@ -103,14 +106,15 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
         {
             MaxTicksLimit = 0;
             AutoSkip = true;
-            MinRotation = 45;
-            MaxRotation = 90;
-
+            MinRotation = 0;
+            MaxRotation = 50;
         }
 
         public int MaxTicksLimit { get; set; }
         public bool AutoSkip { get; set; }
         public int MaxRotation { get; set; }
         public int MinRotation { get; set; }
+        public double Min { get; set; }
+        public double Max { get; set; }
     }
 }
