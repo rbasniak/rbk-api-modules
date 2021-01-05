@@ -82,6 +82,26 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
             return dataset;
         }
 
+        public ChartJsDataset<T> AddSeries(string name, string transparency = "ff", string color = null, double lineTension = 0)
+        {
+            var dataset = new ChartJsDataset<T>();
+
+            dataset.Label = name;
+            dataset.LineTension = lineTension;
+
+            if (String.IsNullOrEmpty(color))
+            {
+                color = ChartCollorPicker.NextColor(ColorPallete, _colorIndex++);
+            }
+
+            dataset.BackgroundColor = color + transparency;
+            dataset.BorderColor = color;
+
+            Data.Datasets.Add(dataset);
+                         
+            return dataset;
+        }
+
         private List<ChartPoint<DateTime>> BuildLineChartAxis(DateTime startDate, DateTime endDate, GroupingType groupingType)
         {
             DateTime date;
