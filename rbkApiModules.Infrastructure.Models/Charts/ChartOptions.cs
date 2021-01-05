@@ -12,12 +12,12 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
         {
             Title = new TitleOptions();
             Legend = new LegendOptions();
-            Scales = new ScaleOptions();
+            Scales = new AxisOptions();
         }
 
         public TitleOptions Title { get; set; }
         public LegendOptions Legend { get; set; }
-        public ScaleOptions Scales { get; set; }
+        public AxisOptions Scales { get; set; }
     }
 
     public class LegendOptions
@@ -42,15 +42,15 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
         public string Text { get; set; }
     }
 
-    public class ScaleOptions
-    {
-        public ScaleOptions()
-        {
-            Scales = new AxisOptions();
-        }
+    //public class ScaleOptions
+    //{
+    //    public ScaleOptions()
+    //    {
+    //        Scales = new AxisOptions();
+    //    }
 
-        public AxisOptions Scales { get; set; }
-    }
+    //    public AxisOptions Scales { get; set; }
+    //}
 
     public class AxisOptions
     {
