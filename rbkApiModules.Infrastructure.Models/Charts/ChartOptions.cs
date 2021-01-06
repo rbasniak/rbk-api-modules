@@ -72,6 +72,7 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
         public XAxisOptions()
         {
             Ticks = new AxisTickOptions();
+            Display = true;
         }
 
         public bool Display { get; set; }
