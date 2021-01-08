@@ -18,9 +18,7 @@ namespace rbkApiModules.Demo.BusinessLogic
 
         public class Validator : AbstractValidator<Command>
         {
-            private readonly DatabaseContext _context;
-
-            public Validator(DatabaseContext context)
+            public Validator()
             {
                 
             } 

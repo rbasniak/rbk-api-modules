@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="rbkApiModules.Workflow.ClaimToEvent">
+    <Position X="0.5" Y="0.75" Width="1.5" />
+    <Members>
+      <Method Name="ClaimToEvent" Hidden="true" />
+      <Method Name="ToString" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAIAAgAAAAAAAEAAAAAAAAAgAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ClaimToEvent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="rbkApiModules.Workflow.EventDetails">
+    <Position X="3.25" Y="0.75" Width="1.5" />
+    <Members>
+      <Field Name="_claims" Hidden="true" />
+      <Field Name="_transitions" Hidden="true" />
+      <Method Name="Event" Hidden="true" />
+      <Method Name="ToString" Hidden="true" />
+      <Method Name="Update" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAQQIAAAAAAAAAAEEAAAAAQEAAAQAAAAAAAACAAgAAA=</HashCode>
+      <FileName>Event.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Claims" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="rbkApiModules.Workflow.State">
+    <Position X="8.5" Y="0.75" Width="1.5" />
+    <Members>
+      <Field Name="_items" Hidden="true" />
+      <Field Name="_transitions" Hidden="true" />
+      <Field Name="_usedBy" Hidden="true" />
+      <Method Name="AddTransition" Hidden="true" />
+      <Method Name="State" Hidden="true" />
+      <Method Name="ToString" Hidden="true" />
+      <Method Name="Update" Hidden="true" />
+    </Members>
+    <AssociationLine Name="Items" Type="rbkApiModules.Workflow.IStateEntity" FixedFromPoint="true">
+      <Path>
+        <Point X="9.188" Y="3.137" />
+        <Point X="9.188" Y="5.5" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAQQAEAEAAAACAAEAAAAAAQEABAQAEIAAAEAiAAAAAA=</HashCode>
+      <FileName>State.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Group" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="Items" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="rbkApiModules.Workflow.StateChangeEvent">
+    <Position X="11.75" Y="5.5" Width="1.5" />
+    <Members>
+      <Method Name="StateChangeEvent" Hidden="true" />
+      <Method Name="ToString" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>EAAgAAAIAAIAAAAEAQACAAQAAAAAAAABAAAAAAAAAAA=</HashCode>
+      <FileName>StateChangeEvent.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Entity" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="rbkApiModules.Workflow.TransitionDetails">
+    <Position X="3.25" Y="3.75" Width="1.5" />
+    <Members>
+      <Method Name="ToString" Hidden="true" />
+      <Method Name="Transition" Hidden="true" />
+      <Method Name="Update" Hidden="true" />
+    </Members>
+    <AssociationLine Name="FromState" Type="rbkApiModules.Workflow.State" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="4.75" Y="4.16" />
+        <Point X="5.715" Y="4.16" />
+        <Point X="5.715" Y="1.226" />
+        <Point X="8.5" Y="1.226" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="ToState" Type="rbkApiModules.Workflow.State" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="4.75" Y="4.393" />
+        <Point X="6.043" Y="4.393" />
+        <Point X="6.043" Y="1.566" />
+        <Point X="8.5" Y="1.566" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AARQAAAgAAAAAAAEAAIAAAAAAgAABAAAAAACgAAAAAA=</HashCode>
+      <FileName>Transition.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Event" />
+      <Property Name="FromState" />
+      <Property Name="ToState" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="rbkApiModules.Workflow.StateGroup">
+    <Position X="11.75" Y="0.75" Width="1.5" />
+    <Members>
+      <Field Name="_states" Hidden="true" />
+      <Method Name="StateGroup" Hidden="true" />
+      <Method Name="Update" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AEQAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>StateGroup.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="States" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Interface Name="rbkApiModules.Workflow.IStateEntity">
+    <Position X="8.5" Y="5.5" Width="1.5" />
+    <AssociationLine Name="State" Type="rbkApiModules.Workflow.State" FixedToPoint="true">
+      <Path>
+        <Point X="9.625" Y="5.5" />
+        <Point X="9.625" Y="3.137" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAAAAAAAAAAAAAgAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>IStateEntity.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="State" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="Events" />
+    </ShowAsCollectionAssociation>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

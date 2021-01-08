@@ -91,7 +91,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{EED248A8-163
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utilities", "Utilities", "{AF2C6107-8BCB-4EE3-8D8F-AE098050947F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.Infrastructure.Utilities.Tests", "rbkApiModules.Infrastructure.Utilities.Tests\rbkApiModules.Infrastructure.Utilities.Tests.csproj", "{34D9690F-C93F-4D53-974B-7FC1E99933D2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Infrastructure.Utilities.Tests", "rbkApiModules.Infrastructure.Utilities.Tests\rbkApiModules.Infrastructure.Utilities.Tests.csproj", "{34D9690F-C93F-4D53-974B-7FC1E99933D2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflow", "Workflow", "{2DC6024B-1D80-4813-A95E-A09E36E1A998}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.Workflow", "rbkApiModules.Workflow\rbkApiModules.Workflow.csproj", "{A942077F-F784-4BF0-9A93-4E90857B0574}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -203,6 +207,10 @@ Global
 		{34D9690F-C93F-4D53-974B-7FC1E99933D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{34D9690F-C93F-4D53-974B-7FC1E99933D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{34D9690F-C93F-4D53-974B-7FC1E99933D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A942077F-F784-4BF0-9A93-4E90857B0574}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A942077F-F784-4BF0-9A93-4E90857B0574}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A942077F-F784-4BF0-9A93-4E90857B0574}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A942077F-F784-4BF0-9A93-4E90857B0574}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -244,6 +252,8 @@ Global
 		{EED248A8-1633-4007-916D-06F063189180} = {28AEC725-3257-4A72-BC8B-C6ABB827A897}
 		{AF2C6107-8BCB-4EE3-8D8F-AE098050947F} = {28AEC725-3257-4A72-BC8B-C6ABB827A897}
 		{34D9690F-C93F-4D53-974B-7FC1E99933D2} = {AF2C6107-8BCB-4EE3-8D8F-AE098050947F}
+		{2DC6024B-1D80-4813-A95E-A09E36E1A998} = {A1A68EE5-8E91-449C-96A8-CCC5BF135D48}
+		{A942077F-F784-4BF0-9A93-4E90857B0574} = {2DC6024B-1D80-4813-A95E-A09E36E1A998}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9AAC09BF-43DC-408B-8F24-24DAA39DA1E8}

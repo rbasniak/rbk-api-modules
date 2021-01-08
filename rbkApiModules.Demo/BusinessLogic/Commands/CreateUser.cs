@@ -32,16 +32,12 @@ namespace rbkApiModules.Demo.BusinessLogic
 
                 CascadeMode = CascadeMode.Stop;
 
-                //RuleFor(x => x.UserId)
-                //    .MustExistInDatabase<Command, User>(context);
-
                 RuleFor(x => x.Username)
                     .MustAsync(MustNotExist).WithMessage("Usuário já existente");
             }
 
             private async Task<bool> MustNotExist(Command command, string username, CancellationToken arg2)
             {
-                throw new AbandonedMutexException();
                 return !(await _context.Users.AnyAsync(x => EF.Functions.Like(x.Username, username)));
             }
         }

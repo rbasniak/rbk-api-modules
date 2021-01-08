@@ -67,7 +67,7 @@ namespace rbkApiModules.Demo
 
                         context1.SaveChanges();
                     }
-                    catch (Exception ex)
+                    catch  
                     {
                         // Serilog.Log.Logger.Fatal(ex, "An error occurred while seeding the database.");
                     }
@@ -77,7 +77,7 @@ namespace rbkApiModules.Demo
 
                 return 0;
             }
-            catch (Exception ex)
+            catch 
             {
                 // Serilog.Log.Logger.Fatal(ex, "Host terminated unexpectedly");
                 return 1;

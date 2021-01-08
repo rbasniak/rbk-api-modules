@@ -50,7 +50,8 @@
           "rbkApiModules.Diagnostics.Commons/rbkApiModules.Diagnostics.Commons.csproj",
           "rbkApiModules.Diagnostics.Core/rbkApiModules.Diagnostics.Core.csproj",
           "rbkApiModules.Diagnostics.SqlServer/rbkApiModules.Diagnostics.SqlServer.csproj",
-          "rbkApiModules.Diagnostics.UI/rbkApiModules.Diagnostics.UI.csproj"
+          "rbkApiModules.Diagnostics.UI/rbkApiModules.Diagnostics.UI.csproj",
+          "rbkApiModules.Workflow/rbkApiModules.Workflow.csproj"
         ]
       }
     },
