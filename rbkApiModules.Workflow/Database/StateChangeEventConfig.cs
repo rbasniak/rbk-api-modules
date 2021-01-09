@@ -31,7 +31,7 @@ namespace rbkApiModules.Workflow.Database
                 .HasMaxLength(255);
 
             entity.HasOne(x => x.Entity)
-                .WithMany(x => x.Events)
+                .WithMany()
                 .HasForeignKey(x => x.EntityId)
                 .OnDelete(DeleteBehavior.Restrict)
                 .Metadata.PrincipalToDependent
