@@ -10,7 +10,7 @@ namespace rbkApiModules.Workflow
 
         }
 
-        public StateChangeEvent(IStateEntity entity, string username, State status, string history, string notes)
+        public StateChangeEvent(BaseStateEntity entity, string username, State status, string history, string notes)
         {
             Entity = entity;
             Username = username;
@@ -47,7 +47,7 @@ namespace rbkApiModules.Workflow
         /// Solicitação de mudança à qual este evento pertence
         /// </summary>
         public virtual Guid EntityId { get; private set; }
-        public virtual IStateEntity Entity { get; private set; }
+        public virtual BaseStateEntity Entity { get; private set; }
 
         public virtual string Notes { get; private set; }
 

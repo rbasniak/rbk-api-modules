@@ -10,7 +10,7 @@ namespace rbkApiModules.Workflow
     {
         private HashSet<Transition> _transitions;
         private HashSet<Transition> _usedBy;
-        private HashSet<IStateEntity> _items;
+        private HashSet<BaseStateEntity> _items;
 
         protected State()
         {
@@ -27,7 +27,7 @@ namespace rbkApiModules.Workflow
 
         public State(string name, string systemId, string color)
         {
-            _items = new HashSet<IStateEntity>();
+            _items = new HashSet<BaseStateEntity>();
             _transitions = new HashSet<Transition>();
             _usedBy = new HashSet<Transition>();
 
@@ -58,7 +58,7 @@ namespace rbkApiModules.Workflow
 
         public virtual IEnumerable<Transition> Transitions => _transitions?.ToList();
         public virtual IEnumerable<Transition> UsedBy => _usedBy?.ToList();
-        public virtual IEnumerable<IStateEntity> Items => _items?.ToList();
+        public virtual IEnumerable<BaseStateEntity> Items => _items?.ToList();
 
         public Transition AddTransition(Event @event, State state, string history, bool isProtected)
         {
