@@ -10,7 +10,7 @@ namespace rbkApiModules.Workflow
 
         }
 
-        public StateChangeEvent(IStateEntity entity, string username, State status, string history, string notes, string newOwner)
+        public StateChangeEvent(IStateEntity entity, string username, State status, string history, string notes)
         {
             Entity = entity;
             Username = username;
