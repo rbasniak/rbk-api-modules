@@ -17,11 +17,22 @@ using System.Reflection;
 
 namespace rbkApiModules.Infrastructure.Api
 {
+    public class RbkApiInfrastructureModuleOptions
+    {
+        public Assembly[] AssembliesForServices { get; set; }
+        public Assembly[] AssembliesForAutoMapper { get; set; }
+        public List<IActionFilter> Filters { get; set; }
+        public string ApplicationName { get; set; }
+        public string Version { get; set; }
+        public string SwaggerXmlPath { get; set; }
+        public bool IsProduction { get; set; }
+        public List<Profile> AutomapperProfiles { get; set; }
+    }
+
     [ExcludeFromCodeCoverage]
     public static class Builder
     {
-        public static void AddRbkApiInfrastructureModule(this IServiceCollection services, Assembly[] assembliesForServices,
-            Assembly[] assembliesForAutoMapper, List<IActionFilter> filters, string applicationName, string version, string swaggerXmlPath, bool isProduction)
+        public static void AddRbkApiInfrastructureModule(this IServiceCollection services, RbkApiInfrastructureModuleOptions options)
         {
             services.AddResponseCompression(options =>
             {
@@ -32,7 +43,7 @@ namespace rbkApiModules.Infrastructure.Api
             services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
 
             services.RegisterApplicationServices(Assembly.GetAssembly(typeof(Builder)));
-            services.RegisterApplicationServices(assembliesForServices);
+            services.RegisterApplicationServices(options.AssembliesForServices);
 
             services.AddHttpClient();
 
@@ -42,9 +53,14 @@ namespace rbkApiModules.Infrastructure.Api
 
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.ApplyProfiles(assembliesForAutoMapper);
+                cfg.ApplyProfiles(options.AssembliesForAutoMapper);
                 cfg.CreateMap<Guid?, string>().ConvertUsing(g => g.HasValue ? g.Value.ToString().ToLower() : null);
                 cfg.CreateMap<Guid, string>().ConvertUsing(g => g.ToString().ToLower());
+
+                foreach (var profile in options.AutomapperProfiles)
+                {
+                    cfg.AddProfile(profile);
+                }
             });
             var mapper = config.CreateMapper();
             services.AddSingleton(mapper);
@@ -56,11 +72,11 @@ namespace rbkApiModules.Infrastructure.Api
                 options.HttpsPort = 443;
             });
 
-            if (filters != null)
+            if (options.Filters != null)
             {
                 services.AddControllers(config =>
                 {
-                    foreach (var filter in filters)
+                    foreach (var filter in options.Filters)
                     {
                         config.Filters.Add(filter);
                     }
@@ -72,15 +88,15 @@ namespace rbkApiModules.Infrastructure.Api
 
             services.AddRouting(options => options.LowercaseUrls = true);
 
-            services.AddSwaggerGen(options =>
+            services.AddSwaggerGen(config =>
             {
-                options.SwaggerDoc("v1", new OpenApiInfo { Title = applicationName, Version = version });
+                config.SwaggerDoc("v1", new OpenApiInfo { Title = options.ApplicationName, Version = options.Version });
 
-                options.IncludeXmlComments(swaggerXmlPath);
+                config.IncludeXmlComments(options.SwaggerXmlPath);
 
-                options.CustomSchemaIds(x => x.FullName);
+                config.CustomSchemaIds(x => x.FullName);
 
-                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                config.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Type = SecuritySchemeType.ApiKey,
                     In = ParameterLocation.Header,
@@ -90,7 +106,7 @@ namespace rbkApiModules.Infrastructure.Api
                     Description = "Please insert JWT with Bearer into field",
                 });
 
-                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                config.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     {
                         new OpenApiSecurityScheme
@@ -107,7 +123,7 @@ namespace rbkApiModules.Infrastructure.Api
                 options.SuppressModelStateInvalidFilter = true;
             });
 
-            if (isProduction)
+            if (options.IsProduction)
             {
                 // Para outros detalhes de configuração do HSTS e redirecionamento HTTPS
                 // acessar https://aka.ms/aspnetcore-hsts

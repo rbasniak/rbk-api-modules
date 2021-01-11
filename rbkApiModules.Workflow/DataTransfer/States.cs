@@ -11,7 +11,7 @@ namespace rbkApiModules.Workflow
     public class StateGroupDetails: BaseDataTransferObject
     {
         public string Name { get; set; }
-        public List<States.Details> States { get; set; }
+        public States.Details[] States { get; set; }
     }
 
     public class States
@@ -47,23 +47,25 @@ namespace rbkApiModules.Workflow
         public string[] Claims { get; set; }
     }
 
-    public class StatesMappings : Profile
+    public class StatesMappings<TStateGroup, TSTate, TEvent, TTransition> : Profile
     {
         public StatesMappings()
         {
-            CreateMap<StateGroup, StateGroupDetails>();
+            CreateMap<TStateGroup, StateGroupDetails>();
 
-            CreateMap<State, States.Details>();
+            CreateMap<TSTate, States.Details>();
 
-            CreateMap<State, States.Simple>();
+            CreateMap<TSTate, States.Simple>();
 
-            CreateMap<Event, EventDetails>()
+            CreateMap<TEvent, EventDetails>()
                 .ForMember(dto => dto.Claims, map => map.MapFrom(entity => entity.Claims.Select(x => x.Claim)));
 
-            CreateMap<Transition, TransitionDetails>()
-                .ForMember(dto => dto.FromState, map => map.MapFrom(entity => entity.FromState))
-                .ForMember(dto => dto.Event, map => map.MapFrom(entity => entity.Event))
-                .ForMember(dto => dto.ToState, map => map.MapFrom(entity => entity.ToState));
+            CreateMap<TTransition, TransitionDetails>();
         }
+    }
+
+    public interface IClaims
+    {
+        IEnumerable<TClaimToEvent> Claims { get; }
     }
 }

@@ -1,13 +1,9 @@
 ﻿using rbkApiModules.Infrastructure.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace rbkApiModules.Workflow
 {
-    public abstract class BaseStateEntity<TState, TEvent, TTransition, TStateEntity, TClaimToEvent, TStateChangeEvent, TStateGroup> : BaseEntity
+    public abstract class BaseClaimToEvent<TState, TEvent, TTransition, TStateEntity, TClaimToEvent, TStateChangeEvent, TStateGroup>
         where TState : BaseState<TState, TEvent, TTransition, TStateEntity, TClaimToEvent, TStateChangeEvent, TStateGroup>
         where TEvent : BaseEvent<TState, TEvent, TTransition, TStateEntity, TClaimToEvent, TStateChangeEvent, TStateGroup>
         where TTransition : BaseTransition<TState, TEvent, TTransition, TStateEntity, TClaimToEvent, TStateChangeEvent, TStateGroup>
@@ -16,23 +12,25 @@ namespace rbkApiModules.Workflow
         where TStateChangeEvent : BaseStateChangeEvent<TState, TEvent, TTransition, TStateEntity, TClaimToEvent, TStateChangeEvent, TStateGroup>
         where TStateGroup : BaseStateGroup<TState, TEvent, TTransition, TStateEntity, TClaimToEvent, TStateChangeEvent, TStateGroup>
     {
-        protected HashSet<TStateChangeEvent> _events;
-
-        protected BaseStateEntity()
+        protected BaseClaimToEvent()
         {
 
         }
 
-        public BaseStateEntity(TState state)
+        public BaseClaimToEvent(TEvent @event, string claim)
         {
-            _events = new HashSet<TStateChangeEvent>();
-
-            State = state;
+            Claim = claim;
+            Event = @event;
         }
 
-        public virtual Guid StateId { get; protected set; }
-        public virtual TState State { get; protected set; }
+        public virtual string Claim { get; protected set; }
 
-        public virtual IEnumerable<TStateChangeEvent> Events => _events?.ToList();
+        public virtual Guid EventId { get; protected set; }
+        public virtual TEvent Event { get; protected set; }
+
+        public override string ToString()
+        {
+            return Claim + " - " + Event?.Name;
+        }
     }
 }

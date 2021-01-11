@@ -19,7 +19,7 @@ namespace rbkApiModules.Utilities.Extensions
             {
                 var isFirstOnAssembly = true;
 
-                foreach (var type in assembly.GetTypes().Where(x => x.IsClass && x.IsSubclassOf(typeof(Profile))))
+                foreach (var type in assembly.GetTypes().Where(x => x.IsClass && x.IsSubclassOf(typeof(Profile)) && !x.IsGenericType))
                 {
                     if (isFirstGlobally)
                     {

@@ -46,6 +46,7 @@
     <ProjectReference Include="..\rbkApiModules.Infrastructure.Utilities\rbkApiModules.Infrastructure.Utilities.csproj" />
     <ProjectReference Include="..\rbkApiModules.SharedUI\rbkApiModules.SharedUI.csproj" />
     <ProjectReference Include="..\rbkApiModules.UIAnnotations\rbkApiModules.UIAnnotations.csproj" />
+    <ProjectReference Include="..\rbkApiModules.Workflow\rbkApiModules.Workflow.csproj" />
   </ItemGroup>
 
   <ItemGroup>

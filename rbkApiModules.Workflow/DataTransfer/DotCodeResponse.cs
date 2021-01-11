@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace rbkApiModules.Workflow
 {
-    public interface ICacheService
+    public class DotCodeResponse
     {
-        bool IsInitialized { get; }
+        public string Code { get; set; }
     }
 }

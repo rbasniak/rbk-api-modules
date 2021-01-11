@@ -2,13 +2,21 @@
 using rbkApiModules.Authentication;
 using rbkApiModules.Comments;
 using rbkApiModules.Demo.Models;
+using rbkApiModules.Demo.Models.StateMachine;
 using rbkApiModules.Utilities.Extensions;
+using rbkApiModules.Workflow; 
 
 namespace rbkApiModules.Demo.Database
 {
     public class DatabaseContext : DbContext
     {
         public DbSet<User> Users { get; set; }
+        public DbSet<Document> Documents { get; set; }
+        public DbSet<Event> Events { get; set; }
+        public DbSet<State> States { get; set; }
+        public DbSet<StateGroup> StateGroups { get; set; }
+        public DbSet<Transition> Transitions { get; set; }
+        public DbSet<StateChangeEvent> StateChangeEvents { get; set; }
 
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
         {

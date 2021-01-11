@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace rbkApiModules.Workflow
 {
-    public abstract class BaseStateEntity<TState, TEvent, TTransition, TStateEntity, TClaimToEvent, TStateChangeEvent, TStateGroup> : BaseEntity
+    public abstract class BaseStateGroup<TState, TEvent, TTransition, TStateEntity, TClaimToEvent, TStateChangeEvent, TStateGroup> : BaseEntity
         where TState : BaseState<TState, TEvent, TTransition, TStateEntity, TClaimToEvent, TStateChangeEvent, TStateGroup>
         where TEvent : BaseEvent<TState, TEvent, TTransition, TStateEntity, TClaimToEvent, TStateChangeEvent, TStateGroup>
         where TTransition : BaseTransition<TState, TEvent, TTransition, TStateEntity, TClaimToEvent, TStateChangeEvent, TStateGroup>
@@ -16,23 +16,27 @@ namespace rbkApiModules.Workflow
         where TStateChangeEvent : BaseStateChangeEvent<TState, TEvent, TTransition, TStateEntity, TClaimToEvent, TStateChangeEvent, TStateGroup>
         where TStateGroup : BaseStateGroup<TState, TEvent, TTransition, TStateEntity, TClaimToEvent, TStateChangeEvent, TStateGroup>
     {
-        protected HashSet<TStateChangeEvent> _events;
+        protected HashSet<TState> _states;
 
-        protected BaseStateEntity()
+        protected BaseStateGroup()
         {
 
         }
 
-        public BaseStateEntity(TState state)
+        public BaseStateGroup(string name)
         {
-            _events = new HashSet<TStateChangeEvent>();
+            Name = name;
 
-            State = state;
+            _states = new HashSet<TState>();
         }
 
-        public virtual Guid StateId { get; protected set; }
-        public virtual TState State { get; protected set; }
+        public virtual string Name { get; protected set; }
 
-        public virtual IEnumerable<TStateChangeEvent> Events => _events?.ToList();
+        public virtual IEnumerable<TState> States => _states?.ToList(); 
+
+        public virtual void Update(string name)
+        {
+            Name = name;
+        }
     }
 }
