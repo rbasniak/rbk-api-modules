@@ -47,25 +47,27 @@ namespace rbkApiModules.Workflow
         public string[] Claims { get; set; }
     }
 
-    public class StatesMappings<TStateGroup, TSTate, TEvent, TTransition> : Profile
+    public class StatesMappings<TState, TEvent, TTransition, TStateEntity, TClaimToEvent, TStateChangeEvent, TStateGroup> : Profile
+        where TState : BaseState<TState, TEvent, TTransition, TStateEntity, TClaimToEvent, TStateChangeEvent, TStateGroup>
+        where TEvent : BaseEvent<TState, TEvent, TTransition, TStateEntity, TClaimToEvent, TStateChangeEvent, TStateGroup>
+        where TTransition : BaseTransition<TState, TEvent, TTransition, TStateEntity, TClaimToEvent, TStateChangeEvent, TStateGroup>
+        where TStateEntity : BaseStateEntity<TState, TEvent, TTransition, TStateEntity, TClaimToEvent, TStateChangeEvent, TStateGroup>
+        where TClaimToEvent : BaseClaimToEvent<TState, TEvent, TTransition, TStateEntity, TClaimToEvent, TStateChangeEvent, TStateGroup>
+        where TStateChangeEvent : BaseStateChangeEvent<TState, TEvent, TTransition, TStateEntity, TClaimToEvent, TStateChangeEvent, TStateGroup>
+        where TStateGroup : BaseStateGroup<TState, TEvent, TTransition, TStateEntity, TClaimToEvent, TStateChangeEvent, TStateGroup>
     {
         public StatesMappings()
         {
             CreateMap<TStateGroup, StateGroupDetails>();
 
-            CreateMap<TSTate, States.Details>();
+            CreateMap<TState, States.Details>();
 
-            CreateMap<TSTate, States.Simple>();
+            CreateMap<TState, States.Simple>();
 
             CreateMap<TEvent, EventDetails>()
                 .ForMember(dto => dto.Claims, map => map.MapFrom(entity => entity.Claims.Select(x => x.Claim)));
 
             CreateMap<TTransition, TransitionDetails>();
         }
-    }
-
-    public interface IClaims
-    {
-        IEnumerable<TClaimToEvent> Claims { get; }
-    }
+    } 
 }
