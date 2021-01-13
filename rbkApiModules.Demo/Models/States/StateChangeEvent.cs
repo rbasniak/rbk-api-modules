@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace rbkApiModules.Demo.Models.StateMachine
 {
-    public class StateChangeEvent : BaseStateChangeEvent<State, Event, Transition, Document, ClaimToEvent, StateChangeEvent, StateGroup>
+    public class StateChangeEvent : BaseStateChangeEvent<State, Event, Transition, Document, ClaimToEvent, StateChangeEvent, StateGroup, QueryDefinitionGroup, QueryDefinition, QueryDefinitionToState, QueryDefinitionToGroup, ClaimToQueryDefinition>
     {
     }
 }

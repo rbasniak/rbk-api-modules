@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace rbkApiModules.Demo.Models.StateMachine
 {
-    public class Transition : BaseTransition<State, Event, Transition, Document, ClaimToEvent, StateChangeEvent, StateGroup>
+    public class Transition : BaseTransition<State, Event, Transition, Document, ClaimToEvent, StateChangeEvent, StateGroup, QueryDefinitionGroup, QueryDefinition, QueryDefinitionToState, QueryDefinitionToGroup, ClaimToQueryDefinition>
     {
         protected Transition()
         {

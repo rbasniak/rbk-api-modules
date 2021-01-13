@@ -27,6 +27,9 @@ using rbkApiModules.Diagnostics.Core;
 using rbkApiModules.Demo.Models;
 using rbkApiModules.Infrastructure.MediatR.Core;
 using Microsoft.AspNetCore.Http;
+using AutoMapper;
+using rbkApiModules.Workflow;
+using rbkApiModules.Demo.Models.StateMachine;
 
 namespace rbkApiModules.Demo
 {
@@ -102,9 +105,20 @@ namespace rbkApiModules.Demo
             });
 
             var xmlPath = Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml");
-            services.AddRbkApiInfrastructureModule(AssembliesForServices, AssembliesForAutoMapper,
-                new List<IActionFilter> { new AnalyticsMvcFilter() },
-                "RbkApiModules Demo API", "v1", xmlPath, !Environment.IsDevelopment());
+            services.AddRbkApiInfrastructureModule(new RbkApiInfrastructureModuleOptions
+            {
+                AssembliesForServices = AssembliesForServices,
+                AssembliesForAutoMapper = AssembliesForAutoMapper,
+                Filters = new List<IActionFilter> { new AnalyticsMvcFilter() },
+                ApplicationName = "RbkApiModules Demo API",
+                Version = "v1",
+                SwaggerXmlPath = xmlPath,
+                IsProduction = !Environment.IsDevelopment(),
+                AutomapperProfiles = new List<Profile>
+                {
+                    new StatesMappings<State, Event, Transition, Document, ClaimToEvent, StateChangeEvent, StateGroup, QueryDefinitionGroup, QueryDefinition, QueryDefinitionToState, QueryDefinitionToGroup, ClaimToQueryDefinition>()
+                }
+            });
 
             services.AddRbkApiMediatRModule(AssembliesForMediatR);
 

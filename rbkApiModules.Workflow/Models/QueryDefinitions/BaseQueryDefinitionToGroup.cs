@@ -3,11 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace rbkApiModules.Workflow
 {
-    public abstract class BaseStateGroup<TState, TEvent, TTransition, TStateEntity, TClaimToEvent, TStateChangeEvent, TStateGroup, TQueryDefinitionGroup, TQueryDefinition, TQueryDefinitionToState, TQueryDefinitionToGroup, TClaimToQueryDefinition> : BaseEntity
+    public abstract class BaseQueryDefinitionToGroup<TState, TEvent, TTransition, TStateEntity, TClaimToEvent, TStateChangeEvent, TStateGroup, TQueryDefinitionGroup, TQueryDefinition, TQueryDefinitionToState, TQueryDefinitionToGroup, TClaimToQueryDefinition> 
         where TState : BaseState<TState, TEvent, TTransition, TStateEntity, TClaimToEvent, TStateChangeEvent, TStateGroup, TQueryDefinitionGroup, TQueryDefinition, TQueryDefinitionToState, TQueryDefinitionToGroup, TClaimToQueryDefinition>
         where TEvent : BaseEvent<TState, TEvent, TTransition, TStateEntity, TClaimToEvent, TStateChangeEvent, TStateGroup, TQueryDefinitionGroup, TQueryDefinition, TQueryDefinitionToState, TQueryDefinitionToGroup, TClaimToQueryDefinition>
         where TTransition : BaseTransition<TState, TEvent, TTransition, TStateEntity, TClaimToEvent, TStateChangeEvent, TStateGroup, TQueryDefinitionGroup, TQueryDefinition, TQueryDefinitionToState, TQueryDefinitionToGroup, TClaimToQueryDefinition>
@@ -21,27 +20,21 @@ namespace rbkApiModules.Workflow
         where TQueryDefinitionToGroup : BaseQueryDefinitionToGroup<TState, TEvent, TTransition, TStateEntity, TClaimToEvent, TStateChangeEvent, TStateGroup, TQueryDefinitionGroup, TQueryDefinition, TQueryDefinitionToState, TQueryDefinitionToGroup, TClaimToQueryDefinition>
         where TClaimToQueryDefinition : BaseClaimToQueryDefinition<TState, TEvent, TTransition, TStateEntity, TClaimToEvent, TStateChangeEvent, TStateGroup, TQueryDefinitionGroup, TQueryDefinition, TQueryDefinitionToState, TQueryDefinitionToGroup, TClaimToQueryDefinition>
     {
-        protected HashSet<TState> _states;
-
-        protected BaseStateGroup()
+        protected BaseQueryDefinitionToGroup()
         {
 
         }
 
-        protected BaseStateGroup(string name)
+        protected BaseQueryDefinitionToGroup(TQueryDefinition query, TQueryDefinitionGroup group)
         {
-            Name = name;
-
-            _states = new HashSet<TState>();
+            Group = group;
+            Query = query;
         }
 
-        public virtual string Name { get; protected set; }
+        public virtual Guid QueryId { get; private set; }
+        public virtual TQueryDefinition Query { get; private set; }
 
-        public virtual IEnumerable<TState> States => _states?.ToList(); 
-
-        public virtual void Update(string name)
-        {
-            Name = name;
-        }
+        public virtual Guid GroupId { get; private set; }
+        public virtual TQueryDefinitionGroup Group { get; private set; }
     }
 }

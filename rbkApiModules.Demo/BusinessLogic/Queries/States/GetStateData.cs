@@ -20,7 +20,7 @@ namespace rbkApiModules.Demo.BusinessLogic.StateMachine
         {
         }
 
-        public class Handler : BaseGetStateDataHandler<Command, State, Event, Transition, Document, ClaimToEvent, StateChangeEvent, StateGroup, StateGroupDetails>
+        public class Handler : BaseGetStateDataHandler<Command, State, Event, Transition, Document, ClaimToEvent, StateChangeEvent, StateGroup, QueryDefinitionGroup, QueryDefinition, QueryDefinitionToState, QueryDefinitionToGroup, ClaimToQueryDefinition, StateGroupDetails>
         {
             public Handler(DatabaseContext context, IHttpContextAccessor httpContextAccessor, IMapper mapper) 
                 : base(context, httpContextAccessor, mapper)

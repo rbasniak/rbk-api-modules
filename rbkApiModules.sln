@@ -95,7 +95,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Infrastructur
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflow", "Workflow", "{2DC6024B-1D80-4813-A95E-A09E36E1A998}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.Workflow", "rbkApiModules.Workflow\rbkApiModules.Workflow.csproj", "{A942077F-F784-4BF0-9A93-4E90857B0574}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Workflow", "rbkApiModules.Workflow\rbkApiModules.Workflow.csproj", "{A942077F-F784-4BF0-9A93-4E90857B0574}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
