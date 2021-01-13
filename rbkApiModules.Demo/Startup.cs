@@ -116,7 +116,7 @@ namespace rbkApiModules.Demo
                 IsProduction = !Environment.IsDevelopment(),
                 AutomapperProfiles = new List<Profile>
                 {
-                    new StatesMappings<State, Event, Transition, Document, ClaimToEvent, StateChangeEvent, StateGroup, QueryDefinitionGroup, QueryDefinition, QueryDefinitionToState, QueryDefinitionToGroup, ClaimToQueryDefinition>()
+                    new StatesMappings<State, Event, Transition, Document, StateChangeEvent, StateGroup, QueryDefinitionGroup, QueryDefinition, QueryDefinitionToState, QueryDefinitionToGroup>()
                 }
             });
 

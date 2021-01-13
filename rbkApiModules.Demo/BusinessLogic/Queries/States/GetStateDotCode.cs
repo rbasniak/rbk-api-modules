@@ -24,7 +24,7 @@ namespace rbkApiModules.Demo.BusinessLogic.StateMachine
             }
         }
 
-        public class Handler : BaseGetStatesDotCodeHandler<Command, State, Event, Transition, Document, ClaimToEvent, StateChangeEvent, StateGroup, QueryDefinitionGroup, QueryDefinition, QueryDefinitionToState, QueryDefinitionToGroup, ClaimToQueryDefinition>
+        public class Handler : BaseGetStatesDotCodeHandler<Command, State, Event, Transition, Document, StateChangeEvent, StateGroup, QueryDefinitionGroup, QueryDefinition, QueryDefinitionToState, QueryDefinitionToGroup>
         {
             public Handler(DatabaseContext context, IHttpContextAccessor httpContextAccessor, IMapper mapper) 
                 : base(context, httpContextAccessor, mapper)

@@ -29,8 +29,4 @@
     <ProjectReference Include="..\rbkApiModules.Infrastructure.Models\rbkApiModules.Infrastructure.Models.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\fixed\" />
-  </ItemGroup>
-
 </Project>

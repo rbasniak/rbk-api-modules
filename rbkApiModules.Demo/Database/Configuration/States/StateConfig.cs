@@ -11,7 +11,7 @@ namespace rbkApiModules.Demo.Database.StateMachine
     { 
         public void Configure(EntityTypeBuilder<State> entity)
         {
-            base.Configure<State, Event, Transition, Document, ClaimToEvent, StateChangeEvent, StateGroup, QueryDefinitionGroup, QueryDefinition, QueryDefinitionToState, QueryDefinitionToGroup, ClaimToQueryDefinition>(entity);
+            base.Configure<State, Event, Transition, Document, StateChangeEvent, StateGroup, QueryDefinitionGroup, QueryDefinition, QueryDefinitionToState, QueryDefinitionToGroup>(entity);
         }
     }
 }

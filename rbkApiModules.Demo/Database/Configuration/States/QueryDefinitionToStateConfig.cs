@@ -7,9 +7,9 @@ using rbkApiModules.Workflow;
 
 namespace rbkApiModules.Demo.Database.StateMachine
 {
-    public class TransitionConfig : BaseTransitionConfig, IEntityTypeConfiguration<Transition>
-    { 
-        public void Configure(EntityTypeBuilder<Transition> entity)
+    public class QueryDefinitionToStateConfig : BaseQueryDefinitionToStateConfig, IEntityTypeConfiguration<QueryDefinitionToState>
+    {
+        public void Configure(EntityTypeBuilder<QueryDefinitionToState> entity)
         {
             base.Configure<State, Event, Transition, Document, StateChangeEvent, StateGroup, QueryDefinitionGroup, QueryDefinition, QueryDefinitionToState, QueryDefinitionToGroup>(entity);
         }

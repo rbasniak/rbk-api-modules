@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using rbkApiModules.Demo.BusinessLogic.StateMachine;
+using rbkApiModules.Demo.DataTransfer;
 using rbkApiModules.Infrastructure.Api;
 using rbkApiModules.Utilities.Extensions;
 using rbkApiModules.Workflow;
@@ -12,10 +13,11 @@ namespace rbkApiModules.Demo.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [AllowAnonymous]
-    public class StatesController: BaseStatesController<
+    public class StatesController: BaseWorkflowController<
         GetStateDotCode.Command, 
-        GetStateData.Command
-    >
+        GetStateData.Command,
+        GetQueryDefinitionResults.Command,
+        DocumentDetails>
     {
     }
 }

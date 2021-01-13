@@ -10,17 +10,21 @@ using System.Threading.Tasks;
 
 namespace rbkApiModules.Demo.BusinessLogic.StateMachine
 {
-    public class GetStateData
+    public class GetQueryDefinitionResults
     {
-        public class Command : BaseGetStateDataCommand
+        public class Command : BaseGetQueryDefinitionResultsCommand
         {
         }
 
-        public class Validator : BaseGetStateDataValidator
+        public class Validator : BaseGetQueryDefinitionResultsValidator<QueryDefinition>
         {
+            public Validator(DatabaseContext context): base(context)
+            {
+
+            }
         }
 
-        public class Handler : BaseGetStateDataHandler<Command, State, Event, Transition, Document, StateChangeEvent, StateGroup, QueryDefinitionGroup, QueryDefinition, QueryDefinitionToState, QueryDefinitionToGroup, StateGroupDetails>
+        public class Handler : BaseGetQueryDefinitionResultsHandler<Command, State, Event, Transition, Document, StateChangeEvent, StateGroup, QueryDefinitionGroup, QueryDefinition, QueryDefinitionToState, QueryDefinitionToGroup, StateGroupDetails>
         {
             public Handler(DatabaseContext context, IHttpContextAccessor httpContextAccessor, IMapper mapper) 
                 : base(context, httpContextAccessor, mapper)

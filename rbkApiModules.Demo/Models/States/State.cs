@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace rbkApiModules.Demo.Models.StateMachine
 {
-    public class State: BaseState<State, Event, Transition, Document, ClaimToEvent, StateChangeEvent, StateGroup, QueryDefinitionGroup, QueryDefinition, QueryDefinitionToState, QueryDefinitionToGroup, ClaimToQueryDefinition>
+    public class State: BaseState<State, Event, Transition, Document, StateChangeEvent, StateGroup, QueryDefinitionGroup, QueryDefinition, QueryDefinitionToState, QueryDefinitionToGroup>
     {
         protected State() : base()
         {

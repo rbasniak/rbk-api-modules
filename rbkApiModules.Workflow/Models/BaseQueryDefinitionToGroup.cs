@@ -1,9 +1,12 @@
 ﻿using rbkApiModules.Infrastructure.Models;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace rbkApiModules.Workflow
 {
-    public abstract class BaseStateChangeEvent<TState, TEvent, TTransition, TStateEntity, TStateChangeEvent, TStateGroup, TQueryDefinitionGroup, TQueryDefinition, TQueryDefinitionToState, TQueryDefinitionToGroup> : BaseEntity
+    public abstract class BaseQueryDefinitionToGroup<TState, TEvent, TTransition, TStateEntity, TStateChangeEvent, TStateGroup, TQueryDefinitionGroup, TQueryDefinition, TQueryDefinitionToState, TQueryDefinitionToGroup> 
         where TState : BaseState<TState, TEvent, TTransition, TStateEntity, TStateChangeEvent, TStateGroup, TQueryDefinitionGroup, TQueryDefinition, TQueryDefinitionToState, TQueryDefinitionToGroup>
         where TEvent : BaseEvent<TState, TEvent, TTransition, TStateEntity, TStateChangeEvent, TStateGroup, TQueryDefinitionGroup, TQueryDefinition, TQueryDefinitionToState, TQueryDefinitionToGroup>
         where TTransition : BaseTransition<TState, TEvent, TTransition, TStateEntity, TStateChangeEvent, TStateGroup, TQueryDefinitionGroup, TQueryDefinition, TQueryDefinitionToState, TQueryDefinitionToGroup>
@@ -15,49 +18,21 @@ namespace rbkApiModules.Workflow
         where TQueryDefinitionToState : BaseQueryDefinitionToState<TState, TEvent, TTransition, TStateEntity, TStateChangeEvent, TStateGroup, TQueryDefinitionGroup, TQueryDefinition, TQueryDefinitionToState, TQueryDefinitionToGroup>, new()
         where TQueryDefinitionToGroup : BaseQueryDefinitionToGroup<TState, TEvent, TTransition, TStateEntity, TStateChangeEvent, TStateGroup, TQueryDefinitionGroup, TQueryDefinition, TQueryDefinitionToState, TQueryDefinitionToGroup>
     {
-        protected BaseStateChangeEvent()
+        protected BaseQueryDefinitionToGroup()
         {
 
         }
 
-        protected BaseStateChangeEvent(TStateEntity entity, string username, string statusName, string historyText, string notes)
+        protected BaseQueryDefinitionToGroup(TQueryDefinition query, TQueryDefinitionGroup group)
         {
-            Entity = entity;
-            Username = username;
-            Date = DateTime.Now;
-            StatusHistory = historyText;
-            StatusName = statusName;
-            Notes = notes;
+            Group = group;
+            Query = query;
         }
 
-        /// <summary>
-        /// Texto com o nome do state que originou esse evento, no momento em que ele aconteceu
-        /// </summary>
-        public virtual string StatusName { get; protected set; }
+        public virtual Guid QueryId { get; private set; }
+        public virtual TQueryDefinition Query { get; private set; }
 
-        /// <summary>
-        /// Texto para ser exibido no histórico da solicitação
-        /// </summary>
-        public virtual string StatusHistory { get; protected set; }
-
-        /// <summary>
-        /// Chave do usário que provocou a mudança de estado
-        /// </summary>
-        public virtual string Username { get; protected set; }
-
-        public virtual DateTime Date { get; protected set; }
-
-        /// <summary>
-        /// Solicitação de mudança à qual este evento pertence
-        /// </summary>
-        public virtual Guid EntityId { get; protected set; }
-        public virtual TStateEntity Entity { get; protected set; }
-
-        public virtual string Notes { get; protected set; }
-
-        public override string ToString()
-        {
-            return $"{Date.ToString()} - {StatusName}";
-        }
+        public virtual Guid GroupId { get; private set; }
+        public virtual TQueryDefinitionGroup Group { get; private set; }
     }
 }

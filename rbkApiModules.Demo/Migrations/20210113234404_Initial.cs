@@ -62,11 +62,40 @@ namespace rbkApiModules.Demo.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: false),
                     SystemId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    Claims = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Events", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "QueryDefinition",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    Claims = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_QueryDefinition", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "QueryDefinitionGroup",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_QueryDefinitionGroup", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -118,21 +147,27 @@ namespace rbkApiModules.Demo.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ClaimToEvent",
+                name: "QueryDefinitionToGroup",
                 columns: table => new
                 {
-                    Claim = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    EventId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    QueryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    GroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ClaimToEvent", x => new { x.EventId, x.Claim });
+                    table.PrimaryKey("PK_QueryDefinitionToGroup", x => new { x.QueryId, x.GroupId });
                     table.ForeignKey(
-                        name: "FK_ClaimToEvent_Events_EventId",
-                        column: x => x.EventId,
-                        principalTable: "Events",
+                        name: "FK_QueryDefinitionToGroup_QueryDefinition_QueryId",
+                        column: x => x.QueryId,
+                        principalTable: "QueryDefinition",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_QueryDefinitionToGroup_QueryDefinitionGroup_GroupId",
+                        column: x => x.GroupId,
+                        principalTable: "QueryDefinitionGroup",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -249,6 +284,30 @@ namespace rbkApiModules.Demo.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "QueryDefinitionToState",
+                columns: table => new
+                {
+                    QueryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    StateId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_QueryDefinitionToState", x => new { x.QueryId, x.StateId });
+                    table.ForeignKey(
+                        name: "FK_QueryDefinitionToState_QueryDefinition_QueryId",
+                        column: x => x.QueryId,
+                        principalTable: "QueryDefinition",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_QueryDefinitionToState_States_StateId",
+                        column: x => x.StateId,
+                        principalTable: "States",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Transitions",
                 columns: table => new
                 {
@@ -323,6 +382,16 @@ namespace rbkApiModules.Demo.Migrations
                 column: "StateId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_QueryDefinitionToGroup_GroupId",
+                table: "QueryDefinitionToGroup",
+                column: "GroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_QueryDefinitionToState_StateId",
+                table: "QueryDefinitionToState",
+                column: "StateId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RolesToClaims_RoleId",
                 table: "RolesToClaims",
                 column: "RoleId");
@@ -372,10 +441,13 @@ namespace rbkApiModules.Demo.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ClaimToEvent");
+                name: "Comment");
 
             migrationBuilder.DropTable(
-                name: "Comment");
+                name: "QueryDefinitionToGroup");
+
+            migrationBuilder.DropTable(
+                name: "QueryDefinitionToState");
 
             migrationBuilder.DropTable(
                 name: "RolesToClaims");
@@ -391,6 +463,12 @@ namespace rbkApiModules.Demo.Migrations
 
             migrationBuilder.DropTable(
                 name: "UsersToRoles");
+
+            migrationBuilder.DropTable(
+                name: "QueryDefinitionGroup");
+
+            migrationBuilder.DropTable(
+                name: "QueryDefinition");
 
             migrationBuilder.DropTable(
                 name: "Documents");

@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace rbkApiModules.Demo.Models.StateMachine
 {
-    public class QueryDefinitionToState : BaseQueryDefinitionToState<State, Event, Transition, Document, ClaimToEvent, StateChangeEvent, StateGroup, QueryDefinitionGroup, QueryDefinition, QueryDefinitionToState, QueryDefinitionToGroup, ClaimToQueryDefinition>
+    public class QueryDefinitionToState : BaseQueryDefinitionToState<State, Event, Transition, Document, StateChangeEvent, StateGroup, QueryDefinitionGroup, QueryDefinition, QueryDefinitionToState, QueryDefinitionToGroup>
     {
     }
 }

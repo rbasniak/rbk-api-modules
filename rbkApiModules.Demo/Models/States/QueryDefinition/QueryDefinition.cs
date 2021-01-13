@@ -11,14 +11,12 @@ namespace rbkApiModules.Demo.Models.StateMachine
         Event, 
         Transition, 
         Document, 
-        ClaimToEvent, 
         StateChangeEvent, 
         StateGroup, 
         QueryDefinitionGroup, 
         QueryDefinition, 
         QueryDefinitionToState, 
-        QueryDefinitionToGroup, 
-        ClaimToQueryDefinition>
+        QueryDefinitionToGroup>
     {
     }
 }

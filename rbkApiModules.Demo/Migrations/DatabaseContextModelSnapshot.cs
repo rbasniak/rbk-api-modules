@@ -164,19 +164,6 @@ namespace rbkApiModules.Demo.Migrations
                     b.ToTable("Comment");
                 });
 
-            modelBuilder.Entity("rbkApiModules.Demo.Models.ClaimToEvent", b =>
-                {
-                    b.Property<Guid>("EventId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Claim")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("EventId", "Claim");
-
-                    b.ToTable("ClaimToEvent");
-                });
-
             modelBuilder.Entity("rbkApiModules.Demo.Models.Client", b =>
                 {
                     b.Property<Guid>("Id")
@@ -196,7 +183,7 @@ namespace rbkApiModules.Demo.Migrations
                     b.ToTable("Clients");
                 });
 
-            modelBuilder.Entity("rbkApiModules.Demo.Models.Document", b =>
+            modelBuilder.Entity("rbkApiModules.Demo.Models.StateMachine.Document", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -212,11 +199,14 @@ namespace rbkApiModules.Demo.Migrations
                     b.ToTable("Documents");
                 });
 
-            modelBuilder.Entity("rbkApiModules.Demo.Models.Event", b =>
+            modelBuilder.Entity("rbkApiModules.Demo.Models.StateMachine.Event", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Claims")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -234,7 +224,81 @@ namespace rbkApiModules.Demo.Migrations
                     b.ToTable("Events");
                 });
 
-            modelBuilder.Entity("rbkApiModules.Demo.Models.State", b =>
+            modelBuilder.Entity("rbkApiModules.Demo.Models.StateMachine.QueryDefinition", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Claims")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("QueryDefinition");
+                });
+
+            modelBuilder.Entity("rbkApiModules.Demo.Models.StateMachine.QueryDefinitionGroup", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("QueryDefinitionGroup");
+                });
+
+            modelBuilder.Entity("rbkApiModules.Demo.Models.StateMachine.QueryDefinitionToGroup", b =>
+                {
+                    b.Property<Guid>("QueryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("GroupId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("QueryId", "GroupId");
+
+                    b.HasIndex("GroupId");
+
+                    b.ToTable("QueryDefinitionToGroup");
+                });
+
+            modelBuilder.Entity("rbkApiModules.Demo.Models.StateMachine.QueryDefinitionToState", b =>
+                {
+                    b.Property<Guid>("QueryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("StateId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("QueryId", "StateId");
+
+                    b.HasIndex("StateId");
+
+                    b.ToTable("QueryDefinitionToState");
+                });
+
+            modelBuilder.Entity("rbkApiModules.Demo.Models.StateMachine.State", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -265,7 +329,7 @@ namespace rbkApiModules.Demo.Migrations
                     b.ToTable("States");
                 });
 
-            modelBuilder.Entity("rbkApiModules.Demo.Models.StateChangeEvent", b =>
+            modelBuilder.Entity("rbkApiModules.Demo.Models.StateMachine.StateChangeEvent", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -304,7 +368,7 @@ namespace rbkApiModules.Demo.Migrations
                     b.ToTable("StateChangeEvents");
                 });
 
-            modelBuilder.Entity("rbkApiModules.Demo.Models.StateGroup", b =>
+            modelBuilder.Entity("rbkApiModules.Demo.Models.StateMachine.StateGroup", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -320,7 +384,7 @@ namespace rbkApiModules.Demo.Migrations
                     b.ToTable("StateGroups");
                 });
 
-            modelBuilder.Entity("rbkApiModules.Demo.Models.Transition", b =>
+            modelBuilder.Entity("rbkApiModules.Demo.Models.StateMachine.Transition", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -440,20 +504,9 @@ namespace rbkApiModules.Demo.Migrations
                     b.Navigation("Parent");
                 });
 
-            modelBuilder.Entity("rbkApiModules.Demo.Models.ClaimToEvent", b =>
+            modelBuilder.Entity("rbkApiModules.Demo.Models.StateMachine.Document", b =>
                 {
-                    b.HasOne("rbkApiModules.Demo.Models.Event", "Event")
-                        .WithMany("Claims")
-                        .HasForeignKey("EventId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Event");
-                });
-
-            modelBuilder.Entity("rbkApiModules.Demo.Models.Document", b =>
-                {
-                    b.HasOne("rbkApiModules.Demo.Models.State", "State")
+                    b.HasOne("rbkApiModules.Demo.Models.StateMachine.State", "State")
                         .WithMany("Items")
                         .HasForeignKey("StateId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -462,9 +515,47 @@ namespace rbkApiModules.Demo.Migrations
                     b.Navigation("State");
                 });
 
-            modelBuilder.Entity("rbkApiModules.Demo.Models.State", b =>
+            modelBuilder.Entity("rbkApiModules.Demo.Models.StateMachine.QueryDefinitionToGroup", b =>
                 {
-                    b.HasOne("rbkApiModules.Demo.Models.StateGroup", "Group")
+                    b.HasOne("rbkApiModules.Demo.Models.StateMachine.QueryDefinitionGroup", "Group")
+                        .WithMany("Queries")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("rbkApiModules.Demo.Models.StateMachine.QueryDefinition", "Query")
+                        .WithMany("Groups")
+                        .HasForeignKey("QueryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Group");
+
+                    b.Navigation("Query");
+                });
+
+            modelBuilder.Entity("rbkApiModules.Demo.Models.StateMachine.QueryDefinitionToState", b =>
+                {
+                    b.HasOne("rbkApiModules.Demo.Models.StateMachine.QueryDefinition", "Query")
+                        .WithMany("FilteringStates")
+                        .HasForeignKey("QueryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("rbkApiModules.Demo.Models.StateMachine.State", "State")
+                        .WithMany()
+                        .HasForeignKey("StateId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Query");
+
+                    b.Navigation("State");
+                });
+
+            modelBuilder.Entity("rbkApiModules.Demo.Models.StateMachine.State", b =>
+                {
+                    b.HasOne("rbkApiModules.Demo.Models.StateMachine.StateGroup", "Group")
                         .WithMany("States")
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -473,9 +564,9 @@ namespace rbkApiModules.Demo.Migrations
                     b.Navigation("Group");
                 });
 
-            modelBuilder.Entity("rbkApiModules.Demo.Models.StateChangeEvent", b =>
+            modelBuilder.Entity("rbkApiModules.Demo.Models.StateMachine.StateChangeEvent", b =>
                 {
-                    b.HasOne("rbkApiModules.Demo.Models.Document", "Entity")
+                    b.HasOne("rbkApiModules.Demo.Models.StateMachine.Document", "Entity")
                         .WithMany("Events")
                         .HasForeignKey("EntityId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -484,21 +575,21 @@ namespace rbkApiModules.Demo.Migrations
                     b.Navigation("Entity");
                 });
 
-            modelBuilder.Entity("rbkApiModules.Demo.Models.Transition", b =>
+            modelBuilder.Entity("rbkApiModules.Demo.Models.StateMachine.Transition", b =>
                 {
-                    b.HasOne("rbkApiModules.Demo.Models.Event", "Event")
+                    b.HasOne("rbkApiModules.Demo.Models.StateMachine.Event", "Event")
                         .WithMany("Transitions")
                         .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("rbkApiModules.Demo.Models.State", "FromState")
+                    b.HasOne("rbkApiModules.Demo.Models.StateMachine.State", "FromState")
                         .WithMany("Transitions")
                         .HasForeignKey("FromStateId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("rbkApiModules.Demo.Models.State", "ToState")
+                    b.HasOne("rbkApiModules.Demo.Models.StateMachine.State", "ToState")
                         .WithMany("UsedBy")
                         .HasForeignKey("ToStateId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -553,19 +644,29 @@ namespace rbkApiModules.Demo.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("rbkApiModules.Demo.Models.Document", b =>
+            modelBuilder.Entity("rbkApiModules.Demo.Models.StateMachine.Document", b =>
                 {
                     b.Navigation("Events");
                 });
 
-            modelBuilder.Entity("rbkApiModules.Demo.Models.Event", b =>
+            modelBuilder.Entity("rbkApiModules.Demo.Models.StateMachine.Event", b =>
                 {
-                    b.Navigation("Claims");
-
                     b.Navigation("Transitions");
                 });
 
-            modelBuilder.Entity("rbkApiModules.Demo.Models.State", b =>
+            modelBuilder.Entity("rbkApiModules.Demo.Models.StateMachine.QueryDefinition", b =>
+                {
+                    b.Navigation("FilteringStates");
+
+                    b.Navigation("Groups");
+                });
+
+            modelBuilder.Entity("rbkApiModules.Demo.Models.StateMachine.QueryDefinitionGroup", b =>
+                {
+                    b.Navigation("Queries");
+                });
+
+            modelBuilder.Entity("rbkApiModules.Demo.Models.StateMachine.State", b =>
                 {
                     b.Navigation("Items");
 
@@ -574,7 +675,7 @@ namespace rbkApiModules.Demo.Migrations
                     b.Navigation("UsedBy");
                 });
 
-            modelBuilder.Entity("rbkApiModules.Demo.Models.StateGroup", b =>
+            modelBuilder.Entity("rbkApiModules.Demo.Models.StateMachine.StateGroup", b =>
                 {
                     b.Navigation("States");
                 });
