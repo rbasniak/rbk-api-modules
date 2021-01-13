@@ -1,6 +1,6 @@
 {
   "name": "rbk-api-modules",
-  "version": "2.1.42",
+  "version": "2.1.43",
   "description": "Set of libraries for quickly scaffolding production ready APIs in ASP.NET Core",
   "main": "index.js",
   "scripts": {
