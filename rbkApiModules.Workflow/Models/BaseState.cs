@@ -29,7 +29,7 @@ namespace rbkApiModules.Workflow
         /// <summary>
         /// Método só deve ser utilizado para testes unitários.
         /// </summary>
-        protected BaseState(Guid id, string name, TStateGroup group, string systemId, string color, bool isActive): 
+        protected BaseState(Guid id, TStateGroup group, string name, string systemId, string color, bool isActive): 
             this(group, name, systemId, color, isActive)
         {
             Id = id;
