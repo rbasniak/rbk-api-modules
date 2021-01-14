@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace rbkApiModules.Workflow
 {
-    public abstract class BaseGetStatesDotCodeCommand : IRequest<QueryResponse>
+    public abstract class BaseGetStatesDotCodeCommand : IRequest<QueryResponse> 
     {
         public Guid GroupId { get; set; }
     }
