@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using System;
 using System.Net;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace rbkApiModules.Workflow
@@ -32,7 +31,7 @@ namespace rbkApiModules.Workflow
                 context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
                 context.Response.Headers.Add("Content-Type", "application/json");
 
-                await context.Response.WriteAsync(JsonConvert.SerializeObject(new string[] { "Serviço de status não inicializado. Por favor contate o suporte técnico." })).ConfigureAwait(false);
+                await context.Response.WriteAsync(JsonConvert.SerializeObject(new string[] { "Serviço de status e/ou eventos não inicializado. Por favor contate o suporte técnico." })).ConfigureAwait(false);
             }
         }
     }
