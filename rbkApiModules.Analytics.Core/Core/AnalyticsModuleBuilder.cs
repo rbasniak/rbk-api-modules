@@ -40,9 +40,16 @@ namespace rbkApiModules.Analytics.Core
 
                 var identity = UserIdentity(context);
 
-                var user = (System.Security.Claims.ClaimsIdentity)context.User.Identity;
-                var username = user.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
-                var domain = user.Claims.FirstOrDefault(c => c.Type == "domain")?.Value;
+                var username = String.Empty;
+                var domain = String.Empty;
+
+                if (context.User.Identity.IsAuthenticated)
+                {
+                    username = context.User.Identity.Name.ToLower();
+                    
+                    var user = (System.Security.Claims.ClaimsIdentity)context.User.Identity;
+                    domain = user.Claims.FirstOrDefault(c => c.Type == "domain")?.Value;
+                }
 
                 // TODO: get version from somewhere
                 var data = new AnalyticsEntry();
