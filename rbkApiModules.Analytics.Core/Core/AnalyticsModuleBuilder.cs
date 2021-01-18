@@ -11,8 +11,10 @@ using Microsoft.AspNetCore.Http.Features;
 
 namespace rbkApiModules.Analytics.Core
 {
+    
     public class AnalyticsModuleMiddleware
     {
+        
         private List<Func<HttpContext, bool>> _exclude;
         private readonly RequestDelegate _next;
         public AnalyticsModuleMiddleware(RequestDelegate next, AnalyticsModuleOptions options)

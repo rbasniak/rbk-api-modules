@@ -43,7 +43,11 @@ namespace rbkApiModules.Infrastructure.Api
             services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
 
             services.RegisterApplicationServices(Assembly.GetAssembly(typeof(Builder)));
-            services.RegisterApplicationServices(options.AssembliesForServices);
+            
+            if (options.AssembliesForServices != null)
+            {
+                services.RegisterApplicationServices(options.AssembliesForServices);
+            }
 
             services.AddHttpClient();
 
@@ -53,13 +57,20 @@ namespace rbkApiModules.Infrastructure.Api
 
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.ApplyProfiles(options.AssembliesForAutoMapper);
+                if (options.AssembliesForAutoMapper != null)
+                {
+                    cfg.ApplyProfiles(options.AssembliesForAutoMapper);
+                }
+
                 cfg.CreateMap<Guid?, string>().ConvertUsing(g => g.HasValue ? g.Value.ToString().ToLower() : null);
                 cfg.CreateMap<Guid, string>().ConvertUsing(g => g.ToString().ToLower());
 
-                foreach (var profile in options.AutomapperProfiles)
+                if (options.AutomapperProfiles != null)
                 {
-                    cfg.AddProfile(profile);
+                    foreach (var profile in options.AutomapperProfiles)
+                    {
+                        cfg.AddProfile(profile);
+                    }
                 }
             });
             var mapper = config.CreateMapper();
