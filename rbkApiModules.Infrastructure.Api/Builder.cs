@@ -99,6 +99,8 @@ namespace rbkApiModules.Infrastructure.Api
 
             services.AddRouting(options => options.LowercaseUrls = true);
 
+            services.AddCors();
+
             services.AddSwaggerGen(config =>
             {
                 config.SwaggerDoc("v1", new OpenApiInfo { Title = options.ApplicationName, Version = options.Version });
