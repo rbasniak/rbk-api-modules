@@ -13,14 +13,14 @@ namespace rbkApiModules.Demo.Models.StateMachine
 
         }
 
-        public Event(Guid id, string name, string systemId, bool isActive = true) : 
-            base(id, name, systemId, isActive)
+        public Event(Guid id, string name, string systemId, string[] claims, bool isActive = true) : 
+            base(id, name, systemId, claims, isActive)
         {
 
         }
 
-        public Event(string name, string systemId, bool isActive = true) : 
-            base(name, systemId, isActive)
+        public Event(string name, string systemId, string[] claims, bool isActive = true) : 
+            base(name, systemId, claims, isActive)
         {
 
         }

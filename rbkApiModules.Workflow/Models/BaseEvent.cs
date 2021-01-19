@@ -1,6 +1,7 @@
 ﻿using rbkApiModules.Infrastructure.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace rbkApiModules.Workflow
@@ -24,9 +25,9 @@ namespace rbkApiModules.Workflow
             Claims = new string[0];
         }
 
-        protected BaseEvent(string name, string systemId, bool isActive)
+        protected BaseEvent([NotNull] string name, string systemId, string[] claims, bool isActive)
         {
-            Claims = new string[0];
+            Claims = claims;
 
             _transitions = new HashSet<TTransition>();
 
@@ -38,7 +39,7 @@ namespace rbkApiModules.Workflow
         /// <summary>
         /// Construtor para ser usado apenas em testes unitários
         /// </summary>
-        public BaseEvent(Guid id, string name, string systemId, bool isActive) : this(name, systemId, isActive)
+        public BaseEvent(Guid id, string name, string systemId, string[] claims, bool isActive) : this(name, systemId, claims, isActive)
         {
             Id = id;
         }

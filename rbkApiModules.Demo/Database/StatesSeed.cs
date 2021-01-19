@@ -21,12 +21,12 @@ namespace rbkApiModules.Demo.Database.StateMachine
             var cancelada = new State(libraGroup, "Cancelada", "CANCELED", "");
             var finalizada = new State(libraGroup, "Finalizada", "FINALIZED", "");
 
-            var enviarParaAprovacao = new Event("Enviar para Aprovação", "SEND_TO_APPROVAL");
-            var aprovar = new Event("Aprovar", "APPROVE");
-            var reprovar = new Event("Reprovar", "REPROVE");
-            var cancelar = new Event("Cancelar", "CANCEL");
-            var finalizar = new Event("Finalizar", "FINALIZE");
-            var criar = new Event("Criar", "CREATE");
+            var enviarParaAprovacao = new Event("Enviar para Aprovação", "SEND_TO_APPROVAL", null);
+            var aprovar = new Event("Aprovar", "APPROVE", null);
+            var reprovar = new Event("Reprovar", "REPROVE", null);
+            var cancelar = new Event("Cancelar", "CANCEL", null);
+            var finalizar = new Event("Finalizar", "FINALIZE", null);
+            var criar = new Event("Criar", "CREATE", null);
 
             var t1 = new Transition(inicial, criar, rascunho, "Criada no sistema", true);
             var t2 = new Transition(rascunho, enviarParaAprovacao, aguardandoAprovacao, "Enviada para aprovação inicial", true);
