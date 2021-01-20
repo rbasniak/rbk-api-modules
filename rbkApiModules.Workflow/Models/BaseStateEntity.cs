@@ -37,23 +37,28 @@ namespace rbkApiModules.Workflow
 
         public virtual IEnumerable<TStateChangeEvent> Events => _events?.ToList();
 
-        public virtual void NextStatus(TEvent trigger, string user, DbContext context)
+        public virtual void NextStatus(TEvent trigger, string user)
         {
             if (State == null)
             {
-                context.Entry(this).Reference(x => x.State).Load();
+                throw new ArgumentNullException("You need to load the State navigation property");
+            }
+
+            if (Events == null)
+            {
+                throw new ArgumentNullException("You need to load the Events list property");
             }
 
             if (State.Transitions == null)
             {
-                context.Entry(State).Collection(x => x.Transitions).Load();
+                throw new ArgumentNullException("You need to load the Transitions list from the State navigation property");
             }
 
             foreach (var child in State.Transitions)
             {
-                if (child.FromState == null) context.Entry(child).Reference(x => x.FromState).Load();
-                if (child.ToState == null) context.Entry(child).Reference(x => x.ToState).Load();
-                if (child.Event == null) context.Entry(child).Reference(x => x.Event).Load();
+                if (child.FromState == null) throw new ArgumentNullException("Transition not fully loaded from database");
+                if (child.ToState == null) throw new ArgumentNullException("Transition not fully loaded from database");
+                if (child.Event == null) throw new ArgumentNullException("Transition not fully loaded from database");
             }
 
             TTransition transition = null;
