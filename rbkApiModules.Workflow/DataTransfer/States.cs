@@ -28,7 +28,7 @@ namespace rbkApiModules.Workflow
         }
     }
 
-    public class TransitionDetails
+    public class TransitionDetails: BaseDataTransferObject
     {
         public SimpleNamedEntity FromState { get; set; }
         public EventDetails Event { get; set; }
@@ -36,7 +36,7 @@ namespace rbkApiModules.Workflow
         public bool IsProtected { get; set; }
     }
 
-    public class EventDetails
+    public class EventDetails: BaseDataTransferObject
     {
         public string Name { get; set; }
         public string SystemId { get; set; }
