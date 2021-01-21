@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 namespace rbkApiModules.Workflow
 {
     public class StateCacheServiceBuilder<TStatesCache, TEventsCache>
-       where TStatesCache : ICacheService
-       where TEventsCache : ICacheService
+       where TStatesCache : IStatesCacheService
+       where TEventsCache : IEventsCacheService
     {
         internal StateCacheServiceBuilder()
         {
@@ -18,8 +18,8 @@ namespace rbkApiModules.Workflow
 
         internal async Task Run(HttpContext context, Func<Task> next)
         {
-            var statesCache = context.RequestServices.GetService<TStatesCache>();
-            var eventsCache = context.RequestServices.GetService<TEventsCache>();
+            var statesCache = context.RequestServices.GetService<IStatesCacheService>();
+            var eventsCache = context.RequestServices.GetService<IEventsCacheService>();
 
             if (statesCache.IsInitialized && eventsCache.IsInitialized)
             {
@@ -38,9 +38,17 @@ namespace rbkApiModules.Workflow
 
     public static class RequirementCheckMiddlewareExtensions
     {
+        public static void AddRbkWorkflow<TStatesCache, TEventsCache>(this IServiceCollection services, TStatesCache statesCacheService, TEventsCache eventsCacheService)
+            where TStatesCache : class, IStatesCacheService
+            where TEventsCache : class, IEventsCacheService
+        {
+            services.AddSingleton<IStatesCacheService, TStatesCache>();
+            services.AddSingleton<IEventsCacheService, TEventsCache>();
+        }
+
         public static StateCacheServiceBuilder<TStatesCache, TEventsCache> UseRbkWorkflow<TStatesCache, TEventsCache>(this IApplicationBuilder app)
-            where TStatesCache : ICacheService
-            where TEventsCache : ICacheService
+            where TStatesCache : IStatesCacheService
+            where TEventsCache : IEventsCacheService
         {
             var builder = new StateCacheServiceBuilder<TStatesCache, TEventsCache>();
 

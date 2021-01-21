@@ -4,7 +4,12 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace rbkApiModules.Workflow
 {
-    public interface ICacheService
+    public interface IStatesCacheService
+    {
+        bool IsInitialized { get; }
+    }
+
+    public interface IEventsCacheService
     {
         bool IsInitialized { get; }
     }
