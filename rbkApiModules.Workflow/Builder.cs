@@ -42,8 +42,8 @@ namespace rbkApiModules.Workflow
             where TStatesCache : class, IStatesCacheService
             where TEventsCache : class, IEventsCacheService
         {
-            services.AddSingleton<IStatesCacheService, TStatesCache>();
-            services.AddSingleton<IEventsCacheService, TEventsCache>();
+            services.AddSingleton<TStatesCache>();
+            services.AddSingleton<TEventsCache>();
         }
 
         public static StateCacheServiceBuilder<TStatesCache, TEventsCache> UseRbkWorkflow<TStatesCache, TEventsCache>(this IApplicationBuilder app)
