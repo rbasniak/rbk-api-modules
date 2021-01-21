@@ -42,24 +42,10 @@ namespace rbkApiModules.Analytics.Core
 
                 var identity = UserIdentity(context);
 
-                var username = String.Empty;
-                var domain = String.Empty;
-
-                if (context.User.Identity.IsAuthenticated)
-                {
-                    username = context.User.Identity.Name.ToLower();
-                    
-                    var user = (System.Security.Claims.ClaimsIdentity)context.User.Identity;
-                    domain = user.Claims.FirstOrDefault(c => c.Type == "domain")?.Value;
-                }
-
                 // TODO: get version from somewhere
                 var data = new AnalyticsEntry();
 
                 data.Version = "1.0.0";
-                data.Identity = identity;
-                data.Username = username;
-                data.Domain = domain;
                 data.IpAddress = context.Connection.RemoteIpAddress.ToString();
                 data.UserAgent = context.Request.Headers["User-Agent"];
                 data.Path = context.Request.Method + " " + context.Request.Path;
@@ -135,6 +121,23 @@ namespace rbkApiModules.Analytics.Core
 
                         data.TransactionCount = transactionCount;
                         data.TotalTransactionTime = transactionTime;
+
+                        //  Get identity of the user
+
+                        var username = String.Empty;
+                        var domain = String.Empty;
+
+                        if (context.User.Identity.IsAuthenticated)
+                        {
+                            username = context.User.Identity.Name.ToLower();
+
+                            var user = (System.Security.Claims.ClaimsIdentity)context.User.Identity;
+                            domain = user.Claims.FirstOrDefault(c => c.Type == "domain")?.Value;
+                        }
+
+                        data.Identity = identity;
+                        data.Username = username;
+                        data.Domain = domain;
 
                         var store = context.RequestServices.GetService<IAnalyticModuleStore>();
 

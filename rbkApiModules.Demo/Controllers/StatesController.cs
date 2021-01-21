@@ -12,7 +12,6 @@ namespace rbkApiModules.Demo.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [AllowAnonymous]
     public class StatesController: BaseWorkflowController<
         GetStateDotCode.Command, 
         GetStateData.Command,
