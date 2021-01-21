@@ -132,7 +132,7 @@ namespace rbkApiModules.Analytics.Core
                             username = context.User.Identity.Name.ToLower();
 
                             var user = (System.Security.Claims.ClaimsIdentity)context.User.Identity;
-                            domain = user.Claims.FirstOrDefault(c => c.Type == "domain")?.Value;
+                            domain = user.Claims.FirstOrDefault(c => c.Type.ToLower() == "domain")?.Value;
                         }
 
                         data.Identity = identity;
