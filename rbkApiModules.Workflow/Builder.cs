@@ -38,7 +38,7 @@ namespace rbkApiModules.Workflow
 
     public static class RequirementCheckMiddlewareExtensions
     {
-        public static void AddRbkWorkflow<TStatesCache, TEventsCache>(this IServiceCollection services, TStatesCache statesCacheService, TEventsCache eventsCacheService)
+        public static void AddRbkWorkflow<TStatesCache, TEventsCache>(this IServiceCollection services)
             where TStatesCache : class, IStatesCacheService
             where TEventsCache : class, IEventsCacheService
         {
