@@ -22,12 +22,14 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
         {
             Data = new CategoryChartData();
             Options.Title.Text = title;
+            Type = "bar";
         } 
 
         public CategoryChart(ColorPallete pallete, string id, string title): base(pallete, id, title)
         {
             Data = new CategoryChartData();
             Id = id;
+            Type = "bar";
         }
 
         public CategoryChartData Data { get; set; }
