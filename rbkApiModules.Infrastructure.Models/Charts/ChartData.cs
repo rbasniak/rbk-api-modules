@@ -81,11 +81,13 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
             Data = new List<double>();
             BorderColor = new List<string>();
             BackgroundColor = new List<string>();
+            BorderWidth = 2;
         }
 
         public List<double> Data { get; set; }
         public string Label { get; set; }
         public List<string> BorderColor { get; set; }
         public List<string> BackgroundColor { get; set; }
+        public int BorderWidth { get; set; }
     }
 }

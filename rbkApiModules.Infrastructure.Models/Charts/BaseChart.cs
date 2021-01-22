@@ -31,6 +31,7 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
         public string Id { get; set; }
         public ColorPallete ColorPallete { get; set; }
         public ChartOptions Options { get; set; }
+        public string Type { get; set; }
 
         public void HideLegend()
         {

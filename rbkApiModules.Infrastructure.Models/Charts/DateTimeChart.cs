@@ -13,6 +13,7 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
             Data = new DateTimeChartData();
             Options = new ChartOptions();
             ColorPallete = pallete;
+            Type = "line";
         }
 
         public DateTimeChart(ColorPallete pallete, string title) : base(pallete, title)

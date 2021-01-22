@@ -15,6 +15,7 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
             Data = new CategoryChartData();
             Options = new ChartOptions();
             ColorPallete = pallete;
+            Type = "bar";
         }
 
         public CategoryChart(ColorPallete pallete, string title) : base(pallete, title)
@@ -53,6 +54,7 @@ namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
             dataset.Data.Add(value);
             dataset.BackgroundColor.Add(color + transparency);
             dataset.BorderColor.Add(color);
+            dataset.BorderWidth = 2;
         }
     }
 }
