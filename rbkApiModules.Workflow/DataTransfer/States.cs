@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using rbkApiModules.Infrastructure.Models;
+using System;
 using System.Collections.Generic;
 
 namespace rbkApiModules.Workflow
@@ -31,7 +32,7 @@ namespace rbkApiModules.Workflow
     public class StateChangedEventDetails
     {
         public string Username { get; set; }
-        public string Date { get; set; }
+        public DateTime Date { get; set; }
         public string StatusHistory { get; set; }
         public string StatusName { get; set; }
         public string Notes { get; set; }
