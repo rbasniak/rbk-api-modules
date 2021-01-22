@@ -28,6 +28,15 @@ namespace rbkApiModules.Workflow
         }
     }
 
+    public class StateChangedEventDetails
+    {
+        public string Username { get; set; }
+        public string Date { get; set; }
+        public string StatusHistory { get; set; }
+        public string StatusName { get; set; }
+        public string Notes { get; set; }
+    }
+
     public class TransitionDetails: BaseDataTransferObject
     {
         public SimpleNamedEntity FromState { get; set; }
@@ -72,6 +81,8 @@ namespace rbkApiModules.Workflow
             CreateMap<TEvent, EventDetails>();
 
             CreateMap<TTransition, TransitionDetails>();
+
+            CreateMap<TStateChangeEvent, StateChangedEventDetails>();
         }
     } 
 }

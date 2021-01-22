@@ -16,7 +16,9 @@ namespace rbkApiModules.Demo.Controllers
         GetStateDotCode.Command, 
         GetStateData.Command,
         GetQueryDefinitionResults.Command,
-        DocumentDetails>
+        GetStateChangedEvents.Command,
+        DocumentDetails,
+        StateChangedEventDetails>
     {
     }
 }
