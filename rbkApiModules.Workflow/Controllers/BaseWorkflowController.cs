@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace rbkApiModules.Workflow
 {
-    public abstract class BaseWorkflowController<TBaseGetStatesDotCodeCommand, TBaseGetStateDataCommand, TBaseGetQueryDefinitionResultsCommand, TStateEntityDto> : BaseController
+    public abstract class BaseWorkflowController<TBaseGetStatesDotCodeCommand, TBaseGetStateDataCommand, TBaseGetQueryDefinitionResultsCommand,
+        TBaseGetStateChangedEventsCommand, TStateEntityDto, TStateChangeEventDto> : BaseController
         where TBaseGetStatesDotCodeCommand: BaseGetStatesDotCodeCommand, new()
         where TBaseGetStateDataCommand : BaseGetStateDataCommand, new()
+        where TBaseGetStateChangedEventsCommand : BaseGetStateChangedEventsCommand, new()
     {
         /// <summary>
         /// Generates the dot code of the states/transitions of the specified group
@@ -39,6 +41,17 @@ namespace rbkApiModules.Workflow
         public async Task<ActionResult<QueryDefinitionResults<TStateEntityDto>[]>> ExecuteQueries(TBaseGetQueryDefinitionResultsCommand data)
         {
             var response = (QueryResponse)await Mediator.Send(data);
+
+            return HttpResponse(response);
+        }
+
+        /// <summary>
+        /// Executes
+        /// </summary>
+        [HttpPost("events/history")]
+        public async Task<ActionResult<TStateChangeEventDto[]>> GetEntityHistory(TBaseGetStateChangedEventsCommand data)
+        {
+            var response = await Mediator.Send(data);
 
             return HttpResponse(response);
         }
