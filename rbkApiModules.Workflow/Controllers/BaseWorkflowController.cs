@@ -48,10 +48,10 @@ namespace rbkApiModules.Workflow
         /// <summary>
         /// Executes
         /// </summary>
-        [HttpPost("events/history")]
-        public async Task<ActionResult<TStateChangeEventDto[]>> GetEntityHistory(TBaseGetStateChangedEventsCommand data)
+        [HttpGet("events/history/{libraId}")]
+        public async Task<ActionResult<TStateChangeEventDto[]>> GetEntityHistory(Guid libraId)
         {
-            var response = await Mediator.Send(data);
+            var response = await Mediator.Send(new TBaseGetStateChangedEventsCommand { Id = libraId });
 
             return HttpResponse(response);
         }
