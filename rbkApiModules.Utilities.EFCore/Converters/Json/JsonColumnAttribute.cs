@@ -8,7 +8,7 @@ using System.Text;
 namespace rbkApiModules.Utilities.EFCore
 {
     [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
-    public class JsonFieldAttribute : Attribute 
+    public class JsonColumnAttribute : Attribute 
     { 
     }
 }

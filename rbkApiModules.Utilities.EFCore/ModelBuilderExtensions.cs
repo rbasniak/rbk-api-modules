@@ -16,11 +16,11 @@ namespace rbkApiModules.Utilities.EFCore
     {
         private static bool HasJsonAttribute(PropertyInfo propertyInfo)
         {
-            return propertyInfo != null && propertyInfo.CustomAttributes.Any(a => a.AttributeType == typeof(JsonFieldAttribute));
+            return propertyInfo != null && propertyInfo.CustomAttributes.Any(a => a.AttributeType == typeof(JsonColumnAttribute));
         }
 
         /// <summary>
-        /// Add fields marked with <see cref="JsonFieldAttribute"/> to be converted using <see cref="JsonValueConverter{T}"/>.
+        /// Add fields marked with <see cref="JsonColumnAttribute"/> to be converted using <see cref="JsonValueConverter{T}"/>.
         /// </summary>
         /// <param name="skipConventionalEntities">
         ///   Skip trying to initialize properties for entity types found by EF conventions.
