@@ -3,6 +3,7 @@ using rbkApiModules.Authentication;
 using rbkApiModules.Comments;
 using rbkApiModules.Demo.Models;
 using rbkApiModules.Demo.Models.StateMachine;
+using rbkApiModules.Utilities.EFCore;
 using rbkApiModules.Utilities.Extensions;
 using rbkApiModules.Workflow; 
 
