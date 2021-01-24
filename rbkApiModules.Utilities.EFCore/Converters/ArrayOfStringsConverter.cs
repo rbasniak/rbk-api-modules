@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace rbkApiModules.Infrastructure.Utilities.EFCore.Converters
+namespace rbkApiModules.Utilities.EFCore.Converters
 {
     public static class ArrayOfStringsConverter
     {
@@ -23,7 +23,7 @@ namespace rbkApiModules.Infrastructure.Utilities.EFCore.Converters
             if (array == null || array.Length == 0)
             {
                 return String.Empty;
-            }   
+            }
 
             return String.Join(separator, array.OrderBy(x => x));
         }

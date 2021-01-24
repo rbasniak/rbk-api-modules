@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace rbkApiModules.Infrastructure.Utilities
+namespace rbkApiModules.Utilities
 {
     public static class ExceptionHelper
     {

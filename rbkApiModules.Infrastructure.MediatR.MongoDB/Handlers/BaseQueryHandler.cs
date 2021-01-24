@@ -5,7 +5,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using rbkApiModules.Infrastructure.MediatR.Abstract;
-using rbkApiModules.Infrastructure.Utilities.MongoDB;
+using rbkApiModules.Utilities.MongoDB;
 using rbkApiModules.Infrastructure.MediatR.Core;
 
 namespace rbkApiModules.Infrastructure.MediatR.MongoDB

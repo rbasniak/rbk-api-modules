@@ -2,7 +2,7 @@
 using MongoDB.Driver;
 using System;
 
-namespace rbkApiModules.Infrastructure.Utilities.MongoDB
+namespace rbkApiModules.Utilities.MongoDB
 {
     public class MongoDbContext
     {

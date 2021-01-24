@@ -1,6 +1,6 @@
 using System.Net.Mime;
 
-namespace rbkApiModules.Infrastructure.Utilities.Email.Models
+namespace rbkApiModules.Utilities.Email.Models
 {
     /// <summary>
     /// Classe contendo dados de uma imagem a ser adicionada no corpo de um email
@@ -23,7 +23,7 @@ namespace rbkApiModules.Infrastructure.Utilities.Email.Models
         public string Base64Content { get; private set; }
 
         /// <summary>
-        /// Inicia uma nova instância da classe <see cref="InlineImage" />.
+        /// Inicia uma nova instï¿½ncia da classe <see cref="InlineImage" />.
         /// </summary>
         /// <param name="contentId">Identificador da imagem</param>
         /// <param name="contentType">Tipo MIME da imagem</param>

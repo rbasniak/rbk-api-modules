@@ -5,7 +5,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using rbkApiModules.Infrastructure.MediatR.Abstract;
-using rbkApiModules.Infrastructure.Utilities.MongoDB;
+using rbkApiModules.Utilities.MongoDB;
 using rbkApiModules.Infrastructure.MediatR.Core;
 
 namespace rbkApiModules.Infrastructure.MediatR.MongoDB
@@ -26,7 +26,7 @@ namespace rbkApiModules.Infrastructure.MediatR.MongoDB
         }
 
         /// <summary>
-        /// Método principal do handler, que executa as ações necessárias para processar 
+        /// Método principal do handler, que executa as ações necessárias para processar
         /// o comando (uso automático do MediatR)
         /// </summary>
         public async Task<CommandResponse> Handle(TCommand request, CancellationToken cancellationToken)

@@ -1,5 +1,5 @@
-using rbkApiModules.Infrastructure.Utilities.Email;
-using rbkApiModules.Infrastructure.Utilities.Email.Models;
+using rbkApiModules.Utilities.Email;
+using rbkApiModules.Utilities.Email.Models;
 using Shouldly;
 using System;
 using System.Collections.Generic;
@@ -13,15 +13,15 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Xunit;
 
-namespace rbkApiModules.Infrastructure.Utilities.Tests
+namespace rbkApiModules.Utilities.Tests
 {
     public class SendMailTests : IDisposable
     {
-        private static readonly string StarImageBase64 = "iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJH" + 
-            "rORAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAtUExURf///8/Pz/v7+zAwMCgoKPf3939/" + 
-            "fwAAAHR0dAQEBMfHx2xsbCAgIPPz87+/v39ufroAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACjSURBVCj" + 
-            "PdY8xCsMwDEU/BpusHXOPgI+QJUPpWQohEEKm3qG5QTN57DGy9D6VY0tI0GrIR/Del4M/c7Gr665mD+" + 
-            "Nq9nbaDB7fdy2E+dNroV3w2rgpT0Jz5grXU8wHfE0BiwY00uxioq+X5pBxJZx4Fg6FCyZixVhkjC8xz" + 
+        private static readonly string StarImageBase64 = "iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJH" +
+            "rORAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAtUExURf///8/Pz/v7+zAwMCgoKPf3939/" +
+            "fwAAAHR0dAQEBMfHx2xsbCAgIPPz87+/v39ufroAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACjSURBVCj" +
+            "PdY8xCsMwDEU/BpusHXOPgI+QJUPpWQohEEKm3qG5QTN57DGy9D6VY0tI0GrIR/Del4M/c7Gr665mD+" +
+            "Nq9nbaDB7fdy2E+dNroV3w2rgpT0Jz5grXU8wHfE0BiwY00uxioq+X5pBxJZx4Fg6FCyZixVhkjC8xz" +
             "oLgRXCR3kkgZ6j/wcmg0nLzTa6U5odcKcJT4ySMyex+MDiw49cAX5tWPIf28r2yAAAAAElFTkSuQmCC";
 
         private static readonly string BasicHtml = "<!DOCTYPE html>\r\n<html>\r\n<body>\r\n<h1>Title</h1>\r\n<p>Paragraph.</p>\r\n</body>\r\n</html>";
@@ -129,13 +129,13 @@ namespace rbkApiModules.Infrastructure.Utilities.Tests
                 Regex.Matches(mainString, Regex.Escape(base64Chunk)).Count.ShouldBe(occurences);
             }
         }
-        
+
         private static IEnumerable<string> GetChunksUpto(string str, int maxChunkSize)
         {
             for (int i = 0; i < str.Length; i += maxChunkSize)
                 yield return str.Substring(i, Math.Min(maxChunkSize, str.Length - i));
         }
-        
+
         public void Dispose()
         {
             if (Directory.Exists(EmailsDirectory))

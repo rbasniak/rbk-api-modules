@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace rbkApiModules.Infrastructure.Utilities.EFCore.Converters
+namespace rbkApiModules.Utilities.EFCore.Converters
 {
     public static class DateTimeWithoutKindConverter
     {

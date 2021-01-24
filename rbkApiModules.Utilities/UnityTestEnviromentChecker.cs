@@ -1,4 +1,4 @@
-﻿namespace rbkApiModules.Infrastructure.Utilities
+﻿namespace rbkApiModules.Utilities
 {
     /// <summary>
     /// Classe contendo um indicador para mostrar se o código está sendo executado no ambiente de testes

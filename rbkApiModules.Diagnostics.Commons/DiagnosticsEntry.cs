@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using rbkApiModules.Infrastructure.Models;
-using rbkApiModules.Infrastructure.Utilities;
+using rbkApiModules.Utilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -15,7 +15,7 @@ namespace rbkApiModules.Diagnostics.Commons
         public DiagnosticsEntry()
         {
             Timestamp = DateTime.UtcNow;
-        } 
+        }
 
         public DiagnosticsEntry(HttpContext context, string source, Exception exception, object input): this()
         {

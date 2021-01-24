@@ -1,6 +1,6 @@
 ﻿using System.Net.Mime;
 
-namespace rbkApiModules.Infrastructure.Utilities.Email.Models
+namespace rbkApiModules.Utilities.Email.Models
 {
     /// <summary>
     /// Classe contendo os dados de um anexo a ser adicionado a um email

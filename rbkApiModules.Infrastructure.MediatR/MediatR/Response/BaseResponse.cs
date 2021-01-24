@@ -1,4 +1,4 @@
-﻿using rbkApiModules.Infrastructure.Utilities;
+﻿using rbkApiModules.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

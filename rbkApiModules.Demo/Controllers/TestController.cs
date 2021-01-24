@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using rbkApiModules.Infrastructure.Api;
+using rbkApiModules.Utilities;
 using rbkApiModules.Utilities.Extensions;
 using System.IO;
 

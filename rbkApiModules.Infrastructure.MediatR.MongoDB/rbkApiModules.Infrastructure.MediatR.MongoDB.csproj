@@ -26,7 +26,7 @@
   <ItemGroup>
     <ProjectReference Include="..\rbkApiModules.Infrastructure.MediatR\rbkApiModules.Infrastructure.MediatR.Core.csproj" />
     <ProjectReference Include="..\rbkApiModules.Infrastructure.Models\rbkApiModules.Infrastructure.Models.csproj" />
-    <ProjectReference Include="..\rbkApiModules.Infrastructure.MongoDB\rbkApiModules.Infrastructure.Utilities.MongoDB.csproj" />
+    <ProjectReference Include="..\rbkApiModules.Utilities.MongoDB\rbkApiModules.Utilities.MongoDB.csproj" />
   </ItemGroup>
 
 </Project>

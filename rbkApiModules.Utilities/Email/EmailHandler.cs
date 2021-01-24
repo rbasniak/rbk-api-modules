@@ -1,4 +1,4 @@
-﻿using rbkApiModules.Infrastructure.Utilities.Email.Models;
+﻿using rbkApiModules.Utilities.Email.Models;
 using System;
 using System.IO;
 using System.Net;
@@ -6,7 +6,7 @@ using System.Net.Mail;
 using System.Net.Mime;
 using System.Reflection;
 
-namespace rbkApiModules.Infrastructure.Utilities.Email
+namespace rbkApiModules.Utilities.Email
 {
     /// <summary>
     /// Classe responsável pelo envio de emails

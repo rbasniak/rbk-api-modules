@@ -1,4 +1,4 @@
-﻿namespace rbkApiModules.Infrastructure.Utilities.MongoDB
+﻿namespace rbkApiModules.Utilities.MongoDB
 {
     public class MongoDbConfiguration
     {

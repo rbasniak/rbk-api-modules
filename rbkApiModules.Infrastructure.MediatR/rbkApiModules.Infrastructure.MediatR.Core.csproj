@@ -24,6 +24,7 @@
     <PackageReference Include="MediatR" Version="9.0.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="5.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.2" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.8.0" />
     <PackageReference Include="SourceLink.Create.CommandLine" Version="2.8.3">
       <PrivateAssets>all</PrivateAssets>
@@ -35,7 +36,7 @@
   <ItemGroup>
     <ProjectReference Include="..\rbkApiModules.Diagnostics.Commons\rbkApiModules.Diagnostics.Commons.csproj" />
     <ProjectReference Include="..\rbkApiModules.Infrastructure.Models\rbkApiModules.Infrastructure.Models.csproj" />
-    <ProjectReference Include="..\rbkApiModules.Infrastructure.Utilities\rbkApiModules.Infrastructure.Utilities.csproj" />
+    <ProjectReference Include="..\rbkApiModules.Utilities\rbkApiModules.Utilities.csproj" />
   </ItemGroup>
 
 </Project>

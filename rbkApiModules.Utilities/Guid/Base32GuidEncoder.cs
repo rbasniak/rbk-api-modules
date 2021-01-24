@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace rbkApiModules.Infrastructure.Utilities
+namespace rbkApiModules.Utilities
 {
     public static class Base32GuidEncoder
     {

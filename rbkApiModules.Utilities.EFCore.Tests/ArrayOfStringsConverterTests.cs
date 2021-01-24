@@ -1,4 +1,4 @@
-﻿using rbkApiModules.Infrastructure.Utilities.EFCore.Converters;
+﻿using rbkApiModules.Utilities.EFCore.Converters;
 using Shouldly;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace rbkApiModules.Infrastructure.Utilities.EFCore.Converters.Tests
+namespace rbkApiModules.Utilities.EFCore.Converters.Tests
 {
     public class ArrayOfStringsConverterTests
     {
@@ -52,7 +52,7 @@ namespace rbkApiModules.Infrastructure.Utilities.EFCore.Converters.Tests
         public void Should_Convert_Null_String()
         {
             var converter = ArrayOfStringsConverter.GetConverter(';');
-            var result = converter.ConvertFromProvider(null); 
+            var result = converter.ConvertFromProvider(null);
 
             result.ShouldBeNull();
         }

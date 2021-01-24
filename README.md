@@ -10,7 +10,7 @@ The libraries must always be used in the exact same version and the package is c
   * `rbkApiModules.Infrastructure.Api`
   * `rbkApiModules.Infrastructure.MediatR.Core`
   * `rbkApiModules.Infrastructure.MediatR.SqlServer` and/or `rbkApiModules.Infrastructure.MediatR.MongoDB`
-  * `rbkApiModules.Infrastructure.Utilities`
+  * `rbkApiModules.Utilities`
 * Analytics libraries, contains server side analytics (database usage and requests statistics):
   * `rbkApiModules.Infrastructure.Analytics.Core`
   * `rbkApiModules.Infrastructure.Analytics.SqlServer`
@@ -48,9 +48,9 @@ The `rbkApiModules.Infrastructure.MediatR.Core.SqlServer` and/or `rbkApiModules.
 
 The `rbkApiModules.Infrastructure.Api` must be referenced in the `{MyProject}.Api` project.
 
-The `rbkApiModules.Infrastructure.Utilities` must be referenced in the `{MyProject}.Database` project.
+The `rbkApiModules.Utilities.EFCore` must be referenced in the `{MyProject}.Database` project.
 
-The `rbkApiModules.Infrastructure.Utilities.MongoDB` must be referenced in the `{MyProject}.Database` and `{MyProject}.BusinessLogic` projects if the project uses MongoDB.
+The `rbkApiModules.Utilities.MongoDB` must be referenced in the `{MyProject}.Database` and `{MyProject}.BusinessLogic` projects if the project uses MongoDB.
 
 All other libraries are optional and need to be referenced only in the `{MyProject}.Api` project, with exception to the :
 
@@ -280,7 +280,7 @@ This library contains the following helping classes:
 * `SafeException`: when this exception is thrown in a command handler, it will be treated as `400` return code to the cliente application.
 * `IPassword`: this interface should be implemented in all commands containing a password property if the `rbkApiModules.Auditing` is used. This will ensure that the password will be anonymized when saved in the auditing database.
 
-# 5. rbkApiModules.Infrastructure.Utilities
+# 5. rbkApiModules.Utilities
 
 Most of the contents of this library is meant be used by the other libraries in this repository, even though they have a few usefull extension methods:
 
