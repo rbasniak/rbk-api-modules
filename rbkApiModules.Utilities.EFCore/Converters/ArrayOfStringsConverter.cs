@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace rbkApiModules.Utilities.EFCore.Converters
+namespace rbkApiModules.Utilities.EFCore
 {
     public static class ArrayOfStringsConverter
     {

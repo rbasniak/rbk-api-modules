@@ -5,14 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace rbkApiModules.Utilities.EFCore.Converters
+namespace rbkApiModules.Utilities.EFCore
 {
     public static class DateTimeWithoutKindConverter
     {
         public static ValueConverter<DateTime, DateTime> GetConverter()
         {
             var converter = new ValueConverter<DateTime, DateTime>(
-                v => ToDatabase(v ),
+                v => ToDatabase(v),
                 v => FromDatabase(v));
 
             return converter;

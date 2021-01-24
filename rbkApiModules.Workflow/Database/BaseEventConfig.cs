@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using rbkApiModules.Utilities.EFCore.Converters;
+using rbkApiModules.Utilities.EFCore;
 
 namespace rbkApiModules.Workflow
 {
