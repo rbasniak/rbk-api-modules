@@ -27,7 +27,7 @@ namespace rbkApiModules.Utilities.EFCore
         {
             if (date.HasValue)
             {
-                return DateTime.SpecifyKind(date.Value, DateTimeKind.Utc;
+                return DateTime.SpecifyKind(date.Value, DateTimeKind.Utc);
             }
             else
             {
