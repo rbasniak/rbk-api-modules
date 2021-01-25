@@ -130,7 +130,7 @@ namespace rbkApiModules.Demo
 
             services.AddRbkUIDefinitions(AssembliesUIDefinitions);
 
-            services.AddSqlServerRbkApiAnalyticsModule(Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Analytics"));
+            services.AddSqlServerRbkApiAnalyticsModule(Configuration.GetConnectionString("AnalyticsConnection").Replace("**CONTEXT**", "Analytics"));
 
             services.AddSqlServerRbkApiDiagnosticsModule(Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Diagnostics"));
         }
@@ -147,7 +147,7 @@ namespace rbkApiModules.Demo
                 .LimitToPath("/api")
                 .ExcludeMethods("OPTIONS")
                 .ExcludePath(new[] { "/api/test/download" })
-                //.UseDemoData()
+                .UseDemoData()
             );
 
             app.UseSqlServerRbkApiDiagnosticsModule();
