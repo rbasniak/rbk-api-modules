@@ -452,7 +452,6 @@
         analyticsResults = null;
         isLoading = true;
 
-        await Task.Delay(5000);
         analyticsResults = (await DataService.GetDashboardData(dateFrom, dateTo)).Data;
 
         isLoading = false;
