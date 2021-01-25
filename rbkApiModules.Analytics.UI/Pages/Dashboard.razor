@@ -10,18 +10,20 @@
     <div style="display: flex; justify-content: space-between; gap: 1em;">
         <div style="flex: 1">
             <h3>Date from</h3>
-            <RadzenDatePicker @bind-Value="dateFrom" DateFormat="d" Style="width: 100%" />
+            <RadzenDatePicker @bind-Value="dateFrom" DateFormat="d" Disabled="@isLoading" Style="width: 100%" />
         </div>
         <div style="flex: 1">
             <h3>Date to</h3>
-            <RadzenDatePicker @bind-Value="dateTo" DateFormat="d" Style="width: 100%" />
+            <RadzenDatePicker @bind-Value="dateTo" DateFormat="d" Disabled="@isLoading" Style="width: 100%" />
         </div>
         <div style="flex: 2; display: flex; justify-content: flex-start; margin-top: 1em; align-items: flex-end">
-            <RadzenButton Text="Filter" ButtonStyle="ButtonStyle.Secondary" Style="width: 150px" Click="@(Click)" />
+            <RadzenButton Text="Filter" ButtonStyle="ButtonStyle.Secondary" Disabled="@isLoading" Style="width: 150px" Click="@(Click)" />
         </div>
     </div>
 
 </RadzenCard>
+
+<Loading isLoading="@isLoading" data="@analyticsResults"></Loading>
 
 @if (analyticsResults != null)
 {
@@ -443,10 +445,17 @@
 
     DateTime dateFrom = DateTime.Now.AddDays(-7);
     DateTime dateTo = DateTime.Now;
+    bool isLoading = false;
 
     async void Click(MouseEventArgs args)
     {
+        analyticsResults = null;
+        isLoading = true;
+
+        await Task.Delay(5000);
         analyticsResults = (await DataService.GetDashboardData(dateFrom, dateTo)).Data;
+
+        isLoading = false;
 
         // Note that the following line is necessary because otherwise Blazor would not recognize the state change and not refresh the UI
         StateHasChanged();
