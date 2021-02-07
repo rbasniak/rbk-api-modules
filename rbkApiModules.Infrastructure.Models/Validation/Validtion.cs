@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 
 namespace rbkApiModules.Infrastructure.Models
 {
-
     public class ValidationResult
     {
         private int? _minLength = null;
@@ -129,7 +128,7 @@ namespace rbkApiModules.Infrastructure.Models
             {
                 var attributes = property.GetCustomAttributes(true);
 
-                var propName = property.Name; 
+                var propName = property.Name;
 
                 var propValue = property.GetValue(instance);
                 var validation = new ValidationResult(propName);
@@ -137,22 +136,22 @@ namespace rbkApiModules.Infrastructure.Models
                 foreach (object attr in attributes)
                 {
                     var minLengthAttribute = attr as MinLengthAttribute;
-                    if (minLengthAttribute != null && propValue.GetType() == typeof(string))
+                    if (minLengthAttribute != null && property.PropertyType == typeof(string))
                     {
                         var attrValue = minLengthAttribute.Length;
 
-                        if (propValue.ToString().Length < attrValue)
+                        if (propValue != null && propValue.ToString().Length < attrValue || propValue == null)
                         {
                             validation.SetMinLength(attrValue);
                         }
                     }
 
                     var maxLengthAttribute = attr as MaxLengthAttribute;
-                    if (maxLengthAttribute != null && propValue.GetType() == typeof(string))
+                    if (maxLengthAttribute != null && property.PropertyType == typeof(string))
                     {
                         var attrValue = maxLengthAttribute.Length;
 
-                        if (propValue.ToString().Length > attrValue)
+                        if (propValue != null && propValue.ToString().Length > attrValue || propValue == null)
                         {
                             validation.SetMaxLength(attrValue);
                         }
@@ -161,7 +160,7 @@ namespace rbkApiModules.Infrastructure.Models
                     var requiredAttribute = attr as RequiredAttribute;
                     if (requiredAttribute != null)
                     {
-                        if (propValue.GetType() == typeof(string))
+                        if (propValue != null && property.PropertyType == typeof(string) || propValue == null)
                         {
                             if (String.IsNullOrEmpty((string)propValue))
                             {
