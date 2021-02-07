@@ -1,3 +1,10 @@
+## 2.1.72 (2021-01-25)
+
+
+### Bug Fixes
+
+* fixed analytics endpoint ([ea9e758](https://github.com/rbasniak/rbk-api-modules/commit/ea9e758d224b5f04603e42e0e999d0536fcf610e))
+
 ## 2.1.71 (2021-01-25)
 
 ## 2.1.70 (2021-01-25)
