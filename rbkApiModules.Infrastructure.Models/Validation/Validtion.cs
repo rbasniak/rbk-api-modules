@@ -183,7 +183,7 @@ namespace rbkApiModules.Infrastructure.Models
 
             if (results.Count > 0)
             {
-                throw new SafeException("Erros de validação");
+                throw new ModelValidationException(results.ToArray());
             }
         }
     }
