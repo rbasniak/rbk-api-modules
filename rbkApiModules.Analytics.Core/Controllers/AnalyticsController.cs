@@ -2,9 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using rbkApiModules.Infrastructure.Api;
 using rbkApiModules.Infrastructure.Models;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
-namespace rbkApiModules.Analytics.Core.Controller
+namespace rbkApiModules.Analytics.Core
 {
     [ApplicationArea("analytics")]
     [AllowAnonymous]

@@ -10,6 +10,8 @@ namespace rbkApiModules.Analytics.Core
     // TODO: colocar o filtro nas libs com endpoints
     public class AnalyticsMvcFilter : IActionFilter
     {
+        public const string LOG_DATA_AREA = "log-data-area";
+        public const string LOG_DATA_PATH = "log-data-path";
         public AnalyticsMvcFilter()
         {
         }
@@ -49,15 +51,13 @@ namespace rbkApiModules.Analytics.Core
                 }
             }
 
-            context.HttpContext.Items.Add("log-data-area", area);
-            context.HttpContext.Items.Add("log-data-path", path);
+            context.HttpContext.Items.Add(LOG_DATA_AREA, area);
+            context.HttpContext.Items.Add(LOG_DATA_PATH, path);
         }
 
         public void OnActionExecuted(ActionExecutedContext context)
         {
  
         }
-
-        
     }
 }

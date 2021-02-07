@@ -28,15 +28,7 @@ namespace rbkApiModules.Analytics.Core
 
             public DateTime DateFrom { get; set; }
             public DateTime DateTo { get; set; }
-        }
-
-        public class Validator : AbstractValidator<Command>
-        {
-            public Validator()
-            {
-                CascadeMode = CascadeMode.Stop;
-            }
-        }
+        } 
 
         public class Handler : BaseQueryHandler<Command>
         {
@@ -54,7 +46,7 @@ namespace rbkApiModules.Analytics.Core
 
                 var data = await _context.FilterAsync(request.DateFrom, request.DateTo);
 
-                results.AverageTransactionsPerEndpoint = BuildAverageTransactionsPerEndpoint(data); // ok
+                results.AverageTransactionsPerEndpoint = BuildAverageTransactionsPerEndpoint(data);  
                 results.BiggestResponsesEndpoints = BuildBiggestResponsesEndpoints(data);
                 results.BiggestResquestsEndpoints = BuildBiggestResquestsEndpoints(data);
                 results.CachedRequestsProportion = BuildCachedRequestsProportion(data);

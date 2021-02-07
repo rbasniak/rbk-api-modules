@@ -25,4 +25,8 @@
       </PackageReference>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\rbkApiModules.UIAnnotations.Common\rbkApiModules.UIAnnotations.Commons.csproj" />
+    </ItemGroup>
+
 </Project>

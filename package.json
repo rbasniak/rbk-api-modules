@@ -52,6 +52,7 @@
           "rbkApiModules.Diagnostics.UI/rbkApiModules.Diagnostics.UI.csproj",
           "rbkApiModules.SharedUI/rbkApiModules.SharedUI.csproj",
           "rbkApiModules.UIAnnotations/rbkApiModules.UIAnnotations.csproj",
+          "rbkApiModules.UIAnnotations.Common/rbkApiModules.UIAnnotations.Commons.csproj",
           "rbkApiModules.Workflow/rbkApiModules.Workflow.csproj"
         ]
       }
