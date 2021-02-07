@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shouldly;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,33 +8,37 @@ using System.Threading.Tasks;
 
 namespace rbkApiModules.Utilities.Testing
 {
-    public class ListInitializationTester
+    public static class ListInitializationExtension
     {
-        private object _instance;
-
-        public ListInitializationTester(object instance)
+        public static void ShouldHaveAllListInitialized(this object entity)
         {
-            _instance = instance;
+            var results = VerifyListInitialization(entity);
+            if (results.Length > 0)
+            {
+                throw new ShouldAssertException("Non initialized lists: " + String.Join(", ", results));
+            }
         }
 
-        public List<string> Test()
+        private static string[] VerifyListInitialization(object instance)
         {
             var results = new List<string>();
 
-            var properties = _instance.GetType().GetProperties();
+            var properties = instance.GetType().GetProperties();
 
             foreach (var property in properties)
             {
-                if (typeof(IEnumerable).IsAssignableFrom(property.PropertyType))
+                if (typeof(System.Collections.IEnumerable).IsAssignableFrom(property.PropertyType)
+                    && property.PropertyType != typeof(string)
+                    && property.PropertyType != typeof(DateTime))
                 {
-                    if (property.GetValue(_instance) == null)
+                    if (property.GetValue(instance) == null)
                     {
                         results.Add(property.Name);
                     }
                 }
             }
 
-            return results;
+            return results.ToArray();
         }
     }
 }

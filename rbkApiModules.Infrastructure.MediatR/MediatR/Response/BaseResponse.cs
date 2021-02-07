@@ -1,4 +1,5 @@
-﻿using rbkApiModules.Utilities;
+﻿using rbkApiModules.Infrastructure.Models;
+using rbkApiModules.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -79,6 +80,25 @@ namespace rbkApiModules.Infrastructure.MediatR.Core
             }
 
             AddError(message);
+        }
+
+        /// <summary>
+        /// Adiciona erros de validação de modelo na lista de erros 
+        /// </summary>
+        public void AddHandledError(ModelValidationException exception)
+        {
+            if (Status != CommandStatus.HasUnhandledError)
+            {
+                Status = CommandStatus.HasHandledError;
+            }
+
+            foreach (var entity in exception.Errors)
+            {
+                foreach (var result in entity.Results)
+                {
+                    AddError(result.Message);
+                }
+            }
         }
 
         /// <summary>

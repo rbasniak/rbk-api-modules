@@ -38,6 +38,10 @@ namespace rbkApiModules.Infrastructure.MediatR.Core
             {
                 response.AddHandledError(ex.Message);
             }
+            catch (ModelValidationException ex)
+            {
+                response.AddHandledError(ex);
+            }
             catch (Exception ex)
             {
                 response.AddUnhandledError(ex.Message);

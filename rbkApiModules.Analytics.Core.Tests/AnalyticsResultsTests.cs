@@ -17,11 +17,7 @@ namespace rbkApiModules.Analytics.Core.Tests
         {
             var instance = new AnalyticsResults();
 
-            var tester = new ListInitializationTester(instance);
-            var results = tester.Test();
-
-            results.ShouldNotBe(null);
-            results.Count.ShouldBe(0, "Non initialized lists: " + String.Join(", ", results));
+            instance.ShouldHaveAllListInitialized();
         }
     }
 }

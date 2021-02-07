@@ -51,6 +51,10 @@ namespace rbkApiModules.Infrastructure.MediatR.MongoDB
                     //await session.AbortTransactionAsync();
                     response.AddHandledError(ex.Message);
                 }
+                catch (ModelValidationException ex)
+                {
+                    response.AddHandledError(ex);
+                }
                 catch (Exception ex)
                 {
                     //await session.AbortTransactionAsync();
