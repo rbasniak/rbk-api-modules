@@ -27,8 +27,8 @@ jobs:
           dotnet-version: 5.0.x
       - name: Install dependencies
         run: dotnet restore   
-      - name: Test
-        run: dotnet test --no-restore --verbosity minimal               
+      # - name: Test
+      #  run: dotnet test --no-restore --verbosity minimal               
       - name: Update Version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
