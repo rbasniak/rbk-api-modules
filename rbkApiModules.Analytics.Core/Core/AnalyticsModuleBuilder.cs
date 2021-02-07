@@ -62,7 +62,7 @@ namespace rbkApiModules.Analytics.Core
                         //read the response stream from the beginning
                         context.Response.Body.Seek(0, SeekOrigin.Begin);
                         //Copy the contents of the new memory stream
-                        await bodyStream.CopyToAsync(responseBody);
+                        await responseBody.CopyToAsync(bodyStream);
 
                         var responseSize = 0L;
                         if (context.Response.Body.CanSeek && context.Response.Body.CanRead)

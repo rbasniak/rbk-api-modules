@@ -18,10 +18,12 @@ namespace rbkApiModules.Infrastructure.Models
 
         public ValidationResult(string propertyName)
         {
-            Property = propertyName;
+            PropertyName = propertyName;
         }
 
-        public string Property { get; private set; }
+        public string PropertyName { get; private set; }
+
+        public string DisplayName { get; set; }
 
         public bool HasErrors => _hasErrors;
 
@@ -47,11 +49,18 @@ namespace rbkApiModules.Infrastructure.Models
         {
             get
             {
+                var propertyName = PropertyName;
+
+                if (!String.IsNullOrEmpty(DisplayName))
+                {
+                    propertyName = DisplayName;
+                }
+
                 var results = new List<ValidationError>();
 
                 if (_required)
                 {
-                    results.Add(new ValidationError(ValidationType.Required, $"'{Property}' é obrigatório"));
+                    results.Add(new ValidationError(ValidationType.Required, $"'{propertyName}' é obrigatório"));
                 }
 
                 if (!_required)
@@ -59,12 +68,12 @@ namespace rbkApiModules.Infrastructure.Models
                     if (_minLength != null)
                     {
                         var s = _minLength > 1 ? "s" : "";
-                        results.Add(new ValidationError(ValidationType.MinLength, $"'{Property}' deve ter no mínimo {_minLength} caracteres"));
+                        results.Add(new ValidationError(ValidationType.MinLength, $"'{propertyName}' deve ter no mínimo {_minLength} caracteres"));
                     }
                     else if (_maxLength != null)
                     {
                         var s = _maxLength > 1 ? "s" : "";
-                        results.Add(new ValidationError(ValidationType.MinLength, $"'{Property}' deve ter no máximo {_maxLength} caracteres"));
+                        results.Add(new ValidationError(ValidationType.MinLength, $"'{propertyName}' deve ter no máximo {_maxLength} caracteres"));
                     }
                 }
 
@@ -80,7 +89,7 @@ namespace rbkApiModules.Infrastructure.Models
         {
             var s = Results.Length > 1 ? "s" : "";
 
-            return $"{Property}: {Results.Length} error{s}";
+            return $"{PropertyName}: {Results.Length} error{s}";
         }
     }
 
@@ -120,13 +129,7 @@ namespace rbkApiModules.Infrastructure.Models
             {
                 var attributes = property.GetCustomAttributes(true);
 
-                var propName = property.Name;
-
-                var dialogData = attributes.FirstOrDefault(x => x.GetType() == typeof(DialogDataAttribute));
-                if (dialogData != null)
-                {
-                    propName = (dialogData as DialogDataAttribute).Name;
-                }
+                var propName = property.Name; 
 
                 var propValue = property.GetValue(instance);
                 var validation = new ValidationResult(propName);
@@ -172,6 +175,12 @@ namespace rbkApiModules.Infrastructure.Models
                                 validation.SetRequired();
                             }
                         }
+                    }
+
+                    var dialogDataAttribute = attr as DialogDataAttribute;
+                    if (dialogDataAttribute != null)
+                    {
+                        validation.DisplayName = dialogDataAttribute.Name;
                     }
                 }
 
