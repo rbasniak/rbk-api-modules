@@ -37,6 +37,7 @@
           "rbkApiModules.Utilities/rbkApiModules.Utilities.csproj",
           "rbkApiModules.Utilities.EFCore/rbkApiModules.Utilities.EFCore.csproj",
           "rbkApiModules.Utilities.MongoDB/rbkApiModules.Utilities.MongoDB.csproj",
+          "rbkApiModules.Utilities.Testing/rbkApiModules.Utilities.Testing.csproj",
           "rbkApiModules.Infrastructure.Models/rbkApiModules.Infrastructure.Models.csproj",
           "rbkApiModules.Analytics.Core/rbkApiModules.Analytics.Core.csproj",
           "rbkApiModules.Analytics.SqlServer/rbkApiModules.Analytics.SqlServer.csproj",
