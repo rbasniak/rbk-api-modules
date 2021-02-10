@@ -1,0 +1,140 @@
+﻿@page "/login"
+@using System.ComponentModel.DataAnnotations
+@inject IAuthenticationService AuthenticationService
+@inject NavigationManager NavigationManager
+@inject IConfiguration _configuration
+
+<div class="row">
+    <div class="col-xl-6">
+        <div class="row">
+            <div class="col">
+                <RadzenTemplateForm TItem="Model" Data=@model Submit=@OnSubmit InvalidSubmit=@OnInvalidSubmit>
+                    <RadzenFieldset Text="Please authenticate to proceed">
+                        <div class="row" style="margin-bottom: 18px">
+                            <div class="col-md-4 align-right">
+                                <RadzenLabel Text="Username" />
+                            </div>
+                            <div class="col">
+                                <RadzenTextBox style="display: block" Name="Username" @bind-Value=@model.Username />
+                                <RadzenRequiredValidator Component="Username" Text="Username is required" Style="position: absolute" />
+                            </div>
+                        </div>
+                        <div class="row" style="margin-bottom: 24px">
+                            <div class="col-md-4">
+                                <RadzenLabel Text="Password" />
+                            </div>
+                            <div class="col">
+                                <RadzenPassword style="display: block" Name="Password" @bind-Value=@model.Password />
+                                <RadzenRequiredValidator Component="Password" Text="Password is required" Style="position: absolute" />
+                            </div>
+                        </div>
+                        <RadzenButton ButtonType="ButtonType.Submit" Text="Login"></RadzenButton>
+                        @if (invalidLogin)
+                        {
+                            <p style="color: red; font-size: 0.85em">Invalid credentials</p>    
+                        }
+                    </RadzenFieldset>
+                </RadzenTemplateForm>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    class Model
+    {
+        public string Username { get; set; }
+        public string Password { get; set; }
+    }
+
+    Model model = new Model();
+    private bool loading;
+    private string error;
+    private bool invalidLogin;
+
+    protected override void OnInitialized()
+    {
+        // redirect to home if already logged in
+        if (AuthenticationService.User != null)
+        {
+            NavigationManager.NavigateTo("");
+        }
+    }
+
+    void OnSubmit(Model model)
+    {
+        loading = true;
+        try
+        {
+            var adminUser = _configuration.GetSection("BlazorAdmin")["Username"];
+            var adminPass = _configuration.GetSection("BlazorAdmin")["Password"];
+
+            if (model.Username == adminUser && model.Password == adminPass)
+            {
+                invalidLogin = false;
+                AuthenticationService.Login(model.Username);
+                var returnUrl = NavigationManager.QueryString("returnUrl") ?? "/";
+                NavigationManager.NavigateTo(returnUrl);
+            }
+        }
+        catch (Exception ex)
+        {
+            invalidLogin = true;
+            error = ex.Message;
+            loading = false;
+            StateHasChanged();
+        }
+    }
+
+    void OnInvalidSubmit(FormInvalidSubmitEventArgs args)
+    {
+        invalidLogin = true;
+    }
+
+
+}
+
+
+@*@code {
+        private Model model = new Model();
+        private bool loading;
+        private string error;
+
+        protected override void OnInitialized()
+        {
+            // redirect to home if already logged in
+            if (AuthenticationService.User != null)
+            {
+                NavigationManager.NavigateTo("");
+            }
+        }
+
+        private async void HandleValidSubmit()
+        {
+            loading = true;
+            try
+            {
+                if (model.Username ==  "test" && model.Password ==  "test")
+                {
+                    AuthenticationService.Login(model.Username);
+                    var returnUrl = NavigationManager.QueryString("returnUrl") ?? "/";
+                    NavigationManager.NavigateTo(returnUrl);
+                }
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message;
+                loading = false;
+                StateHasChanged();
+            }
+        }
+
+        private class Model
+        {
+            [Required]
+            public string Username { get; set; }
+
+            [Required]
+            public string Password { get; set; }
+        }
+    }*@

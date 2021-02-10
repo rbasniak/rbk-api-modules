@@ -15,6 +15,10 @@ namespace rbkApiModules.SharedUI
 
             services.AddSingleton(routeLocator);
 
+            services
+                .AddScoped<IAuthenticationService, AuthenticationService>()
+                .AddScoped<ILocalStorageService, LocalStorageService>();
+
             if (options == null)
             {
                 options = new RbkSharedUIModuleOptions();
