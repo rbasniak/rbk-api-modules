@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -26,6 +27,7 @@ namespace rbkApiModules.Infrastructure.Api
         public string Version { get; set; }
         public string SwaggerXmlPath { get; set; }
         public bool IsProduction { get; set; }
+        public bool UseBasicAuthentication { get; set; }
         public List<Profile> AutomapperProfiles { get; set; }
     }
 
@@ -130,6 +132,9 @@ namespace rbkApiModules.Infrastructure.Api
                     }
                 });
             });
+
+            services.AddAuthentication(BasicAuthenticationHandler.Basic)
+                .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>(BasicAuthenticationHandler.Basic, null);
 
             services.Configure<ApiBehaviorOptions>(options =>
             {

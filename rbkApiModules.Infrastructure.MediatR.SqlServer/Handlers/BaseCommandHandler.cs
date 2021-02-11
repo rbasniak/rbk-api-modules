@@ -47,6 +47,10 @@ namespace rbkApiModules.Infrastructure.MediatR.SqlServer
             {
                 response.AddHandledError(ex.Message);
             }
+            catch (ModelValidationException ex)
+            {
+                response.AddHandledError(ex);
+            }
             catch (Exception ex)
             {
                 response.AddUnhandledError(ex.Message);

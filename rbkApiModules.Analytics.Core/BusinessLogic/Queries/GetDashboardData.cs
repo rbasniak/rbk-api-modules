@@ -28,15 +28,7 @@ namespace rbkApiModules.Analytics.Core
 
             public DateTime DateFrom { get; set; }
             public DateTime DateTo { get; set; }
-        }
-
-        public class Validator : AbstractValidator<Command>
-        {
-            public Validator()
-            {
-                CascadeMode = CascadeMode.Stop;
-            }
-        }
+        } 
 
         public class Handler : BaseQueryHandler<Command>
         {
@@ -54,7 +46,7 @@ namespace rbkApiModules.Analytics.Core
 
                 var data = await _context.FilterAsync(request.DateFrom, request.DateTo);
 
-                results.AverageTransactionsPerEndpoint = BuildAverageTransactionsPerEndpoint(data);
+                results.AverageTransactionsPerEndpoint = BuildAverageTransactionsPerEndpoint(data);  
                 results.BiggestResponsesEndpoints = BuildBiggestResponsesEndpoints(data);
                 results.BiggestResquestsEndpoints = BuildBiggestResquestsEndpoints(data);
                 results.CachedRequestsProportion = BuildCachedRequestsProportion(data);
@@ -87,7 +79,7 @@ namespace rbkApiModules.Analytics.Core
 
             private List<AnalyticsEntry> PrefilterResults(List<AnalyticsEntry> rawData, string[] responses, string[] methods)
             {
-                var results = rawData;
+                var results = rawData.Where(x => x.Action != null).ToList();
 
                 if (responses != null && responses.Length > 0)
                 {
@@ -229,7 +221,7 @@ namespace rbkApiModules.Analytics.Core
             {
                 var filteredData = PrefilterResults(data, null, null);
 
-                var groupedData = data.GroupBy(x => x.Timestamp.Date).ToList();
+                var groupedData = filteredData.GroupBy(x => x.Timestamp.Date).ToList();
 
                 var chartData = ChartingUtilities.BuildLineChartAxis(from, to);
 
@@ -249,9 +241,9 @@ namespace rbkApiModules.Analytics.Core
 
             private List<DateValuePoint> BuildDailyErrors(List<AnalyticsEntry> data, DateTime from, DateTime to)
             {
-                var filteredData = PrefilterResults(data, null, null);
+                var filteredData = PrefilterResults(data, new[] { "500" }, null);
 
-                var groupedData = data.GroupBy(x => x.Timestamp.Date).ToList();
+                var groupedData = filteredData.GroupBy(x => x.Timestamp.Date).ToList();
 
                 var chartData = ChartingUtilities.BuildLineChartAxis(from, to);
 
@@ -556,7 +548,7 @@ namespace rbkApiModules.Analytics.Core
             {
                 var results = new List<SimpleLabeledValue<int>>();
 
-                var filteredData = PrefilterResults(data, new[] { "200", "204" }, new[] { "POST", "PUT", "DELETE" });
+                var filteredData = PrefilterResults(data, new[] { "200", "204" }, new[] { "GET" });
 
                 var groupedData = filteredData.GroupBy(x => x.Action).ToList();
 
@@ -572,7 +564,7 @@ namespace rbkApiModules.Analytics.Core
             {
                 var results = new List<SimpleLabeledValue<int>>();
 
-                var filteredData = PrefilterResults(data, new[] { "200", "204" }, new[] { "GET" });
+                var filteredData = PrefilterResults(data, new[] { "200", "204" }, new[] { "POST", "PUT", "DELETE" });
 
                 var groupedData = filteredData.GroupBy(x => x.Action).ToList();
 

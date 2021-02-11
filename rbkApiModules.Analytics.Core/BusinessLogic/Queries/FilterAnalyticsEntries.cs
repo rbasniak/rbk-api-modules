@@ -33,15 +33,7 @@ namespace rbkApiModules.Analytics.Core
             public string[] Versions { get; set; }
             public int Duration { get; set; }
             public string EntityId { get; set; }
-        }
-
-        public class Validator : AbstractValidator<Command>
-        {
-            public Validator()
-            {
-                CascadeMode = CascadeMode.Stop;
-            }
-        }
+        } 
 
         public class Handler : BaseQueryHandler<Command>
         {

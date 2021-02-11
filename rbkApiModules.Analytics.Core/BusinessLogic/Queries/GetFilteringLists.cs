@@ -11,15 +11,7 @@ namespace rbkApiModules.Analytics.Core
     {
         public class Command : IRequest<QueryResponse>
         {
-        }
-
-        public class Validator : AbstractValidator<Command>
-        {
-            public Validator()
-            {
-                CascadeMode = CascadeMode.Stop;
-            }
-        }
+        }  
 
         public class Handler : BaseQueryHandler<Command>
         {

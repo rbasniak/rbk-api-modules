@@ -74,7 +74,7 @@ namespace rbkApiModules.Infrastructure.MediatR.Core
             catch (SafeException ex)
             {
                 return Errors(new List<ValidationFailure> { new ValidationFailure(null, ex.Message) });
-            }
+            } 
             catch (Exception ex)
             {
                 var diagnosticsStore = _httpContextAccessor.HttpContext.RequestServices.GetService<IDiagnosticsModuleStore>();

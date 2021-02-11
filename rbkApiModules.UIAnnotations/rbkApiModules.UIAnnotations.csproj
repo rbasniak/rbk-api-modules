@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <Version>2.1.71</Version>
+    <Version>2.1.79</Version>
     <Authors>rbasniak</Authors>
     <Product>rbkApiModules</Product>
     <Copyright>rbasniak</Copyright>
@@ -24,6 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\rbkApiModules.Infrastructure.Api\rbkApiModules.Infrastructure.Api.csproj" />
     <ProjectReference Include="..\rbkApiModules.Infrastructure.MediatR\rbkApiModules.Infrastructure.MediatR.Core.csproj" />
+    <ProjectReference Include="..\rbkApiModules.UIAnnotations.Common\rbkApiModules.UIAnnotations.Commons.csproj" />
   </ItemGroup>
 
 </Project>

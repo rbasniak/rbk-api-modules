@@ -8,19 +8,21 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 using System.IO;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.WebUtilities;
+using System.Diagnostics.CodeAnalysis;
 
 namespace rbkApiModules.Analytics.Core
 {
-    
     public class AnalyticsModuleMiddleware
     {
-        
         private List<Func<HttpContext, bool>> _exclude;
         private readonly RequestDelegate _next;
+        private string _version;
         public AnalyticsModuleMiddleware(RequestDelegate next, AnalyticsModuleOptions options)
         {
             _next = next;
             _exclude = options.ExcludeRules;
+            _version = options.Version;
         }
 
         public async Task Invoke(HttpContext context)
@@ -32,20 +34,12 @@ namespace rbkApiModules.Analytics.Core
             {
                 var stopwatch = Stopwatch.StartNew();
 
-                var originalBodyFeature = context.Features.Get<IHttpResponseBodyFeature>();
-                var temp1 = context.Features.Get<IHttpBodyControlFeature>();
-                //var temp2 = context.Features.Get<IHttpResponseControl>();
-
-                //var compressionBody = new ResponseCompressionBody(context, _provider, originalBodyFeature);
-                //context.Features.Set<IHttpResponseBodyFeature>(compressionBody);
-                //context.Features.Set<IHttpsCompressionFeature>(compressionBody);
-
                 var identity = UserIdentity(context);
 
                 // TODO: get version from somewhere
                 var data = new AnalyticsEntry();
 
-                data.Version = "1.0.0";
+                data.Version = _version;
                 data.IpAddress = context.Connection.RemoteIpAddress.ToString();
                 data.UserAgent = context.Request.Headers["User-Agent"];
                 data.Path = context.Request.Method + " " + context.Request.Path;
@@ -85,8 +79,8 @@ namespace rbkApiModules.Analytics.Core
                         stopwatch.Stop();
 
 
-                        var areaData = context.Items.FirstOrDefault(x => x.Key.ToString() == "log-data-area");
-                        var pathData = context.Items.FirstOrDefault(x => x.Key.ToString() == "log-data-path");
+                        var areaData = context.Items.FirstOrDefault(x => x.Key.ToString() == AnalyticsMvcFilter.LOG_DATA_AREA);
+                        var pathData = context.Items.FirstOrDefault(x => x.Key.ToString() == AnalyticsMvcFilter.LOG_DATA_PATH);
                         var wasCached = context.Items.FirstOrDefault(x => x.Key.ToString() == "was-cached");
 
                         if (areaData.Key != null)
@@ -99,21 +93,26 @@ namespace rbkApiModules.Analytics.Core
                             data.Action = context.Request.Method + " " + pathData.Value as string;
                         }
 
+                        if (wasCached.Key != null)
+                        {
+                            data.WasCached = (bool)wasCached.Value;
+                        }
+
                         data.Duration = (int)stopwatch.ElapsedMilliseconds;
                         data.Response = context.Response.StatusCode;
                         data.RequestSize = requestSize;
                         data.ResponseSize = responseSize;
 
-                        var transactionTime = -1;
-                        var transactionCount = -1;
+                        var transactionTime = 0;
+                        var transactionCount = 0;
 
-                        if (context.Items.TryGetValue("transaction-time", out object rawTime))
+                        if (context.Items.TryGetValue(DatabaseAnalyticsInterceptor.TRANSACTION_TIME_TOKEN, out object rawTime))
                         {
-                            var time = (int)rawTime;
-                            transactionTime = time;
+                            var time = (double)rawTime;
+                            transactionTime = (int)time;
                         }
 
-                        if (context.Items.TryGetValue("transaction-count", out object rawCount))
+                        if (context.Items.TryGetValue(DatabaseAnalyticsInterceptor.TRANSACTION_COUNT_TOKEN, out object rawCount))
                         {
                             var count = (int)rawCount;
                             transactionCount = count;
@@ -155,28 +154,25 @@ namespace rbkApiModules.Analytics.Core
         {
             var cookieName = "SSA_Identity";
 
-            string identity = context.User?.Identity?.Name;
+            string identity;
 
             if (!context.Request.Cookies.ContainsKey(cookieName))
             {
-                if (string.IsNullOrWhiteSpace(identity))
-                {
-                    identity = context.Request.Cookies.ContainsKey("ai_user")
-                                ? context.Request.Cookies["ai_user"]
-                                : context.Connection.Id;
-                }
+                identity = context.Request.Cookies.ContainsKey("ai_user")
+                            ? context.Request.Cookies["ai_user"]
+                            : context.Connection.Id;
 
-                if (!context.Response.HasStarted)
-                {
-                    context.Response.Cookies.Append("identity", identity);
-                }
+                //if (!context.Response.HasStarted)
+                //{
+                //    context.Response.Cookies.Append("identity", identity.ToLower());
+                //}
             }
             else
             {
-                identity = context.Request.Cookies[cookieName];
+                identity = context.Request.Cookies[cookieName].ToLower();
             }
 
-            return identity;
+            return identity.ToLower();
         }
     }
 
@@ -184,6 +180,12 @@ namespace rbkApiModules.Analytics.Core
     {
         private List<Func<HttpContext, bool>> _exclude;
         private bool _seedSampleDatabase;
+        private string _version;
+
+        public AnalyticsModuleOptions()
+        {
+            _version = "-";
+        }
 
         public AnalyticsModuleOptions Exclude(Func<HttpContext, bool> filter)
         {
@@ -196,13 +198,20 @@ namespace rbkApiModules.Analytics.Core
 
         public bool SeedSampleDatabase => _seedSampleDatabase;
 
+        public string Version => _version;
+
         public AnalyticsModuleOptions UseDemoData()
         {
             _seedSampleDatabase = true;
             return this;
         }
 
-        public AnalyticsModuleOptions Exclude(IPAddress ip) => Exclude(x => Equals(x.Connection.RemoteIpAddress, ip));
+        public AnalyticsModuleOptions SetApplicationVersion(string value)
+        {
+            _version = value;
+            return this;
+        }
+
 
         public AnalyticsModuleOptions LimitToPath(string path) => Exclude(x => !x.Request.Path.StartsWithSegments(path));
 
@@ -213,12 +222,12 @@ namespace rbkApiModules.Analytics.Core
 
         public AnalyticsModuleOptions ExcludeExtension(params string[] extensions)
         {
-            return Exclude(x => extensions.Any(ext => x.Request.Path.Value.EndsWith(ext)));
+            return Exclude(x => extensions.Any(ext => x.Request.Path.Value.ToLower().EndsWith(ext.ToLower())));
         }
 
         public AnalyticsModuleOptions ExcludeMethods(params string[] methods)
         {
-            return Exclude(x => methods.Any(ext => x.Request.Method == ext));
+            return Exclude(x => methods.Any(method => x.Request.Method.ToLower() == method.ToLower()));
         }
 
         public AnalyticsModuleOptions ExcludeLoopBack() => Exclude(x => IPAddress.IsLoopback(x.Connection.RemoteIpAddress));
@@ -232,6 +241,7 @@ namespace rbkApiModules.Analytics.Core
         public AnalyticsModuleOptions LimitToStatusCodes(params HttpStatusCode[] codes) => Exclude(context => !codes.Contains((HttpStatusCode)context.Response.StatusCode));
 
         public AnalyticsModuleOptions LimitToStatusCodes(params int[] codes) => Exclude(context => !codes.Contains(context.Response.StatusCode));
-    }
+    } 
+
 }
 

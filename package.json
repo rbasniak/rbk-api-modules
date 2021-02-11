@@ -1,6 +1,6 @@
 {
   "name": "rbk-api-modules",
-  "version": "2.1.71",
+  "version": "2.1.79",
   "description": "Set of libraries for quickly scaffolding production ready APIs in ASP.NET Core",
   "main": "index.js",
   "scripts": {
@@ -37,6 +37,7 @@
           "rbkApiModules.Utilities/rbkApiModules.Utilities.csproj",
           "rbkApiModules.Utilities.EFCore/rbkApiModules.Utilities.EFCore.csproj",
           "rbkApiModules.Utilities.MongoDB/rbkApiModules.Utilities.MongoDB.csproj",
+          "rbkApiModules.Utilities.Testing/rbkApiModules.Utilities.Testing.csproj",
           "rbkApiModules.Infrastructure.Models/rbkApiModules.Infrastructure.Models.csproj",
           "rbkApiModules.Analytics.Core/rbkApiModules.Analytics.Core.csproj",
           "rbkApiModules.Analytics.SqlServer/rbkApiModules.Analytics.SqlServer.csproj",
@@ -52,6 +53,7 @@
           "rbkApiModules.Diagnostics.UI/rbkApiModules.Diagnostics.UI.csproj",
           "rbkApiModules.SharedUI/rbkApiModules.SharedUI.csproj",
           "rbkApiModules.UIAnnotations/rbkApiModules.UIAnnotations.csproj",
+          "rbkApiModules.UIAnnotations.Common/rbkApiModules.UIAnnotations.Commons.csproj",
           "rbkApiModules.Workflow/rbkApiModules.Workflow.csproj"
         ]
       }

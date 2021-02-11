@@ -12,6 +12,8 @@ namespace rbkApiModules.Diagnostics.Commons
 {
     public class DiagnosticsEntry: BaseEntity
     {
+        public const string LOG_DATA_AREA = "log-data-area";
+
         public DiagnosticsEntry()
         {
             Timestamp = DateTime.UtcNow;
@@ -19,7 +21,7 @@ namespace rbkApiModules.Diagnostics.Commons
 
         public DiagnosticsEntry(HttpContext context, string source, Exception exception, object input): this()
         {
-            var area = context.Items.FirstOrDefault(x => x.Key.ToString() == "log-data-area");
+            var area = context.Items.FirstOrDefault(x => x.Key.ToString() == LOG_DATA_AREA);
 
             var user = (System.Security.Claims.ClaimsIdentity)context.User.Identity;
             var username = user.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;

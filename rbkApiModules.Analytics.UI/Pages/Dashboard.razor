@@ -1,4 +1,5 @@
 ﻿@page "/analytics/dashboard"
+@attribute [Authorize]
 
 @using System.Net.Http
 @inject IAnalyticsDataService DataService
@@ -452,7 +453,8 @@
         analyticsResults = null;
         isLoading = true;
 
-        analyticsResults = (await DataService.GetDashboardData(dateFrom, dateTo)).Data;
+        var response = await DataService.GetDashboardData(dateFrom, dateTo);
+        analyticsResults = response.Data;
 
         isLoading = false;
 

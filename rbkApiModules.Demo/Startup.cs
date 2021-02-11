@@ -147,7 +147,7 @@ namespace rbkApiModules.Demo
                 .LimitToPath("/api")
                 .ExcludeMethods("OPTIONS")
                 .ExcludePath(new[] { "/api/test/download" })
-                //.UseDemoData()
+                .UseDemoData()
             );
 
             app.UseSqlServerRbkApiDiagnosticsModule();

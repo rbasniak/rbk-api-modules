@@ -8,6 +8,9 @@ namespace rbkApiModules.Analytics.Core
 {
     public class DatabaseAnalyticsInterceptor : DbCommandInterceptor
     { 
+        public const string TRANSACTION_TIME_TOKEN = "transaction-count";
+        public const string TRANSACTION_COUNT_TOKEN = "transaction-time";
+
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         public DatabaseAnalyticsInterceptor(IHttpContextAccessor httpContextAccessor)
@@ -19,44 +22,44 @@ namespace rbkApiModules.Analytics.Core
         {
             if (_httpContextAccessor.HttpContext == null) return;
 
-            if (_httpContextAccessor.HttpContext.Items.TryGetValue("transaction-count", out object rawCount))
+            if (_httpContextAccessor.HttpContext.Items.TryGetValue(TRANSACTION_COUNT_TOKEN, out object rawCount))
             {
                 var count = (int)rawCount;
                 count++;
-                _httpContextAccessor.HttpContext.Items["transaction-count"] = count;
+                _httpContextAccessor.HttpContext.Items[TRANSACTION_COUNT_TOKEN] = count;
             }
             else
             {
-                _httpContextAccessor.HttpContext.Items.Add("transaction-count", 1);
+                _httpContextAccessor.HttpContext.Items.Add(TRANSACTION_COUNT_TOKEN, 1);
             }
         }
 
-        private void AddTransactionTime(int duration)
+        private void AddTransactionTime(double duration)
         {
             if (_httpContextAccessor.HttpContext == null) return;
 
-            if (_httpContextAccessor.HttpContext.Items.TryGetValue("transaction-time", out object rawTime))
+            if (_httpContextAccessor.HttpContext.Items.TryGetValue(TRANSACTION_TIME_TOKEN, out object rawTime))
             {
-                var time = (int)rawTime;
-                time  += duration;
-                _httpContextAccessor.HttpContext.Items["transaction-time"] = time;
+                var time = (double)rawTime;
+                time += duration;
+                _httpContextAccessor.HttpContext.Items[TRANSACTION_TIME_TOKEN] = time;
             }
             else
             {
-                _httpContextAccessor.HttpContext.Items.Add("transaction-time", duration);
+                _httpContextAccessor.HttpContext.Items.Add(TRANSACTION_TIME_TOKEN, duration);
             }
         }
 
         public override DbCommand CommandCreated(CommandEndEventData eventData, DbCommand result)
         {
-            AddTransactionTime((int)eventData.Duration.TotalMilliseconds);
+            AddTransactionTime(eventData.Duration.TotalMilliseconds);
 
             return base.CommandCreated(eventData, result);
         }
 
         public override int NonQueryExecuted(DbCommand command, CommandExecutedEventData eventData, int result)
         {
-            AddTransactionTime((int)eventData.Duration.TotalMilliseconds);
+            AddTransactionTime(eventData.Duration.TotalMilliseconds);
             AddTransactionCount();
 
             return base.NonQueryExecuted(command, eventData, result);
@@ -64,15 +67,15 @@ namespace rbkApiModules.Analytics.Core
 
         public override ValueTask<int> NonQueryExecutedAsync(DbCommand command, CommandExecutedEventData eventData, int result, CancellationToken cancellationToken = default)
         {
-            AddTransactionTime((int)eventData.Duration.TotalMilliseconds);
-            AddTransactionCount();
+            AddTransactionTime(eventData.Duration.TotalMilliseconds);
+           AddTransactionCount();
 
             return base.NonQueryExecutedAsync(command, eventData, result, cancellationToken);
         }
 
         public override object ScalarExecuted(DbCommand command, CommandExecutedEventData eventData, object result)
         {
-            AddTransactionTime((int)eventData.Duration.TotalMilliseconds);
+            AddTransactionTime(eventData.Duration.TotalMilliseconds);
             AddTransactionCount();
 
             return base.ScalarExecuted(command, eventData, result);
@@ -80,7 +83,7 @@ namespace rbkApiModules.Analytics.Core
 
         public override ValueTask<object> ScalarExecutedAsync(DbCommand command, CommandExecutedEventData eventData, object result, CancellationToken cancellationToken = default)
         {
-            AddTransactionTime((int)eventData.Duration.TotalMilliseconds);
+            AddTransactionTime(eventData.Duration.TotalMilliseconds);
             AddTransactionCount();
 
             return base.ScalarExecutedAsync(command, eventData, result, cancellationToken);
@@ -88,7 +91,7 @@ namespace rbkApiModules.Analytics.Core
 
         public override DbDataReader ReaderExecuted(DbCommand command, CommandExecutedEventData eventData, DbDataReader result)
         {
-            AddTransactionTime((int)eventData.Duration.TotalMilliseconds);
+            AddTransactionTime(eventData.Duration.TotalMilliseconds);
             AddTransactionCount();
 
             return base.ReaderExecuted(command, eventData, result);
@@ -96,7 +99,7 @@ namespace rbkApiModules.Analytics.Core
 
         public override ValueTask<DbDataReader> ReaderExecutedAsync(DbCommand command, CommandExecutedEventData eventData, DbDataReader result, CancellationToken cancellationToken = default)
         {
-            AddTransactionTime((int)eventData.Duration.TotalMilliseconds);
+            AddTransactionTime(eventData.Duration.TotalMilliseconds);
             AddTransactionCount();
 
             return base.ReaderExecutedAsync(command, eventData, result, cancellationToken);

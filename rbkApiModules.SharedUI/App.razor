@@ -1,8 +1,9 @@
 ﻿@inject BlazorRoutesLocator RoutesLocator
+@inject IAuthenticationService AuthenticationService
 
 <Router AppAssembly="@typeof(Builder).Assembly" AdditionalAssemblies="RoutesLocator.RoutingAssemblies">
     <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainContainer)" />
+        <AppRouteView RouteData="@routeData" DefaultLayout="@typeof(MainContainer)" />
     </Found>
     <NotFound>
         <LayoutView Layout="@typeof(MainContainer)">
@@ -12,5 +13,11 @@
 </Router>
 
 @code {
-    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await AuthenticationService.Initialize();
+        }
+    }
 }
