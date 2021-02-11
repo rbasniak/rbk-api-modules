@@ -165,7 +165,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Utilities.Tes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Utilities.Testing", "rbkApiModules.Utilities.Testing\rbkApiModules.Utilities.Testing.csproj", "{69CD531F-A8B4-4236-AA81-83FF8519A39B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.UIAnnotations.Commons", "rbkApiModules.UIAnnotations.Common\rbkApiModules.UIAnnotations.Commons.csproj", "{4C382AD1-0803-4A8D-91EA-3E5771A53AF8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.UIAnnotations.Commons", "rbkApiModules.UIAnnotations.Common\rbkApiModules.UIAnnotations.Commons.csproj", "{4C382AD1-0803-4A8D-91EA-3E5771A53AF8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Paypal", "Paypal", "{39828DA6-28D0-4580-B23E-C2916E337DF0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Paypal.SqlServer", "rbkApiModules.Paypal.SqlServer\rbkApiModules.Paypal.SqlServer.csproj", "{BB964A81-5B0F-45E3-B17B-BB1BB3396A29}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -377,6 +381,10 @@ Global
 		{4C382AD1-0803-4A8D-91EA-3E5771A53AF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C382AD1-0803-4A8D-91EA-3E5771A53AF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4C382AD1-0803-4A8D-91EA-3E5771A53AF8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB964A81-5B0F-45E3-B17B-BB1BB3396A29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB964A81-5B0F-45E3-B17B-BB1BB3396A29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB964A81-5B0F-45E3-B17B-BB1BB3396A29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB964A81-5B0F-45E3-B17B-BB1BB3396A29}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -455,6 +463,8 @@ Global
 		{FCB25D0A-00EE-42ED-AF95-D2BBE0F9E0EF} = {3F555E09-A101-488B-A6DA-5F795B3CDB33}
 		{69CD531F-A8B4-4236-AA81-83FF8519A39B} = {AF2C6107-8BCB-4EE3-8D8F-AE098050947F}
 		{4C382AD1-0803-4A8D-91EA-3E5771A53AF8} = {C783BBA7-34B6-471F-AF2D-092829C58DBF}
+		{39828DA6-28D0-4580-B23E-C2916E337DF0} = {A1A68EE5-8E91-449C-96A8-CCC5BF135D48}
+		{BB964A81-5B0F-45E3-B17B-BB1BB3396A29} = {39828DA6-28D0-4580-B23E-C2916E337DF0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9AAC09BF-43DC-408B-8F24-24DAA39DA1E8}
