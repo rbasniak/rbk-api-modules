@@ -54,7 +54,8 @@
           "rbkApiModules.SharedUI/rbkApiModules.SharedUI.csproj",
           "rbkApiModules.UIAnnotations/rbkApiModules.UIAnnotations.csproj",
           "rbkApiModules.UIAnnotations.Common/rbkApiModules.UIAnnotations.Commons.csproj",
-          "rbkApiModules.Workflow/rbkApiModules.Workflow.csproj"
+          "rbkApiModules.Workflow/rbkApiModules.Workflow.csproj",
+          "rbkApiModules.Paypal.SqlServer/rbkApiModules.Paypal.SqlServer.csproj"
         ]
       }
     },
