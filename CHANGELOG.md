@@ -1,3 +1,10 @@
+## 2.1.82 (2021-02-15)
+
+
+### Bug Fixes
+
+* correção na validação de required ([d463e05](https://github.com/rbasniak/rbk-api-modules/commit/d463e0513c4e0a5ac7da12134c026214187e4f6d))
+
 ## 2.1.81 (2021-02-11)
 
 ## 2.1.80 (2021-02-11)
