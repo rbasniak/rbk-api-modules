@@ -26,7 +26,7 @@ using rbkApiModules.Diagnostics.UI;
 using rbkApiModules.Diagnostics.Core;
 using rbkApiModules.Demo.Models;
 using rbkApiModules.Infrastructure.MediatR.Core;
-using Microsoft.AspNetCore.Http;
+using rbkApiModules.Infrastructure.MediatR.SqlServer;
 using AutoMapper;
 using rbkApiModules.Workflow;
 using rbkApiModules.Demo.Models.StateMachine;
@@ -121,6 +121,7 @@ namespace rbkApiModules.Demo
             });
 
             services.AddRbkApiMediatRModule(AssembliesForMediatR);
+            services.AddRbkApiMediatRModuleSqlServer();
 
             services.AddRbkApiAuthenticationModule(Configuration.GetSection(nameof(JwtIssuerOptions)));
 

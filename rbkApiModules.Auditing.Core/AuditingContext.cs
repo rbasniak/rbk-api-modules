@@ -1,22 +1,22 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿//using Microsoft.EntityFrameworkCore;
 
-namespace rbkApiModules.Auditing.Core
-{
-    /// <summary>
-    /// Classe de contexto do banco de dados de auditoria
-    /// </summary>
-    public class AuditingContext : DbContext
-    {
-        public AuditingContext(DbContextOptions<AuditingContext> options)
-            : base(options)
-        {
-        }
+//namespace rbkApiModules.Auditing.Core
+//{
+//    /// <summary>
+//    /// Classe de contexto do banco de dados de auditoria
+//    /// </summary>
+//    public class AuditingContext : DbContext
+//    {
+//        public AuditingContext(DbContextOptions<AuditingContext> options)
+//            : base(options)
+//        {
+//        }
 
-        public DbSet<StoredEvent> Events { get; set; }
+//        public DbSet<StoredEvent> Events { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-        }
-    }
-}
+//        protected override void OnModelCreating(ModelBuilder modelBuilder)
+//        {
+//            base.OnModelCreating(modelBuilder);
+//        }
+//    }
+//}

@@ -18,6 +18,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\rbkApiModules.Infrastructure.MediatR\rbkApiModules.Infrastructure.MediatR.Core.csproj" />
     <ProjectReference Include="..\rbkApiModules.Infrastructure.Models\rbkApiModules.Infrastructure.Models.csproj" />
   </ItemGroup>

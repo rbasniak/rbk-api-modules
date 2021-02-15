@@ -12,6 +12,9 @@ namespace rbkApiModules.Infrastructure.Models
         private int? _maxLength = null;
         private bool _required = false;
         private bool _hasErrors = false;
+        private bool _multipleNotFoundInDb = false;
+        private bool _notFoundInDb = false;
+        private bool _dbEntityListEmpty = false;
 
         public ValidationResult(string propertyName)
         {
@@ -40,6 +43,24 @@ namespace rbkApiModules.Infrastructure.Models
         {
             _required = true;
             _hasErrors = true;
+        }
+
+        public void SetEntityNotFound()
+        {
+            _hasErrors = true;
+            _notFoundInDb = true;
+        }
+
+        public void SetMultipleEntitiesNotFound()
+        {
+            _hasErrors = true;
+            _multipleNotFoundInDb = true;
+        }
+
+        public void SetEmptyEntityList()
+        {
+            _hasErrors = true;
+            _dbEntityListEmpty = true;
         }
 
         public ValidationError[] Results
@@ -72,6 +93,21 @@ namespace rbkApiModules.Infrastructure.Models
                         var s = _maxLength > 1 ? "s" : "";
                         results.Add(new ValidationError(ValidationType.MinLength, $"'{propertyName}' deve ter no máximo {_maxLength} caracteres"));
                     }
+                }
+
+                if (_dbEntityListEmpty)
+                {
+                    results.Add(new ValidationError(ValidationType.EmptyEntityList, $"'{propertyName}' não pode ser vazia"));
+                }
+
+                if (_multipleNotFoundInDb)
+                {
+                    results.Add(new ValidationError(ValidationType.MultipleEntitiesNotFound, $"Um ou mais itens da propriedade '{propertyName}' não foram encontrados no banco de dados"));
+                }
+
+                if (_notFoundInDb)
+                {
+                    results.Add(new ValidationError(ValidationType.EntityNotFound, $"'{propertyName}' não existe no banco de dados"));
                 }
 
                 return results.ToArray();
@@ -109,6 +145,9 @@ namespace rbkApiModules.Infrastructure.Models
         MaxLength,
         Required,
         ExactLength,
+        EmptyEntityList,
+        MultipleEntitiesNotFound,
+        EntityNotFound,
     }
 
     public static class BaseEntityExtensions
