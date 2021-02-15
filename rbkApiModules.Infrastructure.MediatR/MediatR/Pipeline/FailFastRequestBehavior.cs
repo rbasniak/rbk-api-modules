@@ -42,8 +42,10 @@ namespace rbkApiModules.Infrastructure.MediatR.Core
         {
             try
             {
+                // The base validator (the one for the specific command) comes from the pipeline
                 var context = new ValidationContext<object>(request);
 
+                // Then serarch for the other validators using the interfaces implemented by the command
                 var interfaces = request.GetType().GetInterfaces().Where(x => !x.FullName.Contains("MediatR"));
 
                 var composedValidators = _validators.ToList();
@@ -67,9 +69,28 @@ namespace rbkApiModules.Infrastructure.MediatR.Core
                     .Where(f => f != null)
                     .ToList();
 
-                return failures.Any()
-                    ? Errors(failures)
-                    : next();
+                if (failures.Any())
+                {
+                    return Errors(failures);
+                }
+                else
+                {
+                    // Finally, use the database common validations if the validation attributes are used in the command
+                    var dbValidatorService = _httpContextAccessor.HttpContext.RequestServices.GetService(typeof(ICommonDatabaseValidations)) as ICommonDatabaseValidations;
+
+                    if (dbValidatorService != null)
+                    {
+                        var result = dbValidatorService.ValidateExistingDbElements(_httpContextAccessor, request);
+
+                        if (result.Length > 0)
+                        {
+                            return Errors(result);
+                        }
+                    }
+
+                    // No errors so far, proceed to the next item in the pipeline
+                    return next();
+                }
             }
             catch (SafeException ex)
             {
@@ -87,6 +108,15 @@ namespace rbkApiModules.Infrastructure.MediatR.Core
 
                 return Errors(new List<ValidationFailure> { new ValidationFailure(null, "Erro interno no servidor durante a validação dos dados") });
             }
+        }
+
+        private Task<TResponse> Errors(Models.ValidationResult[] results)
+        {
+            var response = (TResponse)Activator.CreateInstance(typeof(TResponse), new object[0]);
+
+            response.AddHandledError(new ModelValidationException(results));
+
+            return Task.FromResult(response as TResponse);
         }
 
         /// <summary>

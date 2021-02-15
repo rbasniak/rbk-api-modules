@@ -7,7 +7,7 @@ namespace rbkApiModules.Infrastructure.Models
     /// </summary>
     public class ModelValidationException : ApplicationException
     {
-        public ModelValidationException(ValidationResult[] errors): base()
+        public ModelValidationException(ValidationResult[] errors): base("Erro de validação dos dados")
         {
             Errors = errors;
         }
