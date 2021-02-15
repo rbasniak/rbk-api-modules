@@ -34,6 +34,14 @@ namespace rbkApiModules.Infrastructure.Models.Tests
         }
 
         [AutoNamedFact]
+        public void Should_Not_Have_MinLen_When_NotRequired_And_Null()
+        {
+            var instance = new TestNotRequiredMinLength { NotRequiredMinLengthTest = null };
+
+            Should.NotThrow(() => instance.Validate());
+        }
+
+        [AutoNamedFact]
         public void Should_Have_MinLen_When_NotRequired_And_Not_Empty_And_Wrong_Size()
         {
             var instance = new TestNotRequiredMinLength { NotRequiredMinLengthTest = "aa" };
@@ -47,6 +55,16 @@ namespace rbkApiModules.Infrastructure.Models.Tests
         public void Should_Have_MinLen_When_Required_And_Empty()
         {
             var instance = new TestRequiredMinLength { RequiredMinLengthTest = "" };
+
+            Should.Throw<ModelValidationException>(
+                () => instance.Validate()).Errors.Any(x => x.PropertyName == nameof(TestRequiredMinLength.RequiredMinLengthTest) && x.Results.Any(x => x.Type == ValidationType.MinLength)
+            );
+        }
+
+        [AutoNamedFact]
+        public void Should_Have_MinLen_When_Required_And_Null()
+        {
+            var instance = new TestRequiredMinLength { RequiredMinLengthTest = null };
 
             Should.Throw<ModelValidationException>(
                 () => instance.Validate()).Errors.Any(x => x.PropertyName == nameof(TestRequiredMinLength.RequiredMinLengthTest) && x.Results.Any(x => x.Type == ValidationType.MinLength)
@@ -80,6 +98,14 @@ namespace rbkApiModules.Infrastructure.Models.Tests
         }
 
         [AutoNamedFact]
+        public void Should_Not_Have_MaxLen_When_NotRequired_And_Null()
+        {
+            var instance = new TestNotRequiredMaxLength { NotRequiredMaxLengthTest = null };
+
+            Should.NotThrow(() => instance.Validate());
+        }
+
+        [AutoNamedFact]
         public void Should_Have_MaxLen_When_NotRequired_And_Not_Empty_And_Wrong_Size()
         {
             var instance = new TestNotRequiredMaxLength { NotRequiredMaxLengthTest = "aaaa" };
@@ -93,6 +119,16 @@ namespace rbkApiModules.Infrastructure.Models.Tests
         public void Should_Have_MaxLen_When_Required_And_Empty()
         {
             var instance = new TestRequiredMaxLength { RequiredMaxLengthTest = "" };
+
+            Should.Throw<ModelValidationException>(
+                () => instance.Validate()).Errors.Any(x => x.PropertyName == nameof(TestRequiredMaxLength.RequiredMaxLengthTest) && x.Results.Any(x => x.Type == ValidationType.MaxLength)
+            );
+        }
+
+        [AutoNamedFact]
+        public void Should_Have_MaxLen_When_Required_And_Null()
+        {
+            var instance = new TestRequiredMaxLength { RequiredMaxLengthTest = null };
 
             Should.Throw<ModelValidationException>(
                 () => instance.Validate()).Errors.Any(x => x.PropertyName == nameof(TestRequiredMaxLength.RequiredMaxLengthTest) && x.Results.Any(x => x.Type == ValidationType.MaxLength)
