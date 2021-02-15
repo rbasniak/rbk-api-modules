@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\rbkApiModules.Infrastructure.Models\rbkApiModules.Infrastructure.Models.csproj" />
+    <ProjectReference Include="..\rbkApiModules.Utilities.Testing\rbkApiModules.Utilities.Testing.csproj" />
   </ItemGroup>
 
 </Project>

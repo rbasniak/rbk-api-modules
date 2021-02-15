@@ -1,10 +1,8 @@
-﻿using System;
+﻿using rbkApiModules.UIAnnotations;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
-using rbkApiModules.UIAnnotations;
-using System.Threading.Tasks;
 
 namespace rbkApiModules.Infrastructure.Models
 {
@@ -78,10 +76,6 @@ namespace rbkApiModules.Infrastructure.Models
 
                 return results.ToArray();
             }
-
-            // Se for required, ignora min e max
-            // Se min e max forem iguais, mensagem de caracteres exatos
-            // Se nao for required e tiver min, ignora se for vazio, mas valida min
         }
 
         public override string ToString()
@@ -133,45 +127,52 @@ namespace rbkApiModules.Infrastructure.Models
                 var propValue = property.GetValue(instance);
                 var validation = new ValidationResult(propName);
 
-                foreach (object attr in attributes)
+                var requiredAttribute = attributes.FirstOrDefault(x => (x as RequiredAttribute) != null);
+
+                if (requiredAttribute != null)
+                {
+                    if (propValue != null && property.PropertyType == typeof(string) || propValue == null)
+                    {
+                        if (String.IsNullOrEmpty((string)propValue))
+                        {
+                            validation.SetRequired();
+                        }
+                    }
+                    else
+                    {
+                        if (propValue == null)
+                        {
+                            validation.SetRequired();
+                        }
+                    }
+                }
+
+                foreach (object attr in attributes.Where(x => (x as RequiredAttribute) == null))
                 {
                     var minLengthAttribute = attr as MinLengthAttribute;
                     if (minLengthAttribute != null && property.PropertyType == typeof(string))
                     {
-                        var attrValue = minLengthAttribute.Length;
-
-                        if (propValue != null && propValue.ToString().Length < attrValue || propValue == null)
+                        if(requiredAttribute != null || !string.IsNullOrEmpty(propValue.ToString()))
                         {
-                            validation.SetMinLength(attrValue);
+                            var attrValue = minLengthAttribute.Length;
+
+                            if (propValue != null && propValue.ToString().Length < attrValue || propValue == null)
+                            {
+                                validation.SetMinLength(attrValue);
+                            }
                         }
                     }
 
                     var maxLengthAttribute = attr as MaxLengthAttribute;
                     if (maxLengthAttribute != null && property.PropertyType == typeof(string))
                     {
-                        var attrValue = maxLengthAttribute.Length;
+                        if (requiredAttribute != null || !string.IsNullOrEmpty(propValue.ToString()))
+                        {
+                            var attrValue = maxLengthAttribute.Length;
 
-                        if (propValue != null && propValue.ToString().Length > attrValue || propValue == null)
-                        {
-                            validation.SetMaxLength(attrValue);
-                        }
-                    }
-
-                    var requiredAttribute = attr as RequiredAttribute;
-                    if (requiredAttribute != null)
-                    {
-                        if (propValue != null && property.PropertyType == typeof(string) || propValue == null)
-                        {
-                            if (String.IsNullOrEmpty((string)propValue))
+                            if (propValue != null && propValue.ToString().Length > attrValue || propValue == null)
                             {
-                                validation.SetRequired();
-                            }
-                        }
-                        else
-                        {
-                            if (propValue == null)
-                            {
-                                validation.SetRequired();
+                                validation.SetMaxLength(attrValue);
                             }
                         }
                     }
