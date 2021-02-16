@@ -8,6 +8,7 @@ using rbkApiModules.Infrastructure.MediatR.SqlServer;
 using rbkApiModules.Infrastructure.MediatR.Core;
 using System;
 using rbkApiModules.Demo.Models;
+using rbkApiModules.Infrastructure.Models;
 
 namespace rbkApiModules.Demo.BusinessLogic
 {
@@ -15,9 +16,23 @@ namespace rbkApiModules.Demo.BusinessLogic
     {
         public class Command : IRequest<QueryResponse>
         {
-            [ExistingEntity(typeof(User))]
+            // [ExistingEntity(typeof(User))]
             public Guid Id { get; set; }
         } 
+
+        public class Validator: AbstractValidator<Command>
+        {
+            public Validator()
+            {
+                RuleFor(x => x.Id)
+                    .Must(Test);
+            }
+
+            private bool Test(Guid arg)
+            {
+                throw new SafeException("Erro customizado.");
+            }
+        }
 
         public class Handler : BaseQueryHandler<Command, DatabaseContext>
         {

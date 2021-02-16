@@ -171,6 +171,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Paypal", "Paypal", "{39828D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Paypal.SqlServer", "rbkApiModules.Paypal.SqlServer\rbkApiModules.Paypal.SqlServer.csproj", "{BB964A81-5B0F-45E3-B17B-BB1BB3396A29}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CodeGenerator", "CodeGenerator", "{9A642167-AD70-4152-9314-125945860E1B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -465,6 +467,7 @@ Global
 		{4C382AD1-0803-4A8D-91EA-3E5771A53AF8} = {C783BBA7-34B6-471F-AF2D-092829C58DBF}
 		{39828DA6-28D0-4580-B23E-C2916E337DF0} = {A1A68EE5-8E91-449C-96A8-CCC5BF135D48}
 		{BB964A81-5B0F-45E3-B17B-BB1BB3396A29} = {39828DA6-28D0-4580-B23E-C2916E337DF0}
+		{9A642167-AD70-4152-9314-125945860E1B} = {A1A68EE5-8E91-449C-96A8-CCC5BF135D48}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9AAC09BF-43DC-408B-8F24-24DAA39DA1E8}
