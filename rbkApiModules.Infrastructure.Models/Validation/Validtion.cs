@@ -191,7 +191,7 @@ namespace rbkApiModules.Infrastructure.Models
                     var minLengthAttribute = attr as MinLengthAttribute;
                     if (minLengthAttribute != null && property.PropertyType == typeof(string))
                     {
-                        if(requiredAttribute != null || !string.IsNullOrEmpty(propValue.ToString()))
+                        if(requiredAttribute != null || !String.IsNullOrEmpty((string)propValue))
                         {
                             var attrValue = minLengthAttribute.Length;
 
@@ -205,7 +205,7 @@ namespace rbkApiModules.Infrastructure.Models
                     var maxLengthAttribute = attr as MaxLengthAttribute;
                     if (maxLengthAttribute != null && property.PropertyType == typeof(string))
                     {
-                        if (requiredAttribute != null || !string.IsNullOrEmpty(propValue.ToString()))
+                        if (requiredAttribute != null || !String.IsNullOrEmpty((string)propValue))
                         {
                             var attrValue = maxLengthAttribute.Length;
 
