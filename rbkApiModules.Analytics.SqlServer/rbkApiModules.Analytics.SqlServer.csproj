@@ -5,7 +5,7 @@
     <IsPackable>true</IsPackable>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <Version>2.1.88</Version>
+    <Version>2.1.90</Version>
     <Authors>rbasniak</Authors>
     <Product>rbkApiModules</Product>
     <Copyright>rbasniak</Copyright>
