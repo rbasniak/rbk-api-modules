@@ -14,7 +14,7 @@ namespace rbkApiModules.Demo.Controllers
     {
         private Random _random = new Random();
 
-        [HttpGet("/sse1")]
+        [HttpGet("sse1")]
         public async Task SSE()
         {
             await HttpContext.SSEInitAsync();

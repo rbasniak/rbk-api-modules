@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using rbkApiModules.CodeGeneration.Commons;
 using rbkApiModules.Infrastructure.Api;
 using rbkApiModules.Infrastructure.Models;
 using System.Diagnostics.CodeAnalysis;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace rbkApiModules.Analytics.Core
 {
+    [IgnoreOnCodeGeneration]
     [ApplicationArea("analytics")]
     [AllowAnonymous]
     [ApiController]

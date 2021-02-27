@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using rbkApiModules.CodeGeneration.Commons;
 using rbkApiModules.Diagnostics.Commons;
 using rbkApiModules.Infrastructure.Api;
 using rbkApiModules.Infrastructure.Models;
@@ -13,6 +14,15 @@ namespace rbkApiModules.Diagnostics.Core
     [Route("api/[controller]")]
     public class DiagnosticsController : BaseController
     {
+        [HttpPost]
+        public async Task<ActionResult> Save([FromBody] SaveDiagnosticsEntry.Command data)
+        {
+            var result = await Mediator.Send(data);
+
+            return HttpResponse(result);
+        }
+
+        [IgnoreOnCodeGeneration]
         [HttpGet]
         [Route("filter-options")]
         public async Task<ActionResult<FilterDiagnosticsEntries>> GetFilterData()
@@ -22,6 +32,7 @@ namespace rbkApiModules.Diagnostics.Core
             return HttpResponse(result);
         }
 
+        [IgnoreOnCodeGeneration]
         [HttpPost("filter")]
         public async Task<ActionResult<DiagnosticsEntry[]>> Get(FilterDiagnosticsEntries.Command data)
         {
@@ -30,14 +41,7 @@ namespace rbkApiModules.Diagnostics.Core
             return HttpResponse(result);
         }
 
-        [HttpPost]
-        public async Task<ActionResult<FilterOptionListData>> Filter([FromBody] SaveDiagnosticsEntry.Command data)
-        {
-            var result = await Mediator.Send(data);
-
-            return HttpResponse(result);
-        }       
-        
+        [IgnoreOnCodeGeneration]
         [HttpPost("daily-area-errors")]
         public async Task<ActionResult<LineChartSeries[]>> GetDailyAreaErrors(GetDailyAreaErrors.Command data)
         {
@@ -46,6 +50,7 @@ namespace rbkApiModules.Diagnostics.Core
             return HttpResponse(result);
         }
 
+        [IgnoreOnCodeGeneration]
         [HttpPost("daily-browser-errors")]
         public async Task<ActionResult<LineChartSeries[]>> GetDailyBrowserErrors(GetDailyBrowserErrors.Command data)
         {
@@ -54,6 +59,7 @@ namespace rbkApiModules.Diagnostics.Core
             return HttpResponse(result);
         }
 
+        [IgnoreOnCodeGeneration]
         [HttpPost("daily-device-errors")]
         public async Task<ActionResult<LineChartSeries[]>> GetDailyDeviceErrors(GetDailyDeviceErrors.Command data)
         {
@@ -62,6 +68,7 @@ namespace rbkApiModules.Diagnostics.Core
             return HttpResponse(result);
         }
 
+        [IgnoreOnCodeGeneration]
         [HttpPost("daily-layer-errors")]
         public async Task<ActionResult<LineChartSeries[]>> GetDailyLayerErrors(GetDailyLayerErrors.Command data)
         {
@@ -70,6 +77,7 @@ namespace rbkApiModules.Diagnostics.Core
             return HttpResponse(result);
         }
 
+        [IgnoreOnCodeGeneration]
         [HttpPost("daily-operating-system-errors")]
         public async Task<ActionResult<LineChartSeries[]>> GetDailyOperatingSystemErrors(GetDailyOperatingSystemErrors.Command data)
         {
@@ -78,6 +86,7 @@ namespace rbkApiModules.Diagnostics.Core
             return HttpResponse(result);
         }
 
+        [IgnoreOnCodeGeneration]
         [HttpPost("daily-source-errors")]
         public async Task<ActionResult<LineChartSeries[]>> GetDailySourceErrors(GetDailySourceErrors.Command data)
         {
@@ -86,6 +95,7 @@ namespace rbkApiModules.Diagnostics.Core
             return HttpResponse(result);
         }
 
+        [IgnoreOnCodeGeneration]
         [HttpPost("daily-errors")]
         public async Task<ActionResult<DateValuePoint[]>> GetDailyErrors(GetDailyErrors.Command data)
         {

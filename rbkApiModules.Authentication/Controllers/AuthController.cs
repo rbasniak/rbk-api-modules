@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using rbkApiModules.CodeGeneration.Commons;
 using rbkApiModules.Infrastructure.Api;
 using System;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace rbkApiModules.Authentication
     /// <summary>
     /// Controller para acesso das funcionalidades de autenticação
     /// </summary>
+    [IgnoreOnCodeGeneration]
     [AllowAnonymous]
     [Route("api/[controller]")]
     public class AuthController : BaseController
