@@ -11,5 +11,7 @@ namespace rbkApiModules.Infrastructure.MediatR.Core
     public interface ICommonDatabaseValidations
     {
         ValidationResult[] ValidateExistingDbElements(IHttpContextAccessor httpContextAccessor, object command);
+
+        ValidationResult[] ValidateIsUniqueDbElements(IHttpContextAccessor httpContextAccessor, object command);
     }
 }

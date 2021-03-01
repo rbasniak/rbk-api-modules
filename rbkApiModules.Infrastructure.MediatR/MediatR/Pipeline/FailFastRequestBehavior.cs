@@ -80,11 +80,13 @@ namespace rbkApiModules.Infrastructure.MediatR.Core
 
                     if (dbValidatorService != null)
                     {
-                        var result = dbValidatorService.ValidateExistingDbElements(_httpContextAccessor, request);
+                        var result = dbValidatorService.ValidateExistingDbElements(_httpContextAccessor, request).ToList();
 
-                        if (result.Length > 0)
+                        result.AddRange(dbValidatorService.ValidateIsUniqueDbElements(_httpContextAccessor, request));
+
+                        if (result.Any())
                         {
-                            return Errors(result);
+                            return Errors(result.ToArray());
                         }
                     }
 

@@ -15,6 +15,7 @@ namespace rbkApiModules.Infrastructure.Models
         private bool _multipleNotFoundInDb = false;
         private bool _notFoundInDb = false;
         private bool _dbEntityListEmpty = false;
+        private bool _notUniqueInDb = false;
 
         public ValidationResult(string propertyName)
         {
@@ -61,6 +62,12 @@ namespace rbkApiModules.Infrastructure.Models
         {
             _hasErrors = true;
             _dbEntityListEmpty = true;
+        }
+
+        public void SetEntityNotUnique()
+        {
+            _hasErrors = true;
+            _notUniqueInDb = true;
         }
 
         public ValidationError[] Results
@@ -110,6 +117,11 @@ namespace rbkApiModules.Infrastructure.Models
                     results.Add(new ValidationError(ValidationType.EntityNotFound, $"'{propertyName}' não existe no banco de dados"));
                 }
 
+                if (_notUniqueInDb)
+                {
+                    results.Add(new ValidationError(ValidationType.EntityNotUnique, $"'{propertyName}' já existe no banco de dados"));
+                }
+
                 return results.ToArray();
             }
         }
@@ -148,6 +160,7 @@ namespace rbkApiModules.Infrastructure.Models
         EmptyEntityList,
         MultipleEntitiesNotFound,
         EntityNotFound,
+        EntityNotUnique
     }
 
     public static class BaseEntityExtensions

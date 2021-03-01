@@ -5,6 +5,8 @@ using rbkApiModules.Infrastructure.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -101,6 +103,110 @@ namespace rbkApiModules.Infrastructure.MediatR.SqlServer
             }
 
             return results.ToArray();
+        }
+
+        public ValidationResult[] ValidateIsUniqueDbElements(IHttpContextAccessor httpContextAccessor, object command)
+        {
+            var context = httpContextAccessor.HttpContext.RequestServices.GetService(typeof(DbContext)) as DbContext;
+
+            var commandType = command.GetType();
+            var properties = commandType.GetProperties().ToList();
+
+            var results = new List<ValidationResult>();
+
+            foreach (var property in properties)
+            {
+                var validationResult = new ValidationResult(property.Name);
+
+                var attributes = property.GetCustomAttributes(true).ToList();
+
+                foreach (var attribute in attributes)
+                {
+                    if (attribute is IsUniqueAttribute isUniqueAttribute)
+                    {
+                        var propertyValue = property.GetValue(command);
+
+                        if (property.PropertyType == typeof(string))
+                        {
+                            var result = CheckPropertyValueExistOnDatabase(context, (string)property.GetValue(command), isUniqueAttribute.Name, isUniqueAttribute.EntityType, GetIdValueIfExist(command, properties));
+
+                            if (result)
+                            {
+                                validationResult.SetEntityNotUnique();
+                            }
+                        }
+                        else
+                        {
+                            throw new NotSupportedException("Only String types are supported by isUniqueAttribute");
+                        }
+                    }
+                }
+
+                if (validationResult.HasErrors)
+                {
+                    results.Add(validationResult);
+                }
+            }
+
+            return results.ToArray();
+        }
+
+        private Guid? GetIdValueIfExist(object command, List<PropertyInfo> properties)
+        {
+            foreach (var property in properties)
+            {
+                if (property.Name == "Id" && property.PropertyType == typeof(Guid))
+                {
+                    return (Guid)property.GetValue(command);
+                }
+            }
+
+            return null;
+        }
+
+        private bool CheckPropertyValueExistOnDatabase(object context, string propertyValue, string propertyName, Type entityType, Guid? Id)
+        {
+            var setMethod = context.GetType().GetMethod("Set", new Type[0]);
+
+            var genericSetMethod = setMethod.MakeGenericMethod(entityType);
+            var dbsetInstance = genericSetMethod.Invoke(context, new object[0]);
+
+            var whereMethod = typeof(Queryable).GetMethods()
+                .Where(m => m.Name == "Where")
+                .First().MakeGenericMethod(entityType);
+
+            var result = (IQueryable<object>)whereMethod.Invoke(null, new object[] { dbsetInstance, PropertyGetLambda(entityType, propertyName, propertyValue, Id) });
+
+            return result.Any();
+        }
+
+        private LambdaExpression PropertyGetLambda(Type parameterType, string propertyName, string value, Guid? Id)
+        {
+            var parameter = Expression.Parameter(parameterType);
+
+            if(Id.HasValue)
+            {
+                var body = Expression.AndAlso(
+                    Expression.Equal(
+                        Expression.PropertyOrField(parameter, propertyName),
+                        Expression.Constant(value)
+                    ),
+                    Expression.NotEqual(
+                        Expression.PropertyOrField(parameter, "Id"),
+                        Expression.Constant(Id.Value)
+                    )
+                );
+
+                return Expression.Lambda(body, parameter);
+            }
+            else
+            {
+                var memberExpression = Expression.Property(parameter, propertyName);
+                var equalsTo = Expression.Constant(value);
+                var equality = Expression.Equal(memberExpression, equalsTo);
+
+                return Expression.Lambda(equality, parameter);
+            }
         }
     }
 }
