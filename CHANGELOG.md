@@ -1,3 +1,10 @@
+# 2.2.0 (2021-03-01)
+
+
+### Features
+
+* validação de campos strings únicos com data notation ([47eceea](https://github.com/rbasniak/rbk-api-modules/commit/47eceea3b06e9e2c0f478d7bfca25015b334b32d))
+
 ## 2.1.91 (2021-02-27)
 
 ## 2.1.90 (2021-02-27)
