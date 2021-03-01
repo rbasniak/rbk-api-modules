@@ -56,7 +56,7 @@
           "rbkApiModules.UIAnnotations.Common/rbkApiModules.UIAnnotations.Commons.csproj",
           "rbkApiModules.Workflow/rbkApiModules.Workflow.csproj",
           "rbkApiModules.Workflow/rbkApiModules.Workflow.csproj",
-          "rbkApiModules.CodeGeneration.Commons\\rbkApiModules.CodeGeneration.Commons.csproj"
+          "rbkApiModules.CodeGeneration.Commons/rbkApiModules.CodeGeneration.Commons.csproj"
         ]
       }
     },
