@@ -16,7 +16,6 @@ namespace rbkApiModules.Demo.BusinessLogic
     {
         public class Command : IRequest<CommandResponse>
         {
-            public Guid Id { get; set; }
             [IsUnique(typeof(User), nameof(User.Username))]
             public string Username { get; set; }
             public string Password { get; set; }
@@ -33,9 +32,6 @@ namespace rbkApiModules.Demo.BusinessLogic
                 _context = context;
 
                 CascadeMode = CascadeMode.Stop;
-
-                //RuleFor(x => x.Username)
-                //    .MustAsync(MustNotExist).WithMessage("Usuário já existente");
             }
 
             private async Task<bool> MustNotExist(Command command, string username, CancellationToken arg2)
