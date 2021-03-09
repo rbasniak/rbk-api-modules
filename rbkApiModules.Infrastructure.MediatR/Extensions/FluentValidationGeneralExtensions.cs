@@ -47,7 +47,8 @@ namespace rbkApiModules.Infrastructure.MediatR.Core
         public static IRuleBuilderOptions<T, string> MustHasLengthBetween<T>(this IRuleBuilder<T, string> rule, int min, int max)
         {
             return rule
-                .Length(min, max).WithMessage("O campo '{PropertyName}' deve conter entre " + min + " e " + max + " caracteres");
+                .Must(x => String.IsNullOrEmpty(x) || (x.Length >= min && x.Length <= max))
+                .WithMessage("O campo '{PropertyName}' deve conter entre " + min + " e " + max + " caracteres");
         }
 
         /// <summary>
