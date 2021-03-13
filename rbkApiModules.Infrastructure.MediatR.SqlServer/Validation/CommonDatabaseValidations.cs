@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Infrastructure.MediatR.Core;
 using rbkApiModules.Infrastructure.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -14,21 +15,6 @@ namespace rbkApiModules.Infrastructure.MediatR.SqlServer
 {
     public class CommonDatabaseValidations: ICommonDatabaseValidations
     {
-        private object LoadEntityFromDatabase(object context, Guid id, ExistingEntityAttribute exstingEntityAttribute)
-        {
-            var setMethod = context.GetType().GetMethod("Set", new Type[0]);
-
-            var genericSetMethod = setMethod.MakeGenericMethod(exstingEntityAttribute.EntityType);
-            var dbsetInstance = genericSetMethod.Invoke(context, new object[0]);
-
-            var dbsetType = dbsetInstance.GetType();
-            var findMethod = dbsetType.GetMethod("Find");
-
-            var result = findMethod.Invoke(dbsetInstance, new object[] { new object[] { id } });
-
-            return result;
-        }
-
         public ValidationResult[] ValidateExistingDbElements(IHttpContextAccessor httpContextAccessor, object command)
         {
             var context = httpContextAccessor.HttpContext.RequestServices.GetService(typeof(DbContext)) as DbContext;
@@ -52,7 +38,7 @@ namespace rbkApiModules.Infrastructure.MediatR.SqlServer
 
                         if (property.PropertyType == typeof(Guid))
                         {
-                            var result = LoadEntityFromDatabase(context, (Guid)property.GetValue(command), existingEntityAttribute);
+                            var result = LoadEntityFromDatabase(context, (Guid)property.GetValue(command), existingEntityAttribute.EntityType);
 
                             if (result == null)
                             {
@@ -76,7 +62,7 @@ namespace rbkApiModules.Infrastructure.MediatR.SqlServer
                                 var notFoundElements = new List<Guid>();
                                 foreach (var id in elementList)
                                 {
-                                    var result = LoadEntityFromDatabase(context, id, existingEntityAttribute);
+                                    var result = LoadEntityFromDatabase(context, id, existingEntityAttribute.EntityType);
                                     if (result == null)
                                     {
                                         notFoundElements.Add(id);
@@ -100,6 +86,89 @@ namespace rbkApiModules.Infrastructure.MediatR.SqlServer
                 {
                     results.Add(validationResult);
                 }
+            }
+
+            return results.ToArray();
+        }
+
+        public ValidationResult[] ValidateNonUsedDbElements(IHttpContextAccessor httpContextAccessor, object command)
+        {
+            var context = httpContextAccessor.HttpContext.RequestServices.GetService(typeof(DbContext)) as DbContext;
+
+            var results = new List<ValidationResult>();
+
+            var isUsed = false;
+
+            foreach (var commandProperty in command.GetType().GetProperties())
+            {
+                if (commandProperty.Name == "Id")
+                {
+                    var existingEntityAttribute = commandProperty.GetCustomAttribute<ExistingEntityAttribute>();
+                    var nonUsedEntityAttribute = commandProperty.GetCustomAttribute<NonUsedEntityAttribute>();
+                    
+                    if (nonUsedEntityAttribute != null && existingEntityAttribute == null)
+                    {
+                        throw new Exception("The attribute 'NonUsedEntity' must be used paired with 'ExistingEntity'");
+                    }
+
+                    if (nonUsedEntityAttribute != null && existingEntityAttribute != null)
+                    {
+                        var tableType = existingEntityAttribute.EntityType;
+                        var tableProperties = tableType.GetProperties().ToList();
+
+                        var id = GetIdValueIfExist(command, command.GetType().GetProperties().ToList());
+
+                        if (id == null)
+                        {
+                            throw new Exception("The attribute 'NonUsedEntity' can only be used with commands that have an 'Id' property");
+                        }
+
+                        var entity = LoadEntityFromDatabase(context, id.Value, existingEntityAttribute.EntityType);
+
+                        // If the entity doesn't exist in database, it's this validator's responsability to validate it.
+                        if (entity == null) return new ValidationResult[0];
+
+                        foreach (var property in tableProperties)
+                        {
+                            if (typeof(IEnumerable).IsAssignableFrom(property.PropertyType))
+                            {
+                                if (property.PropertyType.IsGenericType && property.PropertyType.GenericTypeArguments.First().IsClass)
+                                {
+                                    context.Entry(entity).Collection(property.Name).Load();
+
+                                    var value = property.GetValue(entity);
+
+                                    var enumerable = value as IEnumerable;
+
+                                    if (enumerable != null)
+                                    {
+                                        var list = enumerable.Cast<BaseEntity>();
+
+                                        if (list.Count() > 0)
+                                        {
+                                            isUsed = true;
+
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        if (isUsed)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (isUsed)
+            {
+                var validationResult = new ValidationResult("");
+                validationResult.SetUsedEntity();
+
+                results.Add(validationResult);
             }
 
             return results.ToArray();
@@ -175,12 +244,12 @@ namespace rbkApiModules.Infrastructure.MediatR.SqlServer
                 .Where(m => m.Name == "Where")
                 .First().MakeGenericMethod(entityType);
 
-            var result = (IQueryable<object>)whereMethod.Invoke(null, new object[] { dbsetInstance, PropertyGetLambda(entityType, propertyName, propertyValue, Id) });
+            var result = (IQueryable<object>)whereMethod.Invoke(null, new object[] { dbsetInstance, BuildWhereLambda(entityType, propertyName, propertyValue, Id) });
 
             return result.Any();
         }
 
-        private LambdaExpression PropertyGetLambda(Type parameterType, string propertyName, string value, Guid? Id)
+        private LambdaExpression BuildWhereLambda(Type parameterType, string propertyName, string value, Guid? Id)
         {
             var parameter = Expression.Parameter(parameterType);
 
@@ -207,6 +276,21 @@ namespace rbkApiModules.Infrastructure.MediatR.SqlServer
 
                 return Expression.Lambda(equality, parameter);
             }
+        }
+
+        private object LoadEntityFromDatabase(object context, Guid id, Type type)
+        {
+            var setMethod = context.GetType().GetMethod("Set", new Type[0]);
+
+            var genericSetMethod = setMethod.MakeGenericMethod(type);
+            var dbsetInstance = genericSetMethod.Invoke(context, new object[0]);
+
+            var dbsetType = dbsetInstance.GetType();
+            var findMethod = dbsetType.GetMethod("Find");
+
+            var result = findMethod.Invoke(dbsetInstance, new object[] { new object[] { id } });
+
+            return result;
         }
     }
 }

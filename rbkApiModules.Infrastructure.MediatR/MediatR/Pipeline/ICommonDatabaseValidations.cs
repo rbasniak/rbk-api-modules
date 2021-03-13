@@ -13,5 +13,7 @@ namespace rbkApiModules.Infrastructure.MediatR.Core
         ValidationResult[] ValidateExistingDbElements(IHttpContextAccessor httpContextAccessor, object command);
 
         ValidationResult[] ValidateIsUniqueDbElements(IHttpContextAccessor httpContextAccessor, object command);
+        
+        ValidationResult[] ValidateNonUsedDbElements(IHttpContextAccessor httpContextAccessor, object command);
     }
 }

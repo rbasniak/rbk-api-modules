@@ -16,6 +16,7 @@ namespace rbkApiModules.Infrastructure.Models
         private bool _notFoundInDb = false;
         private bool _dbEntityListEmpty = false;
         private bool _notUniqueInDb = false;
+        private bool _usedEntity = false;
 
         public ValidationResult(string propertyName)
         {
@@ -70,6 +71,12 @@ namespace rbkApiModules.Infrastructure.Models
             _notUniqueInDb = true;
         }
 
+        public void SetUsedEntity()
+        {
+            _hasErrors = true;
+            _usedEntity = true;
+        }
+
         public ValidationError[] Results
         {
             get
@@ -122,6 +129,11 @@ namespace rbkApiModules.Infrastructure.Models
                     results.Add(new ValidationError(ValidationType.EntityNotUnique, $"'{propertyName}' já existe no banco de dados"));
                 }
 
+                if (_usedEntity)
+                {
+                    results.Add(new ValidationError(ValidationType.UsedEntity, $"'Item já utilizado no sistema e não pode ser excluído"));
+                }
+
                 return results.ToArray();
             }
         }
@@ -160,7 +172,8 @@ namespace rbkApiModules.Infrastructure.Models
         EmptyEntityList,
         MultipleEntitiesNotFound,
         EntityNotFound,
-        EntityNotUnique
+        EntityNotUnique,
+        UsedEntity
     }
 
     public static class BaseEntityExtensions

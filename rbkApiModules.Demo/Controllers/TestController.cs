@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using rbkApiModules.Demo.BusinessLogic;
 using rbkApiModules.Infrastructure.Api;
 using rbkApiModules.Utilities;
 using rbkApiModules.Utilities.Extensions;
+using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace rbkApiModules.Demo.Controllers
 {
@@ -41,6 +44,6 @@ namespace rbkApiModules.Demo.Controllers
         public ActionResult Test2(int id)
         {
             return Ok("Ok: " + id);
-        }
+        } 
     }
 }

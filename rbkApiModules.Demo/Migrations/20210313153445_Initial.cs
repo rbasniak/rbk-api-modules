@@ -8,6 +8,18 @@ namespace rbkApiModules.Demo.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Blog",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Blog", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Claims",
                 columns: table => new
                 {
@@ -120,6 +132,44 @@ namespace rbkApiModules.Demo.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_StateGroups", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Editor",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BlogId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Editor", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Editor_Blog_BlogId",
+                        column: x => x.BlogId,
+                        principalTable: "Blog",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Post",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BlogId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Post", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Post_Blog_BlogId",
+                        column: x => x.BlogId,
+                        principalTable: "Blog",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -382,6 +432,16 @@ namespace rbkApiModules.Demo.Migrations
                 column: "StateId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Editor_BlogId",
+                table: "Editor",
+                column: "BlogId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Post_BlogId",
+                table: "Post",
+                column: "BlogId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_QueryDefinitionToGroup_GroupId",
                 table: "QueryDefinitionToGroup",
                 column: "GroupId");
@@ -444,6 +504,12 @@ namespace rbkApiModules.Demo.Migrations
                 name: "Comment");
 
             migrationBuilder.DropTable(
+                name: "Editor");
+
+            migrationBuilder.DropTable(
+                name: "Post");
+
+            migrationBuilder.DropTable(
                 name: "QueryDefinitionToGroup");
 
             migrationBuilder.DropTable(
@@ -463,6 +529,9 @@ namespace rbkApiModules.Demo.Migrations
 
             migrationBuilder.DropTable(
                 name: "UsersToRoles");
+
+            migrationBuilder.DropTable(
+                name: "Blog");
 
             migrationBuilder.DropTable(
                 name: "QueryDefinitionGroup");

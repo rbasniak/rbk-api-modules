@@ -10,7 +10,7 @@ using rbkApiModules.Demo.Database;
 namespace rbkApiModules.Demo.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20210113234404_Initial")]
+    [Migration("20210313153445_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -19,7 +19,7 @@ namespace rbkApiModules.Demo.Migrations
             modelBuilder
                 .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.1");
+                .HasAnnotation("ProductVersion", "5.0.2");
 
             modelBuilder.Entity("rbkApiModules.Authentication.BaseUser", b =>
                 {
@@ -166,6 +166,20 @@ namespace rbkApiModules.Demo.Migrations
                     b.ToTable("Comment");
                 });
 
+            modelBuilder.Entity("rbkApiModules.Demo.Models.Blog", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Blog");
+                });
+
             modelBuilder.Entity("rbkApiModules.Demo.Models.Client", b =>
                 {
                     b.Property<Guid>("Id")
@@ -183,6 +197,44 @@ namespace rbkApiModules.Demo.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Clients");
+                });
+
+            modelBuilder.Entity("rbkApiModules.Demo.Models.Editor", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BlogId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BlogId");
+
+                    b.ToTable("Editor");
+                });
+
+            modelBuilder.Entity("rbkApiModules.Demo.Models.Post", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BlogId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BlogId");
+
+                    b.ToTable("Post");
                 });
 
             modelBuilder.Entity("rbkApiModules.Demo.Models.StateMachine.Document", b =>
@@ -506,6 +558,28 @@ namespace rbkApiModules.Demo.Migrations
                     b.Navigation("Parent");
                 });
 
+            modelBuilder.Entity("rbkApiModules.Demo.Models.Editor", b =>
+                {
+                    b.HasOne("rbkApiModules.Demo.Models.Blog", "Blog")
+                        .WithMany("Editors")
+                        .HasForeignKey("BlogId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Blog");
+                });
+
+            modelBuilder.Entity("rbkApiModules.Demo.Models.Post", b =>
+                {
+                    b.HasOne("rbkApiModules.Demo.Models.Blog", "Blog")
+                        .WithMany("Posts")
+                        .HasForeignKey("BlogId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Blog");
+                });
+
             modelBuilder.Entity("rbkApiModules.Demo.Models.StateMachine.Document", b =>
                 {
                     b.HasOne("rbkApiModules.Demo.Models.StateMachine.State", "State")
@@ -639,6 +713,13 @@ namespace rbkApiModules.Demo.Migrations
             modelBuilder.Entity("rbkApiModules.Comments.Comment", b =>
                 {
                     b.Navigation("Children");
+                });
+
+            modelBuilder.Entity("rbkApiModules.Demo.Models.Blog", b =>
+                {
+                    b.Navigation("Editors");
+
+                    b.Navigation("Posts");
                 });
 
             modelBuilder.Entity("rbkApiModules.Demo.Models.Client", b =>

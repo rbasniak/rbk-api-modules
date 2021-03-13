@@ -1,5 +1,6 @@
 ﻿using rbkApiModules.Demo.Database;
 using rbkApiModules.Demo.Models.StateMachine;
+using rbkApiModules.Demo.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace rbkApiModules.Demo.Database.StateMachine
 {
-    public class StatesSeed
+    public class Seed
     {
-        public static void Seed(DatabaseContext context)
+        public static void CreateEntities(DatabaseContext context)
         {
             var libraGroup = new StateGroup("LIBRA");
 
@@ -42,6 +43,21 @@ namespace rbkApiModules.Demo.Database.StateMachine
 
             context.Add(libraGroup);
             context.AddRange(new[] { t1, t2, t3, t4, t5, t6, t7, t8, t9, t10 });
+
+            var blog1 = new Blog("Blog 1");
+            var blog2 = new Blog("Blog 2");
+
+            var editor1 = new Editor("Editor 1", blog1);
+            var editor2 = new Editor("Editor 2", blog1);
+
+            var post1 = new Post("Post 1", blog1);
+
+            context.Add(editor1);
+            context.Add(editor2);
+            context.Add(post1);
+
+            context.Add(blog1);
+            context.Add(blog2);
         }
     }
 }

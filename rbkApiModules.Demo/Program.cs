@@ -70,7 +70,7 @@ namespace rbkApiModules.Demo
 
                         if (!context.States.Any())
                         {
-                            StatesSeed.Seed(context);
+                            Seed.CreateEntities(context);
                         }
 
                         context.SaveChanges();
