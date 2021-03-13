@@ -1,3 +1,10 @@
+# 2.3.0 (2021-03-13)
+
+
+### Features
+
+* new validator for entities that are already used in the database on deletion ([5d3b81b](https://github.com/rbasniak/rbk-api-modules/commit/5d3b81b61bbe6ecd74c00fd3b6332f899dcd5cb6))
+
 ## 2.2.4 (2021-03-09)
 
 ## 2.2.3 (2021-03-01)
