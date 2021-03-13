@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace rbkApiModules.Infrastructure.MediatR.SqlServer
 {
-    public class NonUsedEntityAttribute : Attribute
+    public class MustNotBeUsedAttribute : Attribute
     {
-        public NonUsedEntityAttribute()
+        public MustNotBeUsedAttribute()
         {
         }
     }

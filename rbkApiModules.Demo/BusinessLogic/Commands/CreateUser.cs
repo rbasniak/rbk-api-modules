@@ -16,7 +16,7 @@ namespace rbkApiModules.Demo.BusinessLogic
     {
         public class Command : IRequest<CommandResponse>
         {
-            [IsUnique(typeof(User), nameof(User.Username))]
+            [MustBeUnique(typeof(User), nameof(User.Username))]
             public string Username { get; set; }
             public string Password { get; set; }
             public string Name { get; set; }

@@ -2,9 +2,9 @@
 
 namespace rbkApiModules.Infrastructure.MediatR.SqlServer
 {
-    public class IsUniqueAttribute : Attribute
+    public class MustBeUniqueAttribute : Attribute
     {
-        public IsUniqueAttribute(Type type, string name)
+        public MustBeUniqueAttribute(Type type, string name)
         {
             EntityType = type;
             Name = name;

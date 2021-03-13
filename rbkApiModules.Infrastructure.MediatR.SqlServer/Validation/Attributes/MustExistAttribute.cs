@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace rbkApiModules.Infrastructure.MediatR.SqlServer
 {
-    public class ExistingEntityAttribute : Attribute
+    public class MustExistAttribute : Attribute
     {
-        public ExistingEntityAttribute(Type type)
+        public MustExistAttribute(Type type)
         {
             EntityType = type;
         }

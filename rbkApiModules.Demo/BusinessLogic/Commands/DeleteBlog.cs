@@ -17,7 +17,7 @@ namespace rbkApiModules.Demo.BusinessLogic
     {
         public class Command : IRequest<CommandResponse>
         {
-            [ExistingEntity(typeof(Blog)), NonUsedEntity]
+            [MustExist(typeof(Blog)), MustNotBeUsed]
             public Guid Id { get; set; }
         } 
 

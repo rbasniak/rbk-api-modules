@@ -32,7 +32,7 @@ namespace rbkApiModules.Infrastructure.MediatR.SqlServer
 
                 foreach (var attribute in attributes)
                 {
-                    if (attribute is ExistingEntityAttribute existingEntityAttribute)
+                    if (attribute is MustExistAttribute existingEntityAttribute)
                     {
                         var propertyValue = property.GetValue(command);
 
@@ -103,8 +103,8 @@ namespace rbkApiModules.Infrastructure.MediatR.SqlServer
             {
                 if (commandProperty.Name == "Id")
                 {
-                    var existingEntityAttribute = commandProperty.GetCustomAttribute<ExistingEntityAttribute>();
-                    var nonUsedEntityAttribute = commandProperty.GetCustomAttribute<NonUsedEntityAttribute>();
+                    var existingEntityAttribute = commandProperty.GetCustomAttribute<MustExistAttribute>();
+                    var nonUsedEntityAttribute = commandProperty.GetCustomAttribute<MustNotBeUsedAttribute>();
                     
                     if (nonUsedEntityAttribute != null && existingEntityAttribute == null)
                     {
@@ -191,7 +191,7 @@ namespace rbkApiModules.Infrastructure.MediatR.SqlServer
 
                 foreach (var attribute in attributes)
                 {
-                    if (attribute is IsUniqueAttribute isUniqueAttribute)
+                    if (attribute is MustBeUniqueAttribute isUniqueAttribute)
                     {
                         var propertyValue = property.GetValue(command);
 
