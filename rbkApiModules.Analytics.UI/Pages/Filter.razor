@@ -192,7 +192,7 @@
     IEnumerable<string> selectedDomains = new string[] { };
     IEnumerable<string> selectedAgents = new string[] { };
     IEnumerable<string> selectedActions = new string[] { };
-    IEnumerable<string> selectedResponses = new string[] { };
+    IEnumerable<int> selectedResponses = new int[] { };
     IEnumerable<string> selectedUsers = new string[] { };
     IEnumerable<string> selectedVersions = new string[] { };
 
@@ -232,7 +232,7 @@
             selectedAgents = agents.Select(x => x.Id);
             selectedAreas = areas.Select(x => x.Id);
             selectedDomains = domains.Select(x => x.Id);
-            selectedResponses = responses.Select(x => x.Id);
+            selectedResponses = responses.Select(x => Int32.Parse(x.Id));
             selectedUsers = users.Select(x => x.Id);
             selectedVersions = versions.Select(x => x.Id);
         }

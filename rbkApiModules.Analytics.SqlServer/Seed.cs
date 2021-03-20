@@ -1,8 +1,10 @@
 ﻿using rbkApiModules.Analytics.Core;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace rbkApiModules.Analytics.SqlServer
 {
+    [ExcludeFromCodeCoverage]
     public static class Seed
     {
         public static void SeedDatabase(SqlServerAnalyticsContext context)
@@ -161,6 +163,7 @@ namespace rbkApiModules.Analytics.SqlServer
         }
     }
 
+    [ExcludeFromCodeCoverage]
     public class SampleRequest
     {
         private int _requestSize;

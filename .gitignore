@@ -351,3 +351,4 @@ MigrationBackup/
 
 # Demo XML
 /rbkApiModules.Demo/rbkApiModules.Demo.xml
+/@TestResults/html

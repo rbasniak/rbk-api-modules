@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace rbkApiModules.Analytics.Core
 {
+    [ExcludeFromCodeCoverage]
     [IgnoreOnCodeGeneration]
     [ApplicationArea("analytics")]
     [AllowAnonymous]

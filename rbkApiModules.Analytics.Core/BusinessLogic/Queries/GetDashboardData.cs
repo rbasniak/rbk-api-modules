@@ -18,13 +18,7 @@ namespace rbkApiModules.Analytics.Core
             public Command()
             {
 
-            }
-
-            public Command(DateTime from, DateTime to)
-            {
-                DateFrom = from;
-                DateTo = to;
-            }
+            } 
 
             public DateTime DateFrom { get; set; }
             public DateTime DateTo { get; set; }
@@ -395,6 +389,7 @@ namespace rbkApiModules.Analytics.Core
 
                 return results.ToList();
             }
+
             private List<SimpleLabeledValue<int>> BuildMostActiveDomains(List<AnalyticsEntry> data)
             {
                 var results = new List<SimpleLabeledValue<int>>();

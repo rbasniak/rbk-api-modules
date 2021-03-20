@@ -4,10 +4,12 @@ using Microsoft.Extensions.DependencyInjection;
 using rbkApiModules.Analytics.Core;
 using rbkApiModules.Diagnostics.Core;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace rbkApiModules.Analytics.SqlServer
 {
+    [ExcludeFromCodeCoverage]
     public static class Builder
     {
         public static void AddSqlServerRbkApiAnalyticsModule(this IServiceCollection services, string connectionString)

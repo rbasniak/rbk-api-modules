@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using rbkApiModules.Analytics.Core;
 using Microsoft.AspNetCore.Http;
 using rbkApiModules.Utilities;
+using System.Diagnostics.CodeAnalysis;
 
 namespace rbkApiModules.Analytics.UI
 {
@@ -15,6 +16,7 @@ namespace rbkApiModules.Analytics.UI
         Task<HttpResponse<AnalyticsResults>> GetDashboardData(DateTime from, DateTime to);
     }
 
+    [ExcludeFromCodeCoverage]
     public class AnalyticsDataService : BaseHttpService, IAnalyticsDataService
     {
         private readonly string _url;
@@ -36,7 +38,7 @@ namespace rbkApiModules.Analytics.UI
 
         public async Task<HttpResponse<AnalyticsResults>> GetDashboardData(DateTime from, DateTime to)
         {
-            return await SendAsync<AnalyticsResults>(HttpMethod.Post, _url + "/api/analytics/dashboard", new GetDashboardData.Command(from, to));
+            return await SendAsync<AnalyticsResults>(HttpMethod.Post, _url + "/api/analytics/dashboard", new GetDashboardData.Command { DateFrom = from, DateTo = to });
         }
 
     }

@@ -7,6 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		CodeCoverage.runsettings = CodeCoverage.runsettings
+		CovereageReport.bat = CovereageReport.bat
 		package.json = package.json
 		publish.bat = publish.bat
 		publish_pre-release.txt = publish_pre-release.txt
@@ -173,7 +174,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Paypal.SqlSer
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CodeGeneration", "CodeGeneration", "{9A642167-AD70-4152-9314-125945860E1B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.CodeGeneration.Commons", "rbkApiModules.CodeGeneration.Commons\rbkApiModules.CodeGeneration.Commons.csproj", "{C510599E-CADC-4D99-BA15-65B84ADCA51F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.CodeGeneration.Commons", "rbkApiModules.CodeGeneration.Commons\rbkApiModules.CodeGeneration.Commons.csproj", "{C510599E-CADC-4D99-BA15-65B84ADCA51F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -9,7 +9,7 @@ namespace rbkApiModules.Analytics.Core
         void StoreData(AnalyticsEntry request);
 
         Task<List<AnalyticsEntry>> FilterAsync(DateTime from, DateTime to, string[] versions, string[] areas, string[] domains,
-            string[] actions, string[] users, string[] agents, string[] responses, string[] methods, int duration, string entityId);
+            string[] actions, string[] users, string[] agents, int[] responses, string[] methods, int duration, string entityId);
 
         Task<List<AnalyticsEntry>> FilterAsync(DateTime from, DateTime to);
 

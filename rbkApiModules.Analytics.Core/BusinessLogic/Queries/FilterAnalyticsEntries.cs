@@ -17,7 +17,7 @@ namespace rbkApiModules.Analytics.Core
                 Domains = new string[0];
                 Agents = new string[0];
                 Actions = new string[0];
-                Responses = new string[0];
+                Responses = new int[0];
                 Users = new string[0];
                 Versions = new string[0];
             }
@@ -27,7 +27,7 @@ namespace rbkApiModules.Analytics.Core
             public string[] Areas { get; set; }
             public string[] Domains { get; set; }
             public string[] Actions { get; set; }
-            public string[] Responses { get; set; }
+            public int[] Responses { get; set; }
             public string[] Users { get; set; }
             public string[] Agents { get; set; }
             public string[] Versions { get; set; }

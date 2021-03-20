@@ -1,12 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Analytics.Core;
+using rbkApiModules.Utilities.EFCore;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace rbkApiModules.Analytics.SqlServer
 {
     /// <summary>
     /// DBContext para a store de SQL Server
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class SqlServerAnalyticsContext : DbContext
     {
         private readonly string _connectionString;
@@ -29,6 +32,8 @@ namespace rbkApiModules.Analytics.SqlServer
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<AnalyticsEntry>().Property(x => x.Timestamp).HasConversion(DateTimeWithoutKindConverter.GetConverter());
+
             base.OnModelCreating(modelBuilder);
         }
 
