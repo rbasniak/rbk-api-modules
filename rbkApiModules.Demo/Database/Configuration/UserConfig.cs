@@ -9,7 +9,7 @@ namespace rbkApiModules.Demo.Database
     { 
         public void Configure(EntityTypeBuilder<ClientUser> entity)
         {
-            base.Configure<ClientUser>(entity, 512, 1024); 
+            base.Configure<ClientUser>(entity); 
         }
     }
 }

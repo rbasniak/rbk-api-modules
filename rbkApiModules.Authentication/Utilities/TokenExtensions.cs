@@ -19,7 +19,7 @@ namespace rbkApiModules.Authentication
             }
 
             var claim = ((System.Security.Claims.ClaimsIdentity)httpContext.User.Identity).Claims
-                .FirstOrDefault(c => c.Type.ToLower() == MagicStrings.AUTHENTICATION_GROUP);
+                .FirstOrDefault(c => c.Type.ToLower() == JwtClaimIdentifiers.AuthenticationGroup);
 
             if (claim != null)
             {

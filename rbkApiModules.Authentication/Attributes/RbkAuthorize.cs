@@ -24,7 +24,7 @@ namespace rbkApiModules.Authentication.AuthenticationGroups
         {
             if (String.IsNullOrEmpty(Claim) && String.IsNullOrEmpty(Group))
             {
-                throw new Exception("Dably setup authorization, you need to specify at least either the needed claim or authroization group");
+                throw new Exception("Badly setup authorization, you need to specify at least either the needed claim or authroization group");
             }
 
             var user = context.HttpContext.User;
