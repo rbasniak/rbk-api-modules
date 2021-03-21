@@ -2,14 +2,14 @@
 
 namespace rbkApiModules.Demo.Models
 {
-    public class User: BaseUser
+    public class ClientUser: BaseUser
     {
-        protected User()
+        protected ClientUser()
         {
 
         }
 
-        public User(string username, string password, bool isConfirmed, Client client): base(username, password)
+        public ClientUser(string username, string password, bool isConfirmed, Client client): base(username, password, "client")
         {
             IsConfirmed = isConfirmed;
             Client = client;
@@ -17,7 +17,7 @@ namespace rbkApiModules.Demo.Models
 
         public bool IsConfirmed { get; set; }
 
-        public string Test { get; set; }
+        public string IsBlocked { get; set; }
 
         public Client Client { get; private set; }
     }

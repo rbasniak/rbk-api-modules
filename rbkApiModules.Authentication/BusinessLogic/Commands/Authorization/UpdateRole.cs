@@ -11,13 +11,11 @@ using rbkApiModules.Infrastructure.MediatR.Core;
 
 namespace rbkApiModules.Authentication
 {
-    /// <summary>
-    /// Comando para criar uma nova regra de acesso
-    /// </summary>
-    public class CreateRole
+    public class UpdateRole
     {
         public class Command : IRequest<CommandResponse>
         {
+            public Guid Id { get; set; }
             public string Name { get; set; }
         }
 
@@ -33,19 +31,28 @@ namespace rbkApiModules.Authentication
 
                 CascadeMode = CascadeMode.Stop;
 
-                RuleFor(a => a.Name)
-                    .IsRequired()
+                RuleFor(a => a.Id)
+                    .MustExistInDatabase<Command, Role>(context)
+                    .MustAsync(HaveSameUserAuthGroup).WithMessage("Acesso negado.")
                     .MustAsync(NotExistOnDatabaseInSameGroup).WithMessage("Já existe uma regra de acesso cadastrada com este nome.")
-                    .WithName("Regra de Acesso");
+                    .WithName("Regra de Acesso"); 
             }
 
-            public async Task<bool> NotExistOnDatabaseInSameGroup(Command command, string roleName, CancellationToken cancelation)
+            private async Task<bool> HaveSameUserAuthGroup(Command command, Guid id, CancellationToken cancelation)
+            {
+                var authenticationGroup = _httpContextAccessor.GetAuthenticationGroup();
+                var role = await _context.Set<Role>().FindAsync(id);
+                return role.AuthenticationGroup == authenticationGroup;
+            }
+
+            public async Task<bool> NotExistOnDatabaseInSameGroup(Command command, Guid id, CancellationToken cancelation)
             {
                 var authenticationGroup = _httpContextAccessor.GetAuthenticationGroup();
 
                 return !await _context.Set<Role>()
                     .AnyAsync(role => 
-                        EF.Functions.Like(role.Name, roleName) && 
+                        role.Id != command.Id &&
+                        EF.Functions.Like(role.Name, command.Name) && 
                         EF.Functions.Like(role.AuthenticationGroup, authenticationGroup));
             }
         }

@@ -9,15 +9,13 @@ namespace rbkApiModules.Authentication
         {
             entity.ToTable("Claims");
 
-            entity.HasIndex(c => c.Name).IsUnique();
+            entity.HasIndex(x => new { x.Name, x.AuthenticationGroup }).IsUnique();
 
-            entity.Property(c => c.Name)
+            entity.Property(x => x.Name)
                 .IsRequired();
-            // FIXME: .HasMaxLength(ModelConstants.Generic.Name.MaxLength);
 
-            entity.Property(c => c.Description)
+            entity.Property(x => x.Description)
                 .IsRequired();
-            // FIXME: .HasMaxLength(ModelConstants.Generic.Name.MaxLength); 
         }
     }
 }

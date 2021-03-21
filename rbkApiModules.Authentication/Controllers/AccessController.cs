@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using rbkApiModules.Infrastructure.Api;
 using rbkApiModules.Infrastructure.Models;
+using System;
 using System.Threading.Tasks;
 
 namespace rbkApiModules.Authentication
@@ -12,6 +13,24 @@ namespace rbkApiModules.Authentication
     public class AccessController : BaseController
     {
         /// <summary>
+        /// Lista as permissões de acesso
+        /// </summary>
+        [HttpGet("claims")]
+        public async Task<ActionResult<ClaimDetails[]>> AllClaims()
+        {
+            return HttpResponse<ClaimDetails[]>(await Mediator.Send(new GetAllClaims.Command()));
+        }
+
+        /// <summary>
+        /// Lista os regra de acessos 
+        /// </summary>
+        [HttpGet("roles")]
+        public async Task<ActionResult<Roles.Details[]>> AllRoles()
+        {
+            return HttpResponse<Roles.Details[]>(await Mediator.Send(new GetAllRoles.Command()));
+        }
+
+        /// <summary>
         /// Criar regra de acesso
         /// </summary>
         [HttpPost("roles")]
@@ -20,6 +39,24 @@ namespace rbkApiModules.Authentication
             var result = await Mediator.Send(data);
 
             return HttpResponse<SimpleNamedEntity>(result);
+        }
+
+        /// <summary>
+        /// Atualiza os detalhes de uma regra de acessos 
+        /// </summary>
+        [HttpPut("roles")]
+        public async Task<ActionResult<Roles.Details>> UpdateRole(UpdateRole.Command data)
+        {
+            return HttpResponse<Roles.Details>(await Mediator.Send(data));
+        }
+
+        /// <summary>
+        /// Apaga uma regra de acesso
+        /// </summary>
+        [HttpDelete("roles/{id}")]
+        public async Task<ActionResult> DeleteRole(Guid id)
+        {
+            return HttpResponse(await Mediator.Send(new DeleteRole.Command { RoleId = id }));
         }
 
         /// <summary>
@@ -87,6 +124,7 @@ namespace rbkApiModules.Authentication
 
             return HttpResponse(result);
         }
+
 
     }
 }

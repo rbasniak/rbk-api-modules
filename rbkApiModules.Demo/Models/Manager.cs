@@ -5,27 +5,22 @@ using System.ComponentModel.DataAnnotations;
 
 namespace rbkApiModules.Demo.Models
 {
-    public class Client: BaseEntity
+    public class Manager : BaseEntity
     {
-        protected Client()
+        protected Manager()
         {
 
         }
 
-        public Client(string name, DateTime birthdate)
+        public Manager(string name)
         {
             Name = name;
-            Birthdate = birthdate;
         }
 
         [Required, MinLength(3), MaxLength(20)]
         [DialogData(OperationType.CreateAndUpdate, "Nome")]
         public string Name { get; private set; }
 
-        [Required]
-        [DialogData(OperationType.CreateAndUpdate, "Data de Nascimento")]
-        public DateTime Birthdate { get; private set; }
-
-        public ClientUser User { get; private set; }
+        public ManagerUser User { get; private set; }
     }
 }

@@ -14,6 +14,9 @@
 
             If you want to mix both, you need to add both claims to the token
         */
-        public const string Role = "role";
+        public const string Roles = "rol";
+        public const string Domain = "domain";
+        public const string AuthenticationGroup = "auth-group";
+        public const string Avatar = "avatar";
     }
 }

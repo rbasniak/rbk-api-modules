@@ -43,26 +43,30 @@ namespace rbkApiModules.Demo
                         var context = services.GetRequiredService<DatabaseContext>();
                         context.Database.Migrate();
 
-                        var user = context.Set<User>().SingleOrDefault(x => x.Username == "admn");
+                        var user = context.Set<BaseUser>().FirstOrDefault();
 
                         if (user == null)
                         {
-                            user = new User("admn", "123123", false, new Client("Administrador", DateTime.Now));
-                            context.Set<User>().Add(user);
+                            var user1 = new ClientUser("client", "123123", false, new Client("John Doe", DateTime.Now));
+                            context.Set<BaseUser>().Add(user1);
+
+                            var user2 = new ManagerUser("manager", "123123", false, new Manager("Jane Doe"));
+                            context.Set<BaseUser>().Add(user2);
                         }
 
                         var claims = new List<Claim>
                         {
-                            new Claim("SAMPLE_CLAIM", "Exemplo de Controle de Acesso")
+                            new Claim("SAMPLE_CLAIM", "Exemplo de Controle de Acesso", "client"),
+                            new Claim("CAN_BUY", "Pode realizar compras", "client"),
+                            new Claim("SAMPLE_CLAIM", "Exemplo de Controle de Acesso", "manager"),
+                            new Claim("CAN_VIEW_REPORTS", "Pode visualizar relatórios", "manager")
                         };
 
                         foreach (var claim in claims)
                         {
-                            if (!context.Set<Claim>().Any(x => x.Name == claim.Name))
+                            if (!context.Set<Claim>().Any(x => x.Name == claim.Name && x.AuthenticationGroup == claim.AuthenticationGroup))
                             {
                                 context.Set<Claim>().Add(claim);
-
-                                user.AddClaim(claim, ClaimAcessType.Allow);
                             }
                         }
 

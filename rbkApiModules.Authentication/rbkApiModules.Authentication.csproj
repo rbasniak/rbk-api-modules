@@ -26,6 +26,8 @@
     <ProjectReference Include="..\rbkApiModules.Infrastructure.Api\rbkApiModules.Infrastructure.Api.csproj" />
     <ProjectReference Include="..\rbkApiModules.Infrastructure.MediatR.SqlServer\rbkApiModules.Infrastructure.MediatR.SqlServer.csproj" />
     <ProjectReference Include="..\rbkApiModules.Infrastructure.MediatR\rbkApiModules.Infrastructure.MediatR.Core.csproj" />
+    <ProjectReference Include="..\rbkApiModules.Infrastructure.Models\rbkApiModules.Infrastructure.Models.csproj" />
+    <ProjectReference Include="..\rbkApiModules.UIAnnotations.Common\rbkApiModules.UIAnnotations.Commons.csproj" />
   </ItemGroup>
 
 </Project>

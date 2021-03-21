@@ -11,7 +11,7 @@ namespace rbkApiModules.Demo.Database
 {
     public class DatabaseContext : DbContext
     {
-        public DbSet<User> Users { get; set; }
+        public DbSet<ClientUser> Users { get; set; }
         public DbSet<Document> Documents { get; set; }
         public DbSet<Event> Events { get; set; }
         public DbSet<State> States { get; set; }

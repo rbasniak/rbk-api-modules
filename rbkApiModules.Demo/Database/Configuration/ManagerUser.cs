@@ -5,11 +5,11 @@ using rbkApiModules.Demo.Models;
 
 namespace rbkApiModules.Demo.Database
 {
-    public class UserConfig: BaseUserConfig, IEntityTypeConfiguration<ClientUser>
+    public class ManagerUserConfig : IEntityTypeConfiguration<ManagerUser>
     { 
-        public void Configure(EntityTypeBuilder<ClientUser> entity)
+        public void Configure(EntityTypeBuilder<ManagerUser> entity)
         {
-            base.Configure<ClientUser>(entity, 512, 1024); 
+
         }
     }
 }

@@ -15,14 +15,18 @@ namespace rbkApiModules.Demo.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.2");
+                .HasAnnotation("ProductVersion", "5.0.4")
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("rbkApiModules.Authentication.BaseUser", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AuthenticationGroup")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Discriminator")
                         .IsRequired()
@@ -57,6 +61,9 @@ namespace rbkApiModules.Demo.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("AuthenticationGroup")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -67,8 +74,9 @@ namespace rbkApiModules.Demo.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Name")
-                        .IsUnique();
+                    b.HasIndex("Name", "AuthenticationGroup")
+                        .IsUnique()
+                        .HasFilter("[Name] IS NOT NULL AND [AuthenticationGroup] IS NOT NULL");
 
                     b.ToTable("Claims");
                 });
@@ -79,11 +87,18 @@ namespace rbkApiModules.Demo.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("AuthenticationGroup")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name", "AuthenticationGroup")
+                        .IsUnique()
+                        .HasFilter("[Name] IS NOT NULL AND [AuthenticationGroup] IS NOT NULL");
 
                     b.ToTable("Roles");
                 });
@@ -181,7 +196,6 @@ namespace rbkApiModules.Demo.Migrations
             modelBuilder.Entity("rbkApiModules.Demo.Models.Client", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("Birthdate")
@@ -214,6 +228,21 @@ namespace rbkApiModules.Demo.Migrations
                     b.HasIndex("BlogId");
 
                     b.ToTable("Editor");
+                });
+
+            modelBuilder.Entity("rbkApiModules.Demo.Models.Manager", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Managers");
                 });
 
             modelBuilder.Entity("rbkApiModules.Demo.Models.Post", b =>
@@ -473,20 +502,35 @@ namespace rbkApiModules.Demo.Migrations
                     b.ToTable("Transitions");
                 });
 
-            modelBuilder.Entity("rbkApiModules.Demo.Models.User", b =>
+            modelBuilder.Entity("rbkApiModules.Demo.Models.ClientUser", b =>
                 {
                     b.HasBaseType("rbkApiModules.Authentication.BaseUser");
+
+                    b.Property<string>("IsBlocked")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Test")
-                        .HasColumnType("nvarchar(max)");
+                    b.HasIndex("Username", "AuthenticationGroup")
+                        .IsUnique()
+                        .HasFilter("[Username] IS NOT NULL AND [AuthenticationGroup] IS NOT NULL");
 
-                    b.HasIndex("Username")
-                        .IsUnique();
+                    b.HasDiscriminator().HasValue("ClientUser");
+                });
 
-                    b.HasDiscriminator().HasValue("User");
+            modelBuilder.Entity("rbkApiModules.Demo.Models.ManagerUser", b =>
+                {
+                    b.HasBaseType("rbkApiModules.Authentication.BaseUser");
+
+                    b.Property<bool>("IsAdmin")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsConfirmed")
+                        .HasColumnType("bit")
+                        .HasColumnName("ManagerUser_IsConfirmed");
+
+                    b.HasDiscriminator().HasValue("ManagerUser");
                 });
 
             modelBuilder.Entity("rbkApiModules.Authentication.RoleToClaim", b =>
@@ -556,6 +600,17 @@ namespace rbkApiModules.Demo.Migrations
                     b.Navigation("Parent");
                 });
 
+            modelBuilder.Entity("rbkApiModules.Demo.Models.Client", b =>
+                {
+                    b.HasOne("rbkApiModules.Demo.Models.ClientUser", "User")
+                        .WithOne("Client")
+                        .HasForeignKey("rbkApiModules.Demo.Models.Client", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("rbkApiModules.Demo.Models.Editor", b =>
                 {
                     b.HasOne("rbkApiModules.Demo.Models.Blog", "Blog")
@@ -565,6 +620,17 @@ namespace rbkApiModules.Demo.Migrations
                         .IsRequired();
 
                     b.Navigation("Blog");
+                });
+
+            modelBuilder.Entity("rbkApiModules.Demo.Models.Manager", b =>
+                {
+                    b.HasOne("rbkApiModules.Demo.Models.ManagerUser", "User")
+                        .WithOne("Manager")
+                        .HasForeignKey("rbkApiModules.Demo.Models.Manager", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("rbkApiModules.Demo.Models.Post", b =>
@@ -676,17 +742,6 @@ namespace rbkApiModules.Demo.Migrations
                     b.Navigation("ToState");
                 });
 
-            modelBuilder.Entity("rbkApiModules.Demo.Models.User", b =>
-                {
-                    b.HasOne("rbkApiModules.Demo.Models.Client", "Client")
-                        .WithOne("User")
-                        .HasForeignKey("rbkApiModules.Demo.Models.User", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Client");
-                });
-
             modelBuilder.Entity("rbkApiModules.Authentication.BaseUser", b =>
                 {
                     b.Navigation("Claims");
@@ -718,11 +773,6 @@ namespace rbkApiModules.Demo.Migrations
                     b.Navigation("Editors");
 
                     b.Navigation("Posts");
-                });
-
-            modelBuilder.Entity("rbkApiModules.Demo.Models.Client", b =>
-                {
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("rbkApiModules.Demo.Models.StateMachine.Document", b =>
@@ -759,6 +809,16 @@ namespace rbkApiModules.Demo.Migrations
             modelBuilder.Entity("rbkApiModules.Demo.Models.StateMachine.StateGroup", b =>
                 {
                     b.Navigation("States");
+                });
+
+            modelBuilder.Entity("rbkApiModules.Demo.Models.ClientUser", b =>
+                {
+                    b.Navigation("Client");
+                });
+
+            modelBuilder.Entity("rbkApiModules.Demo.Models.ManagerUser", b =>
+                {
+                    b.Navigation("Manager");
                 });
 #pragma warning restore 612, 618
         }

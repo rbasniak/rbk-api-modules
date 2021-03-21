@@ -11,6 +11,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\**" />
+    <Content Remove="wwwroot\**" />
+    <EmbeddedResource Remove="wwwroot\**" />
+    <None Remove="wwwroot\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MediatR" Version="9.0.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.4" />
@@ -49,10 +56,6 @@
     <ProjectReference Include="..\rbkApiModules.UIAnnotations\rbkApiModules.UIAnnotations.csproj" />
     <ProjectReference Include="..\rbkApiModules.Utilities\rbkApiModules.Utilities.csproj" />
     <ProjectReference Include="..\rbkApiModules.Workflow\rbkApiModules.Workflow.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\" />
   </ItemGroup>
 
 

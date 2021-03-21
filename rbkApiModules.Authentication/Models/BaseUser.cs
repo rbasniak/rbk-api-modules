@@ -2,6 +2,7 @@
 using rbkApiModules.Utilities.Passwords;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace rbkApiModules.Authentication
@@ -19,20 +20,36 @@ namespace rbkApiModules.Authentication
 
         }
 
-        public BaseUser(string username, string password)
+        public BaseUser(string username, string password, string authenticationGroup)
         {
+            if (authenticationGroup.Length > 32)
+            {
+                throw new Exception("Authentication group cannot have more than 32 characters.");
+            }
+
             Username = username.ToLower();
             SetPassword(password);
+
+            AuthenticationGroup = authenticationGroup;
 
             _claims = new HashSet<UserToClaim>();
             _roles = new HashSet<UserToRole>();
         }
 
+        [Required, MinLength(3), MaxLength(255)]
         public virtual string Username { get; private set; }
 
+        [Required, MinLength(1), MaxLength(4096)]
         public virtual string Password { get; private set; }
 
+        [MaxLength(128)]
         public virtual string RefreshToken { get; private set; }
+
+        [Required, MinLength(1), MaxLength(32)]
+        public virtual string AuthenticationGroup { get; private set; }
+
+        [MaxLength(1024)]
+        public virtual string Avatar { get; private set; }
 
         public virtual DateTime RefreshTokenValidity { get; private set; }
 

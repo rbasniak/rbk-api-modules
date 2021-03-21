@@ -4,17 +4,15 @@ namespace rbkApiModules.Authentication
 {
     public abstract class BaseUserConfig
     {
-        protected void Configure<T>(EntityTypeBuilder<T> entity, int usernameMaxLenght, int hashedPasswordMaxLength) where T: BaseUser
+        protected void Configure<T>(EntityTypeBuilder<T> entity) where T: BaseUser
         {
-            entity.HasIndex(u => u.Username).IsUnique();
+            entity.HasIndex(x => new { x.Username, x.AuthenticationGroup }).IsUnique();
 
-            entity.Property(c => c.Username)
-                .IsRequired()
-                .HasMaxLength(usernameMaxLenght);
+            entity.Property(x => x.Username)
+                .IsRequired();
 
-            entity.Property(c => c.Password)
-                .IsRequired()
-                .HasMaxLength(hashedPasswordMaxLength); 
+            entity.Property(x => x.Password)
+                .IsRequired(); 
         }
     }
 }

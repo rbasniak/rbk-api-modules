@@ -9,9 +9,10 @@ namespace rbkApiModules.Authentication
         {
             entity.ToTable("Roles");
 
-            entity.Property(r => r.Name)
+            entity.HasIndex(x => new { x.Name, x.AuthenticationGroup }).IsUnique();
+
+            entity.Property(x => x.Name)
                 .IsRequired();
-            // FIXME: .HasMaxLength(ModelConstants.Generic.Name.MaxLength); 
         }
     }
 }

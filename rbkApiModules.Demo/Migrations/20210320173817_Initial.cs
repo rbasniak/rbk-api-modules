@@ -25,24 +25,12 @@ namespace rbkApiModules.Demo.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AuthenticationGroup = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Claims", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Clients",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
-                    Birthdate = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Clients", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -115,7 +103,8 @@ namespace rbkApiModules.Demo.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    AuthenticationGroup = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -132,6 +121,27 @@ namespace rbkApiModules.Demo.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_StateGroups", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Username = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: false),
+                    RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AuthenticationGroup = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    RefreshTokenValidity = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsConfirmed = table.Column<bool>(type: "bit", nullable: true),
+                    IsBlocked = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ManagerUser_IsConfirmed = table.Column<bool>(type: "bit", nullable: true),
+                    IsAdmin = table.Column<bool>(type: "bit", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -168,30 +178,6 @@ namespace rbkApiModules.Demo.Migrations
                         name: "FK_Post_Blog_BlogId",
                         column: x => x.BlogId,
                         principalTable: "Blog",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Users",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: false),
-                    RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RefreshTokenValidity = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsConfirmed = table.Column<bool>(type: "bit", nullable: true),
-                    Test = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Users", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Users_Clients_Id",
-                        column: x => x.Id,
-                        principalTable: "Clients",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -264,6 +250,43 @@ namespace rbkApiModules.Demo.Migrations
                         principalTable: "StateGroups",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Clients",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
+                    Birthdate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Clients", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Clients_Users_Id",
+                        column: x => x.Id,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Managers",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Managers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Managers_Users_Id",
+                        column: x => x.Id,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -416,10 +439,11 @@ namespace rbkApiModules.Demo.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Claims_Name",
+                name: "IX_Claims_Name_AuthenticationGroup",
                 table: "Claims",
-                column: "Name",
-                unique: true);
+                columns: new[] { "Name", "AuthenticationGroup" },
+                unique: true,
+                filter: "[Name] IS NOT NULL AND [AuthenticationGroup] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comment_ParentId",
@@ -452,6 +476,13 @@ namespace rbkApiModules.Demo.Migrations
                 column: "StateId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Roles_Name_AuthenticationGroup",
+                table: "Roles",
+                columns: new[] { "Name", "AuthenticationGroup" },
+                unique: true,
+                filter: "[Name] IS NOT NULL AND [AuthenticationGroup] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RolesToClaims_RoleId",
                 table: "RolesToClaims",
                 column: "RoleId");
@@ -482,10 +513,11 @@ namespace rbkApiModules.Demo.Migrations
                 column: "ToStateId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_Username",
+                name: "IX_Users_Username_AuthenticationGroup",
                 table: "Users",
-                column: "Username",
-                unique: true);
+                columns: new[] { "Username", "AuthenticationGroup" },
+                unique: true,
+                filter: "[Username] IS NOT NULL AND [AuthenticationGroup] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UsersToClaims_UserId",
@@ -501,10 +533,16 @@ namespace rbkApiModules.Demo.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Clients");
+
+            migrationBuilder.DropTable(
                 name: "Comment");
 
             migrationBuilder.DropTable(
                 name: "Editor");
+
+            migrationBuilder.DropTable(
+                name: "Managers");
 
             migrationBuilder.DropTable(
                 name: "Post");
@@ -556,9 +594,6 @@ namespace rbkApiModules.Demo.Migrations
 
             migrationBuilder.DropTable(
                 name: "States");
-
-            migrationBuilder.DropTable(
-                name: "Clients");
 
             migrationBuilder.DropTable(
                 name: "StateGroups");

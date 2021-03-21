@@ -103,7 +103,11 @@ namespace rbkApiModules.Authentication
                         .ThenInclude(x => x.Claim)
                     .SingleAsync(x => EF.Functions.Like(x.Username, request.Username));
 
-                claims.Add(JwtClaimIdentifiers.Role, user.GetAccessClaims().ToArray());
+                claims.Add(JwtClaimIdentifiers.Roles, user.GetAccessClaims().ToArray());
+
+                claims.Add(JwtClaimIdentifiers.AuthenticationGroup, new string[] { user.AuthenticationGroup });
+
+                claims.Add(JwtClaimIdentifiers.Avatar, new string[] { user.Avatar });
 
                 var refreshToken = user.RefreshToken;
 

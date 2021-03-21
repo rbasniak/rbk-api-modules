@@ -1,4 +1,5 @@
-﻿using System;
+﻿using rbkApiModules.Infrastructure.Models;
+using System;
 
 namespace rbkApiModules.Authentication
 {
@@ -14,6 +15,11 @@ namespace rbkApiModules.Authentication
 
         public UserToClaim(BaseUser user, Claim claim, ClaimAcessType access)
         {
+            if (user.AuthenticationGroup != claim.AuthenticationGroup)
+            {
+                throw new SafeException("Invalid authentication groups");
+            }
+
             User = user;
             Claim = claim;
             Access = access;

@@ -18,31 +18,23 @@ namespace rbkApiModules.Authentication
     {
         public class Command : IRequest<QueryResponse>
         {
-        }
-
-        public class Validator : AbstractValidator<Command>
-        {
-            public Validator()
-            {
-                CascadeMode = CascadeMode.Stop;
-            }
-        }
+        } 
 
         public class Handler : BaseQueryHandler<Command, DbContext>
         {
-            private readonly IMapper _mapper;
-
-            public Handler(DbContext context, IHttpContextAccessor httpContextAccessor, IMapper mapper) 
+            public Handler(DbContext context, IHttpContextAccessor httpContextAccessor) 
                 : base(context, httpContextAccessor)
             {
-                _mapper = mapper;
             }
 
             protected override async Task<object> ExecuteAsync(Command request)
             {
+                var authenticationGroup = _httpContextAccessor.GetAuthenticationGroup();
+
                 var results = await _context.Set<Role>()
+                    .Include(x => x.Claims).ThenInclude(x => x.Claim)
+                    .Where(x => EF.Functions.Like(authenticationGroup, x.AuthenticationGroup))
                     .OrderBy(x => x.Name)
-                    .ProjectTo<Roles.Details>(_mapper.ConfigurationProvider)
                     .ToListAsync();
 
                 return results;

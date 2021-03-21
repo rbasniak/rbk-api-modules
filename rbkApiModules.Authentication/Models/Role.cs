@@ -1,6 +1,8 @@
 ﻿using rbkApiModules.Infrastructure.Models;
+using rbkApiModules.UIAnnotations;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace rbkApiModules.Authentication
@@ -19,15 +21,23 @@ namespace rbkApiModules.Authentication
 
         }
 
-        public Role(string name)
+        public Role(string name, string authenticationGroup)
         {
             Name = name;
+            AuthenticationGroup = authenticationGroup;
 
             _users = new HashSet<UserToRole>();
             _claims = new HashSet<RoleToClaim>();
+
+            this.Validate();
         }
 
-        public virtual string Name { get; set; }
+        [Required, MinLength(1), MaxLength(128)]
+        [DialogData(OperationType.CreateAndUpdate, "Nome")]
+        public virtual string Name { get; private set; }
+
+        [Required, MinLength(1), MaxLength(32)]
+        public virtual string AuthenticationGroup { get; private set; }
 
         public virtual IEnumerable<RoleToClaim> Claims => _claims?.ToList();
 

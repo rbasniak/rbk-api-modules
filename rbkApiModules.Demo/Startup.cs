@@ -54,7 +54,7 @@ namespace rbkApiModules.Demo
         private Assembly[] AssembliesForAutoMapper => new Assembly[]
         {
             Assembly.GetAssembly(typeof(CommentsMappings)),
-            Assembly.GetAssembly(typeof(UserMappings)),
+            Assembly.GetAssembly(typeof(RoleMappings)),
         };
 
         private Assembly[] AssembliesBlazorRouting => new Assembly[]
@@ -148,7 +148,7 @@ namespace rbkApiModules.Demo
                 .LimitToPath("/api")
                 .ExcludeMethods("OPTIONS")
                 .ExcludePath(new[] { "/api/test/download" })
-                .UseDemoData()
+                // .UseDemoData()
             );
 
             app.UseSqlServerRbkApiDiagnosticsModule();

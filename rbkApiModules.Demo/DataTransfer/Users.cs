@@ -13,7 +13,7 @@ namespace rbkApiModules.Demo.DataTransfer
     {
         public UsersMapings()
         {
-            CreateMap<User, SimpleNamedEntity>()
+            CreateMap<ClientUser, SimpleNamedEntity>()
                 .ForMember(dto => dto.Name, map => map.MapFrom(entity => entity.Username));
         }
     }

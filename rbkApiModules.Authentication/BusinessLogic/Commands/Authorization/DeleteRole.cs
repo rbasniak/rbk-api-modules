@@ -6,6 +6,7 @@ using rbkApiModules.Infrastructure.MediatR.SqlServer;
 using System;
 using System.Threading.Tasks;
 using rbkApiModules.Infrastructure.MediatR.Core;
+using System.Threading;
 
 namespace rbkApiModules.Authentication
 {
@@ -22,16 +23,28 @@ namespace rbkApiModules.Authentication
         public class Validator : AbstractValidator<Command>
         {
             private readonly DbContext _context;
+            private readonly IHttpContextAccessor _httpContextAccessor;
 
-            public Validator(DbContext context)
+            public Validator(DbContext context, IHttpContextAccessor httpContextAccessor)
             {
                 _context = context;
+                _httpContextAccessor = httpContextAccessor;
 
                 CascadeMode = CascadeMode.Stop;
 
                 RuleFor(a => a.RoleId)
                     .MustExistInDatabase<Command, Role>(context)
+                    .MustAsync(MustBeFromSameAuthenticationGroup).WithMessage("Security breach, role from another authentication group")
                     .WithName("Regra de Acesso");
+            }
+
+            private async Task<bool> MustBeFromSameAuthenticationGroup(Command command, Guid id, CancellationToken cancellation)
+            {
+                var role = await _context.Set<Role>().FindAsync(id);
+                var group = _httpContextAccessor.GetAuthenticationGroup();
+                var userAuthenticationGroup = _httpContextAccessor.GetAuthenticationGroup();
+
+                return role.AuthenticationGroup == group && userAuthenticationGroup == group;
             }
         }
 

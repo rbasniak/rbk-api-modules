@@ -71,6 +71,7 @@ namespace rbkApiModules.Authentication
 
             protected override async Task<(Guid? entityId, object result)> ExecuteAsync(Command request)
             {
+                var claims = new Dictionary<string, string[]>();
 
                 var user = await _context.Set<BaseUser>()
                     .Include(x => x.Roles)
@@ -81,8 +82,11 @@ namespace rbkApiModules.Authentication
                         .ThenInclude(x => x.Claim)
                     .SingleOrDefaultAsync(x => x.RefreshToken == request.RefreshToken && x.RefreshTokenValidity > DateTime.UtcNow);
 
-                var claims = new Dictionary<string, string[]>();
-                claims.Add(JwtClaimIdentifiers.Role, user.GetAccessClaims().ToArray());
+                claims.Add(JwtClaimIdentifiers.Roles, user.GetAccessClaims().ToArray());
+
+                claims.Add(JwtClaimIdentifiers.AuthenticationGroup, new string[] { user.AuthenticationGroup });
+
+                claims.Add(JwtClaimIdentifiers.Avatar, new string[] { user.Avatar });
 
                 var jwt = TokenGenerator.Generate(_jwtFactory, user.Username, claims, user.RefreshToken);
 

@@ -5,6 +5,11 @@ using rbkApiModules.Demo.BusinessLogic;
 using System.Threading.Tasks;
 using rbkApiModules.Infrastructure.Models;
 using System;
+using rbkApiModules.Demo.Database;
+using rbkApiModules.Authentication;
+using Microsoft.EntityFrameworkCore;
+using rbkApiModules.Demo.Models;
+using System.Linq;
 
 namespace rbkApiModules.Demo.Controllers
 {
@@ -29,6 +34,22 @@ namespace rbkApiModules.Demo.Controllers
         public async Task<ActionResult<SimpleNamedEntity>> Single(Guid id)
         {
             return HttpResponse<SimpleNamedEntity>(await Mediator.Send(new GetUserDetails.Command { Id = id }));
+        }
+
+        [AllowAnonymous]
+        [HttpGet("test")]
+        public async Task<ActionResult> Single([FromServices] DatabaseContext context)
+        {
+            var user1 = context.Set<BaseUser>().ToList().First();
+            var user2 = context.Set<BaseUser>().ToList().Last();
+
+            var user3 = await context.Set<ClientUser>().Include(x => x.Client).FirstAsync();
+            var user4 = await context.Set<ManagerUser>().Include(x => x.Manager).FirstAsync();
+
+            var client = await context.Set<Client>().Include(x => x.User).FirstAsync();
+            var manager = await context.Set<Manager>().Include(x => x.User).FirstAsync();
+
+            return Ok("Ok");
         }
     }
 }
