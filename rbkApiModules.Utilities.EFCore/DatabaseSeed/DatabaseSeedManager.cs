@@ -11,17 +11,17 @@ using Microsoft.Extensions.Hosting;
 
 namespace rbkApiModules.Utilities.EFCore
 {
-    public class DatabaseSeedManager<T> where T: DbContext
+    public class DatabaseSeedManager 
     {
         public static bool SeedSuccess = false;
         public static Exception SeedException = null;
 
-        private readonly T _context;
+        private readonly DbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
         private Dictionary<string, SeedInfo> _seed;
 
-        public DatabaseSeedManager(T context, IWebHostEnvironment webHostEnvironment, bool automaticMigrations)
+        public DatabaseSeedManager(DbContext context, IWebHostEnvironment webHostEnvironment, bool automaticMigrations)
         {
             _seed = new Dictionary<string, SeedInfo>();
 
