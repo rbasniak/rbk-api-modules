@@ -9,7 +9,7 @@ namespace rbkApiModules.Demo.Models
 
         }
 
-        public ClientUser(string username, string password, bool isConfirmed, Client client): base(username, password, "client")
+        public ClientUser(string username, string password, bool isConfirmed, Client client): base(username, "", password, "client")
         {
             IsConfirmed = isConfirmed;
             Client = client;

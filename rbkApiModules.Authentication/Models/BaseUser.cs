@@ -62,6 +62,8 @@ namespace rbkApiModules.Authentication
         [MaxLength(1024)]
         public virtual string Avatar { get; private set; }
 
+        public virtual bool IsConfirmed { get; private set; }
+
         public virtual DateTime RefreshTokenValidity { get; private set; }
 
         public virtual IEnumerable<UserToRole> Roles => _roles?.ToList();
