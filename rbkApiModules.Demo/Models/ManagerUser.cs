@@ -15,8 +15,6 @@ namespace rbkApiModules.Demo.Models
             Manager = manager;
         }
 
-        public bool IsConfirmed { get; set; }
-
         public bool IsAdmin { get; private set; }
 
         public Manager Manager { get; private set; }
