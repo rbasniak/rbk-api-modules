@@ -11,7 +11,6 @@ namespace rbkApiModules.Demo.Models
 
         public ManagerUser(string username, string password, bool isConfirmed, Manager manager) : base(username, password, "", "Fulano", "manager")
         {
-            IsConfirmed = isConfirmed;
             Manager = manager;
         }
 
