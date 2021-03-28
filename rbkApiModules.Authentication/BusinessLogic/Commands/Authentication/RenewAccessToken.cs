@@ -88,6 +88,8 @@ namespace rbkApiModules.Authentication
 
                 claims.Add(JwtClaimIdentifiers.Avatar, new string[] { user.Avatar });
 
+                claims.Add(JwtClaimIdentifiers.DisplayName, new string[] { String.IsNullOrEmpty(user.DisplayName) ? user.Username : user.DisplayName });
+
                 var jwt = TokenGenerator.Generate(_jwtFactory, user.Username, claims, user.RefreshToken);
 
                 return (null, jwt);

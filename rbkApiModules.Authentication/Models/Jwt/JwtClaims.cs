@@ -18,5 +18,6 @@
         public const string Domain = "domain";
         public const string AuthenticationGroup = "auth-group";
         public const string Avatar = "avatar";
+        public const string DisplayName = "display-name";
     }
 }

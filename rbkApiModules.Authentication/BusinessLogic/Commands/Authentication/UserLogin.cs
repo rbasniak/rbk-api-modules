@@ -109,6 +109,8 @@ namespace rbkApiModules.Authentication
 
                 claims.Add(JwtClaimIdentifiers.Avatar, new string[] { user.Avatar });
 
+                claims.Add(JwtClaimIdentifiers.DisplayName, new string[] { String.IsNullOrEmpty(user.DisplayName) ? user.Username : user.DisplayName});
+
                 var refreshToken = user.RefreshToken;
 
                 if (user.RefreshTokenValidity < DateTime.UtcNow)

@@ -59,6 +59,9 @@ namespace rbkApiModules.Authentication
         [Required, MinLength(1), MaxLength(32)]
         public virtual string AuthenticationGroup { get; private set; }
 
+        [MaxLength(32)]
+        public virtual string DisplayName { get; private set; }
+
         [MaxLength(1024)]
         public virtual string Avatar { get; private set; }
 
