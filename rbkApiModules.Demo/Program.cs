@@ -14,7 +14,7 @@ using rbkApiModules.Demo.Database.StateMachine;
 namespace rbkApiModules.Demo
 {
     public class Program
-    {
+    { 
         public static int Main(string[] args)
         {
             //// Create the Serilog logger, and configure the sinks
