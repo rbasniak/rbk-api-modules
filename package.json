@@ -57,7 +57,8 @@
           "rbkApiModules.Workflow/rbkApiModules.Workflow.csproj",
           "rbkApiModules.Workflow/rbkApiModules.Workflow.csproj",
           "rbkApiModules.CodeGeneration.Commons/rbkApiModules.CodeGeneration.Commons.csproj",
-          "rbkApiModules.Paypal.SqlServer/rbkApiModules.Paypal.SqlServer.csproj"
+          "rbkApiModules.Paypal.SqlServer/rbkApiModules.Paypal.SqlServer.csproj",
+          "rbkApiModules.Payment.SqlServer/rbkApiModules.Payment.SqlServer.csproj"
         ]
       }
     },
