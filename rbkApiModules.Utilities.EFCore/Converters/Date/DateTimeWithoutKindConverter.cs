@@ -13,7 +13,7 @@ namespace rbkApiModules.Utilities.EFCore
         {
             var converter = new ValueConverter<DateTime, DateTime>(
                 v => ToDatabase(v),
-                v => FromDatabase(v));
+                v => FromDatabase(v)); 
 
             return converter;
         }
