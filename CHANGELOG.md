@@ -1,3 +1,10 @@
+# 2.4.0 (2021-03-29)
+
+
+### Features
+
+* nova lib para gestão de pagamentos ([9a35033](https://github.com/rbasniak/rbk-api-modules/commit/9a35033cafd8cccf2a84ee041b31ec0ace54e681))
+
 ## 2.3.13 (2021-03-28)
 
 ## 2.3.12 (2021-03-28)
