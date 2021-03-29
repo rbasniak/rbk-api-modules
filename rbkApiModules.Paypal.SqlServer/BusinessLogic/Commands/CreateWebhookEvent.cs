@@ -40,7 +40,7 @@ namespace rbkApiModules.Paypal.SqlServer
 
                 var jsonBody = JsonConvert.DeserializeObject<WebhookEventResponse>(requestBody);
 
-                var validationStatus = "";
+                string validationStatus;
 
                 try
                 {
@@ -57,7 +57,7 @@ namespace rbkApiModules.Paypal.SqlServer
 
                 await _context.AddAsync(webhookEvent);
 
-                _paypalActions.OnWebhookEventReceived(jsonBody);
+                await _paypalActions.OnWebhookEventReceived(jsonBody);
 
                 await _context.SaveChangesAsync();
 

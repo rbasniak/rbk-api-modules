@@ -15,7 +15,7 @@ namespace rbkApiModules.Infrastructure.MediatR.Core
     public abstract class BaseCommandHandler<TCommand> : BaseHandler<TCommand, CommandResponse>, IRequestHandler<TCommand, CommandResponse>
         where TCommand : IRequest<CommandResponse>
     {
-        public BaseCommandHandler(IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
+        public BaseCommandHandler(Microsoft.EntityFrameworkCore.DbContext context, IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
         {
         }
 
