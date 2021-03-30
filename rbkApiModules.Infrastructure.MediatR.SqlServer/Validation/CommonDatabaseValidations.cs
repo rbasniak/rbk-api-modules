@@ -142,12 +142,11 @@ namespace rbkApiModules.Infrastructure.MediatR.SqlServer
 
                                     if (enumerable != null)
                                     {
-                                        var list = enumerable.Cast<BaseEntity>();
-
-                                        if (list.Count() > 0)
+                                        var enumerator = enumerable.GetEnumerator();
+                                        
+                                        if (enumerator.MoveNext())
                                         {
                                             isUsed = true;
-
                                             break;
                                         }
                                     }
