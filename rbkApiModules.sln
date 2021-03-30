@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		CodeCoverage.runsettings = CodeCoverage.runsettings
 		CovereageReport.bat = CovereageReport.bat
 		package.json = package.json
-		publish.bat = publish.bat
+		publish.txt = publish.txt
 		publish_pre-release.txt = publish_pre-release.txt
 		README.md = README.md
 		.github\workflows\release-it.yml = .github\workflows\release-it.yml
@@ -178,7 +178,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.CodeGeneratio
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Payment", "Payment", "{F8531432-FAD8-403A-A6B1-DBBB79A13CBF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.Payment.SqlServer", "rbkApiModules.Payment.SqlServer\rbkApiModules.Payment.SqlServer.csproj", "{33CEF078-E39B-4FBE-8434-915065159A90}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Payment.SqlServer", "rbkApiModules.Payment.SqlServer\rbkApiModules.Payment.SqlServer.csproj", "{33CEF078-E39B-4FBE-8434-915065159A90}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
