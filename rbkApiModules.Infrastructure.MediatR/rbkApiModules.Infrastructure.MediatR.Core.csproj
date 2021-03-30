@@ -10,7 +10,14 @@
     <Product>rbkApiModules</Product>
     <Copyright>rbasniak</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+
+    <Optimize>false</Optimize>
+    <DebugSymbols>true</DebugSymbols>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <DebugType>embedded</DebugType>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
   </PropertyGroup>
+ 
 
   <ItemGroup>
       <FrameworkReference Include="Microsoft.AspNetCore.App" />
