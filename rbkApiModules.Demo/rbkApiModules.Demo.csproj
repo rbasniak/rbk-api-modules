@@ -56,7 +56,8 @@
     <ProjectReference Include="..\rbkApiModules.UIAnnotations\rbkApiModules.UIAnnotations.csproj" />
     <ProjectReference Include="..\rbkApiModules.Utilities\rbkApiModules.Utilities.csproj" />
     <ProjectReference Include="..\rbkApiModules.Workflow\rbkApiModules.Workflow.csproj" />
+    <ProjectReference Include="..\rbkApiModules.Paypal.SqlServer\rbkApiModules.Paypal.SqlServer.csproj" />
+    <ProjectReference Include="..\rbkApiModules.Payment.SqlServer\rbkApiModules.Payment.SqlServer.csproj" />
   </ItemGroup>
-
 
 </Project>

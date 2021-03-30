@@ -49,7 +49,7 @@ namespace rbkApiModules.Demo.BusinessLogic
 
             protected override async Task<(Guid? entityId, object result)> ExecuteAsync(Command request)
             {
-                var user = new ClientUser(request.Username, request.Password, true, new Client(request.Name, DateTime.Now));
+                var user = new ClientUser(request.Username, request.Password, true, new Client(request.Name, DateTime.Now, null));
 
                 _context.Add(user);
 

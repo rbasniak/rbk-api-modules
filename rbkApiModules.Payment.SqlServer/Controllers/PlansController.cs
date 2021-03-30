@@ -24,7 +24,6 @@ namespace rbkApiModules.Payment.SqlServer
         /// </summary>
         [HttpGet]
         [Route("active")]
-        [AllowAnonymous]
         public async Task<ActionResult<PlanDto.Details[]>> AllActive()
         {
             return HttpResponse<PlanDto.Details[]>(await Mediator.Send(new GetAllActivePlans.Command()));

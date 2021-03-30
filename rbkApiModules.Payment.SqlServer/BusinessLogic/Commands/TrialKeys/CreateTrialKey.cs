@@ -30,14 +30,16 @@ namespace rbkApiModules.Payment.SqlServer
                 CascadeMode = CascadeMode.Stop;
 
                 RuleFor(x => x.PlanId)
-                    .MustExistInDatabase<Command, Plan>(context).WithMessage("Plano não encontrado");
+                    .MustExistInDatabase<Command, Plan>(context)
+                    .WithName("Plano");
 
                 RuleFor(x => x.ClientId)
-                    .MustExistInDatabase<Command, Plan>(context)
-                    .WithMessage("Cliente não encontrado");
+                    .MustExistInDatabase<Command, BaseClient>(context)
+                    .WithName("Cliente");
 
                 RuleFor(x => x.Days)
-                    .GreaterThan(0).WithMessage("O número de dias deve ser maior que zero");
+                    .GreaterThan(0)
+                    .WithMessage("O número de dias deve ser maior que zero");
             }
         }
 

@@ -1,18 +1,20 @@
 ﻿using rbkApiModules.Infrastructure.Models;
+using rbkApiModules.Payment.SqlServer;
 using rbkApiModules.UIAnnotations;
 using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace rbkApiModules.Demo.Models
 {
-    public class Client: BaseEntity
+    public class Client : BaseClient
     {
         protected Client()
         {
 
         }
 
-        public Client(string name, DateTime birthdate)
+        public Client(string name, DateTime birthdate, Plan plan)
+            : base(plan)
         {
             Name = name;
             Birthdate = birthdate;

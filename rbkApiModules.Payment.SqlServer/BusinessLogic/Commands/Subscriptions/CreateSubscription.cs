@@ -32,11 +32,12 @@ namespace rbkApiModules.Payment.SqlServer
                 CascadeMode = CascadeMode.Stop;
 
                 RuleFor(x => x.ClientId)
-                    .MustExistInDatabase<Command, Plan>(context)
-                    .WithMessage("Cliente não encontrado");
+                    .MustExistInDatabase<Command, BaseClient>(context)
+                    .WithName("Cliente");
 
                 RuleFor(x => x.PlanId)
-                    .MustExistInDatabase<Command, Plan>(context).WithMessage("INVALID_PlANID");
+                    .MustExistInDatabase<Command, Plan>(context)
+                    .WithName("Plano");
             }
         }
 
@@ -52,7 +53,10 @@ namespace rbkApiModules.Payment.SqlServer
 
             protected override async Task<(Guid? entityId, object result)> ExecuteAsync(Command request)
             {
-                var client = await _context.Set<BaseClient>().FindAsync(request.ClientId);
+                var client = await _context.Set<BaseClient>()
+                    .Include(x => x.TrialKey)
+                    .SingleAsync(x => x.Id == request.ClientId);
+
                 var plan = await _context.Set<Plan>().FindAsync(request.PlanId);
 
                 var subscription = new Subscription(client, plan, request.BillingToken,

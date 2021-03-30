@@ -30,8 +30,8 @@ namespace rbkApiModules.Payment.SqlServer
                 CascadeMode = CascadeMode.Stop;
 
                 RuleFor(x => x.ClientId)
-                    .MustExistInDatabase<Command, Plan>(context)
-                    .WithMessage("Cliente não encontrado");
+                    .MustExistInDatabase<Command, BaseClient>(context)
+                    .WithName("Cliente");
 
                 RuleFor(x => x.Reason)
                     .IsRequired()

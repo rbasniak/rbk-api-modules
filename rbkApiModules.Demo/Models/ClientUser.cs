@@ -9,15 +9,15 @@ namespace rbkApiModules.Demo.Models
 
         }
 
-        public ClientUser(string username, string password, bool isConfirmed, Client client): base(username, "", "Fulano", password, "client")
+        public ClientUser(string username, string password, bool isConfirmed, Client client): base(username, password, "", client.Name, "client")
         {
             IsConfirmed = isConfirmed;
             Client = client;
         }
 
-        public bool IsConfirmed { get; set; }
+        public bool IsConfirmed { get; private set; }
 
-        public string IsBlocked { get; set; }
+        public string IsBlocked { get; private set; }
 
         public Client Client { get; private set; }
     }

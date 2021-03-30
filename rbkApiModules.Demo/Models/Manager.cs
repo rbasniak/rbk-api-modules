@@ -1,18 +1,20 @@
 ﻿using rbkApiModules.Infrastructure.Models;
+using rbkApiModules.Payment.SqlServer;
 using rbkApiModules.UIAnnotations;
 using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace rbkApiModules.Demo.Models
 {
-    public class Manager : BaseEntity
+    public class Manager : BaseClient
     {
         protected Manager()
         {
 
         }
 
-        public Manager(string name)
+        public Manager(string name, Plan plan)
+            : base(plan)
         {
             Name = name;
         }

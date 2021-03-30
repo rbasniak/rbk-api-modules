@@ -24,9 +24,9 @@ namespace rbkApiModules.Demo.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AuthenticationGroup = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    AuthenticationGroup = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -71,6 +71,24 @@ namespace rbkApiModules.Demo.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Plans",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    Duration = table.Column<int>(type: "int", nullable: false),
+                    Price = table.Column<double>(type: "float", nullable: false),
+                    IsDefault = table.Column<bool>(type: "bit", nullable: false),
+                    PaypalId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PaypalSandboxId = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Plans", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "QueryDefinition",
                 columns: table => new
                 {
@@ -103,8 +121,8 @@ namespace rbkApiModules.Demo.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    AuthenticationGroup = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    AuthenticationGroup = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -128,15 +146,16 @@ namespace rbkApiModules.Demo.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: false),
-                    RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AuthenticationGroup = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Username = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", maxLength: 4096, nullable: false),
+                    RefreshToken = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: true),
+                    AuthenticationGroup = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false),
+                    DisplayName = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: true),
+                    Avatar = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: true),
+                    IsConfirmed = table.Column<bool>(type: "bit", nullable: false),
                     RefreshTokenValidity = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsConfirmed = table.Column<bool>(type: "bit", nullable: true),
                     IsBlocked = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ManagerUser_IsConfirmed = table.Column<bool>(type: "bit", nullable: true),
                     IsAdmin = table.Column<bool>(type: "bit", nullable: true)
                 },
                 constraints: table =>
@@ -180,6 +199,27 @@ namespace rbkApiModules.Demo.Migrations
                         principalTable: "Blog",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TrialKeys",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UsedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    TrialPeriod = table.Column<int>(type: "int", nullable: false),
+                    PlanId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TrialKeys", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TrialKeys_Plans_PlanId",
+                        column: x => x.PlanId,
+                        principalTable: "Plans",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -253,43 +293,6 @@ namespace rbkApiModules.Demo.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Clients",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
-                    Birthdate = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Clients", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Clients_Users_Id",
-                        column: x => x.Id,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Managers",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Managers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Managers_Users_Id",
-                        column: x => x.Id,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "UsersToClaims",
                 columns: table => new
                 {
@@ -336,6 +339,42 @@ namespace rbkApiModules.Demo.Migrations
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Customers",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SubscriptionInCancelation = table.Column<bool>(type: "bit", nullable: false),
+                    SubscriptionHasExpired = table.Column<bool>(type: "bit", nullable: false),
+                    PlanId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    TrialKeyId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: true),
+                    Birthdate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Customers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Customers_Plans_PlanId",
+                        column: x => x.PlanId,
+                        principalTable: "Plans",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Customers_TrialKeys_TrialKeyId",
+                        column: x => x.TrialKeyId,
+                        principalTable: "TrialKeys",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Customers_Users_Id",
+                        column: x => x.Id,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -416,6 +455,37 @@ namespace rbkApiModules.Demo.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Subscriptions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ClientId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PlanId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SubscriptionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    BillingToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FacilitatorAccessToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OrderID = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SubscriptionID = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Amount = table.Column<double>(type: "float", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Subscriptions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Subscriptions_Customers_ClientId",
+                        column: x => x.ClientId,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Subscriptions_Plans_PlanId",
+                        column: x => x.PlanId,
+                        principalTable: "Plans",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "StateChangeEvents",
                 columns: table => new
                 {
@@ -438,17 +508,48 @@ namespace rbkApiModules.Demo.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Payments",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SubscriptionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PaymentID = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Payments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Payments_Subscriptions_SubscriptionId",
+                        column: x => x.SubscriptionId,
+                        principalTable: "Subscriptions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Claims_Name_AuthenticationGroup",
                 table: "Claims",
                 columns: new[] { "Name", "AuthenticationGroup" },
-                unique: true,
-                filter: "[Name] IS NOT NULL AND [AuthenticationGroup] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comment_ParentId",
                 table: "Comment",
                 column: "ParentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Customers_PlanId",
+                table: "Customers",
+                column: "PlanId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Customers_TrialKeyId",
+                table: "Customers",
+                column: "TrialKeyId",
+                unique: true,
+                filter: "[TrialKeyId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Documents_StateId",
@@ -459,6 +560,11 @@ namespace rbkApiModules.Demo.Migrations
                 name: "IX_Editor_BlogId",
                 table: "Editor",
                 column: "BlogId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Payments_SubscriptionId",
+                table: "Payments",
+                column: "SubscriptionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Post_BlogId",
@@ -479,8 +585,7 @@ namespace rbkApiModules.Demo.Migrations
                 name: "IX_Roles_Name_AuthenticationGroup",
                 table: "Roles",
                 columns: new[] { "Name", "AuthenticationGroup" },
-                unique: true,
-                filter: "[Name] IS NOT NULL AND [AuthenticationGroup] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_RolesToClaims_RoleId",
@@ -498,6 +603,16 @@ namespace rbkApiModules.Demo.Migrations
                 column: "GroupId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Subscriptions_ClientId",
+                table: "Subscriptions",
+                column: "ClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Subscriptions_PlanId",
+                table: "Subscriptions",
+                column: "PlanId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Transitions_EventId",
                 table: "Transitions",
                 column: "EventId");
@@ -513,11 +628,15 @@ namespace rbkApiModules.Demo.Migrations
                 column: "ToStateId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_TrialKeys_PlanId",
+                table: "TrialKeys",
+                column: "PlanId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Users_Username_AuthenticationGroup",
                 table: "Users",
                 columns: new[] { "Username", "AuthenticationGroup" },
-                unique: true,
-                filter: "[Username] IS NOT NULL AND [AuthenticationGroup] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_UsersToClaims_UserId",
@@ -533,16 +652,13 @@ namespace rbkApiModules.Demo.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Clients");
-
-            migrationBuilder.DropTable(
                 name: "Comment");
 
             migrationBuilder.DropTable(
                 name: "Editor");
 
             migrationBuilder.DropTable(
-                name: "Managers");
+                name: "Payments");
 
             migrationBuilder.DropTable(
                 name: "Post");
@@ -569,6 +685,9 @@ namespace rbkApiModules.Demo.Migrations
                 name: "UsersToRoles");
 
             migrationBuilder.DropTable(
+                name: "Subscriptions");
+
+            migrationBuilder.DropTable(
                 name: "Blog");
 
             migrationBuilder.DropTable(
@@ -590,13 +709,22 @@ namespace rbkApiModules.Demo.Migrations
                 name: "Roles");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "Customers");
 
             migrationBuilder.DropTable(
                 name: "States");
 
             migrationBuilder.DropTable(
+                name: "TrialKeys");
+
+            migrationBuilder.DropTable(
+                name: "Users");
+
+            migrationBuilder.DropTable(
                 name: "StateGroups");
+
+            migrationBuilder.DropTable(
+                name: "Plans");
         }
     }
 }
