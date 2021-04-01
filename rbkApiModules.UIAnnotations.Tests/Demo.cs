@@ -1,11 +1,23 @@
 ﻿using rbkApiModules.Infrastructure.Models;
+using rbkApiModules.UIAnnotations.Tests;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using Xunit;
 
 namespace rbkApiModules.UIAnnotations
 {
+
+    public class Tests2
+    {
+        [Fact]
+        public void Test()
+        {
+            var service = new DialogDataBuilderService();
+            var result = service.Build(typeof(MedicalInstitution), OperationType.Create);
+        }
+    }
 
     public class DemoEntity : BaseEntity
     {

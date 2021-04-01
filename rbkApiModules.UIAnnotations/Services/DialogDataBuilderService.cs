@@ -29,9 +29,16 @@ namespace rbkApiModules.UIAnnotations
                 if (dialogData != null && (operation == dialogData.Operation || dialogData.Operation == OperationType.CreateAndUpdate))
                 {
                     var name = Char.ToLower(property.Name[0]) + property.Name.Substring(1);
-                    var inputData = new InputControl(name, property.PropertyType, required, minlen, maxlen, dialogData);
 
-                    allInputs.Add(inputData);
+                    if (dialogData.Source == DataSource.ChildForm)
+                    {
+                        allInputs.AddRange(Build(property.PropertyType, operation).SelectMany(x => x.Controls));
+                    }
+                    else
+                    {
+                        var inputData = new InputControl(name, property.PropertyType, required, minlen, maxlen, dialogData);
+                        allInputs.Add(inputData);
+                    }
                 }
             }
 
