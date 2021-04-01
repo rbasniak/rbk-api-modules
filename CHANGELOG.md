@@ -1,3 +1,12 @@
+## 2.4.11 (2021-03-30)
+
+
+### Bug Fixes
+
+* Adjusting the payment library controls after testing ([666d283](https://github.com/rbasniak/rbk-api-modules/commit/666d283f5806d638a150f09c6f0d14dfa1d064c4))
+
+## 2.4.10 (2021-03-30)
+
 ## 2.4.9 (2021-03-30)
 
 ## 2.4.8 (2021-03-30)

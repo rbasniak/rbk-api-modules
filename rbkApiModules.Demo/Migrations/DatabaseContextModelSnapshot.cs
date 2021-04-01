@@ -26,27 +26,41 @@ namespace rbkApiModules.Demo.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("AuthenticationGroup")
-                        .HasColumnType("nvarchar(450)");
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
+
+                    b.Property<string>("Avatar")
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
 
                     b.Property<string>("Discriminator")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("DisplayName")
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
+
+                    b.Property<bool>("IsConfirmed")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasMaxLength(1024)
-                        .HasColumnType("nvarchar(1024)");
+                        .HasMaxLength(4096)
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RefreshToken")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<DateTime>("RefreshTokenValidity")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasMaxLength(512)
-                        .HasColumnType("nvarchar(512)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id");
 
@@ -62,21 +76,24 @@ namespace rbkApiModules.Demo.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("AuthenticationGroup")
-                        .HasColumnType("nvarchar(450)");
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Name", "AuthenticationGroup")
-                        .IsUnique()
-                        .HasFilter("[Name] IS NOT NULL AND [AuthenticationGroup] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("Claims");
                 });
@@ -88,17 +105,19 @@ namespace rbkApiModules.Demo.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("AuthenticationGroup")
-                        .HasColumnType("nvarchar(450)");
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Name", "AuthenticationGroup")
-                        .IsUnique()
-                        .HasFilter("[Name] IS NOT NULL AND [AuthenticationGroup] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("Roles");
                 });
@@ -193,24 +212,6 @@ namespace rbkApiModules.Demo.Migrations
                     b.ToTable("Blog");
                 });
 
-            modelBuilder.Entity("rbkApiModules.Demo.Models.Client", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("Birthdate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(512)
-                        .HasColumnType("nvarchar(512)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Clients");
-                });
-
             modelBuilder.Entity("rbkApiModules.Demo.Models.Editor", b =>
                 {
                     b.Property<Guid>("Id")
@@ -228,21 +229,6 @@ namespace rbkApiModules.Demo.Migrations
                     b.HasIndex("BlogId");
 
                     b.ToTable("Editor");
-                });
-
-            modelBuilder.Entity("rbkApiModules.Demo.Models.Manager", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(512)
-                        .HasColumnType("nvarchar(512)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Managers");
                 });
 
             modelBuilder.Entity("rbkApiModules.Demo.Models.Post", b =>
@@ -502,6 +488,158 @@ namespace rbkApiModules.Demo.Migrations
                     b.ToTable("Transitions");
                 });
 
+            modelBuilder.Entity("rbkApiModules.Payment.SqlServer.BaseClient", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("PlanId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("SubscriptionHasExpired")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("SubscriptionInCancelation")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("TrialKeyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PlanId");
+
+                    b.HasIndex("TrialKeyId")
+                        .IsUnique()
+                        .HasFilter("[TrialKeyId] IS NOT NULL");
+
+                    b.ToTable("Customers");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("BaseClient");
+                });
+
+            modelBuilder.Entity("rbkApiModules.Payment.SqlServer.Payment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PaymentID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("SubscriptionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SubscriptionId");
+
+                    b.ToTable("Payments");
+                });
+
+            modelBuilder.Entity("rbkApiModules.Payment.SqlServer.Plan", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Duration")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PaypalId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PaypalSandboxId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Plans");
+                });
+
+            modelBuilder.Entity("rbkApiModules.Payment.SqlServer.Subscription", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("Amount")
+                        .HasColumnType("float");
+
+                    b.Property<string>("BillingToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ClientId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("FacilitatorAccessToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OrderID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("PlanId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("SubscriptionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("SubscriptionID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
+
+                    b.HasIndex("PlanId");
+
+                    b.ToTable("Subscriptions");
+                });
+
+            modelBuilder.Entity("rbkApiModules.Payment.SqlServer.TrialKey", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("PlanId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("TrialPeriod")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UsedOn")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PlanId");
+
+                    b.ToTable("TrialKeys");
+                });
+
             modelBuilder.Entity("rbkApiModules.Demo.Models.ClientUser", b =>
                 {
                     b.HasBaseType("rbkApiModules.Authentication.BaseUser");
@@ -509,12 +647,8 @@ namespace rbkApiModules.Demo.Migrations
                     b.Property<string>("IsBlocked")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsConfirmed")
-                        .HasColumnType("bit");
-
                     b.HasIndex("Username", "AuthenticationGroup")
-                        .IsUnique()
-                        .HasFilter("[Username] IS NOT NULL AND [AuthenticationGroup] IS NOT NULL");
+                        .IsUnique();
 
                     b.HasDiscriminator().HasValue("ClientUser");
                 });
@@ -526,11 +660,38 @@ namespace rbkApiModules.Demo.Migrations
                     b.Property<bool>("IsAdmin")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsConfirmed")
-                        .HasColumnType("bit")
-                        .HasColumnName("ManagerUser_IsConfirmed");
-
                     b.HasDiscriminator().HasValue("ManagerUser");
+                });
+
+            modelBuilder.Entity("rbkApiModules.Demo.Models.Client", b =>
+                {
+                    b.HasBaseType("rbkApiModules.Payment.SqlServer.BaseClient");
+
+                    b.Property<DateTime>("Birthdate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)")
+                        .HasColumnName("Name");
+
+                    b.HasDiscriminator().HasValue("Client");
+                });
+
+            modelBuilder.Entity("rbkApiModules.Demo.Models.Manager", b =>
+                {
+                    b.HasBaseType("rbkApiModules.Payment.SqlServer.BaseClient");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)")
+                        .HasColumnName("Name");
+
+                    b.HasDiscriminator().HasValue("Manager");
                 });
 
             modelBuilder.Entity("rbkApiModules.Authentication.RoleToClaim", b =>
@@ -600,17 +761,6 @@ namespace rbkApiModules.Demo.Migrations
                     b.Navigation("Parent");
                 });
 
-            modelBuilder.Entity("rbkApiModules.Demo.Models.Client", b =>
-                {
-                    b.HasOne("rbkApiModules.Demo.Models.ClientUser", "User")
-                        .WithOne("Client")
-                        .HasForeignKey("rbkApiModules.Demo.Models.Client", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("rbkApiModules.Demo.Models.Editor", b =>
                 {
                     b.HasOne("rbkApiModules.Demo.Models.Blog", "Blog")
@@ -620,17 +770,6 @@ namespace rbkApiModules.Demo.Migrations
                         .IsRequired();
 
                     b.Navigation("Blog");
-                });
-
-            modelBuilder.Entity("rbkApiModules.Demo.Models.Manager", b =>
-                {
-                    b.HasOne("rbkApiModules.Demo.Models.ManagerUser", "User")
-                        .WithOne("Manager")
-                        .HasForeignKey("rbkApiModules.Demo.Models.Manager", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("rbkApiModules.Demo.Models.Post", b =>
@@ -742,6 +881,86 @@ namespace rbkApiModules.Demo.Migrations
                     b.Navigation("ToState");
                 });
 
+            modelBuilder.Entity("rbkApiModules.Payment.SqlServer.BaseClient", b =>
+                {
+                    b.HasOne("rbkApiModules.Payment.SqlServer.Plan", "Plan")
+                        .WithMany("Clients")
+                        .HasForeignKey("PlanId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("rbkApiModules.Payment.SqlServer.TrialKey", "TrialKey")
+                        .WithOne()
+                        .HasForeignKey("rbkApiModules.Payment.SqlServer.BaseClient", "TrialKeyId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Plan");
+
+                    b.Navigation("TrialKey");
+                });
+
+            modelBuilder.Entity("rbkApiModules.Payment.SqlServer.Payment", b =>
+                {
+                    b.HasOne("rbkApiModules.Payment.SqlServer.Subscription", "Subscription")
+                        .WithMany("Payments")
+                        .HasForeignKey("SubscriptionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Subscription");
+                });
+
+            modelBuilder.Entity("rbkApiModules.Payment.SqlServer.Subscription", b =>
+                {
+                    b.HasOne("rbkApiModules.Payment.SqlServer.BaseClient", "Client")
+                        .WithMany("Subscriptions")
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("rbkApiModules.Payment.SqlServer.Plan", "Plan")
+                        .WithMany("Subscriptions")
+                        .HasForeignKey("PlanId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Client");
+
+                    b.Navigation("Plan");
+                });
+
+            modelBuilder.Entity("rbkApiModules.Payment.SqlServer.TrialKey", b =>
+                {
+                    b.HasOne("rbkApiModules.Payment.SqlServer.Plan", "Plan")
+                        .WithMany()
+                        .HasForeignKey("PlanId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Plan");
+                });
+
+            modelBuilder.Entity("rbkApiModules.Demo.Models.Client", b =>
+                {
+                    b.HasOne("rbkApiModules.Demo.Models.ClientUser", "User")
+                        .WithOne("Client")
+                        .HasForeignKey("rbkApiModules.Demo.Models.Client", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("rbkApiModules.Demo.Models.Manager", b =>
+                {
+                    b.HasOne("rbkApiModules.Demo.Models.ManagerUser", "User")
+                        .WithOne("Manager")
+                        .HasForeignKey("rbkApiModules.Demo.Models.Manager", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("rbkApiModules.Authentication.BaseUser", b =>
                 {
                     b.Navigation("Claims");
@@ -809,6 +1028,23 @@ namespace rbkApiModules.Demo.Migrations
             modelBuilder.Entity("rbkApiModules.Demo.Models.StateMachine.StateGroup", b =>
                 {
                     b.Navigation("States");
+                });
+
+            modelBuilder.Entity("rbkApiModules.Payment.SqlServer.BaseClient", b =>
+                {
+                    b.Navigation("Subscriptions");
+                });
+
+            modelBuilder.Entity("rbkApiModules.Payment.SqlServer.Plan", b =>
+                {
+                    b.Navigation("Clients");
+
+                    b.Navigation("Subscriptions");
+                });
+
+            modelBuilder.Entity("rbkApiModules.Payment.SqlServer.Subscription", b =>
+                {
+                    b.Navigation("Payments");
                 });
 
             modelBuilder.Entity("rbkApiModules.Demo.Models.ClientUser", b =>

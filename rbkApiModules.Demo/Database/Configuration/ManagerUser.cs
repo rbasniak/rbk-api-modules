@@ -5,7 +5,7 @@ using rbkApiModules.Demo.Models;
 
 namespace rbkApiModules.Demo.Database
 {
-    public class ManagerUserConfig : IEntityTypeConfiguration<ManagerUser>
+    public class ManagerUserConfig : BaseUserConfig, IEntityTypeConfiguration<ManagerUser>
     { 
         public void Configure(EntityTypeBuilder<ManagerUser> entity)
         {

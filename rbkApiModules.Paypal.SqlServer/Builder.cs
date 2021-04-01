@@ -7,11 +7,11 @@ namespace rbkApiModules.Paypal.SqlServer
 {
     public static class Builder
     {
-        public static void AddRbkApiPaypalModule<T>(this IServiceCollection services) where T : class, IPaypalActions
+        public static void AddRbkApiPaypalModule<TPaypalActions>(this IServiceCollection services) where TPaypalActions : class, IPaypalActions
         {
             services.RegisterApplicationServices(Assembly.GetAssembly(typeof(IPaypalService)));
 
-            services.AddTransient<IPaypalActions, T>();
+            services.AddTransient<IPaypalActions, TPaypalActions>();
 
             AssemblyScanner
                 .FindValidatorsInAssembly(Assembly.GetAssembly(typeof(CreateWebhookEvent.Command)))

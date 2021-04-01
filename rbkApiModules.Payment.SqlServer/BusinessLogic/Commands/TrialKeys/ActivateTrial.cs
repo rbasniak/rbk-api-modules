@@ -30,9 +30,9 @@ namespace rbkApiModules.Payment.SqlServer
                 CascadeMode = CascadeMode.Stop;
 
                 RuleFor(x => x.Key)
-                    .MustExistInDatabase<Command, TrialKey>(context).WithMessage("InvalidKey")
-                    .MustAsync(KeyIsUnused).WithMessage("KeyAlreadyUsed")
-                    .MustAsync(NotHaveActivePlan).WithMessage("HaveActivePlan");
+                    .MustExistInDatabase<Command, TrialKey>(context).WithName("Chave de teste")
+                    .MustAsync(KeyIsUnused).WithMessage("Chave de teste já em uso")
+                    .MustAsync(NotHaveActivePlan).WithMessage("Chave de teste não possui um plano ativo");
 
             }
 

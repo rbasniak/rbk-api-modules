@@ -1,14 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using rbkApiModules.Demo.Models;
+using rbkApiModules.Payment.SqlServer;
 
 namespace rbkApiModules.Demo.Database
 {
-    public class ClientConfig: IEntityTypeConfiguration<Client>
+    public class ClientConfig : BaseClientConfig, IEntityTypeConfiguration<Client>
     { 
         public void Configure(EntityTypeBuilder<Client> entity)
         {
-            entity.ToTable("Clients");
+            Configure<Client>(entity);
 
             entity.Property(x => x.Name).HasMaxLength(512);
 

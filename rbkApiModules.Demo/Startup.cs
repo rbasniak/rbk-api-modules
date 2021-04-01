@@ -30,6 +30,8 @@ using rbkApiModules.Infrastructure.MediatR.SqlServer;
 using AutoMapper;
 using rbkApiModules.Workflow;
 using rbkApiModules.Demo.Models.StateMachine;
+using rbkApiModules.Payment.SqlServer;
+using rbkApiModules.Paypal.SqlServer;
 
 namespace rbkApiModules.Demo
 {
@@ -55,6 +57,7 @@ namespace rbkApiModules.Demo
         {
             Assembly.GetAssembly(typeof(CommentsMappings)),
             Assembly.GetAssembly(typeof(RoleMappings)),
+            Assembly.GetAssembly(typeof(PlanMappings)),
         };
 
         private Assembly[] AssembliesBlazorRouting => new Assembly[]
@@ -72,6 +75,8 @@ namespace rbkApiModules.Demo
             Assembly.GetAssembly(typeof(GetUiDefinitions.Command)),
             Assembly.GetAssembly(typeof(FilterAnalyticsEntries.Command)),
             Assembly.GetAssembly(typeof(FilterDiagnosticsEntries.Command)),
+            Assembly.GetAssembly(typeof(CreateWebhookEvent.Command)),
+            Assembly.GetAssembly(typeof(CreatePlan.Command)),
             // Assembly.GetAssembly(typeof(AuditingPostProcessingBehavior<,>))
         };
 
@@ -134,6 +139,10 @@ namespace rbkApiModules.Demo
             services.AddSqlServerRbkApiAnalyticsModule(Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Analytics"));
 
             services.AddSqlServerRbkApiDiagnosticsModule(Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Diagnostics"));
+
+            services.AddRbkApiPaypalModule<PaypalActions>();
+
+            services.AddRbkApiPaymentModule<SubscriptionActions, TrialKeyActions>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

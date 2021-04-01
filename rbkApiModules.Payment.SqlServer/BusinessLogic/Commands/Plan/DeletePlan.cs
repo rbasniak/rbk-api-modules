@@ -28,7 +28,7 @@ namespace rbkApiModules.Payment.SqlServer
 
                 RuleFor(x => x.Id)
                     .MustExistInDatabase<Command, Plan>(_context)
-                    .WithName("Id");
+                    .WithName("Plano");
             } 
         }
 

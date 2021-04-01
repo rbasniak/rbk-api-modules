@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using rbkApiModules.Infrastructure.Api;
 using rbkApiModules.Paypal.SqlServer;
@@ -17,6 +18,7 @@ namespace rbkApiModules.Payment.SqlServer
         /// Trata um evento do tipo webhook vindo do Paypal
         /// </summary>
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Webhook()
         {
             var result = await Mediator.Send(new CreateWebhookEvent.Command 

@@ -16,7 +16,7 @@ namespace rbkApiModules.Payment.SqlServer
 
             entity.HasOne(x => x.TrialKey)
                 .WithOne()
-                .HasForeignKey<BaseClient>(x => x.TrialKeyId)
+                .HasForeignKey<T>(x => x.TrialKeyId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

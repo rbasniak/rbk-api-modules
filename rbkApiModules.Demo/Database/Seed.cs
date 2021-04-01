@@ -1,10 +1,10 @@
-﻿using rbkApiModules.Demo.Database;
-using rbkApiModules.Demo.Models.StateMachine;
+﻿using rbkApiModules.Authentication;
 using rbkApiModules.Demo.Models;
+using rbkApiModules.Demo.Models.StateMachine;
+using rbkApiModules.Payment.SqlServer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace rbkApiModules.Demo.Database.StateMachine
 {
@@ -12,6 +12,38 @@ namespace rbkApiModules.Demo.Database.StateMachine
     {
         public static void CreateEntities(DatabaseContext context)
         {
+            var freePlan = new Plan("Free plan", 0, 0.0, true, true, "idPaypal", "idSandbox");
+            context.Add(freePlan);
+
+            var paidPlan = new Plan("Paid plan", 30, 0.0, true, true, "idPaypal", "idSandbox");
+            context.Add(paidPlan);
+
+            var client = new ClientUser("client", "123123", true, new Client("John Doe", new DateTime(1999, 1, 1), freePlan));
+            context.Set<BaseUser>().Add(client);
+
+            var manager = new ManagerUser("manager", "123123", false, new Manager("Jane Doe", paidPlan));
+            context.Set<BaseUser>().Add(manager);
+
+            manager.Manager.SetTrialKey(new TrialKey(paidPlan, 30));
+
+            var claims = new List<Claim>
+            {
+                new Claim("SAMPLE_CLAIM", "Exemplo de Controle de Acesso", "client"),
+                new Claim("CAN_BUY", "Pode realizar compras", "client"),
+                new Claim("SAMPLE_CLAIM", "Exemplo de Controle de Acesso", "manager"),
+                new Claim("CAN_VIEW_REPORTS", "Pode visualizar relatórios", "manager")
+            };
+
+            foreach (var claim in claims)
+            {
+                if (!context.Set<Claim>().Any(x => x.Name == claim.Name && x.AuthenticationGroup == claim.AuthenticationGroup))
+                {
+                    context.Set<Claim>().Add(claim);
+                }
+            }
+
+            context.SaveChanges();
+
             var libraGroup = new StateGroup("LIBRA");
 
             var inicial = new State(libraGroup, "Criada", "CREATED", "");
@@ -36,9 +68,9 @@ namespace rbkApiModules.Demo.Database.StateMachine
             var t5 = new Transition(emRevisao, enviarParaAprovacao, aguardandoAprovacao, "Enviada para aprovação de revisão", true);
             var t6 = new Transition(aprovada, finalizar, finalizada, "Finalizada", true);
 
-            var t7  = new Transition(rascunho, cancelar, cancelada, "Cancelada", true);
-            var t8  = new Transition(aguardandoAprovacao, cancelar, cancelada, "Cancelada", true);
-            var t9  = new Transition(emRevisao, cancelar, cancelada, "Cancelada", true);
+            var t7 = new Transition(rascunho, cancelar, cancelada, "Cancelada", true);
+            var t8 = new Transition(aguardandoAprovacao, cancelar, cancelada, "Cancelada", true);
+            var t9 = new Transition(emRevisao, cancelar, cancelada, "Cancelada", true);
             var t10 = new Transition(aprovada, cancelar, cancelada, "Cancelada", true);
 
             context.Add(libraGroup);
