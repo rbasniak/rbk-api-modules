@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using rbkApiModules.Authentication.AuthenticationGroups;
 using rbkApiModules.Infrastructure.Api;
 using rbkApiModules.Infrastructure.Models;
 using System;
@@ -33,6 +34,7 @@ namespace rbkApiModules.Authentication
         /// <summary>
         /// Criar regra de acesso
         /// </summary>
+        [RbkAuthorize(Claim = AuthenticationClaims.MANAGE_ROLES)]
         [HttpPost("roles")]
         public async Task<ActionResult<SimpleNamedEntity>> CreateRole([FromBody]CreateRole.Command data)
         {
@@ -44,6 +46,7 @@ namespace rbkApiModules.Authentication
         /// <summary>
         /// Atualiza os detalhes de uma regra de acessos 
         /// </summary>
+        [RbkAuthorize(Claim = AuthenticationClaims.MANAGE_ROLES)]
         [HttpPut("roles")]
         public async Task<ActionResult<Roles.Details>> UpdateRole(UpdateRole.Command data)
         {
@@ -53,6 +56,7 @@ namespace rbkApiModules.Authentication
         /// <summary>
         /// Apaga uma regra de acesso
         /// </summary>
+        [RbkAuthorize(Claim = AuthenticationClaims.MANAGE_ROLES)]
         [HttpDelete("roles/{id}")]
         public async Task<ActionResult> DeleteRole(Guid id)
         {
@@ -60,19 +64,9 @@ namespace rbkApiModules.Authentication
         }
 
         /// <summary>
-        /// Adicionar uma regra de acesso a um usuário
-        /// </summary>
-        [HttpPost("user/add-role")]
-        public async Task<ActionResult> AddRoleToUser([FromBody]AddRoleToUser.Command data)
-        {
-            var result = await Mediator.Send(data);
-
-            return HttpResponse(result);
-        }
-
-        /// <summary>
         /// Adicionar um controle de acesso a uma regra de acesso
         /// </summary>
+        [RbkAuthorize(Claim = AuthenticationClaims.MANAGE_ROLES)]
         [HttpPost("role/add-claim")]
         public async Task<ActionResult> AddClaimToRole([FromBody]AddClaimToRole.Command data)
         {
@@ -82,10 +76,23 @@ namespace rbkApiModules.Authentication
         }
 
         /// <summary>
-        /// Adicionar um controle de acesso a um usuário
+        /// Remover um controle de acesso de uma regra de acesso
         /// </summary>
-        [HttpPost("user/add-claim")]
-        public async Task<ActionResult> AddClaimToUser([FromBody]AddClaimToUser.Command data)
+        [RbkAuthorize(Claim = AuthenticationClaims.MANAGE_ROLES)]
+        [HttpPost("role/remove-claim")]
+        public async Task<ActionResult> RemoveClaimFromRole([FromBody] RemoveClaimFromRole.Command data)
+        {
+            var result = await Mediator.Send(data);
+
+            return HttpResponse(result);
+        }
+
+        /// <summary>
+        /// Adicionar uma regra de acesso a um usuário
+        /// </summary>
+        [RbkAuthorize(Claim = AuthenticationClaims.MANAGE_USER_ROLES)]
+        [HttpPost("user/add-role")]
+        public async Task<ActionResult> AddRoleToUser([FromBody] AddRoleToUser.Command data)
         {
             var result = await Mediator.Send(data);
 
@@ -95,19 +102,9 @@ namespace rbkApiModules.Authentication
         /// <summary>
         /// Remover uma regra de acesso de um usuário
         /// </summary>
+        [RbkAuthorize(Claim = AuthenticationClaims.MANAGE_USER_ROLES)]
         [HttpPost("user/remove-role")]
-        public async Task<ActionResult> RemoveRoleFromUser([FromBody]RemoveRoleFromUser.Command data)
-        {
-            var result = await Mediator.Send(data);
-
-            return HttpResponse(result);
-        }
-
-        /// <summary>
-        /// Remover um controle de acesso de uma regra de acesso
-        /// </summary>
-        [HttpPost("role/remove-claim")]
-        public async Task<ActionResult> RemoveClaimFromRole([FromBody]RemoveClaimFromRole.Command data)
+        public async Task<ActionResult> RemoveRoleFromUser([FromBody] RemoveRoleFromUser.Command data)
         {
             var result = await Mediator.Send(data);
 
@@ -117,6 +114,19 @@ namespace rbkApiModules.Authentication
         /// <summary>
         /// Adicionar um controle de acesso a um usuário
         /// </summary>
+        [RbkAuthorize(Claim = AuthenticationClaims.OVERRIDE_USER_CLAIMS)]
+        [HttpPost("user/add-claim")]
+        public async Task<ActionResult> AddClaimToUser([FromBody]AddClaimToUser.Command data)
+        {
+            var result = await Mediator.Send(data);
+
+            return HttpResponse(result);
+        }
+
+        /// <summary>
+        /// Adicionar um controle de acesso a um usuário
+        /// </summary>
+        [RbkAuthorize(Claim = AuthenticationClaims.OVERRIDE_USER_CLAIMS)]
         [HttpPost("user/remove-claim")]
         public async Task<ActionResult> RemoveClaimFromUser([FromBody]RemoveClaimFromUser.Command data)
         {

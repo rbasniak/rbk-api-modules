@@ -163,6 +163,12 @@ namespace rbkApiModules.Demo
             app.UseSqlServerRbkApiDiagnosticsModule();
 
             app.UseRbkApiDefaultSetup(!Environment.IsDevelopment());
+
+            app.UseRbkApiAuthenticationModule(options => options
+                .SeedAuthenticationClaims()
+                .UseDefaultClaimDescriptions()
+                .AddAuthenticationGroup("manager")
+                .AddAuthenticationGroup("client"));
         }
     }
 }
