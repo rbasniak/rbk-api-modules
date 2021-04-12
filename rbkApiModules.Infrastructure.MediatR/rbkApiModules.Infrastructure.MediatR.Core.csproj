@@ -5,13 +5,13 @@
     <IsPackable>true</IsPackable>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <Version>2.4.12</Version>
+    <Version>2.4.17</Version>
     <Authors>rbasniak</Authors>
     <Product>rbkApiModules</Product>
     <Copyright>rbasniak</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
- 
+
 
   <ItemGroup>
       <FrameworkReference Include="Microsoft.AspNetCore.App" />

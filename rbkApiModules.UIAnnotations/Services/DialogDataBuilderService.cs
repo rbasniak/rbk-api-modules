@@ -192,6 +192,14 @@ namespace rbkApiModules.UIAnnotations
             {
                 return DialogControlTypes.DropDown;
             }
+            else if (Nullable.GetUnderlyingType(_type)?.IsEnum == true)
+            {
+                return DialogControlTypes.DropDown;
+            }
+            else if (_type.FullName == typeof(string[]).FullName || _type.FullName == typeof(List<string>).FullName)
+            {
+                return DialogControlTypes.List;
+            }
             else if (_type.FullName.StartsWith("System.Collections.Generic.List`1"))
             {
                 return DialogControlTypes.MultiSelect;
