@@ -26,7 +26,9 @@ jobs:
         with:
           dotnet-version: 5.0.x
       - name: Install dependencies
-        run: dotnet restore   
+        run: |
+          dotnet dev-certs https --trust
+          dotnet restore   
       # - name: Test
       #  run: dotnet test --no-restore --verbosity minimal               
       - name: Update Version
