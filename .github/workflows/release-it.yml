@@ -26,9 +26,7 @@ jobs:
         with:
           dotnet-version: 5.0.x
       - name: Install dependencies
-        run: | 
-          dotnet clean ./rbkApiModules.sln --configuration Release && dotnet nuget locals all --clear
-          dotnet restore   
+        run: dotnet restore   
       # - name: Test
       #  run: dotnet test --no-restore --verbosity minimal               
       - name: Update Version

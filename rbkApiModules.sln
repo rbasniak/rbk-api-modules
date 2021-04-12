@@ -8,6 +8,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 		CodeCoverage.runsettings = CodeCoverage.runsettings
 		CovereageReport.bat = CovereageReport.bat
+		nuget.config = nuget.config
 		package.json = package.json
 		publish.txt = publish.txt
 		publish_pre-release.txt = publish_pre-release.txt
