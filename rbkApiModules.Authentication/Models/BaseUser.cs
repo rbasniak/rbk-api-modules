@@ -57,7 +57,7 @@ namespace rbkApiModules.Authentication
         [MaxLength(128)]
         public virtual string RefreshToken { get; private set; }
 
-        [Required, MinLength(1), MaxLength(32)]
+        [MinLength(1), MaxLength(32)]
         public virtual string AuthenticationGroup { get; private set; }
 
         [MaxLength(32)]
