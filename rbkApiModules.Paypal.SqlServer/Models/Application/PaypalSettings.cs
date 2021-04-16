@@ -1,5 +1,8 @@
-﻿namespace rbkApiModules.Paypal.SqlServer
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace rbkApiModules.Paypal.SqlServer
 {
+    [ExcludeFromCodeCoverage]
     public class PaypalSettings
     {
         public string ClientUrl { get; set; }

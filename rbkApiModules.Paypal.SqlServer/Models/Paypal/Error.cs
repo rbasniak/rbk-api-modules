@@ -1,8 +1,10 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace rbkApiModules.Paypal.SqlServer
 {
+    [ExcludeFromCodeCoverage]
     public partial class Error
     {
         [JsonProperty("name")]
@@ -21,6 +23,7 @@ namespace rbkApiModules.Paypal.SqlServer
         public List<Link> Links { get; set; }
     }
 
+    [ExcludeFromCodeCoverage]
     public partial class Detail
     {
         [JsonProperty("issue")]

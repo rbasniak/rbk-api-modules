@@ -1,7 +1,9 @@
 ﻿using Newtonsoft.Json;
+using System.Diagnostics.CodeAnalysis;
 
 namespace rbkApiModules.Paypal.SqlServer
 {
+    [ExcludeFromCodeCoverage]
     public class PaypalWebhookSignatureVerification
     {
         [JsonProperty("auth_algo")]
@@ -26,12 +28,14 @@ namespace rbkApiModules.Paypal.SqlServer
         public string WebhookEvent { get; set; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class PaypalWebhookEventResponse
     {
         [JsonProperty("verification_status")]
         public string VerificationStatus { get; set; }
     }
 
+    [ExcludeFromCodeCoverage]
     public partial class WebhookEventResponse
     {
         [JsonProperty("id")]
@@ -53,6 +57,7 @@ namespace rbkApiModules.Paypal.SqlServer
         public Resource Resource { get; set; }
     }
 
+    [ExcludeFromCodeCoverage]
     public partial class Resource
     {
         [JsonProperty("id")]

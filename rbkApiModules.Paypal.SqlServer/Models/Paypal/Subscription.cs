@@ -1,9 +1,11 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace rbkApiModules.Paypal.SqlServer
 {
+    [ExcludeFromCodeCoverage]
     public partial class Subscription
     {
         [JsonProperty("status")]
@@ -46,6 +48,7 @@ namespace rbkApiModules.Paypal.SqlServer
         public List<Link> Links { get; set; }
     }
 
+    [ExcludeFromCodeCoverage]
     public partial class BillingInfo
     {
         [JsonProperty("outstanding_balance")]
@@ -67,6 +70,7 @@ namespace rbkApiModules.Paypal.SqlServer
         public long FailedPaymentsCount { get; set; }
     }
 
+    [ExcludeFromCodeCoverage]
     public partial class LastPayment
     {
         [JsonProperty("amount")]
@@ -76,6 +80,7 @@ namespace rbkApiModules.Paypal.SqlServer
         public DateTimeOffset Time { get; set; }
     }
 
+    [ExcludeFromCodeCoverage]
     public partial class CycleExecution
     {
         [JsonProperty("tenure_type")]
@@ -97,6 +102,7 @@ namespace rbkApiModules.Paypal.SqlServer
         public string CurrentPricingSchemeVersion { get; set; }
     }
 
+    [ExcludeFromCodeCoverage]
     public partial class ShippingAmount
     {
         [JsonProperty("currency_code")]
@@ -106,6 +112,7 @@ namespace rbkApiModules.Paypal.SqlServer
         public string Value { get; set; }
     }
 
+    [ExcludeFromCodeCoverage]
     public partial class Name
     {
         [JsonProperty("given_name")]
@@ -115,12 +122,14 @@ namespace rbkApiModules.Paypal.SqlServer
         public string Surname { get; set; }
     }
 
+    [ExcludeFromCodeCoverage]
     public partial class ShippingAddress
     {
         [JsonProperty("address")]
         public Address Address { get; set; }
     }
 
+    [ExcludeFromCodeCoverage]
     public partial class Address
     {
         [JsonProperty("address_line_1")]

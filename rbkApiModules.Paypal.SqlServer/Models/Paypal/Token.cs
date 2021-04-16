@@ -1,9 +1,11 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace rbkApiModules.Paypal.SqlServer
 {
-    class Token
+    [ExcludeFromCodeCoverage]
+    public class Token
     {
         [JsonProperty("scope")]
         public string Scope { get; set; }

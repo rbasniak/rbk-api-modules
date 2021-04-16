@@ -1,10 +1,12 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using rbkApiModules.Utilities.Extensions;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace rbkApiModules.Paypal.SqlServer
 {
+    [ExcludeFromCodeCoverage]
     public static class Builder
     {
         public static void AddRbkApiPaypalModule<TPaypalActions>(this IServiceCollection services) where TPaypalActions : class, IPaypalActions
