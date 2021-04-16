@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Security.Claims;
@@ -15,6 +16,7 @@ using System.Threading.Tasks;
 
 namespace rbkApiModules.Infrastructure.Api
 {
+    [ExcludeFromCodeCoverage]
     public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
         public const string Basic = "BasicAuthentication";

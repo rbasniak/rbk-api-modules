@@ -24,7 +24,7 @@ namespace rbkApiModules.Authentication
 
         public BaseUser(string username, string password, string avatar, string displayName, string authenticationGroup)
         {
-            if (authenticationGroup.Length > 32)
+            if (authenticationGroup != null && authenticationGroup.Length > 32)
             {
                 throw new Exception("Authentication group cannot have more than 32 characters.");
             }

@@ -81,7 +81,7 @@ namespace rbkApiModules.Authentication
                         {
                             if (options.AuthenticationGroups.Count == 0)
                             {
-                                options.AddAuthenticationGroup(null);
+                                options.AddAuthenticationGroup(String.Empty);
                             }
 
                             foreach (var group in options.AuthenticationGroups)

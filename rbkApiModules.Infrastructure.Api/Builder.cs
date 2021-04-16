@@ -18,6 +18,7 @@ using System.Reflection;
 
 namespace rbkApiModules.Infrastructure.Api
 {
+    [ExcludeFromCodeCoverage]
     public class RbkApiInfrastructureModuleOptions
     {
         public Assembly[] AssembliesForServices { get; set; }
