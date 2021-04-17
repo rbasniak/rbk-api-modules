@@ -607,7 +607,7 @@ export class {Name}Selectors {{
             code.AppendLine("{{EXTERNAL_REFERENCES}}");
             code.AppendLine("@Injectable({ providedIn: 'root' })");
             code.AppendLine("export class " + Name + " extends BaseApiService {");
-            code.AppendLine("  private endpoint = `${environment.applicationApi}/" + BaseRoute + "`;");
+            code.AppendLine("  private endpoint = `${environment.serverUrl}/" + BaseRoute + "`;");
             code.AppendLine("");
             code.AppendLine("  constructor(private http: HttpClient) {");
             code.AppendLine("    super();");
