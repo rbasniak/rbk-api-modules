@@ -12,8 +12,9 @@ using System.Threading.Tasks;
 
 namespace rbkApiModules.CodeGeneration.Commons
 {
-    [Route("api/code-generation")]
+    [Route("api/code-geneerator")]
     [ApiController]
+    [IgnoreOnCodeGeneration]
     [AllowAnonymous]
     public class CodeGeneratorController : BaseController
     {

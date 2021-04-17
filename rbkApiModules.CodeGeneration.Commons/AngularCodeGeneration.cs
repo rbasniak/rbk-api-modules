@@ -652,7 +652,7 @@ export class {Name}Selectors {{
                     }
                     else if (method.Parameters.Count == 1)
                     {
-                        code.AppendLine($"    return this.http.{httpMethod}<{returnType}>(`${{this.endpoint}}{route}/{method.Parameters.First().Name}`, this.generateDefaultHeaders({{}}));");
+                        code.AppendLine($"    return this.http.{httpMethod}<{returnType}>(`${{this.endpoint}}{route}/${method.Parameters.First().Name}`, this.generateDefaultHeaders({{}}));");
                     }
                     else
                     {
@@ -732,7 +732,11 @@ export class {Name}Selectors {{
 
             Parameters = new List<TypescriptProperty>();
 
-            // TODO: tratar url parameters
+            foreach (var parameter in endpoint.UrlParameters)
+            {
+                Parameters.Add(new TypescriptProperty(parameter.Name, parameter.Type, false));
+            }
+
             if (endpoint.InputType != null)
             {
                 Parameters.Add(new TypescriptProperty("data", endpoint.InputType, false));
