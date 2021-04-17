@@ -40,14 +40,14 @@ namespace rbkApiModules.CodeGeneration.Commons
             return methodInfo.GetAttribute<T>() != null;
         }
 
-        public static T GetAttribute<T>(this PropertyInfo propertyInfo) where T : Attribute
+        public static T GetAttribute<T>(this System.Reflection.PropertyInfo propertyInfo) where T : Attribute
         {
             var attribute = propertyInfo.GetCustomAttributes().FirstOrDefault(x => x.GetType() == typeof(T));
 
             return attribute != null ? (T)attribute : null;
         }
 
-        public static bool HasAttribute<T>(this PropertyInfo propertyInfo) where T : Attribute
+        public static bool HasAttribute<T>(this System.Reflection.PropertyInfo propertyInfo) where T : Attribute
         {
             return propertyInfo.GetAttribute<T>() != null;
         }
