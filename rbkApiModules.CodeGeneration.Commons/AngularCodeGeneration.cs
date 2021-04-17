@@ -652,7 +652,7 @@ export class {Name}Selectors {{
                     }
                     else if (method.Parameters.Count == 1)
                     {
-                        code.AppendLine($"    return this.http.{httpMethod}<{returnType}>(`${{this.endpoint}}{route}/${method.Parameters.First().Name}`, this.generateDefaultHeaders({{}}));");
+                        code.AppendLine($"    return this.http.{httpMethod}<{returnType}>(`${{this.endpoint}}{route.Replace("{", "${")}`, this.generateDefaultHeaders({{}}));");
                     }
                     else
                     {
