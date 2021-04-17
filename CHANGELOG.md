@@ -1,3 +1,10 @@
+## 2.4.24 (2021-04-17)
+
+
+### Bug Fixes
+
+* code generation issue with endpoints with url parameters ([fdcc2d9](https://github.com/rbasniak/rbk-api-modules/commit/fdcc2d912dd8f250ee0605196ce50d9df69ef3ca))
+
 ## 2.4.23 (2021-04-17)
 
 ## 2.4.22 (2021-04-16)
