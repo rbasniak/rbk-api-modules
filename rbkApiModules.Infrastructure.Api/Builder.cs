@@ -155,50 +155,67 @@ namespace rbkApiModules.Infrastructure.Api
             }
         }
 
-        public static IApplicationBuilder UseRbkApiDefaultSetup(this IApplicationBuilder app, bool isProduction, bool useSharedUI = true)
+        public static IApplicationBuilder UseRbkApiDefaultSetup(this IApplicationBuilder app, Action<ApiModuleOptions> configureOptions)
         {
-            if (isProduction)
-            {
-                // Para outros detalhes de configuração do HSTS e redirecionamento HTTPS
-                // acessar https://aka.ms/aspnetcore-hsts
-                app.UseHsts();
-            }
+            var options = new ApiModuleOptions();
+            configureOptions(options);
 
             app.UseResponseCompression();
 
-            app.UseHttpsRedirection();
-
-            app.UseSwagger();
-
-            // Configuração do Swagger
-            app.UseSwaggerUI(c =>
+            if (options.UseHttps)
             {
-                c.SwaggerEndpoint("v1/swagger.json", "Default");
-                
-                c.RoutePrefix = "swagger";
-                c.DocExpansion(DocExpansion.None);
-            });
+                app.UseHttpsRedirection();
+
+                if (options.IsProduction)
+                {
+                    // Para outros detalhes de configuração do HSTS e redirecionamento HTTPS
+                    // acessar https://aka.ms/aspnetcore-hsts
+                    app.UseHsts();
+                }
+            }
+            
+            if (options.UseSwagger)
+            {
+                app.UseSwagger();
+
+                // Configuração do Swagger
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("v1/swagger.json", "Default");
+                    c.RoutePrefix = "swagger";
+                    c.DocExpansion(DocExpansion.None);
+                });
+            }
 
             app.UseCors(c => c.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().WithExposedHeaders("Content-Disposition"));
 
-            app.UseAuthentication();
+            foreach (var route in options.Routes)
+            {
+                app.MapWhen((context) => context.Request.Path.StartsWithSegments(route.PathString), (appBuilder) =>
+                {
+                    app.UseStaticFiles();
+                    appBuilder.UseRouting();
+                    appBuilder.UseEndpoints(endpoints =>
+                    {
+                        endpoints.MapFallbackToFile(route.IndexFilePath);
+                    });
+                });
+            }
+
+            app.MapWhen((context) => context.Request.Path.StartsWithSegments("/api"), (appBuilder) =>
+            {
+                appBuilder.UseRouting();
+                appBuilder.UseAuthentication();
+                appBuilder.UseAuthorization();
+
+                appBuilder.UseEndpoints(endpoints =>
+                {
+                    endpoints.MapControllers();
+                });
+            });
+
             app.UseDefaultFiles();
             app.UseStaticFiles();
-
-            app.UseRouting();
-
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-                endpoints.MapBlazorHub();
-                // endpoints.MapRazorPages();
-                if (useSharedUI)
-                {
-                    endpoints.MapFallbackToPage("/_Host");
-                }
-            });
 
             return app;
         }

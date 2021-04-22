@@ -162,7 +162,12 @@ namespace rbkApiModules.Demo
 
             app.UseSqlServerRbkApiDiagnosticsModule();
 
-            app.UseRbkApiDefaultSetup(!Environment.IsDevelopment());
+            app.UseRbkApiDefaultSetup(options => options
+                .SetIsProduction(!Environment.IsDevelopment())
+                // Configuration example
+                //.AddRoute(new ApplicationRoute("/patient", "/patient/index.html"))
+                //.AddRoute(new ApplicationRoute("/professional", "/professional/index.html"))
+            );
 
             app.UseRbkApiAuthenticationModule(options => options
                 .SeedAuthenticationClaims()
