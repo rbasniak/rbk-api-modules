@@ -10,6 +10,7 @@ using rbkApiModules.Authentication;
 using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Demo.Models;
 using System.Linq;
+using rbkApiModules.Demo.DataTransfer;
 
 namespace rbkApiModules.Demo.Controllers
 {
@@ -28,6 +29,12 @@ namespace rbkApiModules.Demo.Controllers
         public async Task<ActionResult<SimpleNamedEntity[]>> All()
         {
             return HttpResponse<SimpleNamedEntity[]>(await Mediator.Send(new GetAllDemoUsers.Command()));
+        }
+
+        [HttpGet("date-test")]
+        public async Task<ActionResult<DummyDate[]>> DateTest()
+        {
+            return HttpResponse<DummyDate[]>(await Mediator.Send(new GetAllDemoUsers.Command()));
         }
 
         [HttpGet("{id}")]

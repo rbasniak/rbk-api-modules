@@ -1,0 +1,65 @@
+.exception-page {
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100vw;
+    position: relative;
+}
+
+.exception-image-container {
+    margin: 0;
+    padding: 0;
+
+    img {
+        height: 100vh;
+        width: 100%;
+        object-fit: cover;
+    }
+}
+
+.exception-full-image-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    z-index: -1;
+
+    img {
+        height: 100vh;
+        width: 100vw;
+        object-fit: cover;
+    }
+}
+
+.exception-label-error {
+    font-size: 5em;
+    color: #212121;
+    padding: 0;
+}
+
+.exception-separator {
+    border-bottom: 4px #f44336 solid;
+    width: 30%;
+    border-radius: 4px;
+    margin-bottom: 2em;
+    padding: 0;
+
+    &.exception-light {
+        border-bottom: 4px #ffffff solid;
+    }
+}
+
+.exception-label-message {
+    font-size: 1.4em;
+    color: #616161;
+    margin-bottom: 2em;
+    padding: 0;
+}
+
+.exception-light {
+    color: #ffffff;
+}

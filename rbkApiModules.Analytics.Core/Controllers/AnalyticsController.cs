@@ -42,5 +42,12 @@ namespace rbkApiModules.Analytics.Core
 
             return HttpResponse(result);
         }
+
+        [HttpGet]
+        [Route("test")]
+        public ActionResult<object> Test()
+        {
+            return Ok(new[] { "Item 1", "Item 2", "Item 3" });
+        }
     }
 }

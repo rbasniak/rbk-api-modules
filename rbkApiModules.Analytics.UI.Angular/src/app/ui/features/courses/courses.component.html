@@ -1,0 +1,23 @@
+<smz-ui-table [items]="courses$ | async" [config]="config">
+  <!-- CONTEÚDOS COM OVERRIDE -->
+  <ng-template pTemplate="toolbar">
+    <ng-container>
+      <button pButton type="button" label="CRIAR" icon="pi pi-plus" (click)="onCreate()"></button>
+    </ng-container>
+  </ng-template>
+
+  <ng-template pTemplate="content" let-item let-col="col">
+    <ng-container [ngSwitch]="col.field">
+      <ng-container *ngSwitchCase="'name'">
+        <div class="p-d-flex p-ai-center">
+          <div class="p-mr-4" >
+            <img src="{{serverUrl}}/{{item.image}}" class="image">
+          </div>
+          <div class="p-d-flex p-flex-column">
+            <p>{{item.name}}</p>
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+  </ng-template>
+</smz-ui-table>

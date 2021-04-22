@@ -644,15 +644,29 @@ export class {Name}Selectors {{
                 var route = String.IsNullOrEmpty(method.Route) ? "" : ("/" + method.Route);
                 var httpMethod = method.Method.ToString().ToLower();
 
+                var terminator = method.ReturnType != null && method.ReturnType.HasDateProperty ? ".pipe(" : ";";
+
                 if (method.Method.ToUpper() == "GET" || method.Method.ToUpper() == "DELETE")
                 {
                     if (method.Parameters.Count == 0)
                     {
-                        code.AppendLine($"    return this.http.{httpMethod}<{returnType}>(`${{this.endpoint}}{route}`, this.generateDefaultHeaders({{}}));");
+                        code.AppendLine($"    return this.http.{httpMethod}<{returnType}>(`${{this.endpoint}}{route}`, this.generateDefaultHeaders({{}}))" + terminator);
+
+                        if (method.ReturnType != null && method.ReturnType.HasDateProperty)
+                        {
+                            code.AppendLine($"      fixDates()");
+                            code.AppendLine($"    );");
+                        }
                     }
                     else if (method.Parameters.Count == 1)
                     {
-                        code.AppendLine($"    return this.http.{httpMethod}<{returnType}>(`${{this.endpoint}}{route.Replace("{", "${")}`, this.generateDefaultHeaders({{}}));");
+                        code.AppendLine($"    return this.http.{httpMethod}<{returnType}>(`${{this.endpoint}}{route.Replace("{", "${")}`, this.generateDefaultHeaders({{}}))" + terminator);
+
+                        if (method.ReturnType != null && method.ReturnType.HasDateProperty)
+                        {
+                            code.AppendLine($"      fixDates()");
+                            code.AppendLine($"    );");
+                        }
                     }
                     else
                     {
@@ -834,6 +848,8 @@ export class {Name}Selectors {{
             IsObservable = isObservable;
             Type = new TypescriptType(info.Name);
 
+            HasDateProperty = info.Type.HasDateProperty();
+
             var arrayModifier = IsArray ? "[]" : "";
             var optionalModifier = IsOptional ? "?" : "";
 
@@ -854,6 +870,7 @@ export class {Name}Selectors {{
         public bool IsObservable { get; set; }
         public string Declaration { get; set; }
         public string FinalType { get; set; }
+        public bool HasDateProperty { get; set; }
 
         public override string ToString()
         {

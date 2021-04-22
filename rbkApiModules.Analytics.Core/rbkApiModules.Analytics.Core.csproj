@@ -10,6 +10,7 @@
     <Product>rbkApiModules</Product>
     <Copyright>rbasniak</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
   </PropertyGroup>
 
 	<ItemGroup>
@@ -22,6 +23,7 @@
 	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	  </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="5.0.5" />
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="5.0.5" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -29,5 +31,9 @@
 	  <ProjectReference Include="..\rbkApiModules.Infrastructure.Api\rbkApiModules.Infrastructure.Api.csproj" />
 	  <ProjectReference Include="..\rbkApiModules.Infrastructure.MediatR\rbkApiModules.Infrastructure.MediatR.Core.csproj" />
 	</ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="UI\dist\**" />
+  </ItemGroup>
 
 </Project>

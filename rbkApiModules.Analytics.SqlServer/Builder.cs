@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using rbkApiModules.Analytics.Core;
 using rbkApiModules.Diagnostics.Core;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Reflection;
 
 namespace rbkApiModules.Analytics.SqlServer
 {
@@ -49,6 +51,13 @@ namespace rbkApiModules.Analytics.SqlServer
                     }
                 }
             }
+
+            app.UseFileServer(new FileServerOptions
+            {
+                RequestPath = "/analytics",
+                FileProvider = new ManifestEmbeddedFileProvider(
+                    assembly: Assembly.GetAssembly(typeof(AnalyticsEntry)), "UI/dist")
+            });
 
             return app;
         }

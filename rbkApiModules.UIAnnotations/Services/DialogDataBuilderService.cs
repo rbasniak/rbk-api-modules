@@ -111,10 +111,25 @@ namespace rbkApiModules.UIAnnotations
                 TextAreaRows = dialogDataAttribute.TextAreaRows > 0 ? dialogDataAttribute.TextAreaRows: 5;
             }
 
+            // -- 
+
+            Type enumType = null;
+
             if (_type.IsEnum)
             {
-                Data = EnumToSimpleNamedList(_type);
+                enumType = _type;
             }
+            else if (Nullable.GetUnderlyingType(_type)?.IsEnum == true)
+            {
+                enumType = Nullable.GetUnderlyingType(_type);
+            }
+
+            if (enumType != null)
+            {
+                Data = EnumToSimpleNamedList(enumType);
+            }
+
+            // -- 
         }
 
         public SimpleNamedEntity ControlType { get; set; }
@@ -152,11 +167,11 @@ namespace rbkApiModules.UIAnnotations
         {
             if (_type.FullName == typeof(String).FullName)
             {
-                if (MaxLength.HasValue && MaxLength.Value <= 100)
+                if (MaxLength.HasValue && MaxLength.Value <= 512)
                 {
                     return DialogControlTypes.Text;
                 }
-                else if (MaxLength.HasValue && MaxLength.Value > 100)
+                else if (MaxLength.HasValue && MaxLength.Value > 512)
                 {
                     return DialogControlTypes.TextArea;
                 }

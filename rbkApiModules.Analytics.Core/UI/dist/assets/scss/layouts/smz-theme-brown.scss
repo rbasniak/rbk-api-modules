@@ -1,0 +1,55 @@
+.layout-sidebar-brown .layout-sidebar .layout-menu .layout-root-menuitem {
+  li.active-menuitem {
+    background:rgba(255, 255, 255, 0.1);
+  }
+}
+
+.layout-sidebar-brown .layout-sidebar {
+  background: #5D4037;
+  border-right: 0 none;
+  background-image: linear-gradient(180deg, #5D4037 10%, #4E342E 100%);
+}
+.layout-sidebar-brown .layout-sidebar .logo {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+.layout-sidebar-brown .layout-sidebar .logo:focus {
+  box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.1);
+}
+.layout-sidebar-brown .layout-sidebar .app-name {
+  color: #ffffff;
+}
+.layout-sidebar-brown .layout-sidebar .layout-menu .menu-separator {
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+.layout-sidebar-brown .layout-sidebar .layout-menu li.active-menuitem > a {
+  color: #ffffff;
+}
+.layout-sidebar-brown .layout-sidebar .layout-menu li a {
+  color: rgba(255, 255, 255, 0.8);
+}
+.layout-sidebar-brown .layout-sidebar .layout-menu li a:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+.layout-sidebar-brown .layout-sidebar .layout-menu li a:focus {
+  box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.1);
+}
+.layout-sidebar-brown .layout-sidebar .layout-menu .layout-root-menuitem .layout-menuitem-root-text {
+  color: rgba(255, 255, 255, 0.4);
+}
+.layout-sidebar-brown .layout-sidebar .layout-menu .layout-root-menuitem.active-menuitem {
+  background: rgba(255, 255, 255, 0.1);
+}
+.layout-sidebar-brown .layout-sidebar .layout-menu .layout-root-menuitem > ul > li.active-menuitem {
+  background: rgba(255, 255, 255, 0.1);
+}
+@media screen and (min-width: 992px) {
+  .layout-sidebar-brown.layout-slim .layout-sidebar .layout-menu .layout-root-menuitem > ul {
+    background: #5D4037;
+    background-image: linear-gradient(180deg, #5D4037 10%, #4E342E 100%);
+  }
+}
+@media screen and (max-width: 992px) {
+  .layout-sidebar-brown .layout-sidebar .layout-menu .layout-root-menuitem.active-menuitem {
+    background: transparent;
+  }
+}

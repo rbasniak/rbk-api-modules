@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -25,8 +27,9 @@ namespace rbkApiModules.SharedUI
             }
 
             services.AddSingleton(options);
-        }
+        } 
     }
+     
 
     public class RbkSharedUIModuleOptions
     {

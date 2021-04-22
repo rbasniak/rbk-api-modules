@@ -1,0 +1,22 @@
+{
+    "javascript.preferences.importModuleSpecifier": "auto",
+    "typescript.preferences.importModuleSpecifier": "auto",
+    "javascript.preferences.quoteStyle": "single",
+    "typescript.preferences.quoteStyle": "single",
+
+    "eslint.validate": [
+        "javascript",
+        "typescript",
+    ],
+
+    "files.autoSave": "off",
+    "files.trimTrailingWhitespace": true,
+
+    "editor.detectIndentation": true,
+    "editor.minimap.enabled": true,
+    "editor.tabSize": 2,
+    "javascript.format.placeOpenBraceOnNewLineForFunctions": false,
+    "typescript.format.placeOpenBraceOnNewLineForFunctions": false,
+    "javascript.format.placeOpenBraceOnNewLineForControlBlocks": false,
+    "typescript.format.placeOpenBraceOnNewLineForControlBlocks": false
+}
