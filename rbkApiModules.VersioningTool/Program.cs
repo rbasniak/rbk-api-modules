@@ -27,10 +27,6 @@ namespace rbkApiModules.VersioningTool
                 var features = new List<string>();
                 var fixes = new List<string>();
 
-                bool hasMajor = false;
-                bool hasMinor = false;
-                bool hasPatch = false;
-
                 foreach (var commit in allCommits)
                 {
                     if (commit.Id == lastTag.Target.Id) break;
@@ -83,18 +79,39 @@ namespace rbkApiModules.VersioningTool
 
                 Console.WriteLine("  ");
 
+                var version = lastTag.FriendlyName.Split('.').Select(x => Int32.Parse(x)).ToList();
+
+                if (breakingChanges.Count > 0)
+                {
+                    version[0] = version[0] + 1;
+                }
+                else if (features.Count > 0)
+                {
+                    version[1] = version[1] + 1;
+                }
+                else 
+                {
+                    version[2] = version[2] + 1;
+                }
+
+                var newVersion = $"{version[0]}.{version[1]}.{version[2]}";
+
                 var csprojs = Directory.GetFiles(path, "*.csproj", SearchOption.AllDirectories);
+
+                Console.WriteLine("  Old version: " + lastTag.FriendlyName);
+                Console.WriteLine("  New version: " + newVersion);
 
                 foreach (var file in csprojs)
                 {
-                    //File.WriteAllText(file, File.ReadAllText(file).Replace("", ""));
+                    //File.WriteAllText(file, File.ReadAllText(file).Replace("<Version>2.4.27</Version>", ""));
                 }
 
-                var version = "";
-                // repo.Commit(version, new Signature("ci", "ci@github.com", DateTime.UtcNow), new Signature("ci", "ci@github.com", DateTime.UtcNow));
+                // repo.Commit($"New release v{newVersion}", new Signature("ci", "ci@github.com", DateTime.UtcNow), new Signature("ci", "ci@github.com", DateTime.UtcNow));
+                // repo.ApplyTag(newVersion);
+
+                Console.WriteLine("  ");
 
                 Console.WriteLine("Done.");
-                Console.ReadKey();
             }
         }
     }
