@@ -6,6 +6,7 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0EBB95D9-AB99-405B-8305-9B16BCCE8492}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		.gitignore = .gitignore
 		CodeCoverage.runsettings = CodeCoverage.runsettings
 		CovereageReport.ps1 = CovereageReport.ps1
 		nuget.config = nuget.config
