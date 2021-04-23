@@ -26,4 +26,4 @@ jobs:
     - name: Echo test
       run: echo "Test"
     - name: Version test
-      run: rbkApiModules.VersioningTool.exe
+      run: ./rbkApiModules.VersioningTool.exe
