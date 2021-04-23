@@ -16,7 +16,7 @@ namespace rbkApiModules.VersioningTool
 #if DEBUG
             path = @"D:\Repositories\pessoal\libraries\rbk-api-modules-next";
 #endif
-
+             
             using (var repo = new Repository(path))
             {
                 var lastTag = repo.Tags.OrderByDescending(x => ((Commit)x.Target).Committer.When).First();
