@@ -43,9 +43,9 @@ namespace rbkApiModules.Infrastructure.Api
 
     public class ApplicationRoute
     {
-        public string PathString { get; set; }
+        public string PathString { get; private set; }
 
-        public string IndexFilePath { get; set; }
+        public string IndexFilePath { get; private set; }
 
         public ApplicationRoute(string pathString, string indexFilePath)
         {
