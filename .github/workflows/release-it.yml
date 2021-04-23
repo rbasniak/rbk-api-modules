@@ -1,3 +1,30 @@
+on:  
+  workflow_dispatch:
+jobs:
+  main:
+    name: Create release
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Code
+      - uses: actions/checkout@v2
+      - name: Setup vars
+      - uses: FranzDiebold/github-env-vars-action@v1.2.1
+      - name: Git setup
+        run: |
+          git config user.email "ci@github.com"
+          git config user.name "ci"
+          git remote set-url --push origin "https://github.com/rbasniak/rbk-api-modules.git"
+          git reset --hard
+          git clean -fd
+      - name: Update Version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+        run: |
+          echo "Running versioning tool"
+          rbkApiModules.VersioningTool.exe
+          git pull
+
 #on:
 #  push:
 #    branches: [ master ]

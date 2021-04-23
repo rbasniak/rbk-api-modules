@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 
 namespace rbkApiModules.VersioningTool
 {
@@ -16,7 +17,7 @@ namespace rbkApiModules.VersioningTool
 #if DEBUG
             path = @"D:\Repositories\pessoal\libraries\rbk-api-modules-next";
 #endif
-             
+
             using (var repo = new Repository(path))
             {
                 var lastTag = repo.Tags.OrderByDescending(x => ((Commit)x.Target).Committer.When).First();
@@ -93,7 +94,7 @@ namespace rbkApiModules.VersioningTool
                     version[1] = version[1] + 1;
                     version[2] = 0;
                 }
-                else 
+                else
                 {
                     version[2] = version[2] + 1;
                 }
@@ -107,11 +108,29 @@ namespace rbkApiModules.VersioningTool
 
                 foreach (var file in csprojs)
                 {
-                    //File.WriteAllText(file, File.ReadAllText(file).Replace("<Version>2.4.27</Version>", ""));
+                    File.WriteAllText(file, File.ReadAllText(file).Replace($"<Version>{lastTag.FriendlyName}</Version>", $"<Version>{newVersion}</Version>"));
                 }
 
-                // repo.Commit($"New release v{newVersion}", new Signature("ci", "ci@github.com", DateTime.UtcNow), new Signature("ci", "ci@github.com", DateTime.UtcNow));
-                // repo.ApplyTag(newVersion);
+                Thread.Sleep(500);
+
+                var status = repo.RetrieveStatus(); 
+                var filePaths = status.Modified.Select(mods => mods.FilePath).ToList(); 
+                foreach (var filePath in filePaths) 
+                { 
+                    repo.Index.Add(filePath); 
+                    repo.Index.Write(); 
+                }
+
+                repo.Commit($"New release v{newVersion}", new Signature("ci", "ci@github.com", DateTime.UtcNow), new Signature("ci", "ci@github.com", DateTime.UtcNow));
+                repo.ApplyTag(newVersion);
+
+                //var remote = repo.Network.Remotes["origin"];
+                //var options = new PushOptions();
+                //var credentials = new UsernamePasswordCredentials { Username = username, Password = password };
+                //options.Credentials = credentials;
+                //var pushRefSpec = @"refs/heads/master";
+                //repo.Network.Push(remote, pushRefSpec, options, new Signature(username, email, DateTimeOffset.Now),
+                //    "pushed changes");
 
                 Console.WriteLine("  ");
 
