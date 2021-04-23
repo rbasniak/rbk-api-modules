@@ -12,11 +12,11 @@ namespace rbkApiModules.VersioningTool
     {
         public static void Main(string[] args)
         {
-            var path = new DirectoryInfo(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)).Parent.Parent.Parent.Parent.FullName;
+            var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
-            //#if DEBUG
-            //            path = @"D:\Repositories\pessoal\libraries\rbk-api-modules-next";
-            //#endif
+#if DEBUG
+            path = @"D:\Repositories\pessoal\libraries\rbk-api-modules-next";
+#endif
 
             using (var repo = new Repository(path))
             {
@@ -113,12 +113,12 @@ namespace rbkApiModules.VersioningTool
 
                 Thread.Sleep(500);
 
-                var status = repo.RetrieveStatus();
-                var filePaths = status.Modified.Select(mods => mods.FilePath).ToList();
-                foreach (var filePath in filePaths)
-                {
-                    repo.Index.Add(filePath);
-                    repo.Index.Write();
+                var status = repo.RetrieveStatus(); 
+                var filePaths = status.Modified.Select(mods => mods.FilePath).ToList(); 
+                foreach (var filePath in filePaths) 
+                { 
+                    repo.Index.Add(filePath); 
+                    repo.Index.Write(); 
                 }
 
                 repo.Commit($"New release v{newVersion}", new Signature("ci", "ci@github.com", DateTime.UtcNow), new Signature("ci", "ci@github.com", DateTime.UtcNow));
