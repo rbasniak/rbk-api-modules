@@ -19,11 +19,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.x
+#    - name: Setup .NET
+#      uses: actions/setup-dotnet@v1
+#      with:
+#        dotnet-version: 5.0.x
     - name: Echo test
       run: echo "Test"
     - name: Version test
-      run: ./rbkApiModules.VersioningTool.exe
+      run: ./rbkApiModules.VersioningTool\bin\Debug\net5.0\rbkApiModules.VersioningTool.exe
