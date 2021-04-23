@@ -21,6 +21,7 @@ namespace rbkApiModules.VersioningTool
             {
                 var lastTag = repo.Tags.OrderByDescending(x => ((Commit)x.Target).Committer.When).First();
                 Console.WriteLine($"Last tag: {lastTag.FriendlyName}");
+                Console.WriteLine(" ");
                 var allCommits = repo.Commits.OrderByDescending(x => x.Committer.When).ToList();
 
                 var breakingChanges = new List<string>();
@@ -84,10 +85,13 @@ namespace rbkApiModules.VersioningTool
                 if (breakingChanges.Count > 0)
                 {
                     version[0] = version[0] + 1;
+                    version[1] = 0;
+                    version[2] = 0;
                 }
                 else if (features.Count > 0)
                 {
                     version[1] = version[1] + 1;
+                    version[2] = 0;
                 }
                 else 
                 {
