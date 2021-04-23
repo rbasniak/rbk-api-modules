@@ -1,7 +1,10 @@
 on:  
   workflow_dispatch:
+
+name: Create Release and Publish
+
 jobs:
-  main:
+  release:
     name: Create release
     runs-on: windows-latest
     steps:
