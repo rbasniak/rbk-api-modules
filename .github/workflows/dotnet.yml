@@ -4,7 +4,7 @@ on:
   workflow_dispatch 
 
 jobs:
-  update-version:
+  release:
     runs-on: windows-latest
     steps:
     - name: Checkout Code
