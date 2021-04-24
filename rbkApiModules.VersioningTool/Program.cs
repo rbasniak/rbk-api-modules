@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace rbkApiModules.VersioningTool
@@ -20,18 +21,21 @@ namespace rbkApiModules.VersioningTool
 
             using (var repo = new Repository(path))
             {
-                var lastTag = repo.Tags.OrderByDescending(x => ((Commit)x.Target).Committer.When).First();
-                Console.WriteLine($"Last tag: {lastTag.FriendlyName}");
-                Console.WriteLine(" ");
                 var allCommits = repo.Commits.OrderByDescending(x => x.Committer.When).ToList();
 
                 var breakingChanges = new List<string>();
                 var features = new List<string>();
                 var fixes = new List<string>();
 
+                var oldVersion = "1.0.0";
+
                 foreach (var commit in allCommits)
                 {
-                    if (commit.Id == lastTag.Target.Id) break;
+                    if (commit.Message.Contains("Release v"))
+                    {
+                        oldVersion = commit.Message.Replace("Release v", "");
+                        break;
+                    }
 
                     if (commit.Message.ToLower().StartsWith("fix"))
                     {
@@ -81,7 +85,7 @@ namespace rbkApiModules.VersioningTool
 
                 Console.WriteLine("  ");
 
-                var version = lastTag.FriendlyName.Split('.').Select(x => Int32.Parse(x)).ToList();
+                var version = oldVersion.Split('.').Select(x => Int32.Parse(x)).ToList();
 
                 if (breakingChanges.Count > 0)
                 {
@@ -103,26 +107,35 @@ namespace rbkApiModules.VersioningTool
 
                 var csprojs = Directory.GetFiles(path, "*.csproj", SearchOption.AllDirectories);
 
-                Console.WriteLine("  Old version: " + lastTag.FriendlyName);
+                Console.WriteLine("  Old version: " + oldVersion);
                 Console.WriteLine("  New version: " + newVersion);
 
                 foreach (var file in csprojs)
                 {
-                    File.WriteAllText(file, File.ReadAllText(file).Replace($"<Version>{lastTag.FriendlyName}</Version>", $"<Version>{newVersion}</Version>"));
+                    var contents = File.ReadAllText(file);
+
+                    var regex = new Regex("(?<=<Version>)(.*\n?)(?=</Version>)");
+
+                    contents = regex.Replace(contents, newVersion);
+
+                    File.WriteAllText(file, contents);
                 }
 
                 Thread.Sleep(500);
 
-                var status = repo.RetrieveStatus(); 
-                var filePaths = status.Modified.Select(mods => mods.FilePath).ToList(); 
-                foreach (var filePath in filePaths) 
-                { 
-                    repo.Index.Add(filePath); 
-                    repo.Index.Write(); 
+                var status = repo.RetrieveStatus();
+                var filePaths = status.Modified.Select(mods => mods.FilePath).ToList();
+                foreach (var filePath in filePaths)
+                {
+                    repo.Index.Add(filePath);
+                    repo.Index.Write();
                 }
 
-                repo.Commit($"New release v{newVersion}", new Signature("ci", "ci@github.com", DateTime.UtcNow), new Signature("ci", "ci@github.com", DateTime.UtcNow));
-                repo.ApplyTag(newVersion);
+                if (Environment.MachineName != "RB-NOTEBOOK")
+                {
+                    repo.Commit($"New release v{newVersion}", new Signature("ci", "ci@github.com", DateTime.UtcNow), new Signature("ci", "ci@github.com", DateTime.UtcNow));
+                    repo.ApplyTag(newVersion);
+                }
 
                 //var remote = repo.Network.Remotes["origin"];
                 //var options = new PushOptions();
