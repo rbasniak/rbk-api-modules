@@ -7,12 +7,12 @@
   "targets": {
     ".NETCoreApp,Version=v5.0": {},
     ".NETCoreApp,Version=v5.0/win-x64": {
-      "rbkApiModules.VersioningTool/1.0.0": {
+      "VersionUpdater/1.0.0": {
         "dependencies": {
           "LibGit2Sharp": "0.26.2"
         },
         "runtime": {
-          "rbkApiModules.VersioningTool.dll": {}
+          "VersionUpdater.dll": {}
         }
       },
       "LibGit2Sharp/0.26.2": {
@@ -39,7 +39,7 @@
     }
   },
   "libraries": {
-    "rbkApiModules.VersioningTool/1.0.0": {
+    "VersionUpdater/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

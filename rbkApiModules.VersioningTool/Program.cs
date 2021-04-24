@@ -12,7 +12,7 @@ namespace rbkApiModules.VersioningTool
     {
         static void Main(string[] args)
         {
-            var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var path = new DirectoryInfo(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)).Parent.FullName;
 
 #if DEBUG
             path = @"D:\Repositories\pessoal\libraries\rbk-api-modules-next";

@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 		CodeCoverage.runsettings = CodeCoverage.runsettings
 		CovereageReport.ps1 = CovereageReport.ps1
+		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
 		nuget.config = nuget.config
 		package.json = package.json
 		publish.txt = publish.txt
@@ -186,7 +187,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.CodeGeneratio
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{7DA948F3-0DE3-4CD2-82E2-3556BC55111A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.VersioningTool", "rbkApiModules.VersioningTool\rbkApiModules.VersioningTool.csproj", "{C38A4146-4275-47FE-912F-A59CB78E8A1B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.VersioningTool", "rbkApiModules.VersioningTool\rbkApiModules.VersioningTool.csproj", "{C38A4146-4275-47FE-912F-A59CB78E8A1B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

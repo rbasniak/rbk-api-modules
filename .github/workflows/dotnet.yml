@@ -1,16 +1,7 @@
 name: .NET
 
 on:
-  workflow_dispatch:
-    inputs:
-      name:
-        description: 'Person to greet'
-        required: true
-        default: 'Mona the Octocat'
-      home:
-        description: 'location'
-        required: false
-        default: 'The Octoverse'
+  workflow_dispatch 
 
 jobs:
   build:
@@ -26,4 +17,4 @@ jobs:
     - name: Echo test
       run: echo "Test"
     - name: Version test
-      run: ./rbkApiModules.VersioningTool.exe
+      run: ./@Tools/VersionUpdater.exe
