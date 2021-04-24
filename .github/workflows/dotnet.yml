@@ -16,7 +16,9 @@ jobs:
     - name: Version Update
       run: ./@Tools/VersionUpdater.exe
     - name: Git push
-      run: git push origin --tags
+      run: | 
+        git push
+        git push origin --tags
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1.7.2
       with:
