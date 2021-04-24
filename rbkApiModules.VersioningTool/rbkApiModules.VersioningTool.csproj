@@ -4,12 +4,13 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
     <AssemblyName>VersionUpdater</AssemblyName>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="LibGit2Sharp" Version="0.26.2" />
   </ItemGroup>
 
-  <IncludeBuildOutput>false</IncludeBuildOutput>
+  
 
 </Project>
