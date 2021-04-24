@@ -140,7 +140,7 @@ namespace rbkApiModules.VersioningTool
 
                 if (Environment.MachineName != "RB-NOTEBOOK")
                 {
-                    repo.Commit($"New release v{newVersion}", new Signature("ci", "ci@github.com", DateTime.UtcNow), new Signature("ci", "ci@github.com", DateTime.UtcNow));
+                    repo.Commit($"Release v{newVersion}", new Signature("ci", "ci@github.com", DateTime.UtcNow), new Signature("ci", "ci@github.com", DateTime.UtcNow));
                     repo.ApplyTag(newVersion);
                 }
 
