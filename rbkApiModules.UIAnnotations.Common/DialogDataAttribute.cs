@@ -47,6 +47,11 @@ namespace rbkApiModules.UIAnnotations
         // Only for controls that have Options (dropdown, multiselect, etc)
         public string SourceName { get; set; }
 
+        // Only for Linked Dropdowns
+        public string LinkedDisplayName { get; set; }
+        public string LinkedPropertyName { get; set; }
+
+        // Overrides
         public string EntityLabelPropertyName { get; set; }
         public string OverridePropertyName { get; set; }
     }

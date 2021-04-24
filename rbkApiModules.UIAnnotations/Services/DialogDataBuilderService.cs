@@ -94,8 +94,10 @@ namespace rbkApiModules.UIAnnotations
             ExcludeFromResponse = dialogDataAttribute.ExcludeFromResponse;
             SourceName = dialogDataAttribute.SourceName;
             EntityLabelPropertyName = dialogDataAttribute.EntityLabelPropertyName;
+            LinkedDisplayName = dialogDataAttribute.LinkedDisplayName;
+            LinkedPropertyName = dialogDataAttribute.LinkedPropertyName;
 
-            var control = dialogDataAttribute.ForcedType != DialogControlTypes.Default ? dialogDataAttribute.ForcedType : GetControlType();
+        var control = dialogDataAttribute.ForcedType != DialogControlTypes.Default ? dialogDataAttribute.ForcedType : GetControlType();
 
             ControlType = new SimpleNamedEntity { Id = ((int)control).ToString(), Name = control.ToString() };
 
@@ -161,7 +163,10 @@ namespace rbkApiModules.UIAnnotations
         public int? MaxLength { get; set; }
         public List<SimpleNamedEntity<int>> Data { get; set; }
 
-        public string EntityLabelPropertyName { get; set; } 
+        public string EntityLabelPropertyName { get; set; }
+
+        public string LinkedDisplayName { get; set; }
+        public string LinkedPropertyName { get; set; }
 
         private DialogControlTypes GetControlType()
         {
