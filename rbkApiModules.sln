@@ -7,12 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
-		CodeCoverage.runsettings = CodeCoverage.runsettings
-		CovereageReport.ps1 = CovereageReport.ps1
 		nuget.config = nuget.config
-		publish.txt = publish.txt
-		.github\workflows\publish.yml = .github\workflows\publish.yml
-		publish_pre-release.txt = publish_pre-release.txt
 		README.md = README.md
 		todo.txt = todo.txt
 	EndProjectSection
@@ -190,6 +185,19 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Models", "Models", "{B35DCDEE-5826-4415-A83B-4DEF6779637B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{52B83F5D-6782-4E31-A4C7-C77B4116CD12}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ci", "ci", "{0677567A-489F-4B36-85DA-EA926A514AFA}"
+	ProjectSection(SolutionItems) = preProject
+		publish.txt = publish.txt
+		.github\workflows\publish.yml = .github\workflows\publish.yml
+		publish_pre-release.txt = publish_pre-release.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "coverage", "coverage", "{0A2C56F5-75C3-4DAC-A201-2F1387375AD3}"
+	ProjectSection(SolutionItems) = preProject
+		CodeCoverage.runsettings = CodeCoverage.runsettings
+		CovereageReport.ps1 = CovereageReport.ps1
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -510,6 +518,8 @@ Global
 		{7DA948F3-0DE3-4CD2-82E2-3556BC55111A} = {9A642167-AD70-4152-9314-125945860E1B}
 		{C38A4146-4275-47FE-912F-A59CB78E8A1B} = {52B83F5D-6782-4E31-A4C7-C77B4116CD12}
 		{B35DCDEE-5826-4415-A83B-4DEF6779637B} = {28AEC725-3257-4A72-BC8B-C6ABB827A897}
+		{0677567A-489F-4B36-85DA-EA926A514AFA} = {0EBB95D9-AB99-405B-8305-9B16BCCE8492}
+		{0A2C56F5-75C3-4DAC-A201-2F1387375AD3} = {0EBB95D9-AB99-405B-8305-9B16BCCE8492}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9AAC09BF-43DC-408B-8F24-24DAA39DA1E8}
