@@ -353,3 +353,5 @@ MigrationBackup/
 /rbkApiModules.Demo/rbkApiModules.Demo.xml
 /@TestResults/html
 /rbkApiModules.Demo/wwwroot/_temp
+
+!/@Tools/*.pdb
