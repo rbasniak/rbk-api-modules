@@ -652,8 +652,14 @@ export class {Name}Selectors {{
                 var route = String.IsNullOrEmpty(method.Route) ? "" : ("/" + method.Route);
                 var httpMethod = method.Method.ToString().ToLower();
 
-                var terminator = method.ReturnType != null && method.ReturnType.HasDateProperty ? ".pipe(" : ";";
-                externalReferences.Add("import { fixDates } from 'ngx-rbk-utils';");
+                var terminator = ";";
+                
+                if (method.ReturnType != null && method.ReturnType.HasDateProperty)
+                {
+                    externalReferences.Add("import { fixDates } from 'ngx-rbk-utils';");
+                    terminator = ".pipe(";
+                }
+
 
                 if (method.Method.ToUpper() == "GET" || method.Method.ToUpper() == "DELETE")
                 {
