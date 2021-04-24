@@ -4,21 +4,30 @@ on:
   workflow_dispatch 
 
 jobs:
-  build:
-
+  update-version:
     runs-on: windows-latest
-
     steps:
+    - name: Checkout Code
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
-#    - name: Setup .NET
-#      uses: actions/setup-dotnet@v1
-#      with:
-#        dotnet-version: 5.0.x
-    - name: Echo test
-      run: echo "Test"
-    - name: Version test
+    - name: Setup environment
+    - uses: FranzDiebold/github-env-vars-action@v1.2.1
+    - name: Version Update
       run: ./@Tools/VersionUpdater.exe
     - name: Git push
-      run: git push
+      run: git push origin --tags
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1.7.2
+      with:
+        dotnet-version: 5.0.x
+    - name: Install dependencies
+      run: dotnet restore   
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+    - name: Create NuGet Package
+      run: dotnet pack -c Release -P:IncludeSymbols=true -p:SymbolPackageFormat=snupkg
+      working-directory: .
+    - name: Publish Nuget Package
+      run: dotnet nuget push **/*.nupkg --api-key ${{ secrets.nuget_api_key }} --source https://api.nuget.org/v3/index.json
+
