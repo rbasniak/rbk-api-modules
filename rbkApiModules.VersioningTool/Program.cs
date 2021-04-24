@@ -121,6 +121,8 @@ namespace rbkApiModules.VersioningTool
                 {
                     var contents = File.ReadAllText(file);
 
+                    if (!contents.Contains("</Version>")) continue;
+
                     var regex = new Regex("(?<=<Version>)(.*\n?)(?=</Version>)");
 
                     contents = regex.Replace(contents, newVersion);
