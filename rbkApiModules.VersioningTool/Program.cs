@@ -1,6 +1,7 @@
 ﻿using LibGit2Sharp;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -21,6 +22,12 @@ namespace rbkApiModules.VersioningTool
 
             using (var repo = new Repository(path))
             {
+
+                foreach (var item in repo.Commits)
+                {
+                    Debug.WriteLine(item.Message);
+                }
+
                 var allCommits = repo.Commits.OrderByDescending(x => x.Committer.When).ToList();
 
                 var breakingChanges = new List<string>();
