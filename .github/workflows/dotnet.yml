@@ -8,11 +8,11 @@ jobs:
     runs-on: windows-latest
     steps:
     - name: Checkout Code
-    - uses: actions/checkout@v2
+      uses: actions/checkout@v2
       with:
         fetch-depth: 0
     - name: Setup environment
-    - uses: FranzDiebold/github-env-vars-action@v1.2.1
+      uses: FranzDiebold/github-env-vars-action@v1.2.1
     - name: Version Update
       run: ./@Tools/VersionUpdater.exe
     - name: Git push
@@ -29,5 +29,4 @@ jobs:
       run: dotnet pack -c Release -P:IncludeSymbols=true -p:SymbolPackageFormat=snupkg
       working-directory: .
     - name: Publish Nuget Package
-      run: dotnet nuget push **/*.nupkg --api-key ${{ secrets.nuget_api_key }} --source https://api.nuget.org/v3/index.json
-
+      run: dotnet nuget push **/*.nupkg --api-key ${{ secrets.nuget_api_key }} --source https://api.nuget.org/v3/index.json 
