@@ -10,4 +10,6 @@
     <PackageReference Include="LibGit2Sharp" Version="0.26.2" />
   </ItemGroup>
 
+  <IncludeBuildOutput>false</IncludeBuildOutput>
+
 </Project>
