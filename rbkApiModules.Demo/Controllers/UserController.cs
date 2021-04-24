@@ -31,10 +31,16 @@ namespace rbkApiModules.Demo.Controllers
             return HttpResponse<SimpleNamedEntity[]>(await Mediator.Send(new GetAllDemoUsers.Command()));
         }
 
-        [HttpGet("date-test")]
-        public async Task<ActionResult<DummyDate[]>> DateTest()
+        [HttpGet("date-test1")]
+        public async Task<ActionResult<DummyDate[]>> DateTest1()
         {
             return HttpResponse<DummyDate[]>(await Mediator.Send(new GetAllDemoUsers.Command()));
+        }
+
+        [HttpGet("date-test2")]
+        public async Task<ActionResult<SubDummyDate>> DateTest2()
+        {
+            return HttpResponse<SubDummyDate>(await Mediator.Send(new GetAllDemoUsers.Command()));
         }
 
         [HttpGet("{id}")]

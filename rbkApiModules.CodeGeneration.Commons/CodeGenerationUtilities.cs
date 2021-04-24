@@ -1,4 +1,5 @@
-﻿using System;
+﻿using rbkApiModules.Infrastructure.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,7 +21,9 @@ namespace rbkApiModules.CodeGeneration.Commons
                 type == typeof(Int16) ||
                 type == typeof(Int32) ||
                 type == typeof(Int64) ||
-                type == typeof(Object);
+                type == typeof(Object) ||
+                type.IsEnum ||
+                type.Name == typeof(SimpleNamedEntity<>).Name;
         }
 
         public static string ToTypeScriptFileCase(string name)

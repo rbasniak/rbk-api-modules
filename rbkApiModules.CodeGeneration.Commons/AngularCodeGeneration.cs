@@ -4,6 +4,7 @@ using rbkApiModules.CodeGeneration.Commons;
 using rbkApiModules.Infrastructure.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -270,7 +271,14 @@ namespace rbkApiModules.CodeGeneration
                 Type = Type.GenericTypeArguments.First();
             }
 
-            Name = Type.FullName.Split('.').Last().Replace("[]", "").Replace("+Command", "").Replace("+", "");
+            if (Type.Name == typeof(SimpleNamedEntity<>).Name)
+            {
+                Name = "{ id: int, name: string }";
+            }
+            else
+            {
+                Name = Type.FullName.Split('.').Last().Replace("[]", "").Replace("+Command", "").Replace("+", "");
+            }
         }
 
         public Type Type { get; set; }
@@ -645,6 +653,7 @@ export class {Name}Selectors {{
                 var httpMethod = method.Method.ToString().ToLower();
 
                 var terminator = method.ReturnType != null && method.ReturnType.HasDateProperty ? ".pipe(" : ";";
+                externalReferences.Add("import { fixDates } from 'ngx-rbk-utils';");
 
                 if (method.Method.ToUpper() == "GET" || method.Method.ToUpper() == "DELETE")
                 {
@@ -678,11 +687,23 @@ export class {Name}Selectors {{
                 {
                     if (method.Parameters.Count == 0)
                     {
-                        code.AppendLine($"    return this.http.{httpMethod}<{returnType}>(`${{this.endpoint}}{route}`, null, this.generateDefaultHeaders({{}}));");
+                        code.AppendLine($"    return this.http.{httpMethod}<{returnType}>(`${{this.endpoint}}{route}`, null, this.generateDefaultHeaders({{}}))" + terminator);
+
+                        if (method.ReturnType != null && method.ReturnType.HasDateProperty)
+                        {
+                            code.AppendLine($"      fixDates()");
+                            code.AppendLine($"    );");
+                        }
                     }
                     else if (method.Parameters.Count == 1)
                     {
-                        code.AppendLine($"    return this.http.{httpMethod}<{returnType}>(`${{this.endpoint}}{route}`, {method.Parameters.First().Name}, this.generateDefaultHeaders({{}}));");
+                        code.AppendLine($"    return this.http.{httpMethod}<{returnType}>(`${{this.endpoint}}{route}`, {method.Parameters.First().Name}, this.generateDefaultHeaders({{}}))" + terminator);
+
+                        if (method.ReturnType != null && method.ReturnType.HasDateProperty)
+                        {
+                            code.AppendLine($"      fixDates()");
+                            code.AppendLine($"    );");
+                        }
                     }
                     else
                     {
@@ -846,7 +867,7 @@ export class {Name}Selectors {{
             IsArray = info.IsList;
             IsOptional = info.Nullable;
             IsObservable = isObservable;
-            Type = new TypescriptType(info.Name);
+            Type = new TypescriptType(info);
 
             HasDateProperty = info.Type.HasDateProperty();
 
@@ -880,39 +901,88 @@ export class {Name}Selectors {{
 
     public class TypescriptType
     {
-        public TypescriptType(string type)
+        public TypescriptType(TypeInfo type)
         {
-            IsNative = true;
+            IsNative = false;
+            Name = type.Name;
 
-            switch (type)
+            if (type.Type.FullName == typeof(String).FullName)
             {
-                case "String":
-                    Name = "string";
-                    break;
-                case "Guid":
-                    Name = "string";
-                    break;
-                case "Boolean":
-                    Name = "boolean";
-                    break;
-                case "DateTime":
-                    Name = "Date";
-                    break;
-                case "Single":
-                case "Double":
-                case "Decimal":
-                case "Int16":
-                case "Int32":
-                case "Int64":
-                    Name = "number";
-                    break;
-                case "Object":
-                    Name = "unknown";
-                    break;
-                default:
-                    Name = type;
-                    IsNative = false;
-                    break;
+                IsNative = true;
+                Name = "string";
+            }
+
+            if (type.Type.FullName == typeof(Guid).FullName)
+            {
+                IsNative = true;
+                Name = "string";
+            }
+
+            if (type.Type.FullName == typeof(Boolean).FullName)
+            {
+                IsNative = true;
+                Name = "boolean";
+            }
+
+            if (type.Type.FullName == typeof(DateTime).FullName)
+            {
+                IsNative = true;
+                Name = "Date";
+            }
+
+            if (type.Type.FullName == typeof(Single).FullName)
+            {
+                IsNative = true;
+                Name = "number";
+            }
+
+
+            if (type.Type.FullName == typeof(Double).FullName)
+            {
+                IsNative = true;
+                Name = "number";
+            }
+
+            if (type.Type.FullName == typeof(Decimal).FullName)
+            {
+                IsNative = true;
+                Name = "number";
+            }
+
+            if (type.Type.FullName == typeof(Int16).FullName)
+            {
+                IsNative = true;
+                Name = "number";
+            }
+
+            if (type.Type.FullName == typeof(Int32).FullName)
+            {
+                IsNative = true;
+                Name = "number";
+            }
+
+            if (type.Type.FullName == typeof(Int64).FullName)
+            {
+                IsNative = true;
+                Name = "number";
+            }
+
+            if (type.Type.FullName == typeof(Object).FullName)
+            {
+                IsNative = true;
+                Name = "any";
+            }
+
+            if (type.Type.FullName == typeof(SimpleNamedEntity<int>).FullName)
+            {
+                IsNative = true;
+                Name = "{ id: number, name: string }";
+            }
+
+            if (type.Type.IsEnum)
+            {
+                IsNative = true;
+                Name = "number";
             }
         }
 
