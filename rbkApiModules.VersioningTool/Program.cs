@@ -8,9 +8,9 @@ using System.Threading;
 
 namespace rbkApiModules.VersioningTool
 {
-    public class Program
+    class Program
     {
-        public static void Main(string[] args)
+        static void Main(string[] args)
         {
             var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
@@ -129,8 +129,7 @@ namespace rbkApiModules.VersioningTool
                 //var credentials = new UsernamePasswordCredentials { Username = username, Password = password };
                 //options.Credentials = credentials;
                 //var pushRefSpec = @"refs/heads/master";
-                //repo.Network.Push(remote, pushRefSpec, options, new Signature(username, email, DateTimeOffset.Now),
-                //    "pushed changes");
+                //repo.Network.Push(remote, pushRefSpec, options, new Signature(username, email, DateTimeOffset.Now), "pushed changes");
 
                 Console.WriteLine("  ");
 
