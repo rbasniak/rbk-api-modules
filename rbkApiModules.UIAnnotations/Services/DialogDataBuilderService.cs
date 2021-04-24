@@ -97,7 +97,7 @@ namespace rbkApiModules.UIAnnotations
             LinkedDisplayName = dialogDataAttribute.LinkedDisplayName;
             LinkedPropertyName = dialogDataAttribute.LinkedPropertyName;
 
-        var control = dialogDataAttribute.ForcedType != DialogControlTypes.Default ? dialogDataAttribute.ForcedType : GetControlType();
+            var control = dialogDataAttribute.ForcedType != DialogControlTypes.Default ? dialogDataAttribute.ForcedType : GetControlType();
 
             ControlType = new SimpleNamedEntity { Id = ((int)control).ToString(), Name = control.ToString() };
 
@@ -119,10 +119,12 @@ namespace rbkApiModules.UIAnnotations
 
             if (_type.IsEnum)
             {
+                Required = true;
                 enumType = _type;
             }
             else if (Nullable.GetUnderlyingType(_type)?.IsEnum == true)
             {
+                Required = false;
                 enumType = Nullable.GetUnderlyingType(_type);
             }
 
