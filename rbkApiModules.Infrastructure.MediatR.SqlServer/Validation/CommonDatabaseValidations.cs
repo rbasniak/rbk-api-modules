@@ -194,18 +194,21 @@ namespace rbkApiModules.Infrastructure.MediatR.SqlServer
                     {
                         var propertyValue = property.GetValue(command);
 
-                        if (property.PropertyType == typeof(string))
+                        if (propertyValue != null && propertyValue.ToString() != String.Empty)
                         {
-                            var result = CheckPropertyValueExistOnDatabase(context, (string)property.GetValue(command), isUniqueAttribute.Name, isUniqueAttribute.EntityType, GetIdValueIfExist(command, properties));
-
-                            if (result)
+                            if (property.PropertyType == typeof(string))
                             {
-                                validationResult.SetEntityNotUnique();
+                                var result = CheckPropertyValueExistOnDatabase(context, (string)property.GetValue(command), isUniqueAttribute.Name, isUniqueAttribute.EntityType, GetIdValueIfExist(command, properties));
+
+                                if (result)
+                                {
+                                    validationResult.SetEntityNotUnique();
+                                }
                             }
-                        }
-                        else
-                        {
-                            throw new NotSupportedException("Only String types are supported by isUniqueAttribute");
+                            else
+                            {
+                                throw new NotSupportedException("Only String types are supported by isUniqueAttribute");
+                            }
                         }
                     }
                 }
