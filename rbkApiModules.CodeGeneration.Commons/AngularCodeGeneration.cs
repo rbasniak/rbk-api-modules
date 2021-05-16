@@ -271,9 +271,17 @@ namespace rbkApiModules.CodeGeneration
                 Type = Type.GenericTypeArguments.First();
             }
 
-            if (Type.Name == typeof(SimpleNamedEntity<>).Name)
+            if (Type.Name == typeof(SimpleNamedEntity<>).Name && Type.GenericTypeArguments.First() == typeof(Int32))
             {
-                Name = "{ id: int, name: string }";
+                Name = "{ id: number, name: string }";
+            }
+            if (Type.Name == typeof(SimpleNamedEntity<>).Name && Type.GenericTypeArguments.First() != typeof(Int32))
+            {
+                Name = "{ id: string, name: string }";
+            }
+            else if (Type.IsAssignableFrom(typeof(TreeNode)))
+            {
+                Name = "TreeNode";
             }
             else
             {
@@ -811,6 +819,11 @@ export class {Name}Selectors {{
             {
                 Filepath = null;
                 ImportStatement = $"import {{ {type.Name} }} from 'ngx-smz-dialogs';";
+            }
+            else if (type.Name == "TreeNode")
+            {
+                Filepath = null;
+                ImportStatement = $"import {{ {type.Name} }} from 'primeng/api';";
             }
             else
             {
