@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
+namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs.Deprecated
 {
     public abstract class BaseChart
     {

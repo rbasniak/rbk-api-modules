@@ -1,0 +1,50 @@
+<!-- <p-toolbar styleClass="my-toolbar">
+  <div class="p-toolbar-group-left">
+    <smz-form-group #filterForm [config]="formConfig"></smz-form-group>
+  </div>
+
+  <div class="p-toolbar-group-right">
+    <button pButton type="button" label="Search" (click)="filter(filterForm)" ></button>
+  </div>
+</p-toolbar> -->
+
+<p-panel header="SETTINGS">
+  <div class="p-d-flex p-jc-between p-ai-center">
+    <smz-form-group #filterForm [config]="formConfig"></smz-form-group>
+    <div class="mt-6">
+      <button pButton type="button" label="LOAD" (click)="filter(filterForm)" icon="fas fa-filter" iconPos="left"></button>
+    </div>
+  </div>
+</p-panel>
+
+<ng-container *ngIf="data$ | async">
+  <div class="p-mt-4">
+    <p-panel header="USAGE" [toggleable]="true">
+      Content
+    </p-panel>
+  </div>
+
+  <div class="p-mt-4">
+    <p-panel header="ERRORS" [toggleable]="true">
+      Content
+    </p-panel>
+  </div>
+
+  <div class="p-mt-4">
+    <p-panel header="TRAFIC" [toggleable]="true">
+      Content
+    </p-panel>
+  </div>
+
+  <div class="p-mt-4">
+    <p-panel header="PERFORMANCE" [toggleable]="true">
+      Content
+    </p-panel>
+  </div>
+
+  <div class="p-mt-4">
+    <p-panel header="DATABASE USAGE" [toggleable]="true">
+      Content
+    </p-panel>
+  </div>
+</ng-container>

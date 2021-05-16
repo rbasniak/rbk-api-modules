@@ -4,7 +4,7 @@ using System.Data;
 using System.Globalization;
 using System.Linq;
 
-namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs
+namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs.Deprecated
 {
     public class DateTimeChart: BaseChart
     {

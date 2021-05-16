@@ -1,4 +1,4 @@
-import { SmzDialogsConfig, SmzFormsPresets } from 'ngx-smz-dialogs';
+import { SmzControlType, SmzDialogsConfig, SmzFormsPresets } from 'ngx-smz-dialogs';
 
 export const compactPreset: SmzFormsPresets = {
   formTemplates: {
@@ -69,6 +69,11 @@ export const smzDialogsConfig: SmzDialogsConfig = {
       { type: 'min', message: 'Valor mínimo atingido' },
       { type: 'max', message: 'Valor máximo atingido' },
     ],
+    controlTypes: {
+      [SmzControlType.MULTI_SELECT]: {
+        defaultLabel: 'All'
+      },
+    },
     ...linearPreset
   }
 };

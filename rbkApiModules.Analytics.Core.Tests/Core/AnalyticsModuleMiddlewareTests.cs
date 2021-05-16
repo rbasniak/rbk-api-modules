@@ -457,6 +457,11 @@ namespace rbkApiModules.Analytics.Core.Tests
             throw new NotImplementedException();
         }
 
+        public Task<FilterOptionListData> AllFilteringLists()
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<List<AnalyticsEntry>> FilterAsync(DateTime from, DateTime to, string[] versions, 
             string[] areas, string[] domains, string[] actions, string[] users, string[] agents, 
             int[] responses, string[] methods, int duration, string entityId)

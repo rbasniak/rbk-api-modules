@@ -13,5 +13,6 @@ export interface DatabaseStateModel {
 })
 @Injectable()
 export class DatabaseState {
+
 }
 

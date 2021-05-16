@@ -17,9 +17,9 @@ export class HomeComponent implements OnInit {
   }
 
   public test(): void {
-    this.service.test().subscribe(x => {
-      console.log(x);
-      this.items = x;
-    });
+    // this.service.test().subscribe(x => {
+    //   console.log(x);
+    //   this.items = x;
+    // });
   }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using rbkApiModules.Analytics.Core;
 using rbkApiModules.Utilities.Testing;
 using Shouldly;
@@ -7,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using Moq;
 
 namespace rbkApiModules.Analytics.SqlServer.Tests
 {
@@ -66,7 +67,7 @@ namespace rbkApiModules.Analytics.SqlServer.Tests
 
                 using (var context = new SqlServerAnalyticsContext(databaseOptions))
                 {
-                    var store = new SqlServerAnalyticStore(context);
+                    var store = new SqlServerAnalyticStore(context, MockOptions().Object);
                     store.StoreData(data);
                 }
 
@@ -129,7 +130,7 @@ namespace rbkApiModules.Analytics.SqlServer.Tests
 
                 using (var context = new SqlServerAnalyticsContext(databaseOptions))
                 {
-                    var store = new SqlServerAnalyticStore(context);
+                    var store = new SqlServerAnalyticStore(context, MockOptions().Object);
                     var filteredSaveData = await store.FilterAsync(new DateTime(2020, 01, 02), new DateTime(2020, 01, 04));
                     
                     // Devem haver somente 4 entradas entre o dia 2 e o dia 4
@@ -178,7 +179,7 @@ namespace rbkApiModules.Analytics.SqlServer.Tests
 
                 using (var context = new SqlServerAnalyticsContext(databaseOptions))
                 {
-                    var store = new SqlServerAnalyticStore(context);
+                    var store = new SqlServerAnalyticStore(context, MockOptions().Object);
                     var filteredSaveData = await store.FilterAsync(new DateTime(2020, 01, 01), new DateTime(2020, 01, 30), new[] { "1.0.0", "3.0.0" },
                         null, null, null, null, null, null, null, 0, null);
 
@@ -220,7 +221,7 @@ namespace rbkApiModules.Analytics.SqlServer.Tests
 
                 using (var context = new SqlServerAnalyticsContext(databaseOptions))
                 {
-                    var store = new SqlServerAnalyticStore(context);
+                    var store = new SqlServerAnalyticStore(context, MockOptions().Object);
                     var filteredSaveData = await store.FilterAsync(new DateTime(2020, 01, 01), new DateTime(2020, 01, 30), null,
                         new[] { "clients", "orders" }, null, null, null, null, null, null, 0, null);
 
@@ -262,7 +263,7 @@ namespace rbkApiModules.Analytics.SqlServer.Tests
 
                 using (var context = new SqlServerAnalyticsContext(databaseOptions))
                 {
-                    var store = new SqlServerAnalyticStore(context);
+                    var store = new SqlServerAnalyticStore(context, MockOptions().Object);
                     var filteredSaveData = await store.FilterAsync(new DateTime(2020, 01, 01), new DateTime(2020, 01, 30), null,
                         null, new[] { "domain1", "domain2" }, null, null, null, null, null, 0, null);
 
@@ -304,7 +305,7 @@ namespace rbkApiModules.Analytics.SqlServer.Tests
 
                 using (var context = new SqlServerAnalyticsContext(databaseOptions))
                 {
-                    var store = new SqlServerAnalyticStore(context);
+                    var store = new SqlServerAnalyticStore(context, MockOptions().Object);
                     var filteredSaveData = await store.FilterAsync(new DateTime(2020, 01, 01), new DateTime(2020, 01, 30), null,
                         null, null, new[] { "api/action/{id}", "api/action" }, null, null, null, null, 0, null);
 
@@ -346,7 +347,7 @@ namespace rbkApiModules.Analytics.SqlServer.Tests
 
                 using (var context = new SqlServerAnalyticsContext(databaseOptions))
                 {
-                    var store = new SqlServerAnalyticStore(context);
+                    var store = new SqlServerAnalyticStore(context, MockOptions().Object);
                     var filteredSaveData = await store.FilterAsync(new DateTime(2020, 01, 01), new DateTime(2020, 01, 30), null,
                                             null, null, null, new[] { "admin", "viewer" }, null, null, null, 0, null);
 
@@ -388,7 +389,7 @@ namespace rbkApiModules.Analytics.SqlServer.Tests
 
                 using (var context = new SqlServerAnalyticsContext(databaseOptions))
                 {
-                    var store = new SqlServerAnalyticStore(context);
+                    var store = new SqlServerAnalyticStore(context, MockOptions().Object);
                     var filteredSaveData = await store.FilterAsync(new DateTime(2020, 01, 01), new DateTime(2020, 01, 30), null,
                                             null, null, null, null, new[] { "chrome", "firefox" }, null, null, 0, null);
 
@@ -430,7 +431,7 @@ namespace rbkApiModules.Analytics.SqlServer.Tests
 
                 using (var context = new SqlServerAnalyticsContext(databaseOptions))
                 {
-                    var store = new SqlServerAnalyticStore(context);
+                    var store = new SqlServerAnalyticStore(context, MockOptions().Object);
                     var filteredSaveData = await store.FilterAsync(new DateTime(2020, 01, 01), new DateTime(2020, 01, 30), null,
                                             null, null, null, null, null, new[] { 200, 500 }, null, 0, null);
 
@@ -472,7 +473,7 @@ namespace rbkApiModules.Analytics.SqlServer.Tests
 
                 using (var context = new SqlServerAnalyticsContext(databaseOptions))
                 {
-                    var store = new SqlServerAnalyticStore(context);
+                    var store = new SqlServerAnalyticStore(context, MockOptions().Object);
                     var filteredSaveData = await store.FilterAsync(new DateTime(2020, 01, 01), new DateTime(2020, 01, 30), null,
                          null, null, null, null, null, null, new[] { "GET", "PUT" }, 0, null);
 
@@ -514,7 +515,7 @@ namespace rbkApiModules.Analytics.SqlServer.Tests
 
                 using (var context = new SqlServerAnalyticsContext(databaseOptions))
                 {
-                    var store = new SqlServerAnalyticStore(context);
+                    var store = new SqlServerAnalyticStore(context, MockOptions().Object);
                     var filteredSaveData = await store.FilterAsync(new DateTime(2020, 01, 01), new DateTime(2020, 01, 30), null,
                         null, null, null, null, null, null, null, 0, "2");
 
@@ -526,6 +527,14 @@ namespace rbkApiModules.Analytics.SqlServer.Tests
             {
                 connection.Close();
             }
+        }
+
+        private Mock<IOptions<RbkAnalyticsModuleOptions>> MockOptions()
+        {
+            var mock = new Mock<IOptions<RbkAnalyticsModuleOptions>>();
+            mock.Setup(x => x.Value.TimezoneOffsetHours).Returns(0);
+            
+            return mock;
         }
     } 
 }

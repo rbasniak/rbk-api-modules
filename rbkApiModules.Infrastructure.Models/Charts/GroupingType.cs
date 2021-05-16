@@ -1,4 +1,4 @@
-﻿namespace rbkApiModules.Infrastructure.Models.Charts
+﻿namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs.Deprecated
 {
     public enum GroupingType
     {

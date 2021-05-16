@@ -53,5 +53,12 @@ namespace rbkApiModules.Analytics.Core
 
         public int TotalTransactionTime { get; set; }
         public int TransactionCount { get; set; }
+
+        public AnalyticsEntry FixTimezone(double timezoneOffsetours)
+        {
+            Timestamp.AddHours(timezoneOffsetours);
+
+            return this;
+        }
     }
 }

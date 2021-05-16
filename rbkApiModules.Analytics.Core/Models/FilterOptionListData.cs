@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace rbkApiModules.Analytics.Core
 {
@@ -22,5 +23,7 @@ namespace rbkApiModules.Analytics.Core
         public List<string> Responses { get; set; }
         public List<string> Users { get; set; }
         public List<string> Agents { get; set; }
+        public DateTime EndDate { get; set; }
+        public DateTime StartDate { get; set; }
     }
 }

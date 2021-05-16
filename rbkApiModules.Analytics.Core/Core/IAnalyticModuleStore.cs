@@ -14,5 +14,6 @@ namespace rbkApiModules.Analytics.Core
         Task<List<AnalyticsEntry>> FilterAsync(DateTime from, DateTime to);
 
         Task<List<AnalyticsEntry>> AllAsync();
+        Task<FilterOptionListData> AllFilteringLists();
     }
 }

@@ -1,6 +1,9 @@
-import { DatabaseStoreStateModel, getInitialDatabaseStoreState, NgxRbkUtilsConfig } from 'ngx-rbk-utils';
 import { environment } from '@environments/environment';
-import { ERROR_PAGE_PATH, HOME_PATH, LOGIN_PAGE_PATH } from 'src/routes';
+import { FilteringOptionsActions } from '@state/database/filtering-options/filtering-options.actions';
+import { FilteringOptionsState, FILTERING_OPTIONS_STATE_NAME } from '@state/database/filtering-options/filtering-options.state';
+import { SearchFeatureState, SEARCH_FEATURE_STATE_NAME } from '@state/features/search/search.state';
+import { NgxRbkUtilsConfig } from 'ngx-rbk-utils';
+import { ERROR_PAGE_PATH, HOME_PATH, LOGIN_PATH } from 'src/routes';
 
 // Database
 
@@ -13,9 +16,9 @@ export const rbkConfig: NgxRbkUtilsConfig = {
   applicationName: 'TMP',
   useTitleService: true,
   routes: {
-    nonAuthenticatedRoot: `/${LOGIN_PAGE_PATH}`,
+    nonAuthenticatedRoot: `/${LOGIN_PATH}`,
     authenticatedRoot: `/${HOME_PATH}`,
-    login: `/${LOGIN_PAGE_PATH}`,
+    login: `/${LOGIN_PATH}`,
     error: `/${ERROR_PAGE_PATH}`
   },
   diagnostics: {
@@ -46,21 +49,22 @@ export const rbkConfig: NgxRbkUtilsConfig = {
       loadingBehavior: 'global',
     },
     accessTokenClaims: [
-      { claimName: 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name', propertyName: 'username', type: 'string' },
-      { claimName: 'rol', propertyName: 'roles', type: 'array' },
-      { claimName: 'avatar', propertyName: 'avatar', type: 'string' },
     ]
   },
   state: {
     database: {
-      // [COURSES_STATE_NAME]: {
-      //   state: CoursesState,
-      //   cacheTimeout: 0,
-      //   loadAction: CoursesActions.LoadAll,
-      //   clearFunction: (): DatabaseStoreStateModel<CoursesDetails> => getInitialDatabaseStoreState<CoursesDetails>()
-      // }
+      [FILTERING_OPTIONS_STATE_NAME]: {
+        state: FilteringOptionsState,
+        cacheTimeout: 999,
+        loadAction: FilteringOptionsActions.LoadAll,
+        clearFunction: (): any => ({ data: null, lastUpdated: null })
+      }
     },
     feature: {
+      [SEARCH_FEATURE_STATE_NAME]: {
+        state: SearchFeatureState,
+        clearFunction: (): any => ({ results: [] })
+      }
     }
   },
   httpBehaviors: {

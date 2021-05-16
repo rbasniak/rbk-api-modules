@@ -1,5 +1,4 @@
 import { SmzLayoutsConfig, SmzContentTheme, SmzLoader, HephaestusLayout, MenuType, SidebarState, AthenaLayout, ColorSchemaDefinition } from 'ngx-smz-ui';
-import { version } from '../../../package.json';
 export const smzHephaestusConfig: HephaestusLayout = {
   menu: MenuType.STATIC,
   sidebarState: SidebarState.ACTIVE,
@@ -35,14 +34,12 @@ export const smzLayoutsConfig: SmzLayoutsConfig = {
       light: 'assets/images/logos/icon-light.svg'
     },
   },
-  appName: 'Web Template Application',
+  appName: 'RBK Analytics',
   usernameProperty: 'username',
   footer: {
-    leftSideText: `(v${version}) Tecgraf PUC-Rio | Petrobras`,
-    rightSideImages: ['assets/images/logos/TecgrafAzulHorizontal.svg', 'assets/images/logos/Principal_h_cor_RGB-no-margin.svg'],
-    rightSideText: '',
-    showAppName: true,
-    showLogo: true,
+
+    showAppName: false,
+    showLogo: false,
   },
   toast: {
     position: 'bottom-right'
@@ -53,15 +50,15 @@ export const smzLayoutsConfig: SmzLayoutsConfig = {
   },
   loader: {
     type: SmzLoader.CUBE,
-    title: 'Carregando...',
-    message: 'Aguarde por favor'
+    title: 'Please wait...',
+    message: 'Preparing your data'
   },
   pages: {
     errorTitle: 'Erro',
-    errorMessage: 'Ocorreu um erro com a sua solicitação. Caso persista, entre em contato com seu administrador de sistema.',
+    errorMessage: 'There was an error while processing your request.',
     errorImagePath: 'assets/images/pages/bg-error.jpg',
-    notFoundTitle: 'Página não encontrada',
-    notFoundMessage: 'A rota solicitada não existe ou não se encontra disponível no momento.',
+    notFoundTitle: 'Page not found',
+    notFoundMessage: 'The requested route does not exist.',
     notFoundImagePath: 'assets/images/pages/bg-404.jpg',
   },
   assistance: {

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using rbkApiModules.Analytics.Core;
@@ -14,11 +15,13 @@ namespace rbkApiModules.Analytics.SqlServer
     [ExcludeFromCodeCoverage]
     public static class Builder
     {
-        public static void AddSqlServerRbkApiAnalyticsModule(this IServiceCollection services, string connectionString)
+        public static void AddSqlServerRbkApiAnalyticsModule(this IServiceCollection services, IConfiguration Configuration, string connectionString)
         {
             services.AddTransient<ITransactionCounter, TransactionCounter>();
 
             services.AddTransient<DatabaseAnalyticsInterceptor>();
+
+            services.Configure<RbkAnalyticsModuleOptions>(Configuration.GetSection(nameof(RbkAnalyticsModuleOptions)));
 
             services.AddDbContext<SqlServerAnalyticsContext>((scope, options) => options
                 .UseSqlServer(connectionString)

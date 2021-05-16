@@ -18,7 +18,7 @@ namespace rbkApiModules.Analytics.Core
     {
         [HttpGet]
         [Route("filter-options")]
-        public async Task<ActionResult<FilterAnalyticsEntries>> GetFilterData()
+        public async Task<ActionResult<FilterOptionListData>> GetFilterData()
         {
             var result = await Mediator.Send(new GetFilteringLists.Command());
 
@@ -26,8 +26,8 @@ namespace rbkApiModules.Analytics.Core
         }
 
         [HttpPost]
-        [Route("filter")]
-        public async Task<ActionResult<FilterAnalyticsEntries>> Filter([FromBody] FilterAnalyticsEntries.Command data)
+        [Route("search")]
+        public async Task<ActionResult<FilterAnalyticsEntries>> Search([FromBody] FilterAnalyticsEntries.Command data)
         {
             var result = await Mediator.Send(data);
 
@@ -41,13 +41,6 @@ namespace rbkApiModules.Analytics.Core
             var result = await Mediator.Send(data);
 
             return HttpResponse(result);
-        }
-
-        [HttpGet]
-        [Route("test")]
-        public ActionResult<object> Test()
-        {
-            return Ok(new[] { "Item 1", "Item 2", "Item 3" });
-        }
+        } 
     }
 }
