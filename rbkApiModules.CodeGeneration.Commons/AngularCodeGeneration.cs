@@ -279,7 +279,7 @@ namespace rbkApiModules.CodeGeneration
             {
                 Name = "{ id: string, name: string }";
             }
-            else if (Type.IsAssignableFrom(typeof(TreeNode)))
+            else if (Type.IsAssignableFrom(typeof(TreeNode)) || (Type.BaseType.IsGenericType && Type.BaseType.GetGenericTypeDefinition() == typeof(TreeNode<>)))
             {
                 Name = "TreeNode";
             }

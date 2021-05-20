@@ -1,6 +1,7 @@
 ﻿using rbkApiModules.Infrastructure.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -67,7 +68,7 @@ namespace rbkApiModules.CodeGeneration.Commons
                 if (!realType.Assembly.FullName.Contains("rbpApiModules") && !realType.Assembly.FullName.Contains("DataTransfer") && !realType.FullName.Contains("DataTransfer")) return false;
             }
 
-            return realType.GetProperties().Any(x => x.PropertyType == typeof(DateTime) || x.PropertyType.HasDateProperty());
+            return realType.GetProperties().Where(x => x.PropertyType != type).Any(x => x.PropertyType == typeof(DateTime) || x.PropertyType.HasDateProperty());
         }
 
 
