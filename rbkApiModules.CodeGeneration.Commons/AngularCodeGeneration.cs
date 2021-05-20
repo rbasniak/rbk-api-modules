@@ -255,6 +255,8 @@ namespace rbkApiModules.CodeGeneration
     {
         public TypeInfo(Type type)
         {
+            // if (type.FullName.Contains("Tree")) Debugger.Break();
+
             if (type.IsList())
             {
                 IsList = true;
@@ -279,7 +281,7 @@ namespace rbkApiModules.CodeGeneration
             {
                 Name = "{ id: string, name: string }";
             }
-            else if (Type.IsAssignableFrom(typeof(TreeNode)) || (Type.BaseType.IsGenericType && Type.BaseType.GetGenericTypeDefinition() == typeof(TreeNode<>)))
+            else if (Type.IsAssignableFrom(typeof(TreeNode)) || Type.BaseType.IsAssignableFrom(typeof(TreeNode)) || (Type.BaseType.IsGenericType && Type.BaseType.GetGenericTypeDefinition() == typeof(TreeNode<>)))
             {
                 Name = "TreeNode";
             }
@@ -812,6 +814,8 @@ export class {Name}Selectors {{
     {
         public TypescriptModel(TypeInfo type)
         {
+            // if (type.Name.Contains("Tree")) Debugger.Break();
+
             Name = type.Name;
             Filename = CodeGenerationUtilities.ToTypeScriptFileCase(type.Name);
 
