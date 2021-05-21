@@ -162,7 +162,7 @@ namespace rbkApiModules.Infrastructure.Api
 
             app.UseResponseCompression();
 
-            if (options.UseHttps)
+            if (options.UsingHttps)
             {
                 app.UseHttpsRedirection();
 
@@ -174,7 +174,7 @@ namespace rbkApiModules.Infrastructure.Api
                 }
             }
             
-            if (options.UseSwagger)
+            if (options.UsingSwagger)
             {
                 app.UseSwagger();
 

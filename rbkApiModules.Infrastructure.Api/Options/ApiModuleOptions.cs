@@ -11,32 +11,32 @@ namespace rbkApiModules.Infrastructure.Api
         private readonly List<ApplicationRoute> _routes = new();
 
         public bool IsProduction => _isProduction;
-        public bool UseSwagger => _useSwagger;
-        public bool UseHttps => _useHttps;
+        public bool UsingSwagger => _useSwagger;
+        public bool UsingHttps => _useHttps;
 
         public List<ApplicationRoute> Routes => _routes;
 
-        public ApiModuleOptions SetIsProduction(bool isProduction)
+        public ApiModuleOptions SetEnvironment(bool isProduction)
         {
             _isProduction = isProduction;
             return this;
         }
 
-        public ApiModuleOptions SetUseSwagger(bool useSagger)
+        public ApiModuleOptions UseSwagger()
         {
-            _useSwagger = useSagger;
+            _useSwagger = true;
             return this;
         }
 
-        public ApiModuleOptions SetUseHttps(bool useHttps)
+        public ApiModuleOptions UseHttps()
         {
-            _useHttps = useHttps;
+            _useHttps = true;
             return this;
         }
 
-        public ApiModuleOptions AddRoute(ApplicationRoute route)
+        public ApiModuleOptions AddRoute(string pathString, string indexFilePath)
         {
-            _routes.Add(route);
+            _routes.Add(new ApplicationRoute(pathString, indexFilePath));
             return this;
         }
     }

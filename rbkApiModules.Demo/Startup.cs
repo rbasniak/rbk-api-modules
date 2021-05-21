@@ -163,7 +163,7 @@ namespace rbkApiModules.Demo
             app.UseSqlServerRbkApiDiagnosticsModule();
 
             app.UseRbkApiDefaultSetup(options => options
-                .SetIsProduction(!Environment.IsDevelopment())
+                .SetEnvironment(!Environment.IsDevelopment())
                 // Configuration example
                 //.AddRoute(new ApplicationRoute("/patient", "/patient/index.html"))
                 //.AddRoute(new ApplicationRoute("/professional", "/professional/index.html"))
