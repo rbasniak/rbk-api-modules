@@ -134,6 +134,21 @@ namespace rbkApiModules.UIAnnotations
             }
 
             // -- 
+
+
+            // --
+            // The Attribute doesn't accept nullable properties, so this is handled
+            // here to doesn't send default values to the front
+            if (ExcludeFromResponse == false)
+            {
+                ExcludeFromResponse = null;
+            }
+
+            if (TextAreaRows == 0)
+            {
+                TextAreaRows = null;
+            }
+            // --
         }
 
         public SimpleNamedEntity ControlType { get; set; }

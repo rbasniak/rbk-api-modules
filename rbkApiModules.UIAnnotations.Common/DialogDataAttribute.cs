@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 
 namespace rbkApiModules.UIAnnotations
 {
@@ -21,13 +22,13 @@ namespace rbkApiModules.UIAnnotations
         public object DefaultValue { get; set; }
         public string Group { get; set; }
         public bool IsVisible { get; set; }
-        public bool? ExcludeFromResponse { get; set; }
+        public bool ExcludeFromResponse { get; set; }
 
         // Only for dependent controls
         public string DependsOn { get; set; }
 
         // Only for Text Area controls
-        public int? TextAreaRows { get; set; }
+        public int TextAreaRows { get; set; }
 
         // Only for Mask controls
         public string Mask { get; set; }

@@ -21,7 +21,7 @@ namespace rbkApiModules.Demo.Models
         }
 
         [Required, MinLength(3), MaxLength(20)]
-        [DialogData(OperationType.CreateAndUpdate, "Nome")]
+        [DialogData(OperationType.CreateAndUpdate, "Nome", TextAreaRows = 15)]
         public string Name { get; private set; }
 
         [Required]
