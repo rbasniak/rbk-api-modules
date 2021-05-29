@@ -36,7 +36,7 @@ namespace rbkApiModules.Infrastructure.MediatR.SqlServer
                     {
                         var propertyValue = property.GetValue(command);
 
-                        if (property.PropertyType == typeof(Guid))
+                        if (property.PropertyType == typeof(Guid) || (property.PropertyType == typeof(Nullable<Guid>) && (Guid?)property.GetValue(command) != null))
                         {
                             var result = LoadEntityFromDatabase(context, (Guid)property.GetValue(command), existingEntityAttribute.EntityType);
 
@@ -75,8 +75,11 @@ namespace rbkApiModules.Infrastructure.MediatR.SqlServer
                                 }
                             }
                         }
-                        else
+                        else if (property.PropertyType == typeof(Nullable<Guid>) && (Guid?)property.GetValue(command) == null)
                         {
+                        }
+                        else
+                        { 
                             throw new NotSupportedException("Only Guid and Guid[] types are supported by ExistingEntityAttribute");
                         }
                     }
