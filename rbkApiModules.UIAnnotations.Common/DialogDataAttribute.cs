@@ -55,6 +55,11 @@ namespace rbkApiModules.UIAnnotations
         // Overrides
         public string EntityLabelPropertyName { get; set; }
         public string OverridePropertyName { get; set; }
+
+        // Visibility
+        public string VisibleBasedOnInput { get; set; }
+        public string HiddenBasedOnInput { get; set; }
+
     }
 
     public enum OperationType

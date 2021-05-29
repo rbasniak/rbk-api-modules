@@ -96,6 +96,8 @@ namespace rbkApiModules.UIAnnotations
             EntityLabelPropertyName = dialogDataAttribute.EntityLabelPropertyName;
             LinkedDisplayName = dialogDataAttribute.LinkedDisplayName;
             LinkedPropertyName = dialogDataAttribute.LinkedPropertyName;
+            VisibleBasedOnInput = dialogDataAttribute.VisibleBasedOnInput;
+            HiddenBasedOnInput = dialogDataAttribute.HiddenBasedOnInput;
 
             var control = dialogDataAttribute.ForcedType != DialogControlTypes.Default ? dialogDataAttribute.ForcedType : GetControlType();
 
@@ -184,6 +186,8 @@ namespace rbkApiModules.UIAnnotations
 
         public string LinkedDisplayName { get; set; }
         public string LinkedPropertyName { get; set; }
+        public string VisibleBasedOnInput { get; set; }
+        public string HiddenBasedOnInput { get; set; }
 
         private DialogControlTypes GetControlType()
         {
