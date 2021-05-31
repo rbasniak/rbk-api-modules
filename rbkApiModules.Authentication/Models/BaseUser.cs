@@ -52,33 +52,33 @@ namespace rbkApiModules.Authentication
         }
 
         [Required, MinLength(3), MaxLength(255)]
-        public virtual string Username { get; private set; }
+        public virtual string Username { get; protected set; }
 
         [Required, MinLength(5), MaxLength(255)]
-        public virtual string Email { get; private set; }
+        public virtual string Email { get; protected set; }
 
         [Required, MinLength(1), MaxLength(4096)]
-        public virtual string Password { get; private set; }
+        public virtual string Password { get; protected set; }
 
         [MaxLength(128)]
-        public virtual string RefreshToken { get; private set; }
+        public virtual string RefreshToken { get; protected set; }
 
         [MinLength(1), MaxLength(32)]
-        public virtual string AuthenticationGroup { get; private set; }
+        public virtual string AuthenticationGroup { get; protected set; }
 
         [MaxLength(32)]
-        public virtual string DisplayName { get; private set; }
+        public virtual string DisplayName { get; protected set; }
 
         [MaxLength(1024)]
-        public virtual string Avatar { get; private set; }
+        public virtual string Avatar { get; protected set; }
 
-        public virtual bool IsConfirmed { get; private set; }
+        public virtual bool IsConfirmed { get; protected set; }
 
-        public virtual string ActivationCode { get; private set; }
+        public virtual string ActivationCode { get; protected set; }
 
-        public virtual RedefinePasswordCode PasswordRedefineCode { get; private set; }
+        public virtual RedefinePasswordCode PasswordRedefineCode { get; protected set; }
 
-        public virtual DateTime RefreshTokenValidity { get; private set; }
+        public virtual DateTime RefreshTokenValidity { get; protected set; }
 
         public virtual IEnumerable<UserToRole> Roles => _roles?.ToList();
 
