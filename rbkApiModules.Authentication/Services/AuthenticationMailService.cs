@@ -11,7 +11,7 @@ using System.Text;
 namespace rbkApiModules.Authentication
 {
 
-    public interface IAuthenticationMailsService
+    public interface IAuthenticationMailService
     {
         /// <summary>
         /// Envia o e-mail de confirmação para o novo usuário com o link de confirmação do e-mail cadastrado
@@ -29,7 +29,7 @@ namespace rbkApiModules.Authentication
         void SendPasswordResetMail(string receiverName, string receiverEmail, string resetCode);
     }
 
-    public class AuthenticationMailService : IAuthenticationMailsService
+    public class AuthenticationMailService : IAuthenticationMailService
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly AuthenticationMailConfiguration _mailConfiguration;
@@ -40,7 +40,7 @@ namespace rbkApiModules.Authentication
         {
             var assembly = Assembly.GetAssembly(GetType());
 
-            var stream = assembly.GetManifestResourceStream(resourceName);
+            var stream = assembly.GetManifestResourceStream(assembly.GetName().Name + ".Resources." + resourceName);
 
             using (var reader = new StreamReader(stream, Encoding.UTF8))
             {
@@ -59,7 +59,7 @@ namespace rbkApiModules.Authentication
 
         public void SendConfirmationMail(string receiverName, string receiverEmail, string activationCode)
         {
-            var textBody = ReadMailResource("email - confirmation.txt")
+            var textBody = ReadMailResource("email-confirmation.txt")
                 .Replace("{{name}}", receiverName)
                 .Replace("{{activationLink}}", $"{_url}/auth/confirm?email={receiverEmail}&code={activationCode}");
 

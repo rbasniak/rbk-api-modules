@@ -6,13 +6,13 @@ namespace rbkApiModules.Authentication
     /// <summary>
     /// Classe para armazenar um código de restauração de senha de um usuário
     /// </summary>
-    public class RedefinePasswordCode
+    public class PasswordRedefineCode
     {
-        protected RedefinePasswordCode()
+        protected PasswordRedefineCode()
         {
         }
 
-        public RedefinePasswordCode(DateTime creationDate)
+        public PasswordRedefineCode(DateTime creationDate)
         {
             CreationDate = creationDate;
             Hash = GenerateHash();

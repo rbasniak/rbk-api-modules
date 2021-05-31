@@ -12,7 +12,9 @@ namespace rbkApiModules.Authentication
                 .IsRequired();
 
             entity.Property(x => x.Password)
-                .IsRequired(); 
+                .IsRequired();
+
+            entity.OwnsOne(typeof(PasswordRedefineCode), nameof(BaseUser.PasswordRedefineCode));
         }
     }
 }

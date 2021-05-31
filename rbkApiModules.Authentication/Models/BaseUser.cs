@@ -76,7 +76,7 @@ namespace rbkApiModules.Authentication
 
         public virtual string ActivationCode { get; protected set; }
 
-        public virtual RedefinePasswordCode PasswordRedefineCode { get; protected set; }
+        public virtual PasswordRedefineCode PasswordRedefineCode { get; protected set; }
 
         public virtual DateTime RefreshTokenValidity { get; protected set; }
 
@@ -92,7 +92,7 @@ namespace rbkApiModules.Authentication
 
         public void SetPasswordRedefineCode(DateTime date)
         {
-            PasswordRedefineCode = new RedefinePasswordCode(date);
+            PasswordRedefineCode = new PasswordRedefineCode(date);
         }
 
         public void UsePasswordRedefineCode()

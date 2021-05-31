@@ -48,9 +48,9 @@ namespace rbkApiModules.Authentication
 
         public class Handler : BaseCommandHandler<Command, DbContext>
         {
-            private readonly IAuthenticationMailsService _mailingService;
+            private readonly IAuthenticationMailService _mailingService;
 
-            public Handler(DbContext context, IHttpContextAccessor httpContextAccessor, IAuthenticationMailsService mailingService) : base(context, httpContextAccessor)
+            public Handler(DbContext context, IHttpContextAccessor httpContextAccessor, IAuthenticationMailService mailingService) : base(context, httpContextAccessor)
             {
                 _mailingService = mailingService;
             }
