@@ -46,6 +46,8 @@ namespace rbkApiModules.Authentication
                     .WithName("Usuário")
                     .DependentRules(() =>
                     {
+                        RuleFor(a => a.Username)
+                            .MustAsync(BeConfirmed).WithMessage("Usuário não confirmado.");
                         RuleFor(a => a.Password)
                         .IsRequired()
                         // FIXME: .MustHasLengthBetween(ModelConstants.Authentication.Password.MinLength, ModelConstants.Authentication.Password.MaxLength)
@@ -65,6 +67,15 @@ namespace rbkApiModules.Authentication
 
                 return await query.AnyAsync(x => EF.Functions.Like(x.Username, username));
             }
+
+            /// <summary>
+            /// Validador que verifica se o usuário informado teve o e-mail confirmado
+            /// </summary>
+            public async Task<bool> BeConfirmed(Command command, string username, CancellationToken cancelation)
+            {
+                return await _context.Set<BaseUser>().AnyAsync(x => EF.Functions.Like(x.Username, username) && x.IsConfirmed);
+            }
+
 
             /// <summary>
             /// Validador que verifica se a senha informada bate com o hash da senha no banco de dados

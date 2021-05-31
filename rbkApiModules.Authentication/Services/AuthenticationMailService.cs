@@ -68,7 +68,7 @@ namespace rbkApiModules.Authentication
                 .Replace("{{mainColor}}", _mailConfiguration.MainColor)
                 .Replace("{{fontColor}}", _mailConfiguration.FontColor)
                 .Replace("{{systemName}}", _mailConfiguration.B64Logo == null ? _mailConfiguration.SenderName : _logoHtml)
-                .Replace("{{activationLink}}", $"{_url}/auth/confirm?email={receiverEmail}&code={activationCode}");
+                .Replace("{{activationLink}}", $"{_url}/api/auth/confirm-email?email={receiverEmail}&code={activationCode}");
 
             var credentials = string.IsNullOrEmpty(_mailConfiguration.SenderPassword) 
                 ? null 
@@ -134,7 +134,7 @@ namespace rbkApiModules.Authentication
                 .Replace("{{mainColor}}", _mailConfiguration.MainColor)
                 .Replace("{{fontColor}}", _mailConfiguration.FontColor)
                 .Replace("{{systemName}}", _mailConfiguration.B64Logo == null ? _mailConfiguration.SenderName : _logoHtml)
-                .Replace("{{resetLink}}", $"{_mailConfiguration.PasswordResetUrl}/{resetCode}");
+                .Replace("{{resetLink}}", $"{_mailConfiguration.PasswordResetUrl}?code={resetCode}");
 
             var credentials = string.IsNullOrEmpty(_mailConfiguration.SenderPassword)
                 ? null
