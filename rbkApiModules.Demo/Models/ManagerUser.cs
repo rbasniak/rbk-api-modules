@@ -9,7 +9,7 @@ namespace rbkApiModules.Demo.Models
 
         } 
 
-        public ManagerUser(string username, string password, bool isConfirmed, Manager manager) : base(username, password, "", manager.Name, "client")
+        public ManagerUser(string username, string email, string password, bool isConfirmed, Manager manager) : base(username, email, password, "", manager.Name, "client")
         {
             IsConfirmed = isConfirmed;
             Manager = manager;

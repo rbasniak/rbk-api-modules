@@ -18,10 +18,10 @@ namespace rbkApiModules.Demo.Database.StateMachine
             var paidPlan = new Plan("Paid plan", 30, 0.0, true, true, "idPaypal", "idSandbox");
             context.Add(paidPlan);
 
-            var client = new ClientUser("client", "123123", true, new Client("John Doe", new DateTime(1999, 1, 1), freePlan));
+            var client = new ClientUser("client", "client@clinet.com", "123123", true, new Client("John Doe", new DateTime(1999, 1, 1), freePlan));
             context.Set<BaseUser>().Add(client);
 
-            var manager = new ManagerUser("manager", "123123", false, new Manager("Jane Doe", paidPlan));
+            var manager = new ManagerUser("manager", "manager@manage.com", "123123", false, new Manager("Jane Doe", paidPlan));
             context.Set<BaseUser>().Add(manager);
 
             manager.Manager.SetTrialKey(new TrialKey(paidPlan, 30));

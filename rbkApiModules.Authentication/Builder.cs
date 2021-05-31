@@ -7,7 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using rbkApiModules.Utilities.Extensions;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -19,6 +18,8 @@ namespace rbkApiModules.Authentication
         public static void AddRbkApiAuthenticationModule(this IServiceCollection services, IConfigurationSection applicationConfiguration)
         {
             var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(applicationConfiguration[nameof(JwtIssuerOptions.SecretKey)]));
+
+            services.AddSingleton(typeof(AuthenticationMailConfiguration));
 
             services.Configure<JwtIssuerOptions>(options =>
             {
@@ -66,7 +67,9 @@ namespace rbkApiModules.Authentication
 
         public static IApplicationBuilder UseRbkApiAuthenticationModule(this IApplicationBuilder app, Action<AuthenticationModuleOptions> configureOptions)
         {
-            var options = new AuthenticationModuleOptions();
+            var mailConfig = app.ApplicationServices.GetService<AuthenticationMailConfiguration>();
+
+            var options = new AuthenticationModuleOptions(mailConfig);
             configureOptions(options);
 
             var scopeFactory = app.ApplicationServices.GetService<IServiceScopeFactory>();
@@ -124,53 +127,5 @@ namespace rbkApiModules.Authentication
 
             return app;
         }
-    }
-
-    public class AuthenticationModuleOptions
-    {
-        private bool _seedClaims = false;
-        private List<string> _authenticationGroups = new List<string>();
-        private SeedClaimDescriptions _claimDescriptions = new SeedClaimDescriptions();
-
-        public bool SeedClaims => _seedClaims;
-        public List<string> AuthenticationGroups => _authenticationGroups;
-        public SeedClaimDescriptions ClaimDescriptions => _claimDescriptions;
-
-        public AuthenticationModuleOptions SeedAuthenticationClaims()
-        {
-            _seedClaims = true;
-
-            return this;
-        }
-
-        public AuthenticationModuleOptions UseDefaultClaimDescriptions()
-        {
-            _claimDescriptions.ManageRoles = "Gerenciar regras de acesso";
-            _claimDescriptions.ManageUserRoles = "Atribuir regras de acesso a usuários";
-            _claimDescriptions.OverrideUserClaims = "Permitir/bloquear acessos individuais a usuários";
-
-            return this;
-        }
-
-        public AuthenticationModuleOptions UseCustomClaimDescriptions(SeedClaimDescriptions descriptions)
-        {
-            _claimDescriptions = descriptions;
-
-            return this;
-        }
-
-        public AuthenticationModuleOptions AddAuthenticationGroup(string group)
-        {
-            _authenticationGroups.Add(group);
-
-            return this;
-        }
-    }
-
-    public class SeedClaimDescriptions
-    { 
-        public string ManageRoles { get; set; }
-        public string ManageUserRoles { get; set; }
-        public string OverrideUserClaims { get; set; }
     }
 }

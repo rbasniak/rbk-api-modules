@@ -17,6 +17,13 @@ namespace rbkApiModules.Authentication
     [Route("api/[controller]")]
     public class AuthController : BaseController
     {
+        private readonly AuthenticationMailConfiguration _MailConfig;
+
+        public AuthController(AuthenticationMailConfiguration config) : base()
+        {
+            _MailConfig = config;
+        }
+
         /// <summary>
         /// Login de usuário
         /// </summary>
@@ -76,6 +83,53 @@ namespace rbkApiModules.Authentication
                     StatusCode = (int)HttpStatusCode.Unauthorized
                 };
             };
+        }
+
+        /// <summary>
+        /// Envia um e-mail contendo o link para troca de senha
+        /// </summary>
+        [HttpPost]
+        [Route("reset-password")]
+        public async Task<ActionResult> SendResetPasswordEmail(ResetPassword.Command data)
+        {
+            return HttpResponse(await Mediator.Send(data));
+        }
+
+        /// <summary>
+        /// Redefine a senha do usuário dado um código de redefinição
+        /// </summary>
+        [HttpPost]
+        [Route("redefine-password")]
+        public async Task<ActionResult> RedefinePassword(RedefinePassword.Command data)
+        {
+            return HttpResponse(await Mediator.Send(data));
+        }
+
+        /// <summary>
+        /// Reenvia o e-mail de confirmação para o usuário
+        /// </summary>
+        [HttpPost("resend-confirmation")]
+        public async Task<ActionResult> ResendEmailConfirmation(ResendEmailConfirmation.Command data)
+        {
+            return HttpResponse(await Mediator.Send(data));
+        }
+
+        /// <summary>
+        /// Confirma o e-mail de um usuário
+        /// </summary>
+        [HttpGet("confirm-email")]
+        public async Task<ActionResult> ConfirmEmail(string email, string code)
+        {
+            var response = await Mediator.Send(new ConfirmUserEmail.Command() { Email = email, ActivationCode = code });
+
+            if (response.IsValid)
+            {
+                return Redirect(_MailConfig.ConfirmationSuccessUrl);
+            }
+            else
+            {
+                return Redirect(_MailConfig.ConfirmationFailedUrl);
+            }
         }
     }
 }

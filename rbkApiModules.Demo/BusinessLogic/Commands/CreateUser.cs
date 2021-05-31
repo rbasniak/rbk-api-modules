@@ -18,6 +18,7 @@ namespace rbkApiModules.Demo.BusinessLogic
         {
             [MustBeUnique(typeof(ClientUser), nameof(ClientUser.Username))]
             public string Username { get; set; }
+            public string Email { get; set; }
             public string Password { get; set; }
             public string Name { get; set; }
             public Guid UserId { get; set; }
@@ -49,7 +50,7 @@ namespace rbkApiModules.Demo.BusinessLogic
 
             protected override async Task<(Guid? entityId, object result)> ExecuteAsync(Command request)
             {
-                var user = new ClientUser(request.Username, request.Password, true, new Client(request.Name, DateTime.Now, null));
+                var user = new ClientUser(request.Username, request.Email, request.Password, true, new Client(request.Name, DateTime.Now, null));
 
                 _context.Add(user);
 

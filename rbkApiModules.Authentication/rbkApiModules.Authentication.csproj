@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -11,6 +11,24 @@
     <Copyright>rbasniak</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\email-confirmation.html" />
+    <None Remove="Resources\email-confirmation.txt" />
+    <None Remove="Resources\email-confirmed.html" />
+    <None Remove="Resources\email-confirmed.txt" />
+    <None Remove="Resources\email-reset.html" />
+    <None Remove="Resources\email-reset.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\email-confirmation.html" />
+    <EmbeddedResource Include="Resources\email-confirmation.txt" />
+    <EmbeddedResource Include="Resources\email-confirmed.html" />
+    <EmbeddedResource Include="Resources\email-confirmed.txt" />
+    <EmbeddedResource Include="Resources\email-reset.html" />
+    <EmbeddedResource Include="Resources\email-reset.txt" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.6" />
@@ -28,6 +46,7 @@
     <ProjectReference Include="..\rbkApiModules.Infrastructure.MediatR\rbkApiModules.Infrastructure.MediatR.Core.csproj" />
     <ProjectReference Include="..\rbkApiModules.Infrastructure.Models\rbkApiModules.Infrastructure.Models.csproj" />
     <ProjectReference Include="..\rbkApiModules.UIAnnotations.Common\rbkApiModules.UIAnnotations.Commons.csproj" />
+    <ProjectReference Include="..\rbkApiModules.Utilities\rbkApiModules.Utilities.csproj" />
   </ItemGroup>
 
 </Project>

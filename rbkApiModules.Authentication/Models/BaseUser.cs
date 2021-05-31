@@ -1,5 +1,5 @@
 ﻿using rbkApiModules.Infrastructure.Models;
-using rbkApiModules.Utilities.Avatar;
+using rbkApiModules.Utilities;
 using rbkApiModules.Utilities.Passwords;
 using System;
 using System.Collections.Generic;
@@ -22,7 +22,7 @@ namespace rbkApiModules.Authentication
 
         }
 
-        public BaseUser(string username, string password, string avatar, string displayName, string authenticationGroup)
+        public BaseUser(string username, string email, string password, string avatar, string displayName, string authenticationGroup)
         {
             if (authenticationGroup != null && authenticationGroup.Length > 32)
             {
@@ -31,6 +31,7 @@ namespace rbkApiModules.Authentication
 
             DisplayName = displayName;
             Username = username.ToLower();
+            Email = email.ToLower();
             SetPassword(password);
 
             if (!String.IsNullOrEmpty(avatar))
@@ -46,10 +47,15 @@ namespace rbkApiModules.Authentication
 
             _claims = new HashSet<UserToClaim>();
             _roles = new HashSet<UserToRole>();
+
+            ActivationCode = Base32GuidEncoder.EncodeId(Guid.NewGuid()) + Base32GuidEncoder.EncodeId(Guid.NewGuid()) + Base32GuidEncoder.EncodeId(Guid.NewGuid());
         }
 
         [Required, MinLength(3), MaxLength(255)]
         public virtual string Username { get; private set; }
+
+        [Required, MinLength(5), MaxLength(255)]
+        public virtual string Email { get; private set; }
 
         [Required, MinLength(1), MaxLength(4096)]
         public virtual string Password { get; private set; }
@@ -68,11 +74,32 @@ namespace rbkApiModules.Authentication
 
         public virtual bool IsConfirmed { get; private set; }
 
+        public virtual string ActivationCode { get; private set; }
+
+        public virtual RedefinePasswordCode PasswordRedefineCode { get; private set; }
+
         public virtual DateTime RefreshTokenValidity { get; private set; }
 
         public virtual IEnumerable<UserToRole> Roles => _roles?.ToList();
 
         public virtual IEnumerable<UserToClaim> Claims => _claims?.ToList();
+
+        public void Confirm()
+        {
+            IsConfirmed = true;
+            ActivationCode = null;
+        }
+
+        public void SetPasswordRedefineCode(DateTime date)
+        {
+            PasswordRedefineCode = new RedefinePasswordCode(date);
+        }
+
+        public void UsePasswordRedefineCode()
+        {
+            //TODO: Verificar se pode ser definido como nulo ou como vazio
+            PasswordRedefineCode = null;
+        }
 
         /// <summary>
         /// Método que processa as roles e claims de um usuário 
