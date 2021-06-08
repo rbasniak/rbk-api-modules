@@ -8,8 +8,13 @@ using System.Threading.Tasks;
 
 namespace rbkApiModules.Utilities.Charts.ChartJs
 {
-    public class LayoutOptions
+    public enum TooltipMode
     {
-        public PaddingOptions Padding { get; set; }
+        X,
+        Y,
+        Dataset,
+        Index,
+        Point,
+        Nearest
     }
 }

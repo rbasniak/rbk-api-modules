@@ -8,25 +8,24 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
 {
     public static class ChartJsExtensions
     {
-        public static LinearChartFactory CreateLinearChart(this List<NeutralDatePoint> data, GroupingType groupingType, bool appendExtraData = true)
+        public static LinearChartBuilder CreateLinearChart(this List<NeutralDatePoint> data, GroupingType groupingType, bool appendExtraData = true)
         {
-            return LinearChartFactory.CreateLinearDateChart(data, groupingType, appendExtraData);
-
+            return LinearChartBuilder.CreateLinearDateChart(data, groupingType, appendExtraData);
         }
 
-        public static LinearChartFactory CreateLinearChart(this List<NeutralCategoryPoint> data, bool appendExtraData = true)
+        public static LinearChartBuilder CreateLinearChart(this List<NeutralCategoryPoint> data, bool appendExtraData = true)
         {
-            return LinearChartFactory.CreateLinearCategoryChart(data, appendExtraData);
+            return LinearChartBuilder.CreateLinearCategoryChart(data, appendExtraData);
         }
 
-        public static RadialChartFactory CreateRadialChart(this List<NeutralCategoryPoint> data, int maximumSeries, string mergedLabel, bool appendExtraData = true)
+        public static RadialChartBuilder CreateRadialChart(this List<NeutralCategoryPoint> data, int maximumSeries, string mergedLabel, bool appendExtraData = true)
         {
-            return RadialChartFactory.CreateRadialCategoryChart(data, maximumSeries, mergedLabel, appendExtraData);
+            return RadialChartBuilder.CreateRadialCategoryChart(data, maximumSeries, mergedLabel, appendExtraData);
         }
 
-        public static RadialChartFactory CreateRadialChart(this List<NeutralCategoryPoint> data, bool appendExtraData = true)
+        public static RadialChartBuilder CreateRadialChart(this List<NeutralCategoryPoint> data, bool appendExtraData = true)
         {
-            return RadialChartFactory.CreateRadialCategoryChart(data, Int32.MaxValue, "", appendExtraData);
+            return RadialChartBuilder.CreateRadialCategoryChart(data, Int32.MaxValue, "", appendExtraData);
         }
     }
 }

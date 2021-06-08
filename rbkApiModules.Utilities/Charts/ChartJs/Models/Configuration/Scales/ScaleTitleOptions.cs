@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace rbkApiModules.Utilities.Charts.ChartJs
 {
-    public class TitleOptions
+    public class ScaleTitleOptions
     {
         public string Color { get; set; }
         public bool? Display { get; set; }
@@ -16,6 +16,5 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
         public PaddingOptions Padding { get; set; }
         public PositionType? Position { get; set; }
         public string Text { get; set; }
-        public AlignmentType? Align { get; set; }
     }
 }

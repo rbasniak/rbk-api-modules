@@ -17,21 +17,11 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
         }
 
         public bool Responsive { get; set; }
-        public int? ResponsiveAnimationDuration { get; set; }
-
-        public double? AspectRatio { get; set; }
         public bool MaintainAspectRatio { get; set; }
-        public TitleOptions Title { get; set; }
-        public LegendOptions Legend { get; set; }
-        public TooltipOptions Tooltips { get; set; }
-        public HoverOptions Hover { get; set; }
-        public AnimationOptions Animation { get; set; }
-        public ElementsOptions Options { get; set; }
+        public double? AspectRatio { get; set; }
         public LayoutOptions Layout { get; set; }
-        public bool? ShowLines { get; set; }
-        public bool? SpanGaps { get; set; }
-        public double? CutoutPercentage { get; set; }
-        public double? Circumference { get; set; }
-        public Scales Scales { get; set; }
+        public InteractionOptions Interaction { get; set; }
+        public dynamic Scales { get; set; }
+        public PluginOptions Plugins { get; set; }
     }
 }

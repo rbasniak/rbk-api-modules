@@ -10,11 +10,11 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
 {
     public class LegendLabelOptions
     {
+        public double? BoxHeight { get; set; }
         public double? BoxWidth { get; set; }
-        public double? FontSize { get; set; }
-        public string? FontStyle { get; set; }
-        public string? FontColor { get; set; }
-        public string? FontFamily { get; set; }
-        public bool? Padding { get; set; }
+        public string? Color { get; set; }
+        public FontOptions Font { get; set; }
+        public double? Padding { get; set; }
+        public bool? UsePointStyle { get; set; }
     }
 }

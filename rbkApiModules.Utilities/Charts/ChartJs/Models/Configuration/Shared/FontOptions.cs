@@ -8,8 +8,11 @@ using System.Threading.Tasks;
 
 namespace rbkApiModules.Utilities.Charts.ChartJs
 {
-    public class LayoutOptions
+    public class FontOptions
     {
-        public PaddingOptions Padding { get; set; }
+        public string Family { get; set; }
+        public double? Size { get; set; }
+        public FontWeight? Weight { get; set; }
+        public double? LineHeight { get; set; }
     }
 }

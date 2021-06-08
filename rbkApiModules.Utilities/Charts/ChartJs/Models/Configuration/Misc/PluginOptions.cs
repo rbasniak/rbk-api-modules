@@ -8,8 +8,10 @@ using System.Threading.Tasks;
 
 namespace rbkApiModules.Utilities.Charts.ChartJs
 {
-    public class LayoutOptions
+    public class PluginOptions
     {
-        public PaddingOptions Padding { get; set; }
+        public TitleOptions Title { get; set; }
+        public TooltipOptions Tooltip { get; set; }
+        public LegendOptions Legend { get; set; }
     }
 }

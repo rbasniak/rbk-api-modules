@@ -9,7 +9,7 @@ using Xunit;
 
 namespace rbkApiModules.Utilities.Tests
 {
-    public class ChartJsTests
+    public class ChartJsTestsProposal
     {
         [Fact]
         public void SimulateIAGMChart()
@@ -38,56 +38,55 @@ namespace rbkApiModules.Utilities.Tests
                 new NeutralDatePoint("open", new DateTime(2021, 06, 01), 27),
             };
 
-            var chart = data1.CreateLinearChart(GroupingType.Monthly)
+            var chart = data1.CreateLinearChart(GroupingType.Monthly) // Linear chart builder
                 .OfType(ChartType.Bar)
-                .Colors(new[] { "#BE5651", "#9DB167", "#4E81BD" })
-
-                .SetCurrentDataset("concluded")
-                    .SetDatasetType(ChartType.Line)
-                    .SetDatasetLabel("Mudanças Concluídas")
-                    .SetDatasetBorderWidth(3)
-                    .SetDatasetYAxis("A")
-                
-                .SetCurrentDataset("open")
-                    .SetDatasetType(ChartType.Line)
-                    .SetDatasetLabel("Total de Mudanças")
-                    .SetDatasetBorderWidth(3)
-                    .SetDatasetYAxis("A")
-
-                .SetCurrentDataset("iagm")
-                    .SetDatasetType(ChartType.Bar)
-                    .SetDatasetLabel("IAGM")
-                    .SetDatasetBorderWidth(0)
-                    .SetDatasetYAxis("B")
-                    .SetDatasetValuesRounding(1)
-
-                .SetDataSetOrder("concluded", "open", "iagm")
-
-                .ShowTitle("Índice de Atendimento de Gestão de Mudanças")
-                .SetTitlePadding(32)
-                .SetTitleFontSize(16)
-
-                .EnableTooltips()
-                
-                .ShowLegend(PositionType.Bottom)
-                
                 .HideXAxisGridlines()
-                .SetXAxisBarPercentage(0.5)
-
-                .AddYAxis("A")
-                    .SetYAxisPosition(PositionType.Left)
-                    .ShowYAxisLabel("Qtde de Mudanças")
-                    .SetYAxisMinRange(0)
-                    .SetYAxisOverflow(AxisOverflowType.Relative, AxisOverflowDirection.Both, 5)
-                
-                .AddYAxis("B")
-                    .HideYAxisGridlines()
-                    .SetYAxisPosition(PositionType.Right)
-                    .ShowYAxisLabel("IAGM (%)")
-                    .SetYAxisMinRange(0)
-                    .SetYAxisMaxRange(100)
-                    .SetYAxisOverflow(AxisOverflowType.Relative, AxisOverflowDirection.Both, 5)
-.
+                // .XAxisBarPercentage(0.5)
+                .WithTitle("Índice de Atendimento de Gestão de Mudanças") // Title builder
+                    .Padding(32, 32)
+                    .Font(16)
+                    .Chart
+                .WithTooltips() //Tooltip builder
+                    .Chart
+                .WithLegend() // Legend builder
+                    .At(PositionType.Bottom)
+                    .Chart
+                .WithDataset("concluded") // Dataset builder
+                    .Type(ChartType.Line)
+                    .Label("Mudanças Concluídas")
+                    .Color("#BE5651")
+                    .BorderWidth(3)
+                    .CustomAxis("A")
+                    .Chart
+                .WithDataset("open")  // Dataset builder
+                    .Type(ChartType.Line)
+                    .Label("Total de Mudanças")
+                    .Color("#9DB167")
+                    .BorderWidth(3)
+                    .CustomAxis("A")
+                    .Chart
+                .WithDataset("iagm")  // Dataset builder
+                    .Type(ChartType.Bar)
+                    .Label("IAGM")
+                    .Color("#4E81BD")
+                    .BorderWidth(0)
+                    .UseAxis("B")
+                    .ValuesRouding(1)
+                    .Chart
+                .WithYAxis("A") // YAxis builder
+                    .At(PositionType.Left)
+                    .Label("Qtde de mudanças")
+                    .BeginAt(0)
+                    .Overflow(AxisOverflowType.Relative, AxisOverflowDirection.Both, 5)
+                    .Chart
+                .WithYAxis("B") // YAxis builder
+                    .At(PositionType.Right)
+                    .HideGridlines()
+                    .Label("IAGM (%)")
+                    .BeginAt(0)
+                    .FinishAt(100)
+                    .Overflow(AxisOverflowType.Relative, AxisOverflowDirection.Both, 5)
+                    .Chart
                 .Build(true);
                 
         } 
@@ -114,40 +113,33 @@ namespace rbkApiModules.Utilities.Tests
             };
 
             var chart = data1.CreateLinearChart()
-                .OfType(ChartType.Bar)
-                .UseStackedBars()
-                .SetColors(new[] { "#add28f", "#f9e59c", "#FA3511" }, "77")
-
-                .SetCurrentDataset("0-90")
-                    .SetDatasetType(ChartType.Bar)
-                    .SetDatasetLabel("0 a 90 dias")
-                    .SetDatasetBorderWidth(2)
-
-                .SetCurrentDataset("90-180")
-                    .SetDatasetType(ChartType.Bar)
-                    .SetDatasetLabel("90 a 180 dias")
-                    .SetDatasetBorderWidth(2)
-
-                .SetCurrentDataset("180+")
-                    .SetDatasetType(ChartType.Bar)
-                    .SetDatasetLabel("Mais de 180 dias")
-                    .SetDatasetBorderWidth(2)
-
-                .ShowTitle("Índice de Documentação Técnica Atualizada")
-                .SetTitlePadding(32)
-                .SetTitleFontSize(16)
-
-                .EnableTooltips()
-
-                .ShowLegend(PositionType.Bottom)
-
+                .Type(ChartType.StackedBar)
+                .WithDataset("0-90")
+                    .Type(ChartType.Bar)
+                    .Label("0 a 90 dias")
+                    .Color("#add28f", "77")
+                    .BorderWidth(2)
+                .WithDataset("90-180")
+                    .Type(ChartType.Bar)
+                    .Label("90 a 180 dias")
+                    .Color("#f9e59c", "77")
+                    .BorderWidth(2)
+                .WithDataset("180+")
+                    .Type(ChartType.Bar)
+                    .Label("Mais de 180 dias")
+                    .Color("#FA3511", "77")
+                    .BorderWidth(2)
+                .WithTitle("Índice de Documentação Técnica Atualizada")
+                    .Padding(32)
+                    .FontSize(16)
+                .WithTooltips()
+                .WithLegend()
+                    .At(PositionType.Bottom)
                 .HideXAxisGridlines()
-                .SetXAxisBarPercentage(0.5)
-
-                .ShowYAxisLabel("Qtde de Mudanças")
-
+                .XAxisBarPercentage(0.5)
+                .WithYAxis()
+                    .Label("Qtde de Mudanças")
                 .Build(true);
-
         }
 
         [Fact]
@@ -171,12 +163,13 @@ namespace rbkApiModules.Utilities.Tests
 
             var chart = data1.CreateRadialChart()
                 .OfType(ChartType.Pie)
-                .SetColors(new[] { "#FF6384", "#36A2EB", "#FFCE56" })
-                .ShowTitle("Título do Gráfico")
-                .SetTitlePadding(32)
-                .SetTitleFontSize(16)
-                .EnableTooltips()
-                .ShowLegend(PositionType.Right)
+                .WithColors(new[] { "#FF6384", "#36A2EB", "#FFCE56" })
+                .WithTitle("Título do Gráfico")
+                    .Padding(32)
+                    .FontSize(16)
+                .WithTooltips()
+                .WithLegend()
+                    .At(PositionType.Right)
                 .Build(true);
         }
 
@@ -203,9 +196,10 @@ namespace rbkApiModules.Utilities.Tests
 
             var chart = data1.CreateRadialChart(3, "Outros")
                 .OfType(ChartType.Doughnut)
-                .SetColors(new[] { "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0" })
-                .EnableTooltips()
-                .ShowLegend(PositionType.Right)
+                .WithColors(new[] { "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0" })
+                .WithTooltips()
+                .WithLegend()
+                    .At(PositionType.Right)
                 .Build(true);
         }
 
@@ -224,9 +218,10 @@ namespace rbkApiModules.Utilities.Tests
 
             var chart = data1.CreateRadialChart()
                 .OfType(ChartType.PolarArea)
-                .SetColors(ColorPallete.Pastel1, ColorPallete.Pastel2)
-                .EnableTooltips()
-                .ShowLegend(PositionType.Right)
+                .WithColors(ColorPallete.Pastel1, ColorPallete.Pastel2)
+                .WithTooltips()
+                .WithLegend()
+                    .At(PositionType.Right)
                 .Build(true);
         }
     }

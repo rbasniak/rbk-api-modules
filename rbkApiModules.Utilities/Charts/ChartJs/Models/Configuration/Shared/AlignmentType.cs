@@ -8,8 +8,10 @@ using System.Threading.Tasks;
 
 namespace rbkApiModules.Utilities.Charts.ChartJs
 {
-    public class LayoutOptions
+    public enum AlignmentType
     {
-        public PaddingOptions Padding { get; set; }
+        Start,
+        Center,
+        End
     }
 }

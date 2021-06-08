@@ -8,8 +8,9 @@ using System.Threading.Tasks;
 
 namespace rbkApiModules.Utilities.Charts.ChartJs
 {
-    public class LayoutOptions
+    public enum DatasetType
     {
-        public PaddingOptions Padding { get; set; }
+        Line,
+        Bar
     }
 }

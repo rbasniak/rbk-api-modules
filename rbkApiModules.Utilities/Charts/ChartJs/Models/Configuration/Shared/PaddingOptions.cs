@@ -8,8 +8,11 @@ using System.Threading.Tasks;
 
 namespace rbkApiModules.Utilities.Charts.ChartJs
 {
-    public class LayoutOptions
+    public class PaddingOptions
     {
-        public PaddingOptions Padding { get; set; }
+        public double? Top { get; set; }
+        public double? Right { get; set; }
+        public double? Bottom { get; set; }
+        public double? Left { get; set; }
     }
 }

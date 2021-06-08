@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace rbkApiModules.Utilities.Charts.ChartJs
 {
-    public class TitleOptions
+    public class TickOptions
     {
         public string Color { get; set; }
         public bool? Display { get; set; }
-        public FontOptions Font { get; set; }
-        public PaddingOptions Padding { get; set; }
-        public PositionType? Position { get; set; }
-        public string Text { get; set; }
-        public AlignmentType? Align { get; set; }
+        public double? Z { get; set; }
+        public double? StepSize { get; set; }
+        public double? Count { get; set; }
+        public double? MaxTicksLimit { get; set; }
+        public double? Precision { get; set; }
     }
 }
