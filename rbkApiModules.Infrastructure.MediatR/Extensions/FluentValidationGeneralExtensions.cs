@@ -61,34 +61,12 @@ namespace rbkApiModules.Infrastructure.MediatR.Core
         }
 
         /// <summary>
-        /// Validação de campos de telefone
-        /// </summary>
-        public static IRuleBuilderOptions<T, string> MustBePhone<T>(this IRuleBuilder<T, string> rule)
-        {
-            return rule
-                .MustHasLengthBetween(10, 11)
-                .SetValidator(new RegularExpressionValidator(ONLY_NUMBERS_REGEX)).WithMessage("Telefone com formato inválido")
-                .When((model, prop) => !String.IsNullOrEmpty(prop));
-        }
-
-        /// <summary>
         /// Validação de campos de e-mail
         /// </summary>
         public static IRuleBuilderOptions<T, string> MustBeEmail<T>(this IRuleBuilder<T, string> rule)
         {
             return rule
                 .EmailAddress().WithMessage("E-mail com formato inválido");
-        }
-
-        /// <summary>
-        /// Extensão para auxiliar nos outros métodos de extensão de validação
-        /// </summary>
-        private static IRuleBuilderOptions<T, TProperty> When<T, TProperty>(this IRuleBuilderOptions<T, TProperty> rule, Func<T, TProperty, bool> predicate, ApplyConditionTo applyConditionTo = ApplyConditionTo.AllValidators)
-        {
-            return rule.Configure(config =>
-            {
-                config.ApplyCondition(ctx => predicate((T)ctx.InstanceToValidate, (TProperty)ctx.PropertyValue), applyConditionTo);
-            });
         }
     }
 }
