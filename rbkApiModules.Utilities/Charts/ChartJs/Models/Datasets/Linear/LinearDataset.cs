@@ -15,44 +15,55 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
             Data = new List<Point>();
         }
 
-        public DatasetType? Type { get; set; }
+        public string Type { get; internal set; }
 
-        public bool? Fill { get; set; }
+        public bool? Fill { get; internal set; }
 
-        public string BackgroundColor { get; set; }
-        public string BorderCapStyle { get; set; }
-        public string BorderColor { get; set; }
-        public double? BorderWidth { get; set; }
-        public double? BorderRadius { get; set; }
+        public string BackgroundColor { get; internal set; }
+        public string BorderCapStyle { get; internal set; }
+        public string BorderColor { get; internal set; }
+        public double? BorderWidth { get; internal set; }
+        public double? BorderRadius { get; internal set; }
 
-        public double? CategoryPercentage { get; set; }
-        public double? BarPercentage { get; set; }
-        public double? BarThickness { get; set; }
-        public double? MaxBarThickness { get; set; }
-        public double? MinBarLength { get; set; }
+        public double? CategoryPercentage { get; internal set; }
+        public double? BarPercentage { get; internal set; }
+        public double? BarThickness { get; internal set; }
+        public double? MaxBarThickness { get; internal set; }
+        public double? MinBarLength { get; internal set; }
 
-        public string HoverBackgroundColor { get; set; }
-        public string HoverBorderColor { get; set; }
-        public string HoverBorderWidth { get; set; }
+        public string HoverBackgroundColor { get; internal set; }
+        public string HoverBorderColor { get; internal set; }
+        public string HoverBorderWidth { get; internal set; }
 
-        public string PointBackgroundColor { get; set; }
-        public string PointBorderColor { get; set; }
-        public string PointBorderWidth { get; set; }
-        public double? PointRadius { get; set; }
-        public double? PointRotation { get; set; }
+        public string PointBackgroundColor { get; internal set; }
+        public string PointBorderColor { get; internal set; }
+        public string PointBorderWidth { get; internal set; }
+        public double? PointRadius { get; internal set; }
+        public double? PointRotation { get; internal set; }
 
-        public string PointHoverBackgroundColor { get; set; }
-        public string PointHoverBorderColor { get; set; }
-        public string PointHoverBorderWidth { get; set; }
-        public string PointHoverRadius { get; set; }
+        public string PointHoverBackgroundColor { get; internal set; }
+        public string PointHoverBorderColor { get; internal set; }
+        public string PointHoverBorderWidth { get; internal set; }
+        public string PointHoverRadius { get; internal set; }
 
-        public double? Tension { get; set; }
-        public double? PointHitRadius { get; set; }
-        public string xAxisID { get; set; }
-        public string yAxisID { get; set; }
-        public PointStyle? PointStyle { get; set; }
+        public double? Tension { get; internal set; }
+        public double? PointHitRadius { get; internal set; }
+        public string xAxisID { get; internal set; }
+        public string yAxisID { get; internal set; }
+        public string PointStyle { get; internal set; }
 
-        public List<Point> Data { get; set; }
+        public List<Point> Data { get; internal set; }
+        public bool? BorderSkipped { get; internal set; }
+
+        public void SetPointStyle(PointStyle style)
+        {
+            PointStyle = style.ToString().Substring(0, 1).ToLower() + style.ToString().Substring(1);
+        }
+
+        public void SetDatasetType(DatasetType type)
+        {
+            Type = type.ToString().ToLower();
+        }
     }
 
     public enum IndexAxis

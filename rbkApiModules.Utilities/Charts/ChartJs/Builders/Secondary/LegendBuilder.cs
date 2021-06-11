@@ -1,35 +1,49 @@
-﻿namespace rbkApiModules.Utilities.Charts.ChartJs
+﻿using System;
+
+namespace rbkApiModules.Utilities.Charts.ChartJs
 {
     public class LegendBuilder<TFactory, TChart> where TChart : BaseChart where TFactory : BaseChartBuilder<TFactory, TChart>
     {
-        public BaseChartBuilder<TFactory, TChart> Chart { get; }
+        internal BaseChartBuilder<TFactory, TChart> Builder { get; }
+
+        public TFactory Chart => Builder as TFactory;
 
         public LegendBuilder(BaseChartBuilder<TFactory, TChart> chartBuilder)
         {
-            Chart = chartBuilder;
+            Builder = chartBuilder;
         }
 
-        public LegendBuilder<TFactory, TChart> At(AlignmentType alignment)
+        public LegendBuilder<TFactory, TChart> Align(AlignmentType alignment)
         {
-            Chart.Builder.Config.Plugins.Legend.Align = alignment;
+            Builder.Builder.Config.Plugins.Legend.SetAlignment(alignment);
 
             return this;
         }
 
         public LegendBuilder<TFactory, TChart> At(PositionType position)
         {
-            Chart.Builder.Config.Plugins.Legend.Position = position;
+            Builder.Builder.Config.Plugins.Legend.SetPosition(position);
 
             return this;
         }
 
-        public LegendBuilder<TFactory, TChart> WithTitle(string title)
+        public LegendTitleBuilder<TFactory, TChart> Title(string title)
         {
-            Chart.Builder.Config.Plugins.Legend.Title = new LegendTitleOptions 
+            Builder.Builder.Config.Plugins.Legend.Title = new LegendTitleOptions 
             {
                 Display = true,
                 Text = title,
             };
+
+            return new LegendTitleBuilder<TFactory, TChart>(this);
+        }
+
+
+        public LegendBuilder<TFactory, TChart> UsePointStyles()
+        {
+            if (Builder.Builder.Config.Plugins.Legend.Labels == null) Builder.Builder.Config.Plugins.Legend.Labels = new LegendLabelOptions();
+
+            Builder.Builder.Config.Plugins.Legend.Labels.UsePointStyle = true;
 
             return this;
         }
@@ -44,16 +58,16 @@
             Legend = builder;
         }
 
-        public LegendTitleBuilder<TFactory, TChart> At(PositionType position)
+        public LegendTitleBuilder<TFactory, TChart> Align(AlignmentType alignment)
         {
-            Legend.Chart.Builder.Config.Plugins.Legend.Title.Position = position;
+            Legend.Builder.Builder.Config.Plugins.Legend.Title.SetAlignment(alignment);
 
             return this;
         }
 
         public LegendTitleBuilder<TFactory, TChart> Font(double size, double? lineHeight, string font)
         {
-            Legend.Chart.Builder.Config.Plugins.Legend.Title.Font = new FontOptions 
+            Legend.Builder.Builder.Config.Plugins.Legend.Title.Font = new FontOptions 
             {
                 Family = font,
                 LineHeight = lineHeight,
@@ -65,7 +79,7 @@
 
         public LegendTitleBuilder<TFactory, TChart> Padding(double left, double top, double right, double bottom)
         {
-            Legend.Chart.Builder.Config.Plugins.Legend.Title.Padding = new PaddingOptions
+            Legend.Builder.Builder.Config.Plugins.Legend.Title.Padding = new PaddingOptions
             {
                 Top = top,
                 Left = left,

@@ -10,9 +10,19 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
 {
     public class InteractionOptions
     {
-        public bool? Intersect { get; set; }
-        public IntersectMode? Mode { get; set; } 
-        public AsixInteract? Axis { get; set; }
+        public bool? Intersect { get; internal set; }
+        public string Mode { get; internal set; } 
+        public string Axis { get; internal set; }
+
+        internal void SetAxis(AsixInteract axis)
+        {
+            Axis = axis.ToString().ToLower();
+        }
+
+        internal void SetIntersectMode(IntersectMode mode)
+        {
+            Mode = mode.ToString().ToLower();
+        }
     }
 
     public enum IntersectMode

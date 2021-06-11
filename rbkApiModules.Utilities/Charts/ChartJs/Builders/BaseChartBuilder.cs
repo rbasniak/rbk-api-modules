@@ -18,21 +18,59 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
         protected BaseChartBuilder(TChart chart)
         {
             Builder = chart;
+
+            Builder.Config.Interaction = new InteractionOptions();
+            Builder.Config.Interaction.SetAxis(AsixInteract.XY);
+            Builder.Config.Interaction.Intersect = false;
+            Builder.Config.Interaction.SetIntersectMode(IntersectMode.Nearest);
         }
 
-        public TFactory OfType(ChartType type)
+        public virtual TFactory OfType(ChartType type)
         {
-            if (this is RadialChart && (type == ChartType.Bar || type == ChartType.Bubble || type == ChartType.Line || type == ChartType.Radar))
+            if (this is RadialChart && 
+                (type == ChartType.Bar || 
+                 type == ChartType.Bubble || 
+                 type == ChartType.Line || 
+                 type == ChartType.Radar || 
+                 type == ChartType.StackedBar || 
+                 type == ChartType.Mixed || 
+                 type == ChartType.HorizontalBar))
             {
                 throw new ArgumentException($"The type {type.ToString()} is not allowed for radial charts");
             }
 
-            if (this is LinearChart && (type == ChartType.Bubble || type == ChartType.Doughnut || type == ChartType.Pie || type == ChartType.PolarArea || type == ChartType.Radar))
+            if (this is LinearChart && 
+                (type == ChartType.Bubble || 
+                 type == ChartType.Doughnut || 
+                 type == ChartType.Pie || 
+                 type == ChartType.PolarArea || 
+                 type == ChartType.Radar))
             {
                 throw new ArgumentException($"The type {type.ToString()} is not allowed for linear charts");
             }
 
-            Builder.Type = type.ToString().Substring(0, 1).ToLower() + type.ToString().Substring(1);
+            if (type == ChartType.Mixed)
+            {
+                Builder.Type = "bar";
+            }
+            else if (type == ChartType.StackedBar)
+            {
+                Builder.Type = "bar";
+            }
+            else if (type == ChartType.HorizontalBar)
+            {
+                Builder.Type = "bar";
+                Builder.Config.IndexAxis = "y";
+
+                // TODO: Acho que a melhor é criar um novo tipo de ponto, onde o Y é string e o X double,
+                // e fazer a troca antes de serializar se for esse tipo de gráfico
+                throw new NotImplementedException("Stacked bar charts are not yet implemented");
+            }
+            else
+            {
+                Builder.Type = type.ToString().Substring(0, 1).ToLower() + type.ToString().Substring(1);
+            }
+
 
             return (TFactory)this;
         }
@@ -53,9 +91,9 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
             Builder.Config.Plugins.Tooltip = new TooltipOptions()
             {
                 Enabled = true,
-                Mode = TooltipMode.Nearest,
                 Intersect = false
-            }; 
+            };
+            Builder.Config.Plugins.Tooltip.SetMode(TooltipMode.Nearest);
 
             return new TooltipBuilder<TFactory, TChart>(this);
         }
@@ -65,8 +103,9 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
             Builder.Config.Plugins.Legend = new LegendOptions()
             {
                 Display = true,
-                Position = PositionType.Bottom
             };
+
+            Builder.Config.Plugins.Legend.SetPosition(PositionType.Bottom);
 
             return new LegendBuilder<TFactory, TChart>(this);
         }

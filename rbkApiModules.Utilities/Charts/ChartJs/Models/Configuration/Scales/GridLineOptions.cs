@@ -10,21 +10,21 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
 {
     public class GridLineOptions
     {
-        public string BorderColor { get; set; }
-        public double[] BorderDash { get; set; }
-        public double? BorderDashOffset { get; set; }
-        public double? BorderWidth { get; set; }
-        public string Color { get; set; }
-        public bool? Display { get; set; }
-        public bool? DrawBorder { get; set; }
-        public bool? DrawOnChartArea { get; set; }
-        public bool? DrawTicks { get; set; }
-        public double? LineWidth { get; set; }
-        public bool? Offset { get; set; }
-        public double[] TickBorderDash { get; set; }
-        public double? TickBorderDashOffset { get; set; }
-        public string TickColor { get; set; }
-        public double? TickLength { get; set; }
-        public double? TickWidth { get; set; }
+        public string BorderColor { get; internal set; }
+        public double[] BorderDash { get; internal set; }
+        public double? BorderDashOffset { get; internal set; }
+        public double? BorderWidth { get; internal set; }
+        public string Color { get; internal set; }
+        public bool? Display { get; internal set; }
+        public bool? DrawBorder { get; internal set; }
+        public bool? DrawOnChartArea { get; internal set; }
+        public bool? DrawTicks { get; internal set; }
+        public double? LineWidth { get; internal set; }
+        public bool? Offset { get; internal set; }
+        public double[] TickBorderDash { get; internal set; }
+        public double? TickBorderDashOffset { get; internal set; }
+        public string TickColor { get; internal set; }
+        public double? TickLength { get; internal set; }
+        public double? TickWidth { get; internal set; }
     }
 }

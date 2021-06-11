@@ -10,6 +10,6 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
 {
     public class LayoutOptions
     {
-        public PaddingOptions Padding { get; set; }
+        public PaddingOptions Padding { get; internal set; }
     }
 }

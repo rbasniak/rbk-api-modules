@@ -13,15 +13,16 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
         public Configuration()
         {
             Responsive = true;
-            MaintainAspectRatio = false;
+            Plugins = new PluginOptions();
         }
 
-        public bool Responsive { get; set; }
-        public bool MaintainAspectRatio { get; set; }
-        public double? AspectRatio { get; set; }
-        public LayoutOptions Layout { get; set; }
-        public InteractionOptions Interaction { get; set; }
-        public dynamic Scales { get; set; }
-        public PluginOptions Plugins { get; set; }
+        public bool? Responsive { get; internal set; }
+        public bool? MaintainAspectRatio { get; internal set; }
+        public double? AspectRatio { get; internal set; }
+        public LayoutOptions Layout { get; internal set; }
+        public InteractionOptions Interaction { get; internal set; }
+        public dynamic Scales { get; internal set; }
+        public PluginOptions Plugins { get; internal set; }
+        public string IndexAxis { get; internal set; }
     }
 }

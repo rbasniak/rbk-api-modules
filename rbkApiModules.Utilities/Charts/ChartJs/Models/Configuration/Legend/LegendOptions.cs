@@ -10,12 +10,22 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
 {
     public class LegendOptions
     {
-        public AlignmentType? Align { get; set; }
-        public bool? Display { get; set; }
-        public bool? FullWdidth { get; set; }
-        public LegendLabelOptions Labels { get; set; }
-        public PositionType? Position { get; set; }
-        public bool? Reverse { get; set; }
-        public LegendTitleOptions Title { get; set; }
+        public string Align { get; internal set; }
+        public bool? Display { get; internal set; }
+        public bool? FullWdidth { get; internal set; }
+        public LegendLabelOptions Labels { get; internal set; }
+        public string Position { get; internal set; }
+        public bool? Reverse { get; internal set; }
+        public LegendTitleOptions Title { get; internal set; }
+
+        internal void SetAlignment(AlignmentType alignment)
+        {
+            Align = alignment.ToString().ToLower();
+        }
+
+        internal void SetPosition(PositionType position)
+        {
+            Position = position.ToString().ToLower();
+        }
     }
 }

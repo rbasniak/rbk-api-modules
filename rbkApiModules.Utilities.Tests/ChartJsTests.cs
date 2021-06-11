@@ -38,197 +38,497 @@ namespace rbkApiModules.Utilities.Tests
                 new NeutralDatePoint("open", new DateTime(2021, 06, 01), 27),
             };
 
+            var chart = data1.CreateLinearChart(GroupingType.Monthly) 
+                .OfType(ChartType.Mixed)
+                .Padding(0, 0, 5, 0)
+                .WithTitle("Índice de Atendimento de Gestão de Mudanças")  
+                    .Padding(32, 32)
+                    .Font(16)
+                    .Alignment(AlignmentType.Center)
+                    .Color("cornflowerblue")
+                    .Chart
+                .WithTooltips()  
+                    .Chart
+                .WithLegend() 
+                    .At(PositionType.Bottom)
+                    .Align(AlignmentType.Start)
+                    .UsePointStyles()
+                    .Title("Legenda")
+                        .Align(AlignmentType.Start)
+                        .Padding(0, 20, 0, 0)
+                        .Legend
+                    .Chart
+                .SetupDataset("concluded") 
+                    .OfType(DatasetType.Line)
+                    .Label("Mudanças Concluídas")
+                    .Color("#BE5651")
+                    .Thickness(3)
+                    .PointStyle(PointStyle.Triangle)
+                    .PointRadius(5.0)
+                    .CustomAxis("y")
+                    .Chart
+                .SetupDataset("open")   
+                    .OfType(DatasetType.Line)
+                    .Label("Total de Mudanças")
+                    .Color("#4E81BD")
+                    .PointStyle(PointStyle.RectRot)
+                    .PointRadius(5.0)
+                    .Thickness(3)
+                    .CustomAxis("y")
+                    .Chart
+                .SetupDataset("iagm")  
+                    .OfType(DatasetType.Bar)
+                    .Label("IAGM")
+                    .Color("#9DB167")
+                    .BarPercentage(0.5)
+                    .Thickness(2)
+                    .CustomAxis("y1")
+                    .ValuesRounding(1)
+                    .Chart
+                .WithYAxis("y")  
+                    .At(AxisPosition.Left)
+                    .Title("Qtde de mudanças")
+                        .Padding(0, 0, 0, 10)
+                        .Builder
+                    .Range(0, null)
+                    // .Overflow(AxisOverflowType.Relative, AxisOverflowDirection.Both, 5)
+                    .Chart
+                .WithYAxis("y1") 
+                    .At(AxisPosition.Right)
+                    .HideGridlines()
+                    .StepSize(25)
+                    .Title("IAGM (%)")
+                        .Builder
+                    .Range(0, 100)
+                    // .Overflow(AxisOverflowType.Relative, AxisOverflowDirection.Both, 5)
+                    .Chart
+                .Build(true);
+        }
+
+        [Fact]
+        public void SimulateComboChart()
+        {
+            var data1 = new List<NeutralDatePoint>
+            {
+                new NeutralDatePoint("Dataset 2", new DateTime(2021, 01, 01), 7),
+                new NeutralDatePoint("Dataset 2", new DateTime(2021, 02, 01), 45),
+                new NeutralDatePoint("Dataset 2", new DateTime(2021, 03, 01), 55),
+                new NeutralDatePoint("Dataset 2", new DateTime(2021, 04, 01), 60),
+                new NeutralDatePoint("Dataset 2", new DateTime(2021, 05, 01), 30),
+                new NeutralDatePoint("Dataset 2", new DateTime(2021, 06, 01), 60),
+
+                new NeutralDatePoint("Dataset 1", new DateTime(2021, 01, 01), 25),
+                new NeutralDatePoint("Dataset 1", new DateTime(2021, 02, 01), 10),
+                new NeutralDatePoint("Dataset 1", new DateTime(2021, 03, 01), 15),
+                new NeutralDatePoint("Dataset 1", new DateTime(2021, 04, 01), 50),
+                new NeutralDatePoint("Dataset 1", new DateTime(2021, 05, 01), 75),
+                new NeutralDatePoint("Dataset 1", new DateTime(2021, 06, 01), 45),
+            };
+
+            var chart = data1.CreateLinearChart(GroupingType.Monthly)
+                .OfType(ChartType.Mixed)
+                .WithTitle("Chart.js Combined Line/Bar Chart")
+                    .Chart
+                .WithTooltips()
+                    .Chart
+                .WithLegend()
+                    .At(PositionType.Top)
+                    .Chart
+                .SetupDataset("Dataset 1")
+                    .OfType(DatasetType.Line)
+                    .Label("Dataset 1")
+                    .Color("#f53794")
+                    .Thickness(2)
+                    .Chart
+                .SetupDataset("Dataset 2")
+                    .OfType(DatasetType.Bar)
+                    .Label("Dataset 2")
+                    .Color("#537bc4", "77")
+                    .Thickness(2)
+                    .Chart
+                .Build(true);
+        }
+
+        [Fact]
+        public void SimulateLineChart()
+        {
+            var data1 = new List<NeutralDatePoint>
+            {
+                new NeutralDatePoint("Dataset 1", new DateTime(2021, 01, 01), 25),
+                new NeutralDatePoint("Dataset 1", new DateTime(2021, 02, 01), 10),
+                new NeutralDatePoint("Dataset 1", new DateTime(2021, 03, 01), 15),
+                new NeutralDatePoint("Dataset 1", new DateTime(2021, 04, 01), 50),
+                new NeutralDatePoint("Dataset 1", new DateTime(2021, 05, 01), 75),
+                new NeutralDatePoint("Dataset 1", new DateTime(2021, 06, 01), 45),
+
+                new NeutralDatePoint("Dataset 2", new DateTime(2021, 01, 01), 7),
+                new NeutralDatePoint("Dataset 2", new DateTime(2021, 02, 01), 45),
+                new NeutralDatePoint("Dataset 2", new DateTime(2021, 03, 01), 55),
+                new NeutralDatePoint("Dataset 2", new DateTime(2021, 04, 01), 60),
+                new NeutralDatePoint("Dataset 2", new DateTime(2021, 05, 01), 30),
+                new NeutralDatePoint("Dataset 2", new DateTime(2021, 06, 01), 60),
+            };
+
+            var chart = data1.CreateLinearChart(GroupingType.Monthly)
+                .OfType(ChartType.Line)
+                .WithTitle("Line Chart")
+                    .Chart
+                .WithTooltips()
+                    .Chart
+                .WithLegend()
+                    .At(PositionType.Top)
+                    .Chart
+                .SetupDataset("Dataset 1")
+                    .OfType(DatasetType.Line)
+                    .Label("Dataset 1")
+                    .Color("#FF0000", "77")
+                    .Chart
+                .SetupDataset("Dataset 2")
+                    .OfType(DatasetType.Line)
+                    .Label("Dataset 2")
+                    .Color("#5500FF", "77")
+                    .Chart
+                .Build(true);
+        }
+
+        [Fact]
+        public void SimulateRoundedBarChart()
+        {
+            var data1 = new List<NeutralDatePoint>
+            {
+                new NeutralDatePoint("Data 1", new DateTime(2021, 01, 01), 5),
+                new NeutralDatePoint("Data 1", new DateTime(2021, 02, 01), 10),
+                new NeutralDatePoint("Data 1", new DateTime(2021, 03, 01), 15),
+                new NeutralDatePoint("Data 1", new DateTime(2021, 04, 01), 50),
+                new NeutralDatePoint("Data 1", new DateTime(2021, 05, 01), 75),
+                new NeutralDatePoint("Data 1", new DateTime(2021, 06, 01), 45),
+
+                new NeutralDatePoint("Data 2", new DateTime(2021, 01, 01), 7),
+                new NeutralDatePoint("Data 2", new DateTime(2021, 02, 01), 7),
+                new NeutralDatePoint("Data 2", new DateTime(2021, 03, 01), 10),
+                new NeutralDatePoint("Data 2", new DateTime(2021, 04, 01), 60),
+                new NeutralDatePoint("Data 2", new DateTime(2021, 05, 01), 30),
+                new NeutralDatePoint("Data 2", new DateTime(2021, 06, 01), 60),
+            };
+
             var chart = data1.CreateLinearChart(GroupingType.Monthly)
                 .OfType(ChartType.Bar)
-                .Colors(new[] { "#BE5651", "#9DB167", "#4E81BD" })
-
-                .SetCurrentDataset("concluded")
-                    .SetDatasetType(ChartType.Line)
-                    .SetDatasetLabel("Mudanças Concluídas")
-                    .SetDatasetBorderWidth(3)
-                    .SetDatasetYAxis("A")
-                
-                .SetCurrentDataset("open")
-                    .SetDatasetType(ChartType.Line)
-                    .SetDatasetLabel("Total de Mudanças")
-                    .SetDatasetBorderWidth(3)
-                    .SetDatasetYAxis("A")
-
-                .SetCurrentDataset("iagm")
-                    .SetDatasetType(ChartType.Bar)
-                    .SetDatasetLabel("IAGM")
-                    .SetDatasetBorderWidth(0)
-                    .SetDatasetYAxis("B")
-                    .SetDatasetValuesRounding(1)
-
-                .SetDataSetOrder("concluded", "open", "iagm")
-
-                .ShowTitle("Índice de Atendimento de Gestão de Mudanças")
-                .SetTitlePadding(32)
-                .SetTitleFontSize(16)
-
-                .EnableTooltips()
-                
-                .ShowLegend(PositionType.Bottom)
-                
-                .HideXAxisGridlines()
-                .SetXAxisBarPercentage(0.5)
-
-                .AddYAxis("A")
-                    .SetYAxisPosition(PositionType.Left)
-                    .ShowYAxisLabel("Qtde de Mudanças")
-                    .SetYAxisMinRange(0)
-                    .SetYAxisOverflow(AxisOverflowType.Relative, AxisOverflowDirection.Both, 5)
-                
-                .AddYAxis("B")
-                    .HideYAxisGridlines()
-                    .SetYAxisPosition(PositionType.Right)
-                    .ShowYAxisLabel("IAGM (%)")
-                    .SetYAxisMinRange(0)
-                    .SetYAxisMaxRange(100)
-                    .SetYAxisOverflow(AxisOverflowType.Relative, AxisOverflowDirection.Both, 5)
-.
+                .WithTooltips()
+                    .Chart
+                .WithLegend()
+                    .At(PositionType.Top)
+                    .Chart
+                .SetupDataset("Data 1")
+                    .Label("Data 1")
+                    .Color("#FF0000", "77")
+                    .Thickness(2)
+                    .RoundedBorders(5)
+                    .Chart
+                .SetupDataset("Data 2")
+                    .Label("Data 2")
+                    .Color("#5500FF", "77")
+                    .Thickness(2)
+                    .RoundedBorders(5)
+                    .Chart
                 .Build(true);
-                
-        } 
+        }
 
         [Fact]
-        public void SimulateIDTAChart()
+        public void SimulateStackedBarChart()
         {
-            var data1 = new List<NeutralCategoryPoint>
+            var data1 = new List<NeutralDatePoint>
             {
-                new NeutralCategoryPoint("0-90", "P-74", 2),
-                new NeutralCategoryPoint("0-90", "P-75", 5),
-                new NeutralCategoryPoint("0-90", "P-76", 3),
-                new NeutralCategoryPoint("0-90", "P-77", 4),
+                new NeutralDatePoint("Data 1", new DateTime(2021, 01, 01), 5),
+                new NeutralDatePoint("Data 1", new DateTime(2021, 02, 01), 10),
+                new NeutralDatePoint("Data 1", new DateTime(2021, 03, 01), 15),
+                new NeutralDatePoint("Data 1", new DateTime(2021, 04, 01), 50),
+                new NeutralDatePoint("Data 1", new DateTime(2021, 05, 01), 75),
+                new NeutralDatePoint("Data 1", new DateTime(2021, 06, 01), 45),
 
-                new NeutralCategoryPoint("90-180", "P-74", 1),
-                new NeutralCategoryPoint("90-180", "P-75", 2),
-                new NeutralCategoryPoint("90-180", "P-76", 3),
-                new NeutralCategoryPoint("90-180", "P-77", 0),
+                new NeutralDatePoint("Data 2", new DateTime(2021, 01, 01), 7),
+                new NeutralDatePoint("Data 2", new DateTime(2021, 02, 01), 7),
+                new NeutralDatePoint("Data 2", new DateTime(2021, 03, 01), 10),
+                new NeutralDatePoint("Data 2", new DateTime(2021, 04, 01), 60),
+                new NeutralDatePoint("Data 2", new DateTime(2021, 05, 01), 30),
+                new NeutralDatePoint("Data 2", new DateTime(2021, 06, 01), 60),
 
-                new NeutralCategoryPoint("180+", "P-74", 1),
-                new NeutralCategoryPoint("180+", "P-75", 0),
-                new NeutralCategoryPoint("180+", "P-76", 3),
-                new NeutralCategoryPoint("180+", "P-77", 2),
+                new NeutralDatePoint("Data 3", new DateTime(2021, 01, 01), 2),
+                new NeutralDatePoint("Data 3", new DateTime(2021, 02, 01), 15),
+                new NeutralDatePoint("Data 3", new DateTime(2021, 03, 01), 5),
+                new NeutralDatePoint("Data 3", new DateTime(2021, 04, 01), 30),
+                new NeutralDatePoint("Data 3", new DateTime(2021, 05, 01), 30),
+                new NeutralDatePoint("Data 3", new DateTime(2021, 06, 01), 10),
             };
 
-            var chart = data1.CreateLinearChart()
+            var chart = data1.CreateLinearChart(GroupingType.Monthly)
+                .OfType(ChartType.StackedBar)
+                .WithTitle("Bar Chart - Stacked")
+                    .Chart
+                .WithTooltips()
+                    .Chart
+                .WithLegend()
+                    .At(PositionType.Top)
+                    .Chart
+                .SetupDataset("Data 1")
+                    .Label("Dataset 1")
+                    .Color("#FF0000")
+                    .Chart
+                .SetupDataset("Data 2")
+                    .Label("Dataset 2")
+                    .Color("#0000FF")
+                    .Chart
+                .SetupDataset("Data 3")
+                    .Label("Dataset 3")
+                    .Color("#00FF00")
+                    .Chart
+                .Build(true);
+        }
+
+        // [Fact]
+        //public void SimulateHorizontalBarChart()
+        //{
+        //    var data1 = new List<NeutralDatePoint>
+        //    {
+        //        new NeutralDatePoint("Data 1", new DateTime(2021, 01, 01), 5),
+        //        new NeutralDatePoint("Data 1", new DateTime(2021, 02, 01), 10),
+        //        new NeutralDatePoint("Data 1", new DateTime(2021, 03, 01), 15),
+        //        new NeutralDatePoint("Data 1", new DateTime(2021, 04, 01), 50),
+        //        new NeutralDatePoint("Data 1", new DateTime(2021, 05, 01), 75),
+        //        new NeutralDatePoint("Data 1", new DateTime(2021, 06, 01), 45),
+
+        //        new NeutralDatePoint("Data 2", new DateTime(2021, 01, 01), 7),
+        //        new NeutralDatePoint("Data 2", new DateTime(2021, 02, 01), 7),
+        //        new NeutralDatePoint("Data 2", new DateTime(2021, 03, 01), 10),
+        //        new NeutralDatePoint("Data 2", new DateTime(2021, 04, 01), 60),
+        //        new NeutralDatePoint("Data 2", new DateTime(2021, 05, 01), 30),
+        //        new NeutralDatePoint("Data 2", new DateTime(2021, 06, 01), 60),
+        //    };
+
+        //    var chart = data1.CreateLinearChart(GroupingType.Monthly)
+        //        .OfType(ChartType.HorizontalBar)
+        //        .WithTooltips()
+        //            .Chart
+        //        .WithLegend()
+        //            .At(PositionType.Right)
+        //            .Chart
+        //        .SetupDataset("Data 1")
+        //            .Label("Dataset 1")
+        //            .Color("#FF0000", "77")
+        //            .Thickness(2)
+        //            .Chart
+        //        .SetupDataset("Data 2")
+        //            .Label("Dataset 2")
+        //            .Color("#0000CC", "77")
+        //            .Thickness(2)
+        //            .Chart
+        //        .Build(true);
+        //}
+
+        [Fact]
+        public void SimulateVerticalBarChart()
+        {
+            var data1 = new List<NeutralDatePoint>
+            {
+                new NeutralDatePoint("Data 1", new DateTime(2021, 01, 01), 5),
+                new NeutralDatePoint("Data 1", new DateTime(2021, 02, 01), 10),
+                new NeutralDatePoint("Data 1", new DateTime(2021, 03, 01), 15),
+                new NeutralDatePoint("Data 1", new DateTime(2021, 04, 01), 50),
+                new NeutralDatePoint("Data 1", new DateTime(2021, 05, 01), 75),
+                new NeutralDatePoint("Data 1", new DateTime(2021, 06, 01), 45),
+
+                new NeutralDatePoint("Data 2", new DateTime(2021, 01, 01), 7),
+                new NeutralDatePoint("Data 2", new DateTime(2021, 02, 01), 7),
+                new NeutralDatePoint("Data 2", new DateTime(2021, 03, 01), 10),
+                new NeutralDatePoint("Data 2", new DateTime(2021, 04, 01), 60),
+                new NeutralDatePoint("Data 2", new DateTime(2021, 05, 01), 30),
+                new NeutralDatePoint("Data 2", new DateTime(2021, 06, 01), 60),
+            };
+
+            var chart = data1.CreateLinearChart(GroupingType.Monthly)
                 .OfType(ChartType.Bar)
-                .UseStackedBars()
-                .SetColors(new[] { "#add28f", "#f9e59c", "#FA3511" }, "77")
-
-                .SetCurrentDataset("0-90")
-                    .SetDatasetType(ChartType.Bar)
-                    .SetDatasetLabel("0 a 90 dias")
-                    .SetDatasetBorderWidth(2)
-
-                .SetCurrentDataset("90-180")
-                    .SetDatasetType(ChartType.Bar)
-                    .SetDatasetLabel("90 a 180 dias")
-                    .SetDatasetBorderWidth(2)
-
-                .SetCurrentDataset("180+")
-                    .SetDatasetType(ChartType.Bar)
-                    .SetDatasetLabel("Mais de 180 dias")
-                    .SetDatasetBorderWidth(2)
-
-                .ShowTitle("Índice de Documentação Técnica Atualizada")
-                .SetTitlePadding(32)
-                .SetTitleFontSize(16)
-
-                .EnableTooltips()
-
-                .ShowLegend(PositionType.Bottom)
-
-                .HideXAxisGridlines()
-                .SetXAxisBarPercentage(0.5)
-
-                .ShowYAxisLabel("Qtde de Mudanças")
-
-                .Build(true);
-
-        }
-
-        [Fact]
-        public void SimulatePieChart()
-        {
-            var data1 = new List<NeutralCategoryPoint>
-            {
-                new NeutralCategoryPoint("Curitiba", 2),
-                new NeutralCategoryPoint("Curitiba", 2),
-                new NeutralCategoryPoint("Curitiba", 2),
-                new NeutralCategoryPoint("Curitiba", 2),
-                new NeutralCategoryPoint("Curitiba", 2),
-
-                new NeutralCategoryPoint("Rio de Janeiro", 2),
-                new NeutralCategoryPoint("Rio de Janeiro", 2),
-
-                new NeutralCategoryPoint("São Paulo", 2),
-                new NeutralCategoryPoint("São Paulo", 2),
-                new NeutralCategoryPoint("São Paulo", 2),
-            };
-
-            var chart = data1.CreateRadialChart()
-                .OfType(ChartType.Pie)
-                .SetColors(new[] { "#FF6384", "#36A2EB", "#FFCE56" })
-                .ShowTitle("Título do Gráfico")
-                .SetTitlePadding(32)
-                .SetTitleFontSize(16)
-                .EnableTooltips()
-                .ShowLegend(PositionType.Right)
+                .WithTooltips()
+                    .Chart
+                .WithLegend()
+                    .At(PositionType.Top)
+                    .Chart
+                .SetupDataset("Data 1")
+                    .Label("Dataset 1")
+                    .Color("#FF0000", "77")
+                    .Thickness(0)
+                    .Chart
+                .SetupDataset("Data 2")
+                    .Label("Dataset 2")
+                    .Color("#00FF00", "77")
+                    .Thickness(0)
+                    .Chart
                 .Build(true);
         }
 
         [Fact]
-        public void SimulateDonutChart()
+        public void SimulateDemoBarChart()
         {
-            var data1 = new List<NeutralCategoryPoint>
+            var data1 = new List<NeutralDatePoint>
             {
-                new NeutralCategoryPoint("Curitiba", 2, new List<object> { "Curitiba1", "Curitiba2" }),
-                new NeutralCategoryPoint("Curitiba", 2, new List<object> { "Curitiba3", "Curitiba4" }),
-                new NeutralCategoryPoint("Curitiba", 2, new List<object> { "Curitiba5", "Curitiba6" }),
-                new NeutralCategoryPoint("Curitiba", 2, new List<object> { "Curitiba7", "Curitiba8" }),
-                new NeutralCategoryPoint("Curitiba", 2, new List<object> { "Curitiba9", "Curitiba10" }),
-
-                new NeutralCategoryPoint("Rio de Janeiro", 2, new List<object> { "Rio de Janeiro 1", "Rio de Janeiro 2" }),
-                new NeutralCategoryPoint("Rio de Janeiro", 2, new List<object> { "Rio de Janeiro 3", "Rio de Janeiro 4" }),
-
-                new NeutralCategoryPoint("São Paulo", 2, new List<object> { "São Paulo 1", "São Paulo 2" }),
-                new NeutralCategoryPoint("São Paulo", 2, new List<object> { "São Paulo 3", "São Paulo 4" }),
-                new NeutralCategoryPoint("São Paulo", 2, new List<object> { "São Paulo 5", "São Paulo 6" }),
-
-                new NeutralCategoryPoint("Florianópolis", 1, new List<object> { "Florianópolis 1" }),
+                new NeutralDatePoint("Data 1", new DateTime(2021, 01, 01), 12),
+                new NeutralDatePoint("Data 1", new DateTime(2021, 02, 01), 19),
+                new NeutralDatePoint("Data 1", new DateTime(2021, 03, 01), 3),
+                new NeutralDatePoint("Data 1", new DateTime(2021, 04, 01), 5),
+                new NeutralDatePoint("Data 1", new DateTime(2021, 05, 01), 2),
+                new NeutralDatePoint("Data 1", new DateTime(2021, 06, 01), 3),
             };
 
-            var chart = data1.CreateRadialChart(3, "Outros")
-                .OfType(ChartType.Doughnut)
-                .SetColors(new[] { "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0" })
-                .EnableTooltips()
-                .ShowLegend(PositionType.Right)
+            var chart = data1.CreateLinearChart(GroupingType.Monthly)
+                .OfType(ChartType.Bar)
+                .WithTooltips()
+                    .Chart
+                .WithTitle("# of Votes")
+                    .Chart
+                .WithLegend()
+                    .At(PositionType.Top)
+                    .Chart
+                .SetupDataset("Data 1")
+                    .Label("Dataset 1")
+                    .Color("#FF0000", "33")
+                    .Thickness(0)
+                    .Chart
                 .Build(true);
         }
 
-        [Fact]
-        public void SimulatePolarAreaChart()
-        {
-            var data1 = new List<NeutralCategoryPoint>
-            {
-                new NeutralCategoryPoint("Curitiba", 45),
-                new NeutralCategoryPoint("Rio de Janeiro", 33),
-                new NeutralCategoryPoint("São Paulo", 21),
-                new NeutralCategoryPoint("Florianópolis", 9),
-                new NeutralCategoryPoint("Porto Alegre", 5),
-                new NeutralCategoryPoint("Manaus", 19),
-            };
 
-            var chart = data1.CreateRadialChart()
-                .OfType(ChartType.PolarArea)
-                .SetColors(ColorPallete.Pastel1, ColorPallete.Pastel2)
-                .EnableTooltips()
-                .ShowLegend(PositionType.Right)
-                .Build(true);
-        }
+
+        //    [Fact]
+        //    public void SimulateIDTAChart()
+        //    {
+        //        var data1 = new List<NeutralCategoryPoint>
+        //        {
+        //            new NeutralCategoryPoint("0-90", "P-74", 2),
+        //            new NeutralCategoryPoint("0-90", "P-75", 5),
+        //            new NeutralCategoryPoint("0-90", "P-76", 3),
+        //            new NeutralCategoryPoint("0-90", "P-77", 4),
+
+        //            new NeutralCategoryPoint("90-180", "P-74", 1),
+        //            new NeutralCategoryPoint("90-180", "P-75", 2),
+        //            new NeutralCategoryPoint("90-180", "P-76", 3),
+        //            new NeutralCategoryPoint("90-180", "P-77", 0),
+
+        //            new NeutralCategoryPoint("180+", "P-74", 1),
+        //            new NeutralCategoryPoint("180+", "P-75", 0),
+        //            new NeutralCategoryPoint("180+", "P-76", 3),
+        //            new NeutralCategoryPoint("180+", "P-77", 2),
+        //        };
+
+        //        var chart = data1.CreateLinearChart()
+        //            .Type(ChartType.StackedBar)
+        //            .WithDataset("0-90")
+        //                .Type(ChartType.Bar)
+        //                .Label("0 a 90 dias")
+        //                .Color("#add28f", "77")
+        //                .BorderWidth(2)
+        //            .WithDataset("90-180")
+        //                .Type(ChartType.Bar)
+        //                .Label("90 a 180 dias")
+        //                .Color("#f9e59c", "77")
+        //                .BorderWidth(2)
+        //            .WithDataset("180+")
+        //                .Type(ChartType.Bar)
+        //                .Label("Mais de 180 dias")
+        //                .Color("#FA3511", "77")
+        //                .BorderWidth(2)
+        //            .WithTitle("Índice de Documentação Técnica Atualizada")
+        //                .Padding(32)
+        //                .FontSize(16)
+        //            .WithTooltips()
+        //            .WithLegend()
+        //                .At(PositionType.Bottom)
+        //            .HideXAxisGridlines()
+        //            .XAxisBarPercentage(0.5)
+        //            .WithYAxis()
+        //                .Label("Qtde de Mudanças")
+        //            .Build(true);
+        //    }
+
+        //    [Fact]
+        //    public void SimulatePieChart()
+        //    {
+        //        var data1 = new List<NeutralCategoryPoint>
+        //        {
+        //            new NeutralCategoryPoint("Curitiba", 2),
+        //            new NeutralCategoryPoint("Curitiba", 2),
+        //            new NeutralCategoryPoint("Curitiba", 2),
+        //            new NeutralCategoryPoint("Curitiba", 2),
+        //            new NeutralCategoryPoint("Curitiba", 2),
+
+        //            new NeutralCategoryPoint("Rio de Janeiro", 2),
+        //            new NeutralCategoryPoint("Rio de Janeiro", 2),
+
+        //            new NeutralCategoryPoint("São Paulo", 2),
+        //            new NeutralCategoryPoint("São Paulo", 2),
+        //            new NeutralCategoryPoint("São Paulo", 2),
+        //        };
+
+        //        var chart = data1.CreateRadialChart()
+        //            .OfType(ChartType.Pie)
+        //            .WithColors(new[] { "#FF6384", "#36A2EB", "#FFCE56" })
+        //            .WithTitle("Título do Gráfico")
+        //                .Padding(32)
+        //                .FontSize(16)
+        //            .WithTooltips()
+        //            .WithLegend()
+        //                .At(PositionType.Right)
+        //            .Build(true);
+        //    }
+
+        //    [Fact]
+        //    public void SimulateDonutChart()
+        //    {
+        //        var data1 = new List<NeutralCategoryPoint>
+        //        {
+        //            new NeutralCategoryPoint("Curitiba", 2, new List<object> { "Curitiba1", "Curitiba2" }),
+        //            new NeutralCategoryPoint("Curitiba", 2, new List<object> { "Curitiba3", "Curitiba4" }),
+        //            new NeutralCategoryPoint("Curitiba", 2, new List<object> { "Curitiba5", "Curitiba6" }),
+        //            new NeutralCategoryPoint("Curitiba", 2, new List<object> { "Curitiba7", "Curitiba8" }),
+        //            new NeutralCategoryPoint("Curitiba", 2, new List<object> { "Curitiba9", "Curitiba10" }),
+
+        //            new NeutralCategoryPoint("Rio de Janeiro", 2, new List<object> { "Rio de Janeiro 1", "Rio de Janeiro 2" }),
+        //            new NeutralCategoryPoint("Rio de Janeiro", 2, new List<object> { "Rio de Janeiro 3", "Rio de Janeiro 4" }),
+
+        //            new NeutralCategoryPoint("São Paulo", 2, new List<object> { "São Paulo 1", "São Paulo 2" }),
+        //            new NeutralCategoryPoint("São Paulo", 2, new List<object> { "São Paulo 3", "São Paulo 4" }),
+        //            new NeutralCategoryPoint("São Paulo", 2, new List<object> { "São Paulo 5", "São Paulo 6" }),
+
+        //            new NeutralCategoryPoint("Florianópolis", 1, new List<object> { "Florianópolis 1" }),
+        //        };
+
+        //        var chart = data1.CreateRadialChart(3, "Outros")
+        //            .OfType(ChartType.Doughnut)
+        //            .WithColors(new[] { "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0" })
+        //            .WithTooltips()
+        //            .WithLegend()
+        //                .At(PositionType.Right)
+        //            .Build(true);
+        //    }
+
+        //    [Fact]
+        //    public void SimulatePolarAreaChart()
+        //    {
+        //        var data1 = new List<NeutralCategoryPoint>
+        //        {
+        //            new NeutralCategoryPoint("Curitiba", 45),
+        //            new NeutralCategoryPoint("Rio de Janeiro", 33),
+        //            new NeutralCategoryPoint("São Paulo", 21),
+        //            new NeutralCategoryPoint("Florianópolis", 9),
+        //            new NeutralCategoryPoint("Porto Alegre", 5),
+        //            new NeutralCategoryPoint("Manaus", 19),
+        //        };
+
+        //        var chart = data1.CreateRadialChart()
+        //            .OfType(ChartType.PolarArea)
+        //            .WithColors(ColorPallete.Pastel1, ColorPallete.Pastel2)
+        //            .WithTooltips()
+        //            .WithLegend()
+        //                .At(PositionType.Right)
+        //            .Build(true);
+        //    }
     }
 }
 

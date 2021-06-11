@@ -10,12 +10,12 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
 {
     public class TickOptions
     {
-        public string Color { get; set; }
-        public bool? Display { get; set; }
-        public double? Z { get; set; }
-        public double? StepSize { get; set; }
-        public double? Count { get; set; }
-        public double? MaxTicksLimit { get; set; }
-        public double? Precision { get; set; }
+        public string Color { get; internal set; }
+        public bool? Display { get; internal set; }
+        public double? Z { get; internal set; }
+        public double? StepSize { get; internal set; }
+        public double? Count { get; internal set; }
+        public double? MaxTicksLimit { get; internal set; }
+        public double? Precision { get; internal set; }
     }
 }

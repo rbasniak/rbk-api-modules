@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace rbkApiModules.Utilities.Charts.ChartJs
 {
     public class LinearDatasetBuilder<TFactory, TChart> : DatasetBuilder<TFactory, TChart> where TChart : BaseChart where TFactory : BaseChartBuilder<TFactory, TChart>
     {
-        public LinearChartBuilder Builder => Chart as LinearChartBuilder;
         private LinearDataset _dataset;
 
         public LinearDatasetBuilder(BaseChartBuilder<TFactory, TChart> builder, LinearDataset dataset): base(builder)
@@ -15,7 +15,7 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
 
         public LinearDatasetBuilder<TFactory, TChart> OfType(DatasetType type)
         {
-            _dataset.Type = type;
+            _dataset.SetDatasetType(type);
 
             if (type == DatasetType.Line)
             {
@@ -57,6 +57,51 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
         public LinearDatasetBuilder<TFactory, TChart> CustomAxis(string axisId)
         {
             _dataset.yAxisID = axisId;
+
+            return this;
+        }
+
+        public LinearDatasetBuilder<TFactory, TChart> Color(string color, string transparency = "ff")
+        {
+            _dataset.BackgroundColor = color + transparency;
+            _dataset.BorderColor = color;
+
+            _dataset.PointBackgroundColor = color;
+            _dataset.PointBorderColor = color;
+
+            return this;
+        }
+
+        public LinearDatasetBuilder<TFactory, TChart> BarPercentage(double value)
+        {
+            _dataset.BarPercentage = value;
+
+            return this;
+        }
+
+        public LinearDatasetBuilder<TFactory, TChart> PointStyle(PointStyle style)
+        {
+            _dataset.SetPointStyle(style);
+
+            return this;
+        }
+
+        public LinearDatasetBuilder<TFactory, TChart> PointRadius(double radius, double? hitRadius = null)
+        {
+            _dataset.PointRadius = radius;
+
+            if (hitRadius != null)
+            {
+                _dataset.PointHitRadius = hitRadius.Value;
+            }
+
+            return this;
+        }
+
+        public LinearDatasetBuilder<TFactory, TChart> RoundedBorders(double radius)
+        {
+            _dataset.BorderRadius = radius;
+            _dataset.BorderSkipped = false;
 
             return this;
         }

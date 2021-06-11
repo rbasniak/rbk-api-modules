@@ -14,6 +14,6 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
         {
             Labels = new List<string>();
         }
-        public List<string> Labels { get; set; }
+        public List<string> Labels { get; internal set; }
     } 
 }

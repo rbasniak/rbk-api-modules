@@ -32,7 +32,7 @@
 
         public TooltipBuilder<TFactory, TChart> AtPointLocation()
         {
-            Chart.Builder.Config.Plugins.Tooltip.Position = TooltipPosition.Nearest;
+            Chart.Builder.Config.Plugins.Tooltip.SetTooltipPosition(TooltipPosition.Nearest);
 
             return this;
         }

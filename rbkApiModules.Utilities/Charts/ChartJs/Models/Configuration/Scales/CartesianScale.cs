@@ -10,21 +10,27 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
 {
     public class CartesianScale
     {
-        public IndexAxis Axis { get; set; }
-        public bool? Display { get; set; }
-        public GridLineOptions? Grid { get; set; }
-        public double? Min { get; set; }
-        public double? Max { get; set; }
-        public bool? Offset { get; set; }
-        public AxisPosition Position { get; set; }
-        public bool? Reverse { get; set; }
-        public bool? Stacked { get; set; } 
-        public TickOptions Ticks { get; set; }
-        public ScaleTitleOptions Title { get; set; }
+        public IndexAxis? Axis { get; internal set; }
+        public bool? Display { get; internal set; }
+        public GridLineOptions? Grid { get; internal set; }
+        public double? Min { get; internal set; }
+        public double? Max { get; internal set; }
+        public bool? Offset { get; internal set; }
+        public string Position { get; internal set; }
+        public bool? Reverse { get; internal set; }
+        public bool? Stacked { get; internal set; } 
+        public TickOptions Ticks { get; internal set; }
+        public ScaleTitleOptions Title { get; internal set; }
 
-        public bool? BeginAtZero { get; set; }
-        public double? SuggestedMax { get; set; }
-        public double? SuggestedMin { get; set; }
+        public bool? BeginAtZero { get; internal set; }
+        public double? SuggestedMax { get; internal set; }
+
+        internal void SetPosition(AxisPosition position)
+        {
+            Position = position.ToString().ToLower();
+        }
+
+        public double? SuggestedMin { get; internal set; }
 
     }
 }

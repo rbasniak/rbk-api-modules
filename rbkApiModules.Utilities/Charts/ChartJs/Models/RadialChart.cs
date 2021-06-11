@@ -15,6 +15,6 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
             Data = new RadialChartData();
         }
 
-        public RadialChartData Data { get; set; }
+        public RadialChartData Data { get; internal set; }
     }
 }

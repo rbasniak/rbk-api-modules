@@ -16,11 +16,11 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
             Normalized = true;
         }
 
-        public string Id { get; set; }
-        public string Label { get; set; }
-        public bool Normalized { get; set; }
-        public IndexAxis? IndexAxis { get; set; }
-        public int? Order { get; set; }
-        public bool? Stack { get; set; } 
+        public string Id { get; internal set; }
+        public string Label { get; internal set; }
+        public bool Normalized { get; internal set; }
+        public IndexAxis? IndexAxis { get; internal set; }
+        public int? Order { get; internal set; }
+        public bool? Stack { get; internal set; } 
     } 
 }

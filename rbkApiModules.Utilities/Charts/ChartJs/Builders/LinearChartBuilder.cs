@@ -15,6 +15,17 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
 
         }
 
+        public override LinearChartBuilder OfType(ChartType type)
+        {
+            if (type == ChartType.StackedBar)
+            {
+                WithAxis("x").Stacked();
+                WithAxis("y").Stacked();
+            }
+
+            return base.OfType(type);
+        }
+
         public static LinearChartBuilder CreateLinearDateChart(List<NeutralDatePoint> data, GroupingType groupingType, bool appendExtraData)
         {
             var fromDate = data.Min(x => x.Date);
@@ -79,7 +90,7 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
 
             var orderedDatasets = Builder.Data.Datasets.Where(x => x.Order != null).ToList();
 
-            if (orderedDatasets != null)
+            if (orderedDatasets != null && orderedDatasets.Count > 0)
             {
                 dataset.Order = orderedDatasets.Max(x => x.Order) + 1;
             }   
@@ -93,15 +104,15 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
 
         public LinearChartBuilder Theme(params ColorPallete[] palletes)
         {
-            return Colors(ChartCollorSelector.GetColors(palletes), "ff");
+            return SetColors(ChartCollorSelector.GetColors(palletes), "ff");
         }
 
         public LinearChartBuilder Theme(string backgroundTransparency, params ColorPallete[] palletes)
         {
-            return Colors(ChartCollorSelector.GetColors(palletes), backgroundTransparency);
+            return SetColors(ChartCollorSelector.GetColors(palletes), backgroundTransparency);
         }
 
-        public LinearChartBuilder Colors(string[] colors, string backgroundTransparency = "ff")
+        private LinearChartBuilder SetColors(string[] colors, string backgroundTransparency = "ff")
         {
             for (int i = 0; i < Builder.Data.Datasets.Count; i++)
             {
@@ -109,17 +120,25 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
 
                 Builder.Data.Datasets[i].BackgroundColor = color.ToLower() + backgroundTransparency;
                 Builder.Data.Datasets[i].BorderColor = color.ToLower();
+
+                Builder.Data.Datasets[i].PointBackgroundColor = color.ToLower();
+                Builder.Data.Datasets[i].PointBorderColor = color.ToLower();
             }
 
             return this;
         }
 
-        public LinearChartBuilder WithXAxis(string axisId)
+        public CartesianScaleBuilder<LinearChartBuilder, LinearChart> WithXAxis(string axisId)
         {
             return WithAxis(axisId);
         }
 
-        private LinearChartBuilder WithAxis(string axisId)
+        public CartesianScaleBuilder<LinearChartBuilder, LinearChart> WithYAxis(string axisId)
+        {
+            return WithAxis(axisId);
+        }
+
+        private CartesianScaleBuilder<LinearChartBuilder, LinearChart> WithAxis(string axisId)
         {
             if (Builder.Config.Scales == null)
             {
@@ -128,147 +147,18 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
 
             var scales = Builder.Config.Scales as IDictionary<string, object>;
 
-            var axis = new CartesianScale
+            if (!scales.TryGetValue(axisId, out object axis))
             {
-                Display = true
-            };
+                axis = new CartesianScale
+                {
+                    Display = true,
+                };
 
-            scales.Add(axisId, axis);
+                scales.Add(axisId, axis);
+            }
 
-            return new CartesianScaleBuilder(this, axis);
+            return new CartesianScaleBuilder<LinearChartBuilder, LinearChart>(this, (CartesianScale)axis);
         }
-
-
-
-
-
-
-
-        public LinearChartBuilder SetXAxisBarPercentage(double value)
-        {
-            var axis = GetCurrentXAxis();
-
-            axis.BarPercentage = value;
-
-            return this;
-        }
-
-        public LinearChartBuilder HideXAxisGridlines()
-        {
-            var axis = GetCurrentXAxis();
-
-            if (axis.GridLines == null)
-            {
-                axis.GridLines = new GridLineOptions();
-            }
-
-            axis.GridLines.Display = false;
-
-            return this;
-        }
-
-        public LinearChartBuilder HideYAxisGridlines()
-        {
-            var axis = GetCurrentYAxis();
-
-            if (axis.GridLines == null)
-            {
-                axis.GridLines = new GridLineOptions();
-            }
-
-            axis.GridLines.Display = false;
-
-            return this;
-        }
-
-        
-
-        public LinearChartBuilder SetYAxisPosition(PositionType position)
-        {
-            var axis = GetCurrentYAxis();
-
-            axis.Position = position.ToString().ToLower();
-
-            return this;
-        }
-
-        public LinearChartBuilder ShowYAxisLabel(string label)
-        {
-            var axis = GetCurrentYAxis();
-
-            axis.ScaleLabel = new ScaleTitleOptions
-            {
-                Display = true,
-                LabelString = label,
-            };
-
-            return this;
-        }
-
-        public LinearChartBuilder SetYAxisMinRange(double value)
-        {
-            var axis = GetCurrentYAxis();
-
-            if (axis.Ticks == null)
-            {
-                axis.Ticks = new LinearTickOptions();
-            }
-
-            if (axis.Ticks is LinearTickOptions linearTicks)
-            {
-                linearTicks.Min = value;
-            }
-            else
-            {
-                throw new NotSupportedException("Minimum values are supported only on linear axis");
-            }
-
-            return this;
-        }
-
-        public LinearChartBuilder SetYAxisMaxRange(double value)
-        { 
-            var axis = GetCurrentXAxis();
-
-            if (axis.Ticks == null)
-            {
-                axis.Ticks = new LinearTickOptions();
-            }
-
-            if (axis.Ticks is LinearTickOptions linearTicks)
-            {
-                linearTicks.Max = value;
-            }
-            else
-            {
-                throw new NotSupportedException("Maximum values are supported only on linear axis");
-            }
-
-            return this;
-        }
-
-        public LinearChartBuilder SetYAxisOverflow(AxisOverflowType type, AxisOverflowDirection direction, double value)
-        {
-            var axis = GetCurrentYAxis();
-
-            return this;
-        }
-
-        private LinearDataset GetCurrentDataset()
-        {
-            if (_currentDataset != null)
-            {
-                return _currentDataset;
-            }
-            else
-            {
-                var dataset = Builder.Data.Datasets.FirstOrDefault();
-
-                if (dataset == null) throw new NotSupportedException("The chart has no dataset to setup");
-
-                return dataset;
-            }
-        } 
 
         private static List<Point> BuildLineChartAxis(DateTime startDate, DateTime endDate, GroupingType groupingType)
         {

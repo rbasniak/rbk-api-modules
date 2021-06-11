@@ -34,14 +34,14 @@
 
         public TitleBuilder<TFactory, TChart> Alignment(AlignmentType alignment)
         {
-            Chart.Builder.Config.Plugins.Title.Align = alignment;
+            Chart.Builder.Config.Plugins.Title.SetAlignmentType(alignment);
 
             return this;
         }
 
         public TitleBuilder<TFactory, TChart> At(PositionType position)
         {
-            Chart.Builder.Config.Plugins.Title.Position = position;
+            Chart.Builder.Config.Plugins.Title.SetPositionType(position);
 
             return this;
         }

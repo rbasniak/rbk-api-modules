@@ -14,6 +14,6 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
         {
             Datasets = new List<LinearDataset>();
         }
-        public List<LinearDataset> Datasets { get; set; }
+        public List<LinearDataset> Datasets { get; internal set; }
     }
 }

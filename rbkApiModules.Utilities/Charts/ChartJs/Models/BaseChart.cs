@@ -15,7 +15,7 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
             Config = new Configuration();
         }
 
-        public string Type { get; set; }
-        public Configuration Config { get; set; }
+        public string Type { get; internal set; }
+        public Configuration Config { get; internal set; }
     }
 }

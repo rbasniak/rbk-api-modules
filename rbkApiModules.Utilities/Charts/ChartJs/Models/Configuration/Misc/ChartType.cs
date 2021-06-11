@@ -16,6 +16,9 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
         Doughnut,
         PolarArea,
         Bubble,
-        Pie
+        Pie,
+        StackedBar,
+        Mixed,
+        HorizontalBar
     }
 }

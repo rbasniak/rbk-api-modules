@@ -15,6 +15,6 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
             Data = new LinearChartData();
         }
 
-        public LinearChartData Data { get; set; }
+        public LinearChartData Data { get; internal set; }
     }
 }
