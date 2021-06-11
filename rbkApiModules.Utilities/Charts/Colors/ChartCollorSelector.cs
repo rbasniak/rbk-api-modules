@@ -169,7 +169,7 @@ namespace rbkApiModules.Utilities.Charts
         General8 = 48,
 
         Red1 = 49,
-        Ref2 = 50,
+        Red2 = 50,
 
         Blue1 = 51,
         Blue2 = 52,

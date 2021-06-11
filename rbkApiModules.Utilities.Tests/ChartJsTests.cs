@@ -1,7 +1,10 @@
-﻿using rbkApiModules.Utilities.Charts;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using rbkApiModules.Utilities.Charts;
 using rbkApiModules.Utilities.Charts.ChartJs;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -395,6 +398,112 @@ namespace rbkApiModules.Utilities.Tests
         }
 
 
+        [Fact]
+        public void SimulateDougnutChart()
+        {
+            var data1 = new List<NeutralCategoryPoint>
+                {
+                    new NeutralCategoryPoint("Red", 5),
+                    new NeutralCategoryPoint("Orange", 15),
+                    new NeutralCategoryPoint("Yellow", 5),
+                    new NeutralCategoryPoint("Green", 25),
+                    new NeutralCategoryPoint("Blue", 20),
+                };
+
+            var chart = data1.CreateRadialChart()
+                .OfType(ChartType.Doughnut)
+                .Colors(new[] { "#4dc9f6", "#f67019", "#f53794", "#537bc4", "#acc236" })
+                .WithTooltips()
+                    .Chart
+                .WithLegend()
+                    .At(PositionType.Top)
+                    .Chart
+                .Build(true);
+        }
+
+        [Fact]
+        public void SimulatePieChart()
+        {
+            var data1 = new List<NeutralCategoryPoint>
+                {
+                    new NeutralCategoryPoint("Red", 5),
+                    new NeutralCategoryPoint("Orange", 15),
+                    new NeutralCategoryPoint("Yellow", 5),
+                    new NeutralCategoryPoint("Green", 25),
+                    new NeutralCategoryPoint("Blue", 20),
+                };
+
+            var chart = data1.CreateRadialChart()
+                .OfType(ChartType.Pie)
+                .Colors(new[] { "#4dc9f6", "#f67019", "#f53794", "#537bc4", "#acc236" })
+                .WithTooltips()
+                    .Chart
+                .WithLegend()
+                    .At(PositionType.Top)
+                    .Chart
+                .Build(true);
+        }
+
+        [Fact]
+        public void SimulatePolarAreaChart()
+        {
+            var data1 = new List<NeutralCategoryPoint>
+                {
+                    new NeutralCategoryPoint("Red", 5),
+                    new NeutralCategoryPoint("Orange", 15),
+                    new NeutralCategoryPoint("Yellow", 5),
+                    new NeutralCategoryPoint("Green", 25),
+                    new NeutralCategoryPoint("Blue", 20),
+                };
+
+            var chart = data1.CreateRadialChart()
+                .OfType(ChartType.PolarArea)
+                .Colors(new[] { "#4dc9f6", "#f67019", "#f53794", "#537bc4", "#acc236" }, "44")
+                .WithTooltips()
+                    .Chart
+                .WithLegend()
+                    .At(PositionType.Top)
+                    .Chart
+                .Build(true);
+        }
+
+        [Fact]
+        public void GenerateCollorPalleteDemoCode()
+        {
+            var data1 = new List<NeutralCategoryPoint>
+            {
+                new NeutralCategoryPoint("A", 1),
+                new NeutralCategoryPoint("B", 1),
+                new NeutralCategoryPoint("C", 1),
+                new NeutralCategoryPoint("D", 1),
+                new NeutralCategoryPoint("E", 1),
+            };
+
+            var results = new List<object>();
+
+            var values = (ColorPallete[])Enum.GetValues(typeof(ColorPallete));
+            foreach (var pallete in values)
+            {
+                var chart = data1.CreateRadialChart()
+                    .OfType(ChartType.Doughnut)
+                    .Theme("77", pallete)
+                    .Build(false);
+
+                results.Add(new 
+                { 
+                    Name = pallete.ToString() + " = " + (int)pallete,
+                    Chart = chart
+                });
+            }
+
+            Debug.WriteLine(JsonConvert.SerializeObject(results, new JsonSerializerSettings 
+            {
+                Formatting = Formatting.Indented,
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            }));
+        }
+
+
 
         //    [Fact]
         //    public void SimulateIDTAChart()
@@ -447,10 +556,10 @@ namespace rbkApiModules.Utilities.Tests
         //            .Build(true);
         //    }
 
-        //    [Fact]
-        //    public void SimulatePieChart()
-        //    {
-        //        var data1 = new List<NeutralCategoryPoint>
+        //[Fact]
+        //public void SimulatePieChart()
+        //{
+        //    var data1 = new List<NeutralCategoryPoint>
         //        {
         //            new NeutralCategoryPoint("Curitiba", 2),
         //            new NeutralCategoryPoint("Curitiba", 2),
@@ -466,17 +575,16 @@ namespace rbkApiModules.Utilities.Tests
         //            new NeutralCategoryPoint("São Paulo", 2),
         //        };
 
-        //        var chart = data1.CreateRadialChart()
-        //            .OfType(ChartType.Pie)
-        //            .WithColors(new[] { "#FF6384", "#36A2EB", "#FFCE56" })
-        //            .WithTitle("Título do Gráfico")
-        //                .Padding(32)
-        //                .FontSize(16)
-        //            .WithTooltips()
-        //            .WithLegend()
-        //                .At(PositionType.Right)
-        //            .Build(true);
-        //    }
+        //    var chart = data1.CreateRadialChart()
+        //        .OfType(ChartType.Pie)
+        //        // .Theme(new[] { "#FF6384", "#36A2EB", "#FFCE56" })
+        //        .WithTooltips()
+        //            .Chart
+        //        .WithLegend()
+        //            .At(PositionType.Top)
+        //            .Chart
+        //        .Build(true);
+        //}
 
         //    [Fact]
         //    public void SimulateDonutChart()

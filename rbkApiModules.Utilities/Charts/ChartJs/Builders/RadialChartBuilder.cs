@@ -89,17 +89,17 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
             return this;
         }
 
-        public RadialChartBuilder SetColors(params ColorPallete[] palletes)
+        public RadialChartBuilder Theme(params ColorPallete[] palletes)
         {
-            return SetColors(ChartCollorSelector.GetColors(palletes), "ff");
+            return Colors(ChartCollorSelector.GetColors(palletes), "ff");
         }
 
-        public RadialChartBuilder SetColors(string backgroundTransparency, params ColorPallete[] palletes)
+        public RadialChartBuilder Theme(string backgroundTransparency, params ColorPallete[] palletes)
         {
-            return SetColors(ChartCollorSelector.GetColors(palletes), backgroundTransparency);
+            return Colors(ChartCollorSelector.GetColors(palletes), backgroundTransparency);
         }
 
-        public RadialChartBuilder SetColors(string[] colors, string backgroundTransparency = "ff")
+        public RadialChartBuilder Colors(string[] colors, string backgroundTransparency = "ff")
         {
             if (colors == null || colors.Length == 0) throw new ArgumentException("You ness to speficify at least one color");
 

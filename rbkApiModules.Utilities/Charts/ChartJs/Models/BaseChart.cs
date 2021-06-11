@@ -13,6 +13,10 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
         public BaseChart()
         {
             Config = new Configuration();
+
+            Config.Plugins = new PluginOptions();
+            Config.Plugins.Legend = new LegendOptions();
+            Config.Plugins.Legend.Display = false;
         }
 
         public string Type { get; internal set; }
