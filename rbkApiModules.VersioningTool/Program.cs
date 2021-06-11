@@ -17,7 +17,7 @@ namespace rbkApiModules.VersioningTool
             var path = new DirectoryInfo(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)).Parent.FullName;
 
 #if DEBUG
-            path = @"D:\Repositories\pessoal\libraries\rbk-api-modules-next";
+            path = @"D:\Repositories\pessoal\libraries\rbk-api-modules";
 #endif
 
             using (var repo = new Repository(path))
