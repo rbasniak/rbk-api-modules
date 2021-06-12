@@ -30,8 +30,8 @@ namespace rbkApiModules.Authentication
             }
 
             DisplayName = displayName;
-            Username = username.ToLower();
-            Email = email.ToLower();
+            Username = username?.ToLower();
+            Email = email?.ToLower();
             SetPassword(password);
 
             if (!String.IsNullOrEmpty(avatar))
