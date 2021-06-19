@@ -12,7 +12,6 @@ namespace rbkApiModules.Authentication
     /// <summary>
     /// Controller para acesso das funcionalidades de autenticação
     /// </summary>
-    [IgnoreOnCodeGeneration]
     [AllowAnonymous]
     [Route("api/[controller]")]
     public class AuthController : BaseController
@@ -27,6 +26,7 @@ namespace rbkApiModules.Authentication
         /// <summary>
         /// Login de usuário
         /// </summary>
+        [IgnoreOnCodeGeneration]
         [HttpPost("login")]
         public async Task<ActionResult<JwtResponse>> Login([FromBody]UserLogin.Command data)
         {
@@ -66,6 +66,7 @@ namespace rbkApiModules.Authentication
         /// <summary>
         /// Renova um token expirado
         /// </summary>
+        [IgnoreOnCodeGeneration]
         [HttpPost("refresh-token")]
         public async Task<ActionResult<JwtResponse>> Post([FromBody] RenewAccessToken.Command data)
         {
@@ -117,6 +118,7 @@ namespace rbkApiModules.Authentication
         /// <summary>
         /// Confirma o e-mail de um usuário
         /// </summary>
+        [IgnoreOnCodeGeneration]
         [HttpGet("confirm-email")]
         public async Task<ActionResult> ConfirmEmail(string email, string code)
         {
