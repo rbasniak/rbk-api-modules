@@ -53,7 +53,7 @@ namespace rbkApiModules.Authentication
                 var user = await _context.Set<BaseUser>()
                     .SingleAsync(x => EF.Functions.Like(x.Email, request.Email));
 
-                user.SetPasswordRedefineCode(DateTime.Now);
+                user.SetPasswordRedefineCode(DateTime.UtcNow);
 
                 await _context.SaveChangesAsync();
 
