@@ -27,6 +27,11 @@ namespace rbkApiModules.Authentication
         /// Envia o e-mail de redefinição de senha com o link de contendo o código para criação de uma nova senha
         /// </summary>
         void SendPasswordResetMail(string receiverName, string receiverEmail, string resetCode);
+
+        /// <summary>
+        /// Envia o e-mail de sucesso ma redefinição de senha
+        /// </summary>
+        void SendPasswordResetSuccessMail(string receiverName, string receiverEmail);
     }
 
     public class AuthenticationMailService : IAuthenticationMailService
@@ -147,6 +152,41 @@ namespace rbkApiModules.Authentication
                 new MailAddress(_mailConfiguration.SenderMail, _mailConfiguration.SenderName),
                 new MailAddress(receiverEmail),
                 $"{_mailConfiguration.SenderName} - Redefinição de senha",
+                textBody,
+                htmlBody,
+                _mailConfiguration.B64Logo != null
+                    ? new InlineImage[] { new InlineImage("mail_logo_01", new ContentType("image/png"), _mailConfiguration.B64Logo) }
+                    : null,
+                null,
+                credentials);
+        }
+
+        public void SendPasswordResetSuccessMail(string receiverName, string receiverEmail)
+        {
+            var textBody = ReadMailResource("reset-confirmed.txt")
+                .Replace("{{name}}", receiverName)
+                .Replace("{{profileUrl}}", _mailConfiguration.AccountDetailsUrl)
+                .Replace("{{suportMail}}", _mailConfiguration.SuportEmail);
+
+            var htmlBody = ReadMailResource("reset-confirmed.html")
+                .Replace("{{name}}", receiverName)
+                .Replace("{{mainColor}}", _mailConfiguration.MainColor)
+                .Replace("{{fontColor}}", _mailConfiguration.FontColor)
+                .Replace("{{systemName}}", _mailConfiguration.B64Logo == null ? _mailConfiguration.SenderName : _logoHtml)
+                .Replace("{{profileUrl}}", _mailConfiguration.AccountDetailsUrl)
+                .Replace("{{suportMail}}", _mailConfiguration.SuportEmail);
+
+            var credentials = string.IsNullOrEmpty(_mailConfiguration.SenderPassword)
+                ? null
+                : new NetworkCredential(_mailConfiguration.SenderMail, _mailConfiguration.SenderPassword);
+
+            EmailHandler.SendEmail(
+                _mailConfiguration.SMTPHost,
+                _mailConfiguration.SSL,
+                _mailConfiguration.Port,
+                new MailAddress(_mailConfiguration.SenderMail, _mailConfiguration.SenderName),
+                new MailAddress(receiverEmail),
+                $"{_mailConfiguration.SenderName} - Redefinição de senha bem sucedida",
                 textBody,
                 htmlBody,
                 _mailConfiguration.B64Logo != null
