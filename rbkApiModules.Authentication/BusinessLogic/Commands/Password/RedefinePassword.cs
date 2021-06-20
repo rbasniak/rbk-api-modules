@@ -40,10 +40,13 @@ namespace rbkApiModules.Authentication
 
             public async Task<bool> ExistOnDatabaseAndIsValid(Command command, string code, CancellationToken cancelation)
             {
-                return await _context.Set<BaseUser>()
-                    .AnyAsync(x => EF.Functions.Like(x.PasswordRedefineCode.Hash, code)
-                        && x.PasswordRedefineCode.CreationDate.HasValue
-                        && (DateTime.UtcNow - x.PasswordRedefineCode.CreationDate).Value.TotalHours >= 24, cancellationToken: cancelation);
+                var user = await _context.Set<BaseUser>()
+                    .Include(x => x.PasswordRedefineCode)
+                    .SingleOrDefaultAsync(x => EF.Functions.Like(x.PasswordRedefineCode.Hash, code), cancellationToken: cancelation);
+
+                return user != null
+                    && user.PasswordRedefineCode.CreationDate.HasValue
+                    && (DateTime.UtcNow - user.PasswordRedefineCode.CreationDate).Value.TotalHours >= 24;
             }
         }
 
