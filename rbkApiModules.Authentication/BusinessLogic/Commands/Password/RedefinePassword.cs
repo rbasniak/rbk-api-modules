@@ -46,7 +46,7 @@ namespace rbkApiModules.Authentication
 
                 return user != null
                     && user.PasswordRedefineCode.CreationDate.HasValue
-                    && (DateTime.UtcNow - user.PasswordRedefineCode.CreationDate).Value.TotalHours >= 24;
+                    && (DateTime.UtcNow - user.PasswordRedefineCode.CreationDate).Value.TotalHours <= 24;
             }
         }
 
