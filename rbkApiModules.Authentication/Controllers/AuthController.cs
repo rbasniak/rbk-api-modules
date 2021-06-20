@@ -91,7 +91,7 @@ namespace rbkApiModules.Authentication
         /// </summary>
         [HttpPost]
         [Route("reset-password")]
-        public async Task<ActionResult> SendResetPasswordEmail(ResetPassword.Command data)
+        public async Task<ActionResult> SendResetPasswordEmail([FromBody] ResetPassword.Command data)
         {
             return HttpResponse(await Mediator.Send(data));
         }
@@ -101,7 +101,7 @@ namespace rbkApiModules.Authentication
         /// </summary>
         [HttpPost]
         [Route("redefine-password")]
-        public async Task<ActionResult> RedefinePassword(RedefinePassword.Command data)
+        public async Task<ActionResult> RedefinePassword([FromBody] RedefinePassword.Command data)
         {
             return HttpResponse(await Mediator.Send(data));
         }
@@ -110,7 +110,7 @@ namespace rbkApiModules.Authentication
         /// Reenvia o e-mail de confirmação para o usuário
         /// </summary>
         [HttpPost("resend-confirmation")]
-        public async Task<ActionResult> ResendEmailConfirmation(ResendEmailConfirmation.Command data)
+        public async Task<ActionResult> ResendEmailConfirmation([FromBody] ResendEmailConfirmation.Command data)
         {
             return HttpResponse(await Mediator.Send(data));
         }
