@@ -5,6 +5,9 @@ namespace rbkApiModules.Analytics.Core
 {
     public class AnalyticsEntry
     {
+        private string _domain;
+        private string _username;
+
         public AnalyticsEntry()
         {
             Timestamp = DateTime.UtcNow;
@@ -24,10 +27,29 @@ namespace rbkApiModules.Analytics.Core
         public string Identity { get; set; }
 
         [MaxLength(128)]
-        public string Username { get; set; }
+        public string Username
+        {
+            get
+            {
+                return _username ?? String.Empty;
+            }
+            set
+            {
+                _username = value;
+            }
+        }
 
         [MaxLength(32)]
-        public string Domain { get; set; }
+        public string Domain { 
+            get
+            {
+                return _domain ?? String.Empty;
+            }
+            set
+            {
+                _domain = value;
+            } 
+        }
 
         [MaxLength(64)]
         public string IpAddress { get; set; }

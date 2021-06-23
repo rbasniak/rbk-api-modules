@@ -56,6 +56,36 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
             return new LinearChartBuilder(chart);
         }
 
+        public static LinearChartBuilder CreateLinearDateChart(List<NeutralDatePoint> data, GroupingType groupingType, bool appendExtraData, DateTime? forceStartDate = null, DateTime? forceEndDate = null)
+        {
+            var fromDate = forceStartDate.HasValue ? forceStartDate.Value : data.Min(x => x.Date);
+            var toDate = forceEndDate.HasValue ? forceEndDate.Value : data.Max(x => x.Date);
+
+            var chart = new LinearChart();
+
+            foreach (var serieData in data.GroupBy(x => x.SerieId))
+            {
+                var serie = new LinearDataset(serieData.First().SerieId);
+
+                serie.Data = BuildLineChartAxis(fromDate, toDate, groupingType);
+
+                foreach (var groupedSerieData in serieData.GroupBy(x => x.Date.GetGroupDate(groupingType)))
+                {
+                    var point = serie.Data.Single(x => x.X == new Point(groupedSerieData.First().Date, 0, groupingType, null).X);
+                    point.Y = groupedSerieData.Sum(x => x.Value);
+
+                    if (appendExtraData)
+                    {
+                        point.Data = groupedSerieData.SelectMany(x => x.Data).ToList();
+                    }
+                }
+
+                chart.Data.Datasets.Add(serie);
+            }
+
+            return new LinearChartBuilder(chart);
+        }
+
         public static LinearChartBuilder CreateLinearCategoryChart(List<NeutralCategoryPoint> data, bool appendExtraData)
         {
             var chart = new LinearChart();
@@ -112,7 +142,7 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
             return SetColors(ChartCollorSelector.GetColors(palletes), backgroundTransparency);
         }
 
-        private LinearChartBuilder SetColors(string[] colors, string backgroundTransparency = "ff")
+        public LinearChartBuilder SetColors(string[] colors, string backgroundTransparency = "ff")
         {
             for (int i = 0; i < Builder.Data.Datasets.Count; i++)
             {
@@ -201,5 +231,7 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
 
             return axis;
         }
+
+  
     }
 }

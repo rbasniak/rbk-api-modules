@@ -2,11 +2,12 @@
 {
     public class TitleBuilder<TFactory, TChart> where TChart : BaseChart where TFactory : BaseChartBuilder<TFactory, TChart>
     {
-        public BaseChartBuilder<TFactory, TChart> Chart { get; }
+        internal BaseChartBuilder<TFactory, TChart> Builder { get; }
+        public TFactory Chart => Builder as TFactory;
 
         public TitleBuilder(BaseChartBuilder<TFactory, TChart> chartBuilder)
         {
-            Chart = chartBuilder;
+            Builder = chartBuilder;
         }
 
         public TitleBuilder<TFactory, TChart> Padding(double top, double bottom)

@@ -1,10 +1,12 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using rbkApiModules.Infrastructure.Models.Charts.ChartJs;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -133,7 +135,14 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
             return (TFactory)this;
         }
 
-        public object Build(bool debug = false)
+        public TFactory Responsive()
+        {
+            Builder.Config.MaintainAspectRatio = false;
+            Builder.Config.Responsive = true;
+            return (TFactory)this;
+        }
+
+        public ExpandoObject Build(bool debug = false)
         {
             if (Builder is LinearChart linearChart)
             {
@@ -149,11 +158,11 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
                 }
             });
 
-            var deserialized = JsonConvert.DeserializeObject(serializedWithoutNulls);
+            var deserialized = JsonConvert.DeserializeObject<ExpandoObject>(serializedWithoutNulls);
 
             if (debug)
             {
-                Debug.WriteLine(JsonConvert.SerializeObject(deserialized, Formatting.Indented));
+                Debug.WriteLine(JsonConvert.SerializeObject(JsonConvert.DeserializeObject(serializedWithoutNulls), Formatting.Indented));
             }
 
             return deserialized;

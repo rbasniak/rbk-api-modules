@@ -9,7 +9,6 @@ import { AnalyticsService } from '@services/api/analytics.service';
   styleUrls: ['home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  public items = [];
   constructor(private service: AnalyticsService) {
 
   }

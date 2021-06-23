@@ -4,8 +4,11 @@ import { UntilDestroy } from '@ngneat/until-destroy';
 import { Select, Store } from '@ngxs/store';
 import { DashboardFeatureActions } from '@state/features/dashboard/dashboard.actions';
 import { DashboardFeatureSelectors } from '@state/features/dashboard/dashboard.selectors';
-import { FormGroupComponent, SmzCalendarControl, SmzControlType, SmzDropDownControl, SmzForm } from 'ngx-smz-dialogs';
+import { FormGroupComponent, SmzCalendarControl, SmzControlType, SmzForm } from 'ngx-smz-dialogs';
 import { Observable } from 'rxjs';
+import * as moment_ from 'moment';
+
+const moment = moment_;
 
 @UntilDestroy()
 @Component({
@@ -15,7 +18,7 @@ import { Observable } from 'rxjs';
   encapsulation: ViewEncapsulation.None
 })
 export class DashboardPageComponent implements OnInit {
-  @Select(DashboardFeatureSelectors.data) public data$: Observable<AnalyticsEntry[]>;
+  @Select(DashboardFeatureSelectors.data) public data$: Observable<any>;
 
   public formConfig: SmzForm<unknown> = null;
 
@@ -23,36 +26,35 @@ export class DashboardPageComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    // moment(new Date()).subtract(1,'months').endOf('month').toDate()
     const dateFrom: SmzCalendarControl = {
-      propertyName: 'dateFrom', type: SmzControlType.CALENDAR, name: 'From', defaultValue: new Date(),
+      propertyName: 'dateFrom', type: SmzControlType.CALENDAR, name: 'From', defaultValue: moment(new Date()).subtract(30,'days').toDate(),
       touchUI: false, focusTrap: true, keepInvalid: true, showButtonBar: false, showOnFocus: false, showIcon: true,
-      template: { extraLarge: { row: 'col-4' } }
+      template: { extraLarge: { row: 'col-5' } }
     };
 
     const dateTo: SmzCalendarControl = {
       propertyName: 'dateTo', type: SmzControlType.CALENDAR, name: 'To', defaultValue: new Date(),
       touchUI: false, focusTrap: true, keepInvalid: true, showButtonBar: false, showOnFocus: false, showIcon: true,
-      template: { extraLarge: { row: 'col-4' } }
+      template: { extraLarge: { row: 'col-5' } }
     };
 
-    const grouping: SmzDropDownControl<number> = {
-      propertyName: 'grouping', type: SmzControlType.DROPDOWN, name: 'Grouping', validatorsPreset: { isRequired: true },
-      defaultValue: 1, showFilter: false, options: [
-        { id: 1, name: 'Daily'},
-        { id: 3, name: 'Weekly'},
-        { id: 4, name: 'Monthly'},
-        { id: 5, name: 'Yearly'},
-      ],
-      template: { extraLarge: { row: 'col-4' } }
-    };
+    // const grouping: SmzDropDownControl<number> = {
+    //   propertyName: 'grouping', type: SmzControlType.DROPDOWN, name: 'Grouping', validatorsPreset: { isRequired: true },
+    //   defaultValue: 1, showFilter: false, options: [
+    //     { id: 1, name: 'Daily'},
+    //     { id: 3, name: 'Weekly'},
+    //     { id: 4, name: 'Monthly'},
+    //     { id: 5, name: 'Yearly'},
+    //   ],
+    //   template: { extraLarge: { row: 'col-4' } }
+    // };
 
     this.formConfig = {
       behaviors: { flattenResponse: true, avoidFocusOnLoad: true },
       groups: [
         {
           name: null, showName: true,
-          children: [ dateFrom, dateTo, grouping ],
+          children: [ dateFrom, dateTo ],
           template: { extraLarge: { row: 'col-12' } }
         },
       ],
@@ -61,7 +63,6 @@ export class DashboardPageComponent implements OnInit {
 
   public filter(event: FormGroupComponent): void {
     const response = event.getData().data as any;
-    console.log(response);
     this.store.dispatch(new DashboardFeatureActions.Filter(response.dateFrom, response.dateTo, response.grouping));
   }
 }

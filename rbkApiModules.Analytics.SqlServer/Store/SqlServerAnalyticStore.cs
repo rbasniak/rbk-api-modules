@@ -98,6 +98,10 @@ namespace rbkApiModules.Analytics.SqlServer
             var query = _context.Data
                 .Where(x => x.Timestamp.Date >= from.Date && x.Timestamp.Date <= to.Date);
 
+            var sql = _context.Data
+                .Where(x => x.Timestamp.Date >= from.Date && x.Timestamp.Date <= to.Date)
+                .OrderByDescending(x => x.Timestamp).ToQueryString();
+
             var result = await query.OrderByDescending(x => x.Timestamp).ToListAsync();
 
             return FixTimezone(result);

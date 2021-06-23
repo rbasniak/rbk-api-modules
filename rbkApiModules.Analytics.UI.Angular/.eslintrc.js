@@ -69,7 +69,8 @@ module.exports = {
         "indent": "off",
         "@typescript-eslint/indent": [
             "error",
-            2
+            2,
+            { "MemberExpression": "off" }
         ],
         "@typescript-eslint/member-delimiter-style": [
             "error",
@@ -96,7 +97,6 @@ module.exports = {
                 }
             }
         ],
-        "@typescript-eslint/member-ordering": "error",
         "@typescript-eslint/naming-convention": [
             "error",
             {

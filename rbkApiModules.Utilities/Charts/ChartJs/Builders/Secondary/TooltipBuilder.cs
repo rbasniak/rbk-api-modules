@@ -2,11 +2,12 @@
 {
     public class TooltipBuilder<TFactory, TChart> where TChart : BaseChart where TFactory : BaseChartBuilder<TFactory, TChart>
     {
-        public BaseChartBuilder<TFactory, TChart> Chart { get; }
+        internal BaseChartBuilder<TFactory, TChart> Builder { get; }
+        public TFactory Chart => Builder as TFactory;
 
         public TooltipBuilder(BaseChartBuilder<TFactory, TChart> chartBuilder)
         {
-            Chart = chartBuilder;
+            Builder = chartBuilder;
         }
 
         public TooltipBuilder<TFactory, TChart> BackgroundColor(string color)

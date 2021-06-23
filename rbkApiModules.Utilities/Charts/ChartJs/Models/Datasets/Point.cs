@@ -24,11 +24,11 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
                 case GroupingType.None:
                     throw new NotSupportedException("Grouping type None is not supported and should not be used");
                 case GroupingType.Hourly:
-                    X = $"{date.Date}/{GetMonthName(date)}/{date.Year} {date.Hour}h";
+                    X = $"{date.Day}/{GetMonthName(date)}/{date.Year} {date.Hour}h";
                     break;
                 case GroupingType.Weekly:
                 case GroupingType.Daily:
-                    X = $"{date.Date}/{GetMonthName(date)}/{date.Year}";
+                    X = $"{date.Day}/{GetMonthName(date)}/{date.Year}";
                     break;
                 case GroupingType.Monthly:
                     X = $"{GetMonthName(date)}/{date.Year}";

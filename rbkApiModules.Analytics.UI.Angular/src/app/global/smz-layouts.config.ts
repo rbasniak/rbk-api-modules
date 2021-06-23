@@ -1,14 +1,17 @@
-import { SmzLayoutsConfig, SmzContentTheme, SmzLoader, HephaestusLayout, MenuType, SidebarState, AthenaLayout, ColorSchemaDefinition } from 'ngx-smz-ui';
+import { SmzLayoutsConfig, SmzContentTheme, SmzLoader, HephaestusLayout, MenuType, SidebarState, AthenaLayout } from 'ngx-smz-ui';
+import packageInfo from '../../../package.json';
+
 export const smzHephaestusConfig: HephaestusLayout = {
   menu: MenuType.STATIC,
   sidebarState: SidebarState.ACTIVE,
+  mobileSidebarState: SidebarState.INACTIVE,
   sidebarWidth: '16rem',
   sidebarSlimWidth: '6rem',
 };
 
 export const smzAthenaConfig: AthenaLayout = {
   menu: MenuType.HORIZONTAL,
-  sidebarState: SidebarState.ACTIVE,
+  sidebarState: SidebarState.INACTIVE,
   mobileSidebarState: SidebarState.INACTIVE,
   sidebarWidth: '16rem',
   sidebarSlimWidth: '6rem',
@@ -18,51 +21,70 @@ export const smzLayoutsConfig: SmzLayoutsConfig = {
   debugMode: false,
   appLogo: {
     horizontal: {
-      dark: 'assets/images/logos/horizontal-dark.svg',
-      light: 'assets/images/logos/horizontal-light.svg'
+      dark: 'assets/layout/images/horizontal-dark.svg',
+      light: 'assets/layout/images/horizontal-light.svg'
     },
     vertical: {
-      dark: 'assets/images/logos/vertical-dark.svg',
-      light: 'assets/images/logos/vertical-light.svg'
+      dark: 'assets/layout/images/vertical-dark.svg',
+      light: 'assets/layout/images/vertical-light.svg'
     },
     typo: {
-      dark: 'assets/images/logos/typo-dark.svg',
-      light: 'assets/images/logos/typo-light.svg'
+      dark: 'assets/layout/images/typo-dark.svg',
+      light: 'assets/layout/images/typo-light.svg'
     },
     icon: {
-      dark: 'assets/images/logos/icon-dark.svg',
-      light: 'assets/images/logos/icon-light.svg'
+      dark: 'assets/layout/images/icon-dark.svg',
+      light: 'assets/layout/images/icon-light.svg'
     },
   },
   appName: 'RBK Analytics',
-  usernameProperty: 'username',
+  usernameProperty: 'displayName',
+  useAvatar: true,
   footer: {
-
-    showAppName: false,
-    showLogo: false,
+    leftSideText: `(v${packageInfo.version}) RBK Analytics`,
+    rightSideText: '',
+    showAppName: true,
+    showLogo: true,
   },
   toast: {
     position: 'bottom-right'
   },
   themes: {
     content: SmzContentTheme.PRIMEONE_LIGHT,
-    schema: ColorSchemaDefinition.E_LIBRA
+    custom: {
+      id: 'rbk-analytics',
+      name: 'RBK Analytics',
+      tone: 'light',
+      color: '#ffffff',
+      constrast: '#000000',
+      schemas: [
+        { id: '--primary-color', name: '#000000' },
+        { id: '--primary-color-text', name: '#ffffff' },
+        { id: '--primary-color-menu-bg', name: '#ffffff' },
+        { id: '--primary-color-menu-bg-hover', name: '#EEEEEE' },
+        { id: '--primary-color-menu-text', name: '#212121' },
+        { id: '--primary-color-menu-text-hover', name: '#000000' },
+        { id: '--primary-color-menu-active', name: '#000000' },
+        { id: '--primary-color-loading', name: '#F5F5F5' },
+        { id: '--primary-color-loading-bg', name: '#000000' }
+      ]
+    },
   },
   loader: {
     type: SmzLoader.CUBE,
-    title: 'Please wait...',
-    message: 'Preparing your data'
+    title: 'Carregando...',
+    message: 'Aguarde por favor'
   },
   pages: {
     errorTitle: 'Erro',
-    errorMessage: 'There was an error while processing your request.',
+    errorMessage: 'Ocorreu um erro com a sua solicitação. Caso persista, entre em contato com seu administrador de sistema.',
     errorImagePath: 'assets/images/pages/bg-error.jpg',
-    notFoundTitle: 'Page not found',
-    notFoundMessage: 'The requested route does not exist.',
+    notFoundTitle: 'Página não encontrada',
+    notFoundMessage: 'A rota solicitada não existe ou não se encontra disponível no momento.',
     notFoundImagePath: 'assets/images/pages/bg-404.jpg',
   },
   assistance: {
-    isEnabled: true,
+    isEnabled: false,
     sidebarData: {
       position: 'right'
     },

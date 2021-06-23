@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { NgxSmzTablesModule, SmzRouteData } from 'ngx-smz-ui';
+import { NgxSmzTablesModule, SmzChartModule, SmzRouteData } from 'ngx-smz-ui';
 import { RbkDatabaseStateGuard } from 'ngx-rbk-utils';
 import { NgxSmzFormsModule } from 'ngx-smz-dialogs';
 import { ButtonModule } from 'primeng/button';
@@ -44,6 +44,7 @@ const routes: Routes = [
     NgxSmzFormsModule,
     PanelModule,
     NgxSmzTablesModule,
+    SmzChartModule,
     CardModule
   ],
   exports: [],

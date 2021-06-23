@@ -73,7 +73,20 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
         public CartesianScaleBuilder<TFactory, TChart> SetYAxisOverflow(AxisOverflowType type, AxisOverflowDirection direction, double value)
         {
             throw new NotImplementedException(); 
-        } 
+        }
+
+        public CartesianScaleBuilder<TFactory, TChart> AutoSkip(int? padding = null)
+        {
+            if (Scale.Ticks == null)
+            {
+                Scale.Ticks = new TickOptions();
+            }
+
+            Scale.Ticks.AutoSkip = true;
+            Scale.Ticks.AutoSkipPadding = padding;
+
+            return this;
+        }
     }
 
     public class CartesianTitleBuilder<TFactory, TChart> where TChart : BaseChart where TFactory : BaseChartBuilder<TFactory, TChart>

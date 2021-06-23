@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Filters;
 using rbkApiModules.Analytics.Core;
 using rbkApiModules.Analytics.SqlServer;
-using rbkApiModules.Analytics.UI;
 using rbkApiModules.Auditing.UI;
 using rbkApiModules.SharedUI;
 using rbkApiModules.Diagnostics.SqlServer;
@@ -49,7 +48,6 @@ namespace rbkApiModules.Demo
 
         private Assembly[] AssembliesForServices => new Assembly[]
         {
-            Assembly.GetAssembly(typeof(AnalyticsDataService)),
             Assembly.GetAssembly(typeof(DiagnosticsDataService))
         };
 
@@ -58,14 +56,7 @@ namespace rbkApiModules.Demo
             Assembly.GetAssembly(typeof(CommentsMappings)),
             Assembly.GetAssembly(typeof(RoleMappings)),
             Assembly.GetAssembly(typeof(PlanMappings)),
-        };
-
-        private Assembly[] AssembliesBlazorRouting => new Assembly[]
-        {
-            Assembly.GetAssembly(typeof(IAnalyticsDataService)),
-            Assembly.GetAssembly(typeof(IDiagnosticsDataService)),
-            Assembly.GetAssembly(typeof(Class2)),
-        };
+        }; 
 
         private Assembly[] AssembliesForMediatR => new Assembly[]
         {
@@ -97,17 +88,6 @@ namespace rbkApiModules.Demo
             );
 
             services.AddTransient<DbContext, DatabaseContext>();
-
-            services.AddRbkSharedUIModule(AssembliesBlazorRouting, new RbkSharedUIModuleOptions 
-            {
-                UseAnalyticsRoutes = true,
-                UseAuditingRoutes = true,
-                UseDiagnosticsRoutes = true,
-                CustomRoutes = new List<RouteDefinition>
-                {
-                    new RouteDefinition("/swagger/index.html", "Swagger")
-                }
-            });
 
             var xmlPath = Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml");
             services.AddRbkApiInfrastructureModule(new RbkApiInfrastructureModuleOptions
@@ -157,7 +137,7 @@ namespace rbkApiModules.Demo
                 .LimitToPath("/api")
                 .ExcludeMethods("OPTIONS")
                 .ExcludePath(new[] { "/api/test/download" })
-                // .UseDemoData()
+                .UseDemoData()
             );
 
             app.UseSqlServerRbkApiDiagnosticsModule();

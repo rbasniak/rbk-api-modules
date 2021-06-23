@@ -4,6 +4,10 @@ using Microsoft.AspNetCore.Http;
 using System;
 using System.Threading.Tasks;
 using rbkApiModules.Infrastructure.MediatR.Core;
+using System.Collections.Generic;
+using rbkApiModules.Utilities.Charts;
+using rbkApiModules.Utilities.Charts.ChartJs;
+using System.Linq;
 
 namespace rbkApiModules.Analytics.Core
 {
@@ -47,9 +51,98 @@ namespace rbkApiModules.Analytics.Core
 
             protected override async Task<object> ExecuteAsync(Command request)
             {
-                return await _context.FilterAsync(request.DateFrom, request.DateTo, request.Versions, request.Areas, request.Domains, request.Actions,
+                var items = await _context.FilterAsync(request.DateFrom, request.DateTo, request.Versions, request.Areas, request.Domains, request.Actions,
                     request.Users, request.Agents, request.Responses, null, request.Duration, request.EntityId);
+
+                var charts = new List<ChartDefinition>();
+
+                charts.Add(new ChartDefinition 
+                {
+                    Id = "versions",
+                    Chart = items
+                        .GroupBy(x => x.Version)
+                        .OrderBy(x => x.Count())
+                        .Take(10)
+                        .Select(x => new NeutralCategoryPoint(x.Key, x.Count()))
+                        .CreateRadialChart(10, "Others", false)
+                            .OfType(ChartType.Doughnut)
+                            .Theme(ColorPallete.Blue1, ColorPallete.Blue2)
+                            .WithTitle("Versions")
+                                .Chart
+                            .WithTooltips()
+                                .Chart
+                            .Build()
+                });
+
+                charts.Add(new ChartDefinition
+                {
+                    Id = "users",
+                    Chart = items
+                        .GroupBy(x => x.Username)
+                        .OrderBy(x => x.Count())
+                        .Take(10)
+                        .Select(x => new NeutralCategoryPoint(x.Key, x.Count()))
+                        .CreateRadialChart(10, "Others", false)
+                            .OfType(ChartType.Doughnut)
+                            .Theme(ColorPallete.Blue2, ColorPallete.Blue1)
+                            .WithTitle("Users")
+                                .Chart
+                            .WithTooltips()
+                                .Chart
+                            .Build()
+                });
+
+                charts.Add(new ChartDefinition
+                {
+                    Id = "responses",
+                    Chart = items
+                        .GroupBy(x => x.Response)
+                        .OrderBy(x => x.Count())
+                        .Take(10)
+                        .Select(x => new NeutralCategoryPoint(x.Key.ToString(), x.Count()))
+                        .CreateRadialChart(10, "Others", false)
+                            .OfType(ChartType.Doughnut)
+                            .Theme(ColorPallete.Blue1, ColorPallete.Blue2)
+                            .WithTitle("Responses")
+                                .Chart
+                            .WithTooltips()
+                                .Chart
+                            .Build()
+                });
+
+                charts.Add(new ChartDefinition
+                {
+                    Id = "actions",
+                    Chart = items
+                        .GroupBy(x => x.Action)
+                        .OrderBy(x => x.Count())
+                        .Take(10)
+                        .Select(x => new NeutralCategoryPoint(x.Key.ToString(), x.Count()))
+                        .CreateRadialChart(10, "Others", false)
+                            .OfType(ChartType.Doughnut)
+                            .Theme(ColorPallete.Blue2, ColorPallete.Blue1)
+                            .WithTitle("Endpoints")
+                                .Chart
+                            .WithTooltips()
+                                .Chart
+                            .Build()
+                });
+
+                var results = new Results
+                {
+                    SearchResults = items,
+                    Charts = charts
+                };
+
+                return results;
             }
+        }
+
+        public class Results
+        {
+            public List<AnalyticsEntry> SearchResults { get; set; }
+
+            public List<ChartDefinition> Charts { get; set; }
         }
     }
 }

@@ -1,6 +1,7 @@
 import { environment } from '@environments/environment';
 import { FilteringOptionsActions } from '@state/database/filtering-options/filtering-options.actions';
 import { FilteringOptionsState, FILTERING_OPTIONS_STATE_NAME } from '@state/database/filtering-options/filtering-options.state';
+import { DashboardFeatureState, DASHBOARD_FEATURE_STATE_NAME } from '@state/features/dashboard/dashboard.state';
 import { SearchFeatureState, SEARCH_FEATURE_STATE_NAME } from '@state/features/search/search.state';
 import { NgxRbkUtilsConfig } from 'ngx-rbk-utils';
 import { ERROR_PAGE_PATH, HOME_PATH, LOGIN_PATH } from 'src/routes';
@@ -13,7 +14,7 @@ import { ERROR_PAGE_PATH, HOME_PATH, LOGIN_PATH } from 'src/routes';
 
 export const rbkConfig: NgxRbkUtilsConfig = {
   debugMode: false,
-  applicationName: 'TMP',
+  applicationName: 'RBK',
   useTitleService: true,
   routes: {
     nonAuthenticatedRoot: `/${LOGIN_PATH}`,
@@ -35,7 +36,7 @@ export const rbkConfig: NgxRbkUtilsConfig = {
     }
   },
   authentication: {
-    localStoragePrefix: 'TMP',
+    localStoragePrefix: 'RBK',
     login: {
       url: `${environment.serverUrl}/api/auth/login`,
       errorHandlingType: 'toast',
@@ -63,6 +64,10 @@ export const rbkConfig: NgxRbkUtilsConfig = {
     feature: {
       [SEARCH_FEATURE_STATE_NAME]: {
         state: SearchFeatureState,
+        clearFunction: (): any => ({ results: [] })
+      },
+      [DASHBOARD_FEATURE_STATE_NAME]: {
+        state: DashboardFeatureState,
         clearFunction: (): any => ({ results: [] })
       }
     }

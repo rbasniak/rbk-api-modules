@@ -27,7 +27,7 @@ namespace rbkApiModules.Analytics.Core
 
         [HttpPost]
         [Route("search")]
-        public async Task<ActionResult<FilterAnalyticsEntries>> Search([FromBody] FilterAnalyticsEntries.Command data)
+        public async Task<ActionResult<FilterAnalyticsEntries.Results>> Search([FromBody] FilterAnalyticsEntries.Command data)
         {
             var result = await Mediator.Send(data);
 
@@ -36,7 +36,7 @@ namespace rbkApiModules.Analytics.Core
 
         [HttpPost]
         [Route("dashboard")]
-        public async Task<ActionResult<AnalyticsResults>> GetDashboardData([FromBody] GetDashboardData.Command data)
+        public async Task<ActionResult<AnalyticsDashboard>> GetDashboardData([FromBody] GetDashboardData.Command data)
         {
             var result = await Mediator.Send(data);
 

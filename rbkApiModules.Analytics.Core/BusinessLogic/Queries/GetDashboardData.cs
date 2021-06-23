@@ -8,6 +8,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using rbkApiModules.Infrastructure.MediatR.Core;
 using rbkApiModules.Utilities;
+using rbkApiModules.Utilities.Charts.ChartJs;
+using rbkApiModules.Utilities.Charts;
 
 namespace rbkApiModules.Analytics.Core
 {
@@ -36,36 +38,34 @@ namespace rbkApiModules.Analytics.Core
 
             protected override async Task<object> ExecuteAsync(Command request)
             {
-                var results = new AnalyticsResults();
+                var results = new AnalyticsDashboard();
 
                 var data = await _context.FilterAsync(request.DateFrom, request.DateTo);
 
-                results.AverageTransactionsPerEndpoint = BuildAverageTransactionsPerEndpoint(data);  
-                results.BiggestResponsesEndpoints = BuildBiggestResponsesEndpoints(data);
-                results.BiggestResquestsEndpoints = BuildBiggestResquestsEndpoints(data);
-                results.CachedRequestsProportion = BuildCachedRequestsProportion(data);
+                results.AverageTransactionsPerEndpoint = BuildAverageTransactionsPerEndpoint(data, request.DateFrom, request.DateTo);   
+                results.BiggestResponsesEndpoints = BuildBiggestResponsesEndpoints(data, request.DateFrom, request.DateTo); 
+                results.BiggestResquestsEndpoints = BuildBiggestResquestsEndpoints(data, request.DateFrom, request.DateTo);  
+                results.CachedRequestsProportion = BuildCachedRequestsProportion(data, request.DateFrom, request.DateTo);
 
-                results.DailyActiveUsers = BuildDailyActiveUsers(data, request.DateFrom, request.DateTo);
-                results.DailyAuthenticationFailures = BuildDailyAuthenticationFailures(data, request.DateFrom, request.DateTo);
-                results.DailyDatabaseUsage = BuildDailyDatabaseUsage(data, request.DateFrom, request.DateTo);
-                results.DailyErrors = BuildDailyErrors(data, request.DateFrom, request.DateTo);
-                results.DailyInboundTraffic = BuildDailyInboundTraffic(data, request.DateFrom, request.DateTo);
-                results.DailyOutboundTraffic = BuildDailyOutboundTraffic(data, request.DateFrom, request.DateTo);
-                results.DailyRequests = BuildDailyRequests(data, request.DateFrom, request.DateTo);
-                results.DailyTransactions = BuildDailyTransactions(data, request.DateFrom, request.DateTo);
+                results.DailyActiveUsers = BuildDailyActiveUsers(data, request.DateFrom, request.DateTo);  
+                results.DailyAuthenticationFailures = BuildDailyAuthenticationFailures(data, request.DateFrom, request.DateTo); 
+                results.DailyDatabaseUsage = BuildDailyDatabaseUsage(data, request.DateFrom, request.DateTo);  
+                results.DailyErrors = BuildDailyErrors(data, request.DateFrom, request.DateTo);  
+                results.DailyInboundTraffic = BuildDailyInboundTraffic(data, request.DateFrom, request.DateTo);  
+                results.DailyOutboundTraffic = BuildDailyOutboundTraffic(data, request.DateFrom, request.DateTo);  
+                results.DailyRequests = BuildDailyRequests(data, request.DateFrom, request.DateTo);  
+                results.DailyTransactions = BuildDailyTransactions(data, request.DateFrom, request.DateTo);  
 
-                results.EndpointErrorRates = BuildEndpointErrorRates(data);
-                results.MostActiveDays = BuildMostActiveDays(data);
-                results.MostActiveDomains = BuildMostActiveDomains(data);
-                results.MostActiveHours = BuildMostActiveHours(data);
-                results.MostActiveUsers = MostActiveUsers(data);
-                results.MostFailedEndpoints = MostFailedEndpoints(data);
-                results.MostResourceHungryEndpoint = MostResourceHungryEndpoint(data);
-                results.MostUsedEndpoints = BuildMostUsedEndpoints(data);
-                results.SlowestReadEndpoints = BuildSlowestReadEndpoints(data);
-                results.SlowestWriteEndpoints = BuildSlowestWriteEndpoints(data);
-                results.TotalTimeComsumptionPerReadEndpoint = BuildTotalTimeComsumptionPerReadEndpoint(data);
-                results.TotalTimeComsumptionPerWriteEndpoint = BuildTotalTimeComsumptionPerWriteEndpoint(data);
+                results.EndpointErrorRates = BuildEndpointErrorRates(data, request.DateFrom, request.DateTo);  
+                results.MostActiveDays = BuildMostActiveDays(data, request.DateFrom, request.DateTo);
+                results.MostActiveDomains = BuildMostActiveDomains(data, request.DateFrom, request.DateTo);
+                results.MostActiveHours = BuildMostActiveHours(data, request.DateFrom, request.DateTo);
+                results.MostActiveUsers = MostActiveUsers(data, request.DateFrom, request.DateTo);  
+                results.MostFailedEndpoints = MostFailedEndpoints(data, request.DateFrom, request.DateTo); 
+                results.MostResourceHungryEndpoint = MostResourceHungryEndpoint(data, request.DateFrom, request.DateTo);  
+                results.MostUsedEndpoints = BuildMostUsedEndpoints(data, request.DateFrom, request.DateTo);
+                results.SlowestReadEndpoints = BuildSlowestReadEndpoints(data, request.DateFrom, request.DateTo);
+                results.TotalTimeComsumptionPerReadEndpoint = BuildTotalTimeComsumptionPerReadEndpoint(data, request.DateFrom, request.DateTo);
 
                 return results;
             }
@@ -88,490 +88,559 @@ namespace rbkApiModules.Analytics.Core
                 return results;
             }
 
-            private List<SimpleLabeledValue<int>> BuildAverageTransactionsPerEndpoint(List<AnalyticsEntry> data)
+            private List<AnalyticsEntry> PrefilterResults(List<AnalyticsEntry> rawData, DateTime from, DateTime to, string[] responses, string[] methods)
             {
-                var results = new List<SimpleLabeledValue<int>>();
+                var filteredData = rawData.Where(x => x.Timestamp.Date >= from.Date && x.Timestamp.Date <= to.Date).ToList();
 
-                var filteredData = PrefilterResults(data, null, null);
-
-                var groupedData = filteredData.GroupBy(x => x.Action).ToList();
-
-                foreach (var itemData in groupedData)
-                {
-                    results.Add(new SimpleLabeledValue<int>(itemData.Key, (int)itemData.Average(x => x.TransactionCount)));
-                }
-
-                results = results.OrderByDescending(x => x.Value).ToList();
-
-                return results;
+                return PrefilterResults(filteredData, responses, methods);
             }
 
-            private List<SimpleLabeledValue<int>> BuildBiggestResponsesEndpoints(List<AnalyticsEntry> data)
+            private object BuildAverageTransactionsPerEndpoint(List<AnalyticsEntry> data, DateTime from, DateTime to)
             {
-                var results = new List<SimpleLabeledValue<int>>();
+                var chart = PrefilterResults(data, from, to, null, null)
+                    .GroupBy(x => x.Action)
+                    .Select(x => new NeutralCategoryPoint("default", x.Key, Math.Round(x.Average(x => x.TransactionCount), 1)))
+                    .Take(10)
+                    .CreateRadialChart(false)
+                        .OfType(ChartType.Doughnut)
+                        .Theme(ColorPallete.Blue2, ColorPallete.Blue1)
+                        .Responsive()
+                        .WithTitle("Average transactions per endpoint")
+                            .Font(16)
+                            .Padding(8, 24)
+                            .Chart
+                        .WithTooltips()
+                            .Chart
+                        .Build();
 
-                var filteredData = PrefilterResults(data, new[] { "200", "204" }, null);
-
-                var groupedData = filteredData.GroupBy(x => x.Action).ToList();
-
-                foreach (var itemData in groupedData)
-                {
-                    var name = itemData.Key.ToString();
-
-                    results.Add(new SimpleLabeledValue<int>(name, (int)itemData.Average(x => x.ResponseSize)));
-                }
-
-                results = results.OrderByDescending(x => x.Value).ToList();
-
-                return results;
+                return chart;
             }
 
-            private List<SimpleLabeledValue<int>> BuildBiggestResquestsEndpoints(List<AnalyticsEntry> data)
+            private object BuildBiggestResponsesEndpoints(List<AnalyticsEntry> data, DateTime from, DateTime to)
             {
-                var results = new List<SimpleLabeledValue<int>>();
+                var chart = PrefilterResults(data, from, to, new[] { "200", "204" }, null)
+                    .GroupBy(x => x.Action)
+                    .Select(x => new NeutralCategoryPoint("default", x.Key, Math.Round(x.Average(x => x.ResponseSize), 1)))
+                    .Take(10)
+                    .CreateRadialChart(false)
+                        .OfType(ChartType.Doughnut)
+                        .Theme(ColorPallete.Blue2, ColorPallete.Blue1)
+                        .Responsive()
+                        .WithTitle("Biggest response sizes")
+                            .Font(16)
+                            .Padding(8, 24)
+                            .Chart
+                        .WithTooltips()
+                            .Chart
+                        .RoundToNearestStorageUnit()
+                        .Build();
 
-                var filteredData = PrefilterResults(data, new[] { "200", "204" }, null);
-
-                var groupedData = filteredData.GroupBy(x => x.Action).ToList();
-
-                foreach (var itemData in groupedData)
-                {
-                    var name = itemData.Key.ToString();
-
-                    results.Add(new SimpleLabeledValue<int>(name, (int)itemData.Average(x => x.RequestSize)));
-                }
-
-                results = results.OrderByDescending(x => x.Value).ToList();
-
-                return results;
+                return chart;
             }
 
-            private List<SimpleLabeledValue<double>> BuildCachedRequestsProportion(List<AnalyticsEntry> data)
-            {
-                var results = new List<SimpleLabeledValue<double>>();
+            private object BuildBiggestResquestsEndpoints(List<AnalyticsEntry> data, DateTime from, DateTime to)
+            { 
+                var chart = PrefilterResults(data, from, to, new[] { "200", "204" }, null)
+                    .GroupBy(x => x.Action)
+                    .Select(x => new NeutralCategoryPoint("default", x.Key, Math.Round(x.Average(x => x.RequestSize), 1)))
+                    .Take(10)
+                    .CreateRadialChart(false)
+                        .OfType(ChartType.Doughnut)
+                        .Theme(ColorPallete.Blue2, ColorPallete.Blue1)
+                        .Responsive()
+                        .WithTitle("Biggest request sizes")
+                            .Font(16)
+                            .Padding(8, 24)
+                            .Chart
+                        .WithTooltips()
+                            .Chart
+                        .RoundToNearestStorageUnit()     
+                        .Build();
 
-                var filteredData = PrefilterResults(data, new[] { "200", "204" }, null);
-
-                var groupedData = filteredData.GroupBy(x => x.Action).ToList();
-
-                foreach (var itemData in groupedData)
-                {
-                    var name = itemData.Key.ToString();
-
-                    var cached = itemData.Count(x => x.WasCached);
-                    var total = (double)itemData.Count();
-
-                    results.Add(new SimpleLabeledValue<double>(name, cached / total * 100.0));
-                }
-
-                results = results.OrderByDescending(x => x.Value).ToList();
-
-                return results;
+                return chart;
             }
 
-            private List<DateValuePoint> BuildDailyActiveUsers(List<AnalyticsEntry> data, DateTime from, DateTime to)
-            {
-                var filteredData = PrefilterResults(data, null, null);
+            private object BuildCachedRequestsProportion(List<AnalyticsEntry> data, DateTime from, DateTime to)
+            { 
+                var chart = PrefilterResults(data, from, to, new[] { "200", "204" }, null)
+                    .GroupBy(x => x.Action)
+                    .Select(x => new NeutralCategoryPoint("default", x.Key, x.Count(y => y.WasCached) / (double)x.Count() * 100.0))
+                    .Take(10)
+                    .CreateRadialChart(false)
+                        .OfType(ChartType.Doughnut)
+                        .Theme(ColorPallete.Blue2, ColorPallete.Blue1)
+                        .Responsive()
+                        .WithTitle("Cached response proportions (%)")
+                            .Font(16)
+                            .Padding(8, 24)
+                            .Chart
+                        .WithTooltips()
+                            .Chart
+                        .Build();
 
-                var groupedData = filteredData.GroupBy(x => x.Timestamp.Date).ToList();
-
-                var chartData = ChartingUtilities.BuildLineChartAxis(from, to);
-
-                foreach (var itemData in groupedData)
-                {
-                    var date = itemData.Key;
-                    var activeUsers = itemData.GroupBy(x => x.Username).Count();
-
-                    var point = chartData.First(x => x.Date == date);
-
-                    point.Value = activeUsers;
-                }
-
-                return chartData;
+                return chart;
             }
 
-            private List<DateValuePoint> BuildDailyAuthenticationFailures(List<AnalyticsEntry> data, DateTime from, DateTime to)
+            private object BuildDailyActiveUsers(List<AnalyticsEntry> data, DateTime from, DateTime to)
             {
-                var filteredData = PrefilterResults(data, new[] { "401", "403" }, null);
+                var chart = PrefilterResults(data, from, to, null, null)
+                        .GroupBy(x => x.Timestamp.Date)
+                        .Select(x => new NeutralDatePoint("default", x.Key, x.GroupBy(x => x.Username).Count()))
+                    .CreateLinearChart(GroupingType.Daily, false, from, to)
+                    .OfType(ChartType.Line)
+                    .Theme(ColorPallete.Blue2)
+                    .Responsive()
+                    .WithTitle("Daily active users")
+                        .Font(16)
+                        .Padding(8, 24)
+                        .Chart
+                    .WithTooltips()
+                        .Chart
+                    .WithYAxis("x")
+                        .AutoSkip(10)
+                        .Chart
+                    .WithYAxis("y")
+                        .Range(0, null)
+                        .Chart
+                    .SetupDataset("default")
+                        .Thickness(3)
+                        .Chart
+                    .Build();
 
-                var groupedData = filteredData.GroupBy(x => x.Timestamp.Date).ToList();
-
-                var chartData = ChartingUtilities.BuildLineChartAxis(from, to);
-
-                foreach (var itemData in groupedData)
-                {
-                    var date = itemData.Key;
-                    var value = itemData.Count();
-
-                    var point = chartData.First(x => x.Date == date);
-
-                    point.Value = value;
-                }
-
-                return chartData;
+                return chart;
             }
 
-            private List<DateValuePoint> BuildDailyDatabaseUsage(List<AnalyticsEntry> data, DateTime from, DateTime to)
-            {
-                var filteredData = PrefilterResults(data, null, null);
+            private object BuildDailyAuthenticationFailures(List<AnalyticsEntry> data, DateTime from, DateTime to)
+            { 
+                var chart = PrefilterResults(data, from, to, new[] { "401", "403" }, null)
+                    .GroupBy(x => x.Timestamp.Date)
+                    .Select(x => new NeutralDatePoint("default", x.Key, x.Count()))
+                .CreateLinearChart(GroupingType.Daily, false, from, to)
+                .OfType(ChartType.Line)
+                .Theme(ColorPallete.Blue2)
+                .Responsive()
+                .WithTitle("Daily authentication failures")
+                    .Font(16)
+                    .Padding(8, 24)
+                    .Chart
+                .WithTooltips()
+                    .Chart
+                .WithYAxis("x")
+                    .AutoSkip(10)
+                    .Chart
+                .WithYAxis("y")
+                    .Range(0, null)
+                    .Chart
+                .SetupDataset("default")
+                    .Thickness(3)
+                    .Chart
+                .Build();
 
-                var groupedData = filteredData.GroupBy(x => x.Timestamp.Date).ToList();
-
-                var chartData = ChartingUtilities.BuildLineChartAxis(from, to);
-
-                foreach (var itemData in groupedData)
-                {
-                    var date = itemData.Key;
-                    var value = itemData.Sum(x => x.TotalTransactionTime);
-
-                    var point = chartData.First(x => x.Date == date);
-
-                    point.Value = value;
-                }
-
-                return chartData;
+                return chart;
             }
 
+            private object BuildDailyDatabaseUsage(List<AnalyticsEntry> data, DateTime from, DateTime to)
+            { 
+                var chart = PrefilterResults(data, from, to, null, null)
+                    .GroupBy(x => x.Timestamp.Date)
+                    .Select(x => new NeutralDatePoint("default", x.Key, x.Sum(x => x.TotalTransactionTime)))
+                .CreateLinearChart(GroupingType.Daily, false, from, to)
+                .OfType(ChartType.Line)
+                .Theme(ColorPallete.Blue2)
+                .Responsive()
+                .WithTitle("Daily database usage (total seconds)")
+                    .Font(16)
+                    .Padding(8, 24)
+                    .Chart
+                .WithTooltips()
+                    .Chart
+                .WithYAxis("x")
+                    .AutoSkip(10)
+                    .Chart
+                .WithYAxis("y")
+                    .Range(0, null)
+                    .Chart
+                .SetupDataset("default")
+                    .Thickness(3)
+                    .Chart
+                .Build();
 
-            private List<DateValuePoint> BuildDailyErrors(List<AnalyticsEntry> data, DateTime from, DateTime to)
-            {
-                var filteredData = PrefilterResults(data, new[] { "500" }, null);
-
-                var groupedData = filteredData.GroupBy(x => x.Timestamp.Date).ToList();
-
-                var chartData = ChartingUtilities.BuildLineChartAxis(from, to);
-
-                foreach (var itemData in groupedData)
-                {
-                    var date = itemData.Key;
-                    var errors = itemData.Count();
-
-                    var point = chartData.First(x => x.Date == date);
-
-                    point.Value = errors;
-                }
-
-                return chartData;
+                return chart;
             }
 
-            private List<DateValuePoint> BuildDailyInboundTraffic(List<AnalyticsEntry> data, DateTime from, DateTime to)
-            {
-                var filteredData = PrefilterResults(data, null, null);
+            private object BuildDailyErrors(List<AnalyticsEntry> data, DateTime from, DateTime to)
+            { 
+                var chart = PrefilterResults(data, from, to, new[] { "500" }, null)
+                    .GroupBy(x => x.Timestamp.Date)
+                    .Select(x => new NeutralDatePoint("default", x.Key, x.Count()))
+                .CreateLinearChart(GroupingType.Daily, false, from, to)
+                .OfType(ChartType.Line)
+                .Theme(ColorPallete.Blue2)
+                .Responsive()
+                .WithTitle("Daily errors")
+                    .Font(16)
+                    .Padding(8, 24)
+                    .Chart
+                .WithTooltips()
+                    .Chart
+                .WithYAxis("x")
+                    .AutoSkip(10)
+                    .Chart
+                .WithYAxis("y")
+                    .Range(0, null)
+                    .Chart
+                .SetupDataset("default")
+                    .Thickness(3)
+                    .Chart
+                .Build();
 
-                var groupedData = filteredData.GroupBy(x => x.Timestamp.Date).ToList();
-
-                var chartData = ChartingUtilities.BuildLineChartAxis(from, to);
-
-                foreach (var itemData in groupedData)
-                {
-                    var date = itemData.Key;
-                    var totalSize = itemData.Sum(x => x.RequestSize);
-
-                    var point = chartData.First(x => x.Date == date);
-
-                    // TODO: passar a unidade como configuração da lib
-                    point.Value = totalSize / 1024;
-                }
-
-                return chartData;
+                return chart;
             }
 
-            private List<DateValuePoint> BuildDailyOutboundTraffic(List<AnalyticsEntry> data, DateTime from, DateTime to)
-            {
-                var filteredData = PrefilterResults(data, null, null);
+            private object BuildDailyInboundTraffic(List<AnalyticsEntry> data, DateTime from, DateTime to)
+            { 
+                var chart = PrefilterResults(data, from, to, null, null)
+                    .GroupBy(x => x.Timestamp.Date)
+                    .Select(x => new NeutralDatePoint("default", x.Key, x.Sum(x => x.RequestSize)))
+                .CreateLinearChart(GroupingType.Daily, false, from, to)
+                .OfType(ChartType.Line)
+                .Theme(ColorPallete.Blue2)
+                .Responsive()
+                .WithTitle("Daily inbound traffic")
+                    .Font(16)
+                    .Padding(8, 24)
+                    .Chart
+                .WithTooltips()
+                    .Chart
+                .WithYAxis("x")
+                    .AutoSkip(10)
+                    .Chart
+                .WithYAxis("y")
+                    .Range(0, null)
+                    .Chart
+                .SetupDataset("default")
+                    .RoundToNearestStorageUnit(true)
+                    .Thickness(3)
+                    .Chart
+                .Build(); 
 
-                var groupedData = filteredData.GroupBy(x => x.Timestamp.Date).ToList();
-
-                var chartData = ChartingUtilities.BuildLineChartAxis(from, to);
-
-                foreach (var itemData in groupedData)
-                {
-                    var date = itemData.Key;
-                    var totalSize = itemData.Sum(x => x.ResponseSize);
-
-                    var point = chartData.First(x => x.Date == date);
-
-                    // TODO: passar a unidade como configuração da lib
-                    point.Value = totalSize / 1024;
-                }
-
-                return chartData;
+                return chart;
             }
 
-            private List<DateValuePoint> BuildDailyRequests(List<AnalyticsEntry> data, DateTime from, DateTime to)
+            private object BuildDailyOutboundTraffic(List<AnalyticsEntry> data, DateTime from, DateTime to)
             {
-                var filteredData = PrefilterResults(data, null, null);
+                var chart = PrefilterResults(data, from, to, null, null)
+                    .GroupBy(x => x.Timestamp.Date)
+                    .Select(x => new NeutralDatePoint("default", x.Key, x.Sum(x => x.ResponseSize)))
+                .CreateLinearChart(GroupingType.Daily, false, from, to)
+                .OfType(ChartType.Line)
+                .Theme(ColorPallete.Blue2)
+                .Responsive()
+                .WithTitle("Daily outbound traffic")
+                    .Font(16)
+                    .Padding(8, 24)
+                    .Chart
+                .WithTooltips()
+                    .Chart
+                .WithYAxis("x")
+                    .AutoSkip(10)
+                    .Chart
+                .WithYAxis("y")
+                    .Range(0, null)
+                    .Chart
+                .SetupDataset("default")
+                    .RoundToNearestStorageUnit(true)
+                    .Thickness(3)
+                    .Chart
+                .Build();
 
-                var groupedData = filteredData.GroupBy(x => x.Timestamp.Date).ToList();
-
-                var chartData = ChartingUtilities.BuildLineChartAxis(from, to);
-
-                foreach (var itemData in groupedData)
-                {
-                    var date = itemData.Key;
-                    var value = itemData.Count();
-
-                    var point = chartData.First(x => x.Date == date);
-
-                    point.Value = value;
-                }
-
-                return chartData;
+                return chart;
             }
 
-            private List<DateValuePoint> BuildDailyTransactions(List<AnalyticsEntry> data, DateTime from, DateTime to)
+            private object BuildDailyRequests(List<AnalyticsEntry> data, DateTime from, DateTime to)
             {
-                var filteredData = PrefilterResults(data, null, null);
+                var chart = PrefilterResults(data, from, to, null, null)
+                    .GroupBy(x => x.Timestamp.Date)
+                    .Select(x => new NeutralDatePoint("default", x.Key, x.Count()))
+                .CreateLinearChart(GroupingType.Daily, false, from, to)
+                .OfType(ChartType.Line)
+                .Theme(ColorPallete.Blue2)
+                .Responsive()
+                .WithTitle("Daily API calls")
+                    .Font(16)
+                    .Padding(8, 24)
+                    .Chart
+                .WithTooltips()
+                    .Chart
+                .WithYAxis("x")
+                    .AutoSkip(10)
+                    .Chart
+                .WithYAxis("y")
+                    .Range(0, null)
+                    .Chart
+                .SetupDataset("default")
+                    .Thickness(3)
+                    .Chart
+                .Build();
 
-                var groupedData = filteredData.GroupBy(x => x.Timestamp.Date).ToList();
-
-                var chartData = ChartingUtilities.BuildLineChartAxis(from, to);
-
-                foreach (var itemData in groupedData)
-                {
-                    var date = itemData.Key;
-                    var value = itemData.Sum(x => x.TransactionCount);
-
-                    var point = chartData.First(x => x.Date == date);
-
-                    point.Value = value;
-                }
-
-                return chartData;
-
+                return chart;
             }
 
-            private List<SimpleLabeledValue<double>> BuildEndpointErrorRates(List<AnalyticsEntry> data)
-            {
-                var results = new List<SimpleLabeledValue<double>>();
+            private object BuildDailyTransactions(List<AnalyticsEntry> data, DateTime from, DateTime to)
+            { 
+                var chart = PrefilterResults(data, from, to, null, null)
+                    .GroupBy(x => x.Timestamp.Date)
+                    .Select(x => new NeutralDatePoint("default", x.Key, x.Sum(x => x.TransactionCount)))
+                .CreateLinearChart(GroupingType.Daily, false, from, to)
+                .OfType(ChartType.Line)
+                .Theme(ColorPallete.Blue2)
+                .Responsive()
+                .WithTitle("Daily database transactions")
+                    .Font(16)
+                    .Padding(8, 24)
+                    .Chart
+                .WithTooltips()
+                    .Chart
+                .WithYAxis("x")
+                    .AutoSkip(10)
+                    .Chart
+                .WithYAxis("y")
+                    .Range(0, null)
+                    .Chart
+                .SetupDataset("default")
+                    .Thickness(3)
+                    .Chart
+                .Build();
 
-                var filteredData = PrefilterResults(data, null, null);
-
-                var groupedData = filteredData.GroupBy(x => x.Action).ToList();
-
-                foreach (var itemData in groupedData)
-                {
-                    if (itemData.Key == null) continue;
-
-                    var name = itemData.Key.ToString();
-
-                    var success = (double)itemData.Count(x => x.Response == 200 || x.Response == 204);
-                    var errors = (double)itemData.Count(x => x.Response != 200 && x.Response != 204 && x.Response != 400 && x.Response != 401 && x.Response != 403);
-
-                    results.Add(new SimpleLabeledValue<double>(name, errors / (success + errors) * 100.0));
-                }
-
-                return results.OrderByDescending(x => x.Value).ToList();
-
+                return chart;
             }
 
-            private List<SimpleLabeledValue<int>> BuildMostActiveDays(List<AnalyticsEntry> data)
-            {
-                var results = new List<SimpleLabeledValue<int>>();
-
-                var filteredData = PrefilterResults(data, null, null);
-
-                var groupedData = filteredData.GroupBy(x => x.Timestamp.DayOfWeek).ToList();
-
-                results.Add(new SimpleLabeledValue<int>(DayOfWeek.Sunday.ToString(), 0));
-                results.Add(new SimpleLabeledValue<int>(DayOfWeek.Monday.ToString(), 0));
-                results.Add(new SimpleLabeledValue<int>(DayOfWeek.Tuesday.ToString(), 0));
-                results.Add(new SimpleLabeledValue<int>(DayOfWeek.Wednesday.ToString(), 0));
-                results.Add(new SimpleLabeledValue<int>(DayOfWeek.Thursday.ToString(), 0));
-                results.Add(new SimpleLabeledValue<int>(DayOfWeek.Friday.ToString(), 0));
-                results.Add(new SimpleLabeledValue<int>(DayOfWeek.Saturday.ToString(), 0));
-
-                foreach (var itemData in groupedData)
-                {
-                    var element = results.First(x => x.Label == itemData.Key.ToString());
-                    element.Value = itemData.Count();
-                }
-
-                return results.ToList();
-            }
-
-            private List<SimpleLabeledValue<int>> BuildMostActiveDomains(List<AnalyticsEntry> data)
-            {
-                var results = new List<SimpleLabeledValue<int>>();
-
-                var filteredData = PrefilterResults(data, null, null);
-
-                var groupedData = filteredData.GroupBy(x => x.Domain).ToList();
-
-                foreach (var itemData in groupedData)
-                {
-                    var name = "Without Domain";
-
-                    if (itemData.Key != null)
+            private object BuildEndpointErrorRates(List<AnalyticsEntry> data, DateTime from, DateTime to)
+            { 
+                var chart = PrefilterResults(data, from, to, null, null)
+                    .GroupBy(x => x.Action)
+                    .Where(x => x.Key != null)
+                    .Select(x => 
                     {
-                        name = itemData.Key.ToString();
-                    }
+                        var success = (double)x.Count(y => y.Response == 200 || y.Response == 204);
+                        var errors = (double)x.Count(y => y.Response != 200 && y.Response != 204 && y.Response != 400 && y.Response != 401 && y.Response != 403);
 
-                    results.Add(new SimpleLabeledValue<int>(name, itemData.Count()));
-                }
+                        return new NeutralCategoryPoint("default", x.Key, errors / (success + errors) * 100.0);
+                    })
+                    .Take(10)
+                    .CreateRadialChart(false)
+                        .OfType(ChartType.Doughnut)
+                        .Theme(ColorPallete.Blue1, ColorPallete.Blue2)
+                        .Responsive()
+                        .WithTitle("Endpoint error rates")
+                            .Font(16)
+                            .Padding(8, 24)
+                            .Chart
+                        .WithTooltips()
+                            .Chart
+                        .Build();
 
-                return results.OrderByDescending(x => x.Value).ToList();
+                return chart;
+            }
+
+            private object BuildMostActiveDays(List<AnalyticsEntry> data, DateTime from, DateTime to)
+            {
+                var chart = PrefilterResults(data, from, to, null, null)
+                    .GroupBy(x => x.Timestamp.DayOfWeek.ToString())
+                    .Select(x => new NeutralCategoryPoint("default", x.Key, x.Count()))
+                    .CreateLinearChart()
+                        .OfType(ChartType.Bar)
+                        .Theme("77", ColorPallete.Blue2, ColorPallete.Blue1)
+                        .Responsive()
+                        .WithTitle("Most active days of the week")
+                            .Font(16)
+                            .Padding(8, 24)
+                            .Chart
+                        .WithTooltips()
+                            .Chart
+                        .SetupDataset("default")
+                            .OfType(DatasetType.Bar)
+                            .RoundedBorders(5)
+                            .Thickness(3)
+                            .Chart
+                        .Build();
+
+                return chart;
+            }
+
+            private object BuildMostActiveHours(List<AnalyticsEntry> data, DateTime from, DateTime to)
+            { 
+                var chart = PrefilterResults(data, from, to, null, null)
+                    .GroupBy(x => x.Timestamp.Hour)
+                    .OrderBy(x => x.Key)
+                    .Select(x => new NeutralCategoryPoint("default", x.Key.ToString("00"), x.Count()))
+                    .CreateLinearChart()
+                        .OfType(ChartType.Bar)
+                        .SetColors(new string[] { "#345DB3" }, "77")
+                        .Responsive()
+                        .WithTitle("Most active hours of the day")
+                            .Font(16)
+                            .Padding(8, 24)
+                            .Chart
+                        .WithTooltips()
+                            .Chart
+                        .SetupDataset("default")
+                            .OfType(DatasetType.Bar)
+                            .RoundedBorders(5)
+                            .Thickness(3)
+                            .Chart
+                        .Build();
+
+                return chart;
+            }
+
+            private object BuildMostActiveDomains(List<AnalyticsEntry> data, DateTime from, DateTime to)
+            { 
+                var chart = PrefilterResults(data, from, to, null, null)
+                    .GroupBy(x => x.Domain)
+                    .Select(x => new NeutralCategoryPoint("default", x.Key, x.Count()))
+                    .Take(10)
+                    .CreateRadialChart(false)
+                        .OfType(ChartType.Doughnut)
+                        .Theme(ColorPallete.Blue2, ColorPallete.Blue1)
+                        .Responsive()
+                        .WithTitle("Most active domains")
+                            .Font(16)
+                            .Padding(8, 24)
+                            .Chart
+                        .WithTooltips()
+                            .Chart
+                        .Build();
+
+                return chart;
 
             }
 
-            private List<SimpleLabeledValue<int>> BuildMostActiveHours(List<AnalyticsEntry> data)
-            {
-                var results = new List<SimpleLabeledValue<int>>();
+            private object MostActiveUsers(List<AnalyticsEntry> data, DateTime from, DateTime to)
+            { 
+                var chart = PrefilterResults(data, from, to, null, null)
+                    .GroupBy(x => x.Username)
+                    .Select(x => new NeutralCategoryPoint("default", String.IsNullOrEmpty(x.Key) ? "Anonymous" : x.Key, x.Count()))
+                    .Take(10)
+                    .CreateRadialChart(false)
+                        .OfType(ChartType.Doughnut)
+                        .Theme(ColorPallete.Blue2, ColorPallete.Blue1)
+                        .Responsive()
+                        .WithTitle("Most active users")
+                            .Font(16)
+                            .Padding(8, 24)
+                            .Chart
+                        .WithTooltips()
+                            .Chart
+                        .Build();
 
-                var filteredData = PrefilterResults(data, null, null);
-
-                var groupedData = filteredData.GroupBy(x => x.Timestamp.Hour).ToList();
-
-                for (int i = 0; i < 24; i++)
-                {
-                    results.Add(new SimpleLabeledValue<int>(i.ToString("00"), 0));
-                }
-
-                foreach (var itemData in groupedData)
-                {
-                    var element = results.First(x => x.Label == itemData.Key.ToString("00"));
-                    element.Value = itemData.Count();
-                }
-
-                return results.ToList();
+                return chart;
             }
 
-            private List<SimpleLabeledValue<int>> MostActiveUsers(List<AnalyticsEntry> data)
-            {
-                var results = new List<SimpleLabeledValue<int>>();
+            private object MostFailedEndpoints(List<AnalyticsEntry> data, DateTime from, DateTime to)
+            { 
+                var chart = PrefilterResults(data, from, to, new[] { "500" }, null)
+                    .GroupBy(x => x.Action)
+                    .Select(x => new NeutralCategoryPoint("default", x.Key, x.Count()))
+                    .Take(10)
+                    .CreateRadialChart(false)
+                        .OfType(ChartType.Doughnut)
+                        .Theme(ColorPallete.Blue2, ColorPallete.Blue1)
+                        .Responsive()
+                        .WithTitle("Most failed endpoints")
+                            .Font(16)
+                            .Padding(8, 24)
+                            .Chart
+                        .WithTooltips()
+                            .Chart
+                        .Build();
 
-                var filteredData = PrefilterResults(data, null, null);
-
-                var groupedData = filteredData.GroupBy(x => x.Username).ToList();
-
-                foreach (var itemData in groupedData)
-                {
-                    var name = "Anonymous";
-
-                    if (itemData.Key != null)
-                    {
-                        name = itemData.Key.ToString();
-                    }
-
-                    results.Add(new SimpleLabeledValue<int>(name, itemData.Count()));
-                }
-
-                return results.OrderByDescending(x => x.Value).ToList();
+                return chart;
             }
 
-            private List<SimpleLabeledValue<int>> MostFailedEndpoints(List<AnalyticsEntry> data)
+            private object MostResourceHungryEndpoint(List<AnalyticsEntry> data, DateTime from, DateTime to)
             {
-                var results = new List<SimpleLabeledValue<int>>();
+                var chart = PrefilterResults(data, from, to, null, null)
+                    .GroupBy(x => x.Action)
+                    .Select(x => new NeutralCategoryPoint("default", x.Key, Math.Round(x.Average(y => y.TotalTransactionTime), 0)))
+                    .Take(10)
+                    .CreateRadialChart(false)
+                        .OfType(ChartType.Doughnut)
+                        .Theme(ColorPallete.Blue2, ColorPallete.Blue1)
+                        .Responsive()
+                        .WithTitle("Total database time comsumption (seconds)")
+                            .Font(16)
+                            .Padding(8, 24)
+                            .Chart
+                        .WithTooltips()
+                            .Chart
+                        .Build();
 
-                var filteredData = PrefilterResults(data, new[] { "500" }, null);
-
-                var groupedData = filteredData.GroupBy(x => x.Action).ToList();
-
-                foreach (var itemData in groupedData)
-                {
-                    results.Add(new SimpleLabeledValue<int>(itemData.Key, itemData.Count()));
-                }
-
-                return results.OrderByDescending(x => x.Value).ToList();
+                return chart;
             }
 
-            private List<SimpleLabeledValue<int>> MostResourceHungryEndpoint(List<AnalyticsEntry> data)
-            {
-                var results = new List<SimpleLabeledValue<int>>();
+            private object BuildMostUsedEndpoints(List<AnalyticsEntry> data, DateTime from, DateTime to)
+            { 
+                var chart = PrefilterResults(data, from, to, null, null)
+                    .GroupBy(x => x.Action)
+                    .Select(x => new NeutralCategoryPoint("default", x.Key, x.Count()))
+                    .Take(10)
+                    .CreateRadialChart(false)
+                        .OfType(ChartType.Doughnut)
+                        .Theme(ColorPallete.Blue2, ColorPallete.Blue1)
+                        .Responsive()
+                        .WithTitle("Most used endpoints")
+                            .Font(16)
+                            .Padding(8, 24)
+                            .Chart
+                        .WithTooltips()
+                            .Chart
+                        .Build();
 
-                var filteredData = PrefilterResults(data, null, null);
-
-                var groupedData = filteredData.GroupBy(x => x.Action).ToList();
-
-                foreach (var itemData in groupedData)
-                {
-                    results.Add(new SimpleLabeledValue<int>(itemData.Key, (int)itemData.Average(x => x.TotalTransactionTime)));
-                }
-
-                return results.OrderByDescending(x => x.Value).ToList();
+                return chart;
             }
 
-            private List<SimpleLabeledValue<int>> BuildMostUsedEndpoints(List<AnalyticsEntry> data)
-            {
-                var results = new List<SimpleLabeledValue<int>>();
+            private object BuildSlowestReadEndpoints(List<AnalyticsEntry> data, DateTime from, DateTime to)
+            { 
+                var chart = PrefilterResults(data, from, to, new[] { "200", "204" }, null)
+                    .GroupBy(x => x.Action)
+                    .Select(x => new NeutralCategoryPoint("default", x.Key, Math.Round(x.Average(y => y.Duration), 0)))
+                    .Take(10)
+                    .CreateRadialChart(false)
+                        .OfType(ChartType.Doughnut)
+                        .Theme(ColorPallete.Blue2, ColorPallete.Blue1)
+                        .Responsive()
+                        .WithTitle("Slowest endpoints (average, seconds)")
+                            .Font(16)
+                            .Padding(8, 24)
+                            .Chart
+                        .WithTooltips()
+                            .Chart
+                        .Build();
 
-                var filteredData = PrefilterResults(data, null, null);
-
-                var groupedData = filteredData.GroupBy(x => x.Action).ToList();
-
-                foreach (var itemData in groupedData)
-                {
-                    results.Add(new SimpleLabeledValue<int>(itemData.Key, itemData.Count()));
-                }
-
-                return results.OrderByDescending(x => x.Value).ToList();
+                return chart;
             }
 
-            private List<SimpleLabeledValue<int>> BuildSlowestReadEndpoints(List<AnalyticsEntry> data)
-            {
-                var results = new List<SimpleLabeledValue<int>>();
+            private object BuildTotalTimeComsumptionPerReadEndpoint(List<AnalyticsEntry> data, DateTime from, DateTime to)
+            { 
+                var chart = PrefilterResults(data, from, to, new[] { "200", "204" }, new[] { "GET" })
+                    .GroupBy(x => x.Action)
+                    .Select(x => new NeutralCategoryPoint("default", x.Key, x.Sum(y => y.Duration)))
+                    .Take(10)
+                    .CreateRadialChart(false)
+                        .OfType(ChartType.Doughnut)
+                        .Theme(ColorPallete.Blue2, ColorPallete.Blue1)
+                        .Responsive()
+                        .WithTitle("Total time comsumption per endpoint (seconds)")
+                            .Font(16)
+                            .Padding(8, 24)
+                            .Chart
+                        .WithTooltips()
+                            .Chart
+                        .Build();
 
-                var filteredData = PrefilterResults(data, new[] { "200", "204" }, new[] { "GET" });
-
-                var groupedData = filteredData.GroupBy(x => x.Action).ToList();
-
-                foreach (var itemData in groupedData)
-                {
-                    results.Add(new SimpleLabeledValue<int>(itemData.Key, (int)itemData.Average(x => x.Duration)));
-                }
-
-                return results.OrderByDescending(x => x.Value).ToList();
-            }
-
-            private List<SimpleLabeledValue<int>> BuildSlowestWriteEndpoints(List<AnalyticsEntry> data)
-            {
-                var results = new List<SimpleLabeledValue<int>>();
-
-                var filteredData = PrefilterResults(data, new[] { "200", "204" }, new[] { "POST", "PUT", "DELETE" });
-
-                var groupedData = filteredData.GroupBy(x => x.Action).ToList();
-
-                foreach (var itemData in groupedData)
-                {
-                    results.Add(new SimpleLabeledValue<int>(itemData.Key, (int)itemData.Average(x => x.Duration)));
-                }
-
-                return results.OrderByDescending(x => x.Value).ToList();
-            }
-
-            private List<SimpleLabeledValue<int>> BuildTotalTimeComsumptionPerReadEndpoint(List<AnalyticsEntry> data)
-            {
-                var results = new List<SimpleLabeledValue<int>>();
-
-                var filteredData = PrefilterResults(data, new[] { "200", "204" }, new[] { "GET" });
-
-                var groupedData = filteredData.GroupBy(x => x.Action).ToList();
-
-                foreach (var itemData in groupedData)
-                {
-                    results.Add(new SimpleLabeledValue<int>(itemData.Key, itemData.Sum(x => x.Duration)));
-                }
-
-                return results.OrderByDescending(x => x.Value).ToList();
-            }
-
-            private List<SimpleLabeledValue<int>> BuildTotalTimeComsumptionPerWriteEndpoint(List<AnalyticsEntry> data)
-            {
-                var results = new List<SimpleLabeledValue<int>>();
-
-                var filteredData = PrefilterResults(data, new[] { "200", "204" }, new[] { "POST", "PUT", "DELETE" });
-
-                var groupedData = filteredData.GroupBy(x => x.Action).ToList();
-
-                foreach (var itemData in groupedData)
-                {
-                    results.Add(new SimpleLabeledValue<int>(itemData.Key, itemData.Sum(x => x.Duration)));
-                }
-
-                return results.OrderByDescending(x => x.Value).ToList();
+                return chart;
             }
         }
-
-
     }
 }

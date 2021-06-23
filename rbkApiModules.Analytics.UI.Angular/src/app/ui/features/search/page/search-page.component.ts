@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { AnalyticsEntry } from '@models/analytics-entry';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { Select, Store } from '@ngxs/store';
@@ -6,181 +6,73 @@ import { FilteringOptionsSelectors } from '@state/database/filtering-options/fil
 import { SearchFeatureActions } from '@state/features/search/search.actions';
 import { SearchFeatureSelectors } from '@state/features/search/search.selectors';
 import { FormGroupComponent, SmzCalendarControl, SmzControlType, SmzForm, SmzMultiSelectControl, SmzTextControl } from 'ngx-smz-dialogs';
-import { SmzContentType, SmzFilterType, SmzTableConfig } from 'ngx-smz-ui';
+import { SmzTableBuilder, SmzTableState } from 'ngx-smz-ui';
 import { Observable } from 'rxjs';
+import { ChartDefinition } from '@models/chart-definition';
+import * as moment_ from 'moment';
+
+const moment = moment_;
 
 @UntilDestroy()
 @Component({
   selector: 'app-search-page',
   templateUrl: 'search-page.component.html',
-  styleUrls: ['search-page.component.scss']
+  styleUrls: ['search-page.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class SearchPageComponent implements OnInit {
   @Select(SearchFeatureSelectors.results) public results$: Observable<AnalyticsEntry[]>;
+  @Select(SearchFeatureSelectors.charts) public charts$: Observable<ChartDefinition[]>;
 
   public formConfig: SmzForm<unknown> = null;
-  public tableConfig: SmzTableConfig = null;
+  public tableConfig: SmzTableState = null;
 
   constructor(private store: Store) {
   }
 
   public ngOnInit(): void {
     this.setupForm();
-    this.setupTable2();
+    this.setupTable();
   }
 
-  private setupTable2(): void {
-    this.tableConfig = {
-      showPaginator: true,
-      rowsPerPageOptions: [25, 50, 100],
-      showActions: true,
-      showGlobalFilter: true,
-      showCaption: true,
-      columns: [
-        {
-          contentType: SmzContentType.TEXT,
-          contentData: { useTemplate: true },
-          field: 'response',
-          header: '',
-          isGlobalFilterable: false,
-          isOrderable: false,
-          showFilter: false,
-          isVisible: true,
-          width: '5em',
-        },
-        {
-          contentType: SmzContentType.TEXT,
-          contentData: { useTemplate: true },
-          field: 'timestamp',
-          header: 'TIMESTAMP',
-          isGlobalFilterable: true,
-          isOrderable: false,
-          showFilter: false,
-          isVisible: true,
-        },
-        {
-          contentType: SmzContentType.TEXT,
-          contentData: { useTemplate: true },
-          field: 'action',
-          header: 'ENDPOINT',
-          isGlobalFilterable: true,
-          isOrderable: false,
-          showFilter: false,
-          isVisible: true,
-        },
-        {
-          contentType: SmzContentType.TEXT,
-          contentData: { useTemplate: true },
-          field: 'application',
-          header: 'APPLICATION',
-          isGlobalFilterable: true,
-          isOrderable: false,
-          showFilter: false,
-          isVisible: true,
-        },
-        {
-          contentType: SmzContentType.TEXT,
-          contentData: { useTemplate: true },
-          field: 'user',
-          header: 'USER',
-          isGlobalFilterable: true,
-          isOrderable: false,
-          showFilter: false,
-          isVisible: true,
-        },
-        {
-          contentType: SmzContentType.TEXT,
-          contentData: { useTemplate: true },
-          field: 'performance',
-          header: 'PERFORMANCE',
-          isGlobalFilterable: true,
-          isOrderable: false,
-          showFilter: false,
-          isVisible: true,
-        },
-
-      ]
-    };
-  }
-
-  private setupTable1(): void {
-    this.tableConfig = {
-      showPaginator: true,
-      rowsPerPageOptions: [25, 50, 100],
-      showActions: true,
-      showGlobalFilter: true,
-      showCaption: true,
-      columns: [
-        {
-          contentType: SmzContentType.TEXT,
-          contentData: { useTemplate: true },
-          field: 'response',
-          header: '',
-          isGlobalFilterable: false,
-          isOrderable: false,
-          showFilter: false,
-          isVisible: true,
-          width: '3em',
-        },
-        {
-          contentType: SmzContentType.TEXT,
-          contentData: { useTemplate: true },
-          field: 'timestamp',
-          header: 'TIMESTAMP',
-          isGlobalFilterable: true,
-          isOrderable: false,
-          showFilter: false,
-          isVisible: true,
-        },
-        {
-          contentType: SmzContentType.TEXT,
-          contentData: { useTemplate: true },
-          field: 'action',
-          header: 'ENDPOINT',
-          isGlobalFilterable: true,
-          isOrderable: false,
-          showFilter: false,
-          isVisible: true,
-        },
-        {
-          contentType: SmzContentType.TEXT,
-          contentData: { useTemplate: true },
-          field: 'application',
-          header: 'APPLICATION',
-          isGlobalFilterable: true,
-          isOrderable: false,
-          showFilter: false,
-          isVisible: true,
-        },
-        {
-          contentType: SmzContentType.TEXT,
-          contentData: { useTemplate: true },
-          field: 'user',
-          header: 'USER',
-          isGlobalFilterable: true,
-          isOrderable: false,
-          showFilter: false,
-          isVisible: true,
-        },
-        {
-          contentType: SmzContentType.TEXT,
-          contentData: { useTemplate: true },
-          field: 'performance',
-          header: 'PERFORMANCE',
-          isGlobalFilterable: true,
-          isOrderable: false,
-          showFilter: false,
-          isVisible: true,
-        },
-
-      ]
-    };
+  private setupTable(): void {
+    this.tableConfig = new SmzTableBuilder()
+      .usePagination()
+      .setPaginationDefaultRows(10)
+      .setPaginationPageOptions([25, 50, 100])
+      .columns()
+        .custom('response', '', '4em')
+          .ignoreOnGlobalFilter()
+          .disableFilter()
+          .disableSort()
+          .columns
+        .custom('timestamp', 'TIMESTAMP', '9em')
+          .disableFilter()
+          .disableSort()
+          .columns
+        .custom('action', 'ENDPOINT')
+          .disableFilter()
+          .disableSort()
+          .columns
+        .custom('application', 'APPLICATION')
+          .disableFilter()
+          .disableSort()
+          .columns
+        .custom('user', 'USER')
+          .disableFilter()
+          .disableSort()
+          .columns
+        .custom('performance', 'PERFORMANCE', '20em')
+          .disableFilter()
+          .disableSort()
+          .columns
+        .table
+      .build();
   }
 
   private setupForm(): void {
-    // moment(new Date()).subtract(1,'months').endOf('month').toDate()
     const dateFrom: SmzCalendarControl = {
-      propertyName: 'dateFrom', type: SmzControlType.CALENDAR, name: 'From', defaultValue: new Date(),
+      propertyName: 'dateFrom', type: SmzControlType.CALENDAR, name: 'From', defaultValue: moment(new Date()).subtract(30,'days').toDate(),
       touchUI: false, focusTrap: true, keepInvalid: true, showButtonBar: false, showOnFocus: false, showIcon: true,
       template: { extraLarge: { row: 'col-2' } }
     };

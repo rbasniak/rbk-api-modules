@@ -4,17 +4,17 @@ import { tap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { AnalyticsService } from '@services/api/analytics.service';
 import { SearchFeatureActions } from './search.actions';
-import { AnalyticsEntry } from '@models/analytics-entry';
+import { SearchResults } from '@models/search-results';
 
 export const SEARCH_FEATURE_STATE_NAME = 'SearchFeature';
 
 export interface SearchFeatureStateModel {
-  results: AnalyticsEntry[];
+  data: SearchResults;
 }
 
 @State<SearchFeatureStateModel>({
   name: SEARCH_FEATURE_STATE_NAME,
-  defaults: { results: null }
+  defaults: { data: null }
 })
 @Injectable()
 export class SearchFeatureState {
@@ -22,11 +22,11 @@ export class SearchFeatureState {
   constructor(private analytics: AnalyticsService) { }
 
   @Action(SearchFeatureActions.Search)
-  public search$(ctx: StateContext<SearchFeatureStateModel>, action: SearchFeatureActions.Search): Observable<AnalyticsEntry[]> {
+  public search$(ctx: StateContext<SearchFeatureStateModel>, action: SearchFeatureActions.Search): Observable<SearchResults> {
     return this.analytics.search(action.data).pipe(
-      tap((result: AnalyticsEntry[]) => {
+      tap((result: SearchResults) => {
         ctx.patchState({
-          results: result,
+          data: result,
         });
       })
     );

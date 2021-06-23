@@ -25,11 +25,11 @@ namespace rbkApiModules.Analytics.Core
 
             if (endpoint is RouteEndpoint)
             {
-                path = (endpoint as RouteEndpoint).RoutePattern.RawText;
+                path = "/" + (endpoint as RouteEndpoint).RoutePattern.RawText;
             }
             else
             {
-                path = context.HttpContext.Request.Path;
+                path = "/" + context.HttpContext.Request.Path;
             }
 
             var action = context.ActionDescriptor as ControllerActionDescriptor;

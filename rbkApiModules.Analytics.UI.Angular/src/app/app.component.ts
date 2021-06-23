@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngxs/store';
 import { BoilerplateService } from 'ngx-rbk-utils';
+import { ThemeManagerService } from 'ngx-smz-ui';
 import { MenuItem, PrimeNGConfig } from 'primeng/api';
 import { DASHBOARD_PAGE_ROUTE, SEARCH_PAGE_ROUTE } from 'src/routes';
 
@@ -11,9 +12,9 @@ import { DASHBOARD_PAGE_ROUTE, SEARCH_PAGE_ROUTE } from 'src/routes';
 export class AppComponent implements OnInit {
   public menu: MenuItem[];
 
-  constructor(private primengConfig: PrimeNGConfig, private boilerplateService: BoilerplateService, private store: Store) {
+  constructor(private primengConfig: PrimeNGConfig, private boilerplateService: BoilerplateService, private themeManager: ThemeManagerService) {
     this.boilerplateService.init();
-
+    this.themeManager.createCss('assets/styles/overrides.css');
     this.setupMenu();
   }
 
@@ -24,17 +25,20 @@ export class AppComponent implements OnInit {
   public setupMenu(): void {
     this.menu = [
       {
-        label: 'Search',
-        items: [
-          { label: 'Search', icon: 'fas fa-search', routerLink: SEARCH_PAGE_ROUTE },
-        ]
-      },
-      {
         label: 'Statistics',
         icon: 'far fa-list-alt',
         items: [
+          { label: 'Search', icon: 'fas fa-search', routerLink: SEARCH_PAGE_ROUTE },
           { label: 'Dashboard', icon: 'fas fa-chart-line', routerLink: DASHBOARD_PAGE_ROUTE },
           { label: 'Performance', icon: 'fas fa-tachometer-alt', routerLink: [] },
+        ]
+      },
+      {
+        label: 'Diagnostics',
+        icon: 'far fa-list-alt',
+        items: [
+          { label: 'Trace', icon: 'fas fa-search', routerLink: SEARCH_PAGE_ROUTE },
+          { label: 'Dashboard', icon: 'fas fa-chart-line', routerLink: DASHBOARD_PAGE_ROUTE },
         ]
       }
     ];

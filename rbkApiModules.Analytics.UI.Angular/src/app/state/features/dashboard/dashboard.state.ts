@@ -4,17 +4,16 @@ import { tap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { AnalyticsService } from '@services/api/analytics.service';
 import { DashboardFeatureActions } from './dashboard.actions';
-import { ChartResponse } from '@models/chart-response';
 
 export const DASHBOARD_FEATURE_STATE_NAME = 'DashboardFeature';
 
 export interface DashboardFeatureStateModel {
-  data: ChartResponse[];
+  data: any;
 }
 
 @State<DashboardFeatureStateModel>({
   name: DASHBOARD_FEATURE_STATE_NAME,
-  defaults: { data: [] }
+  defaults: { data: null }
 })
 @Injectable()
 export class DashboardFeatureState {
@@ -22,9 +21,9 @@ export class DashboardFeatureState {
   constructor(private analytics: AnalyticsService) { }
 
   @Action(DashboardFeatureActions.Filter)
-  public filter$(ctx: StateContext<DashboardFeatureStateModel>, action: DashboardFeatureActions.Filter): Observable<ChartResponse[]> {
+  public filter$(ctx: StateContext<DashboardFeatureStateModel>, action: DashboardFeatureActions.Filter): Observable<any> {
     return this.analytics.getDashboardData(action.dateFrom, action.dateTo, action.groupingType).pipe(
-      tap((result: ChartResponse[]) => {
+      tap((result: any) => {
         ctx.patchState({
           data: result,
         });

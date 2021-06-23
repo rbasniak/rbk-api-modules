@@ -5,7 +5,7 @@ import { SimpleNamedEntity } from 'ngx-smz-dialogs';
 import { FilteringOptionsState, FilteringOptionsStateModel } from './filtering-options.state';
 
 export class FilteringOptionsSelectors {
-  private static noDataOptions = [ { id: null, name: 'No data available' } ];
+  private static noDataOptions = [ { id: null as any, name: 'No data available' } ];
 
   @Selector([FilteringOptionsState])
   public static all(state: FilteringOptionsStateModel): FilteringOptions {

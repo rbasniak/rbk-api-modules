@@ -120,5 +120,49 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
 
             return this;
         }
+
+        public RadialChartBuilder RoundToNearestStorageUnit()
+        { 
+            var dataset = Builder.Data.Datasets.First();
+
+            var averageSize = dataset.Data.Average();
+            var unit = String.Empty;
+
+            for (int i = 0; i < dataset.Data.Count; i++)
+            {
+                if (averageSize < 1024)
+                {
+                    unit = "bytes";
+                }
+                else if (averageSize < 1048576.0)
+                {
+                    unit = "kb";
+                    dataset.Data[i] = Math.Round(dataset.Data[i] / 1024.0, 1);
+                }
+                else if (averageSize < 1073741824.0)
+                {
+                    unit = "mb";
+                    dataset.Data[i] = Math.Round(dataset.Data[i] / 1048576.0, 1);
+                }
+                else if (averageSize < 1099511627776.0)
+                {
+                    unit = "gb";
+                    dataset.Data[i] = Math.Round(dataset.Data[i] / 1073741824.0, 1);
+                }
+                else if (averageSize < 1125899906842624.0)
+                {
+                    unit = "tb";
+                    dataset.Data[i] = Math.Round(dataset.Data[i] / 1099511627776.0, 1);
+                }
+            }
+
+            if (Builder.Config.Plugins.Title != null &&
+                !String.IsNullOrEmpty(Builder.Config.Plugins.Title.Text))
+            {
+                Builder.Config.Plugins.Title.Text += $" ({unit})";
+            }
+
+            return this;
+        }
     }
 }

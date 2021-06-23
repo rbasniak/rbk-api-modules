@@ -2,3 +2,4 @@ main.ts
 polyfills.ts
 test.ts
 karma.conf.js
+deploy.js

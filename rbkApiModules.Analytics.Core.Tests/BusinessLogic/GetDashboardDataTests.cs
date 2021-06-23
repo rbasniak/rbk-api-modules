@@ -84,7 +84,7 @@ namespace rbkApiModules.Analytics.Core.Tests
             response.IsValid.ShouldBeTrue();
             response.Result.ShouldNotBeNull();
 
-            response.Result.ShouldBeOfType<AnalyticsResults>();
+            response.Result.ShouldBeOfType<AnalyticsDashboard>();
         }
     }
 }

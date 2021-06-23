@@ -97,9 +97,6 @@ namespace rbkApiModules.Infrastructure.Api
                 });
             }
 
-            services.AddRazorPages();
-            services.AddServerSideBlazor();
-
             services.AddRouting(options => options.LowercaseUrls = true);
 
             services.AddCors();
