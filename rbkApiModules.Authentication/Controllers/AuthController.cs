@@ -14,6 +14,7 @@ namespace rbkApiModules.Authentication
     /// </summary>
     [AllowAnonymous]
     [Route("api/[controller]")]
+    [ApiController]
     public class AuthController : BaseController
     {
         private readonly AuthenticationMailConfiguration _MailConfig;
@@ -28,7 +29,7 @@ namespace rbkApiModules.Authentication
         /// </summary>
         [IgnoreOnCodeGeneration]
         [HttpPost("login")]
-        public async Task<ActionResult<JwtResponse>> Login([FromBody]UserLogin.Command data)
+        public async Task<ActionResult<JwtResponse>> Login(UserLogin.Command data)
         {
             try
             {
@@ -68,7 +69,7 @@ namespace rbkApiModules.Authentication
         /// </summary>
         [IgnoreOnCodeGeneration]
         [HttpPost("refresh-token")]
-        public async Task<ActionResult<JwtResponse>> Post([FromBody] RenewAccessToken.Command data)
+        public async Task<ActionResult<JwtResponse>> Post(RenewAccessToken.Command data)
         {
             var result = await Mediator.Send(data);
 
@@ -91,7 +92,7 @@ namespace rbkApiModules.Authentication
         /// </summary>
         [HttpPost]
         [Route("reset-password")]
-        public async Task<ActionResult> SendResetPasswordEmail([FromBody] ResetPassword.Command data)
+        public async Task<ActionResult> SendResetPasswordEmail(ResetPassword.Command data)
         {
             return HttpResponse(await Mediator.Send(data));
         }
@@ -101,7 +102,7 @@ namespace rbkApiModules.Authentication
         /// </summary>
         [HttpPost]
         [Route("redefine-password")]
-        public async Task<ActionResult> RedefinePassword([FromBody] RedefinePassword.Command data)
+        public async Task<ActionResult> RedefinePassword(RedefinePassword.Command data)
         {
             return HttpResponse(await Mediator.Send(data));
         }
@@ -110,7 +111,7 @@ namespace rbkApiModules.Authentication
         /// Reenvia o e-mail de confirmação para o usuário
         /// </summary>
         [HttpPost("resend-confirmation")]
-        public async Task<ActionResult> ResendEmailConfirmation([FromBody] ResendEmailConfirmation.Command data)
+        public async Task<ActionResult> ResendEmailConfirmation(ResendEmailConfirmation.Command data)
         {
             return HttpResponse(await Mediator.Send(data));
         }

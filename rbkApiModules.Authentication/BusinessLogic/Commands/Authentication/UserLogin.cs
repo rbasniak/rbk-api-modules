@@ -63,9 +63,9 @@ namespace rbkApiModules.Authentication
             /// </summary>
             public async Task<bool> ExistOnDatabase(Command command, string username, CancellationToken cancelation)
             {
-                var query = _context.Set<BaseUser>().Select(x => new { x.Username, x.Password });
+                var query = _context.Set<BaseUser>().Select(x => new { x.Email, x.Username, x.Password });
 
-                return await query.AnyAsync(x => EF.Functions.Like(x.Username, username));
+                return await query.AnyAsync(x => EF.Functions.Like(x.Username, username) || EF.Functions.Like(x.Email, username));
             }
 
             /// <summary>
@@ -73,7 +73,7 @@ namespace rbkApiModules.Authentication
             /// </summary>
             public async Task<bool> BeConfirmed(Command command, string username, CancellationToken cancelation)
             {
-                return await _context.Set<BaseUser>().AnyAsync(x => EF.Functions.Like(x.Username, username) && x.IsConfirmed);
+                return await _context.Set<BaseUser>().AnyAsync(x => (EF.Functions.Like(x.Username, username) || EF.Functions.Like(x.Email, username)) && x.IsConfirmed);
             }
 
 
@@ -82,8 +82,8 @@ namespace rbkApiModules.Authentication
             /// </summary>
             public async Task<bool> MatchPassword(Command command, string password, CancellationToken cancelation)
             {
-                var user = await _context.Set<BaseUser>().Select(x => new { x.Username, x.Password })
-                    .SingleAsync(x => EF.Functions.Like(x.Username, command.Username));
+                var user = await _context.Set<BaseUser>().Select(x => new { x.Username, x.Password, x.Email })
+                    .SingleAsync(x => EF.Functions.Like(x.Username, command.Username) || EF.Functions.Like(x.Email, command.Username));
 
                 return PasswordHasher.VerifyPassword(password, user.Password);
             }
@@ -112,7 +112,7 @@ namespace rbkApiModules.Authentication
                                 .ThenInclude(x => x.Claim)
                     .Include(x => x.Claims)
                         .ThenInclude(x => x.Claim)
-                    .SingleAsync(x => EF.Functions.Like(x.Username, request.Username));
+                    .SingleAsync(x => EF.Functions.Like(x.Username, request.Username) || EF.Functions.Like(x.Email, request.Username));
 
                 claims.Add(JwtClaimIdentifiers.Roles, user.GetAccessClaims().ToArray());
 
@@ -133,7 +133,7 @@ namespace rbkApiModules.Authentication
 
                 _context.SaveChanges();
 
-                var jwt = TokenGenerator.Generate(_jwtFactory, request.Username, claims, refreshToken);
+                var jwt = TokenGenerator.Generate(_jwtFactory, user.Username, claims, refreshToken);
 
                 return (null, jwt);
             }

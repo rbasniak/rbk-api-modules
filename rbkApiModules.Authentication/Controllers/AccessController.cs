@@ -10,6 +10,7 @@ namespace rbkApiModules.Authentication
     /// <summary>
     /// Controller para acesso das funcionalidades de autorização e controle de acesso
     /// </summary>
+    [ApiController]
     [Route("api/[controller]")]
     public class AccessController : BaseController
     {
@@ -36,7 +37,7 @@ namespace rbkApiModules.Authentication
         /// </summary>
         [RbkAuthorize(Claim = AuthenticationClaims.MANAGE_ROLES)]
         [HttpPost("roles")]
-        public async Task<ActionResult<SimpleNamedEntity>> CreateRole([FromBody]CreateRole.Command data)
+        public async Task<ActionResult<SimpleNamedEntity>> CreateRole(CreateRole.Command data)
         {
             var result = await Mediator.Send(data);
 
@@ -68,7 +69,7 @@ namespace rbkApiModules.Authentication
         /// </summary>
         [RbkAuthorize(Claim = AuthenticationClaims.MANAGE_ROLES)]
         [HttpPost("role/add-claim")]
-        public async Task<ActionResult> AddClaimToRole([FromBody]AddClaimToRole.Command data)
+        public async Task<ActionResult> AddClaimToRole(AddClaimToRole.Command data)
         {
             var result = await Mediator.Send(data);
 
@@ -80,7 +81,7 @@ namespace rbkApiModules.Authentication
         /// </summary>
         [RbkAuthorize(Claim = AuthenticationClaims.MANAGE_ROLES)]
         [HttpPost("role/remove-claim")]
-        public async Task<ActionResult> RemoveClaimFromRole([FromBody] RemoveClaimFromRole.Command data)
+        public async Task<ActionResult> RemoveClaimFromRole(RemoveClaimFromRole.Command data)
         {
             var result = await Mediator.Send(data);
 
@@ -92,7 +93,7 @@ namespace rbkApiModules.Authentication
         /// </summary>
         [RbkAuthorize(Claim = AuthenticationClaims.MANAGE_USER_ROLES)]
         [HttpPost("user/add-role")]
-        public async Task<ActionResult> AddRoleToUser([FromBody] AddRoleToUser.Command data)
+        public async Task<ActionResult> AddRoleToUser(AddRoleToUser.Command data)
         {
             var result = await Mediator.Send(data);
 
@@ -104,7 +105,7 @@ namespace rbkApiModules.Authentication
         /// </summary>
         [RbkAuthorize(Claim = AuthenticationClaims.MANAGE_USER_ROLES)]
         [HttpPost("user/remove-role")]
-        public async Task<ActionResult> RemoveRoleFromUser([FromBody] RemoveRoleFromUser.Command data)
+        public async Task<ActionResult> RemoveRoleFromUser(RemoveRoleFromUser.Command data)
         {
             var result = await Mediator.Send(data);
 
@@ -116,7 +117,7 @@ namespace rbkApiModules.Authentication
         /// </summary>
         [RbkAuthorize(Claim = AuthenticationClaims.OVERRIDE_USER_CLAIMS)]
         [HttpPost("user/add-claim")]
-        public async Task<ActionResult> AddClaimToUser([FromBody]AddClaimToUser.Command data)
+        public async Task<ActionResult> AddClaimToUser(AddClaimToUser.Command data)
         {
             var result = await Mediator.Send(data);
 
@@ -128,7 +129,7 @@ namespace rbkApiModules.Authentication
         /// </summary>
         [RbkAuthorize(Claim = AuthenticationClaims.OVERRIDE_USER_CLAIMS)]
         [HttpPost("user/remove-claim")]
-        public async Task<ActionResult> RemoveClaimFromUser([FromBody]RemoveClaimFromUser.Command data)
+        public async Task<ActionResult> RemoveClaimFromUser(RemoveClaimFromUser.Command data)
         {
             var result = await Mediator.Send(data);
 

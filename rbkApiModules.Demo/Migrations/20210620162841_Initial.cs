@@ -147,12 +147,16 @@ namespace rbkApiModules.Demo.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Username = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", maxLength: 4096, nullable: false),
                     RefreshToken = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: true),
-                    AuthenticationGroup = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false),
+                    AuthenticationGroup = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: true),
                     DisplayName = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: true),
                     Avatar = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: true),
                     IsConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    ActivationCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PasswordRedefineCode_CreationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    PasswordRedefineCode_Hash = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RefreshTokenValidity = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsBlocked = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -636,7 +640,8 @@ namespace rbkApiModules.Demo.Migrations
                 name: "IX_Users_Username_AuthenticationGroup",
                 table: "Users",
                 columns: new[] { "Username", "AuthenticationGroup" },
-                unique: true);
+                unique: true,
+                filter: "[AuthenticationGroup] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UsersToClaims_UserId",

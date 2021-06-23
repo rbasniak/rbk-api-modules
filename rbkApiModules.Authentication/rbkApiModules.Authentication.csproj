@@ -5,7 +5,7 @@
     <IsPackable>true</IsPackable>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <Version>2.9.7</Version>
+    <Version>2.9.9</Version>
     <Authors>rbasniak</Authors>
     <Product>rbkApiModules</Product>
     <Copyright>rbasniak</Copyright>
@@ -19,11 +19,15 @@
     <None Remove="Resources\email-confirmed.txt" />
     <None Remove="Resources\email-reset.html" />
     <None Remove="Resources\email-reset.txt" />
+    <None Remove="Resources\reset-confirmed.html" />
+    <None Remove="Resources\reset-confirmed.txt" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Resources\email-confirmation.html" />
     <EmbeddedResource Include="Resources\email-confirmation.txt" />
+    <EmbeddedResource Include="Resources\reset-confirmed.txt" />
+    <EmbeddedResource Include="Resources\reset-confirmed.html" />
     <EmbeddedResource Include="Resources\email-confirmed.html" />
     <EmbeddedResource Include="Resources\email-confirmed.txt" />
     <EmbeddedResource Include="Resources\email-reset.html" />

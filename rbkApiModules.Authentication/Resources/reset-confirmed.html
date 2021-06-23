@@ -41,17 +41,16 @@
                                     Olá, {{name}}
                                 </h1>
                                 <p style="font-family:opensans-regular,arial,helvetica,clean,sans-serif;margin:8px 0 24px 0">
-                                    Muito obrigado por se registrar. É necessário confirmar seu e-mail para continuar tento acesso aos nossos serviços.
-                                    Caso o e-mail não seja confirmado, você poderá ter seu acesso limitado.
-                                    Para confirmar seu e-mail, clique no botão abaixo:
+                                    Sua senha foi redefinida com sucesso!
+                                    Se desejar, clique no botão abaixo para acessar os detalhes da sua conta:
                                 </p>
                                 <p style="font-family:opensans-regular,arial,helvetica,clean,sans-serif;margin:0">
-                                    <a href="{{activationLink}}" title="Clique aqui para confirmar seu email" style="color:{{fontColor}};text-decoration:none;background-color:{{mainColor}};display:inline-block;border-radius:3px;font-size:12px;width:191px;height:36px;line-height:36px;font-weight:bold;font-family:proximanova-bold-limited,helvetica,arial,sans-serif" target="_blank">CONFIRMAR CONTA</a>
+                                    <a href="{{profileUrl}}" title="Clique aqui para acessar seu perfil" style="color:{{fontColor}};text-decoration:none;background-color:{{mainColor}};display:inline-block;border-radius:3px;font-size:12px;width:191px;height:36px;line-height:36px;font-weight:bold;font-family:proximanova-bold-limited,helvetica,arial,sans-serif" target="_blank">ACESSAR PERFIL</a>
                                 </p>
                                 <p style="font-family:opensans-regular,arial,helvetica,clean,sans-serif;font-size:12px;margin:56px 0 0">
                                     Se tiver problemas para acessar, copie e cole o endereço abaixo em outra janela do seu navegador:
                                     <br />
-                                    <a href="{{activationLink}}" title="Clique aqui para confirmar seu email" style="text-decoration:none;font-size:10px;color:{{mainColor}};font-weight:bold" target="_blank">{{activationLink}}</a>
+                                    <a href="{{profileUrl}}" title="Clique aqui para acessar seu perfil" style="text-decoration:none;font-size:10px;color:{{mainColor}};font-weight:bold" target="_blank">{{profileUrl}}</a>
                                 </p>
                             </td>
                         </tr>
@@ -67,7 +66,8 @@
             <td width="30" style="border-collapse:collapse">&nbsp;</td>
             <td id="footer" valign="middle" align="center" height="46" style="border-top:1px solid #d8d8d8;border-collapse:collapse">
                 <p style="font-family:Open Sans,Helvetica,sans-serif;margin:1em 0;font-size:10px;color:#333333">
-                    Se você não realizou o cadastro, simplesmente ignore este e-mail.
+                    Se você não solicitou a redefinição da sua senha, entre imediatamente em contato conosco em:
+                    <a href="mailto:{{suportMail}}" title="Enviar e-mail para o suporte" style="text-decoration:none;font-size:10px;color:{{mainColor}};font-weight:bold" target="_blank">{{suportMail}}</a>
                 </p>
             </td>
             <td width="54" style="border-collapse:collapse">&nbsp;</td>

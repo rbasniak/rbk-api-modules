@@ -61,6 +61,7 @@ namespace rbkApiModules.Authentication
             _authenticationMailConfiguration.MainColor = mailConfig.MainColor;
             _authenticationMailConfiguration.FontColor = mailConfig.FontColor;
             _authenticationMailConfiguration.B64Logo = mailConfig.B64Logo;
+            _authenticationMailConfiguration.SuportEmail = mailConfig.SuportEmail;
             _authenticationMailConfiguration.AccountDetailsUrl = mailConfig.AccountDetailsUrl;
             _authenticationMailConfiguration.PasswordResetUrl = mailConfig.PasswordResetUrl;
             _authenticationMailConfiguration.ConfirmationSuccessUrl = mailConfig.ConfirmationSuccessUrl;
@@ -81,6 +82,7 @@ namespace rbkApiModules.Authentication
         public string MainColor { get; set; }
         public string FontColor { get; set; }
         public string B64Logo { get; set; }
+        public string SuportEmail { get; set; }
         public string AccountDetailsUrl { get; set; }
         public string PasswordResetUrl { get; set; }
         public string ConfirmationSuccessUrl { get; set; }

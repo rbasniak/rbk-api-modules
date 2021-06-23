@@ -52,8 +52,11 @@ namespace rbkApiModules.Authentication
 
         public class Handler : BaseCommandHandler<Command, DbContext>
         {
-            public Handler(DbContext context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
+            private readonly IAuthenticationMailService _mailingService;
+
+            public Handler(DbContext context, IHttpContextAccessor httpContextAccessor, IAuthenticationMailService mailingService) : base(context, httpContextAccessor)
             {
+                _mailingService = mailingService;
             }
 
             protected override async Task<(Guid? entityId, object result)> ExecuteAsync(Command request)
@@ -65,6 +68,8 @@ namespace rbkApiModules.Authentication
                 user.UsePasswordRedefineCode();
 
                 await _context.SaveChangesAsync();
+
+                _mailingService.SendPasswordResetSuccessMail(user.DisplayName, user.Email);
 
                 return (null, null);
             }
