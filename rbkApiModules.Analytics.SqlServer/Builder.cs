@@ -55,13 +55,6 @@ namespace rbkApiModules.Analytics.SqlServer
                 }
             }
 
-            app.UseFileServer(new FileServerOptions
-            {
-                RequestPath = "/analytics",
-                FileProvider = new ManifestEmbeddedFileProvider(
-                    assembly: Assembly.GetAssembly(typeof(AnalyticsEntry)), "UI/dist")
-            });
-
             return app;
         }
     }

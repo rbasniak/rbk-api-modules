@@ -1,0 +1,14 @@
+/*
+@mixin setNewTagMessage($child: ".theChild", $background: "#fff8e1", $text: "#fb8c00", $border: $text, $icon: $text) {
+
+  .p-inline-message.p-inline-message-#{$child} {
+    background: $background;
+    border: solid $border;
+    border-width: 0px;
+    color: $text;
+  }
+  .p-inline-message.p-inline-message-#{$child} .p-inline-message-icon {
+    color: $icon;
+  }
+}
+*/

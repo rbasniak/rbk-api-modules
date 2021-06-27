@@ -19,7 +19,6 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using rbkApiModules.Analytics.Core;
 using rbkApiModules.Analytics.SqlServer;
 using rbkApiModules.Auditing.UI;
-using rbkApiModules.SharedUI;
 using rbkApiModules.Diagnostics.SqlServer;
 using rbkApiModules.Diagnostics.UI;
 using rbkApiModules.Diagnostics.Core;
@@ -31,6 +30,7 @@ using rbkApiModules.Workflow;
 using rbkApiModules.Demo.Models.StateMachine;
 using rbkApiModules.Payment.SqlServer;
 using rbkApiModules.Paypal.SqlServer;
+using rbkApiModules.SharedUI;
 
 namespace rbkApiModules.Demo
 {
@@ -154,6 +154,10 @@ namespace rbkApiModules.Demo
                 .UseDefaultClaimDescriptions()
                 .AddAuthenticationGroup("manager")
                 .AddAuthenticationGroup("client"));
+
+            app.UseSharedUI(options => options
+                .UseAnalytics()
+                .UseDiagnostics());
         }
     }
 }

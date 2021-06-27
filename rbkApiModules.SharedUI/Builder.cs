@@ -1,70 +1,35 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using System;
-using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Reflection;
 
 namespace rbkApiModules.SharedUI
 {
+    [ExcludeFromCodeCoverage]
     public static class Builder
     {
-        public static void AddRbkSharedUIModule(this IServiceCollection services, Assembly[] blazorRoutingAssemblies, RbkSharedUIModuleOptions options)
+        //public static void AddSqlServerRbkApiAnalyticsModule(this IServiceCollection services)
+        //{
+
+        //}
+
+        public static IApplicationBuilder UseSharedUI(this IApplicationBuilder app, Action<SharedUIModuleOptions> configureOptions)
         {
-            var routeLocator = new BlazorRoutesLocator(blazorRoutingAssemblies);
+            var options = new SharedUIModuleOptions();
+            configureOptions(options);
 
-            options.BaseHref = !String.IsNullOrEmpty(options.BaseHref) ?  "/" + options.BaseHref.Trim('/') : "";
-
-            services.AddSingleton(routeLocator);
-
-            services
-                .AddScoped<IAuthenticationService, AuthenticationService>()
-                .AddScoped<ILocalStorageService, LocalStorageService>();
-
-            if (options == null)
+            app.UseFileServer(new FileServerOptions
             {
-                options = new RbkSharedUIModuleOptions();
-            }
+                RequestPath = "/shared-ui",
+                FileProvider = new ManifestEmbeddedFileProvider(
+                assembly: Assembly.GetAssembly(typeof(Builder)), "UI/dist")
+            });
 
-            services.AddSingleton(options);
-        } 
-    }
-     
-
-    public class RbkSharedUIModuleOptions
-    {
-        public RbkSharedUIModuleOptions()
-        {
-            CustomRoutes = new List<RouteDefinition>();
+            return app;
         }
-
-        public bool UseDiagnosticsRoutes { get; set; }
-        public bool UseAnalyticsRoutes { get; set; }
-        public bool UseAuditingRoutes { get; set; }
-        public List<RouteDefinition> CustomRoutes { get; set; }
-        public string BaseHref { get; set; }
-
-        public string FormatUrl(string url)
-        {
-            if(string.IsNullOrEmpty(BaseHref))
-            {
-                return "/" + url.Trim('/');
-            }
-            else
-            {
-                return BaseHref + "/" + url.Trim('/');
-            }
-        }
-    }
-
-    public class RouteDefinition
-    {
-        public RouteDefinition(string url, string name)
-        {
-            Url = url;
-            Name = name;
-        }
-        public string Url { get; set; }
-        public string Name { get; set; }
     }
 }
