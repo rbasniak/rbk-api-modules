@@ -1,6 +1,7 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { UntilDestroy } from '@ngneat/until-destroy';
-import { AnalyticsService } from '@services/api/analytics.service';
+import { map } from 'rxjs/operators';
 
 @UntilDestroy()
 @Component({
@@ -9,16 +10,13 @@ import { AnalyticsService } from '@services/api/analytics.service';
   styleUrls: ['home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  constructor(private service: AnalyticsService) {
+  public text = 'Loading file contents...';
 
+  constructor(private http: HttpClient) {
+    this.http.get('https://raw.githubusercontent.com/rbasniak/rbk-api-modules/master/README.md', {responseType: 'text'}).pipe(
+      map(x => this.text = x)
+    ).subscribe();
   }
   public ngOnInit(): void {
-  }
-
-  public test(): void {
-    // this.service.test().subscribe(x => {
-    //   console.log(x);
-    //   this.items = x;
-    // });
   }
 }

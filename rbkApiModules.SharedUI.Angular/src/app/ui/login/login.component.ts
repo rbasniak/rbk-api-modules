@@ -3,10 +3,12 @@ import { SmzControlType, SmzForm, SmzFormsResponse, SmzPasswordControl, SmzTextC
 import { SmzAppLogo } from 'ngx-smz-ui';
 import { AuthenticationActions } from 'ngx-rbk-utils';
 import { SmzLayoutsConfig } from 'ngx-smz-ui';
-import { Select, Store } from '@ngxs/store';
+import { Actions, ofActionSuccessful, Select, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { UiSelectors } from 'ngx-smz-ui';
 import { environment } from '@environments/environment';
+import { map } from 'lodash-es';
+import { tap } from 'rxjs/operators';
 
 interface LoginData {
   username: string;
@@ -25,7 +27,7 @@ export class LoginComponent implements OnInit {
   public isLoading = false;
   public isProduction = environment.production;
 
-  constructor(public readonly config: SmzLayoutsConfig, private store: Store) {
+  constructor(public readonly config: SmzLayoutsConfig, private store: Store, private actions$: Actions) {
     this.createForm();
   }
 
@@ -35,13 +37,13 @@ export class LoginComponent implements OnInit {
 
   public createForm(): void {
     const username: SmzTextControl = {
-      propertyName: 'username', type: SmzControlType.TEXT, name: 'Usuário',
+      propertyName: 'username', type: SmzControlType.TEXT, name: 'Username',
       validatorsPreset: { isRequired: true },
       template: { extraSmall: { row: 'col-12' } }
     };
 
     const password: SmzPasswordControl = {
-      propertyName: 'password', type: SmzControlType.PASSWORD, name: 'Senha',
+      propertyName: 'password', type: SmzControlType.PASSWORD, name: 'Password',
       validatorsPreset: { isRequired: true },
       template: { extraSmall: { row: 'col-12' } }
     };
@@ -66,7 +68,9 @@ export class LoginComponent implements OnInit {
       this.isLoading = true;
 
       // this.store.dispatch(new AuthenticationActions.RemoteLogin(form.data.username, form.data.password));
-      setTimeout(() => { this.store.dispatch(new AuthenticationActions.RemoteLogin(form.data.username, form.data.password)); }, 500);
+      setTimeout(() => {
+        this.store.dispatch(new AuthenticationActions.RemoteLogin(form.data.username, form.data.password));
+      }, 500);
 
     }
 
@@ -74,7 +78,5 @@ export class LoginComponent implements OnInit {
 
   public forgotPassword(): void {
     throw new Error('Not Implemented');
-
   }
-
 }

@@ -3,8 +3,8 @@ import { Routes, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HomeComponent } from './home.component';
 import { SmzRouteData } from 'ngx-smz-ui';
-import { RbkAuthGuard } from 'ngx-rbk-utils';
 import { ButtonModule } from 'primeng/button';
+import { MarkdownPipe } from './components/markdown.pipe';
 
 const data: SmzRouteData = {
   layout: {
@@ -38,7 +38,8 @@ const routes: Routes = [
   ],
   exports: [],
   declarations: [
-    HomeComponent
+    HomeComponent,
+    MarkdownPipe
   ],
   providers: [
 

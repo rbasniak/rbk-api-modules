@@ -5,9 +5,8 @@ import { NgxSmzTablesModule, SmzChartModule, SmzRouteData } from 'ngx-smz-ui';
 import { RbkDatabaseStateGuard } from 'ngx-rbk-utils';
 import { NgxSmzFormsModule } from 'ngx-smz-dialogs';
 import { ButtonModule } from 'primeng/button';
-import { UI_DEFINITIONS_STATE_NAME } from 'ngx-rbk-utils';
 import { SearchPageComponent } from './page/search-page.component';
-import { FILTERING_OPTIONS_STATE_NAME } from '@state/database/filtering-options/filtering-options.state';
+import { FILTERING_OPTIONS_STATE_NAME } from '@state/database/analytics/filtering-options/filtering-options.state';
 import { PanelModule } from 'primeng/panel';
 import { CardModule } from 'primeng/card';
 
@@ -19,7 +18,7 @@ const data: SmzRouteData = {
   title: 'Search',
   appArea: 'search',
   clearReusableRoutes: true,
-  requiredStates: [ FILTERING_OPTIONS_STATE_NAME, UI_DEFINITIONS_STATE_NAME ]
+  requiredStates: [ FILTERING_OPTIONS_STATE_NAME ]
 };
 
 const routes: Routes = [

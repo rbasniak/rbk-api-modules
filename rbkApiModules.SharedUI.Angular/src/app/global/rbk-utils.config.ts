@@ -1,8 +1,10 @@
 import { environment } from '@environments/environment';
-import { FilteringOptionsActions } from '@state/database/filtering-options/filtering-options.actions';
-import { FilteringOptionsState, FILTERING_OPTIONS_STATE_NAME } from '@state/database/filtering-options/filtering-options.state';
-import { DashboardFeatureState, DASHBOARD_FEATURE_STATE_NAME } from '@state/features/dashboard/dashboard.state';
-import { SearchFeatureState, SEARCH_FEATURE_STATE_NAME } from '@state/features/search/search.state';
+import { FilteringOptionsActions } from '@state/database/analytics/filtering-options/filtering-options.actions';
+import { FilteringOptionsState, FILTERING_OPTIONS_STATE_NAME } from '@state/database/analytics/filtering-options/filtering-options.state';
+import { MenuActions } from '@state/database/menu/menu.actions';
+import { MenuState, MENU_STATE_NAME } from '@state/database/menu/menu.state';
+import { DashboardFeatureState, DASHBOARD_FEATURE_STATE_NAME } from '@state/features/analytics/dashboard/dashboard.state';
+import { SearchFeatureState, SEARCH_FEATURE_STATE_NAME } from '@state/features/analytics/search/search.state';
 import { NgxRbkUtilsConfig } from 'ngx-rbk-utils';
 import { ERROR_PAGE_PATH, HOME_PATH, LOGIN_PATH } from 'src/routes';
 
@@ -23,10 +25,10 @@ export const rbkConfig: NgxRbkUtilsConfig = {
     error: `/${ERROR_PAGE_PATH}`
   },
   diagnostics: {
-    url: `${environment.serverUrl}/api/diagnostics`,
+    url: null,
   },
   uiDefinitions: {
-    url: `${environment.serverUrl}/api/ui-definitions`,
+    url: null,
     httpBehavior: {
       authentication: false,
       compression: true,
@@ -38,13 +40,13 @@ export const rbkConfig: NgxRbkUtilsConfig = {
   authentication: {
     localStoragePrefix: 'RBK',
     login: {
-      url: `${environment.serverUrl}/api/auth/login`,
+      url: environment.production ? `${window.location.origin}/api/shared-ui/auth` : `${environment.serverUrl}/api/shared-ui/auth`,
       errorHandlingType: 'toast',
       responsePropertyName: 'accessToken',
       loadingBehavior: 'global',
     },
     refreshToken: {
-      url: `${environment.serverUrl}/api/auth/refresh-token`,
+      url: environment.production ? `${window.location.origin}/api/shared-ui/refresh-token` : `${environment.serverUrl}/api/shared-ui/refresh-token`,
       errorHandlingType: 'toast',
       responsePropertyName: 'refreshToken',
       loadingBehavior: 'global',
@@ -58,6 +60,12 @@ export const rbkConfig: NgxRbkUtilsConfig = {
         state: FilteringOptionsState,
         cacheTimeout: 999,
         loadAction: FilteringOptionsActions.LoadAll,
+        clearFunction: (): any => ({ data: null, lastUpdated: null })
+      },
+      [MENU_STATE_NAME]: {
+        state: MenuState,
+        cacheTimeout: 999,
+        loadAction: MenuActions.LoadAll,
         clearFunction: (): any => ({ data: null, lastUpdated: null })
       }
     },

@@ -26,7 +26,7 @@ export const smzLayoutsConfig: SmzLayoutsConfig = {
     },
     vertical: {
       dark: 'assets/layout/images/vertical-dark.svg',
-      light: 'assets/layout/images/vertical-light.svg'
+      light: 'assets/layout/images/horizontal-light.svg'
     },
     typo: {
       dark: 'assets/layout/images/typo-dark.svg',

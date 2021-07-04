@@ -8,7 +8,8 @@ import { LoginComponent } from './login.component';
 
 const data: SmzRouteData = {
   layout: {
-    mode: 'none'
+    mode: 'menu-only',
+    contentPadding: '0em',
   },
   title: 'Login',
   appArea: 'login',
@@ -36,4 +37,5 @@ export const routerModuleForChildLoginModule = RouterModule.forChild(routes);
   ],
   exports: []
 })
-export class LoginModule { }
+export class LoginModule {
+}

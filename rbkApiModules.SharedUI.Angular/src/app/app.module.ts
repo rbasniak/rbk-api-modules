@@ -18,6 +18,7 @@ import { CommonModule, registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
 import { ToastModule } from 'primeng/toast';
 import { HephaestusLayoutModule, NgxSmzLayoutsModule } from 'ngx-smz-ui';
+import { NgPipesModule } from 'ngx-pipes';
 
 registerLocaleData(localePt , 'pt-BR');
 
@@ -38,7 +39,8 @@ registerLocaleData(localePt , 'pt-BR');
     NgxsReduxDevtoolsPluginModule.forRoot(),
     NgxSmzLayoutsModule.forRoot(smzLayoutsConfig),
     HephaestusLayoutModule.forRoot(smzHephaestusConfig),
-    ToastModule
+    ToastModule,
+    NgPipesModule
   ],
   providers: [
     { provide: LOCALE_ID, useFactory: (): string => 'pt-BR' },

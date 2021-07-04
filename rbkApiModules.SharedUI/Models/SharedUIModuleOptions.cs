@@ -8,10 +8,11 @@ namespace rbkApiModules.SharedUI
 {
     public class SharedUIModuleOptions
     {
-        private bool _useAnalytics;
-        private bool _useDiagnostics;
+        internal static bool _useAnalytics;
+        internal static bool _useDiagnostics;
+        internal static List<CustomRoute> _customRoutes = new List<CustomRoute>();
 
-        public SharedUIModuleOptions()
+        internal SharedUIModuleOptions()
         {
         }
 
@@ -27,9 +28,11 @@ namespace rbkApiModules.SharedUI
             return this;
         }
 
-        public bool UsingAnalyticsModule => _useAnalytics;
+        public SharedUIModuleOptions AddCustomRoute(string route, string name, string icon)
+        {
+            _customRoutes.Add(new CustomRoute(route, name, icon));
 
-        public bool UsingDiagnosticsModule => _useDiagnostics;
-
+            return this;
+        }
     }
 }

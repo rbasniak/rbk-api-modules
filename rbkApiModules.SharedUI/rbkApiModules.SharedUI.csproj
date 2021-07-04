@@ -31,4 +31,8 @@
     <EmbeddedResource Include="UI\dist\**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\rbkApiModules.CodeGeneration.Commons\rbkApiModules.CodeGeneration.Commons.csproj" />
+  </ItemGroup>
+
 </Project>

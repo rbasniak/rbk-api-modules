@@ -62,7 +62,8 @@ namespace rbkApiModules.Demo
         {
             Assembly.GetAssembly(typeof(CreateUser.Command)),
             Assembly.GetAssembly(typeof(CommentEntity.Command)),
-            Assembly.GetAssembly(typeof(UserLogin.Command)),
+            Assembly.GetAssembly(typeof(RenewAccessToken.Command)),
+            Assembly.GetAssembly(typeof(SharedUIController)),
             Assembly.GetAssembly(typeof(GetUiDefinitions.Command)),
             Assembly.GetAssembly(typeof(FilterAnalyticsEntries.Command)),
             Assembly.GetAssembly(typeof(FilterDiagnosticsEntries.Command)),
@@ -110,6 +111,8 @@ namespace rbkApiModules.Demo
 
             services.AddRbkApiAuthenticationModule(Configuration.GetSection(nameof(JwtIssuerOptions)));
 
+            services.AddSharedUIModule(Configuration);
+
             services.AddRbkApiCommentsModule();
 
             services.AddScoped<IUserdataCommentService, UserdataCommentService>();
@@ -155,9 +158,10 @@ namespace rbkApiModules.Demo
                 .AddAuthenticationGroup("manager")
                 .AddAuthenticationGroup("client"));
 
-            app.UseSharedUI(options => options
+            app.UseSharedUIModule(options => options
                 .UseAnalytics()
-                .UseDiagnostics());
+                .UseDiagnostics()
+                .AddCustomRoute("/swagger/index.html", "Swagger", "fas fa-code"));
         }
     }
 }

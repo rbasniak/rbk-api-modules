@@ -12,12 +12,12 @@ namespace rbkApiModules.SharedUI
     [ExcludeFromCodeCoverage]
     public static class Builder
     {
-        //public static void AddSqlServerRbkApiAnalyticsModule(this IServiceCollection services)
-        //{
+        public static void AddSharedUIModule(this IServiceCollection services, IConfiguration Configuration)
+        {
+            services.Configure<RbkSharedUIAuthentication>(Configuration.GetSection(nameof(RbkSharedUIAuthentication)));
+        }
 
-        //}
-
-        public static IApplicationBuilder UseSharedUI(this IApplicationBuilder app, Action<SharedUIModuleOptions> configureOptions)
+        public static IApplicationBuilder UseSharedUIModule(this IApplicationBuilder app, Action<SharedUIModuleOptions> configureOptions)
         {
             var options = new SharedUIModuleOptions();
             configureOptions(options);

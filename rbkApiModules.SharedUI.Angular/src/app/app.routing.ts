@@ -1,34 +1,33 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { SearchModule } from '@features/search/search.module';
-import { RbkAuthGuard } from 'ngx-rbk-utils';
-import { DASHBOARD_PATH, HOME_PATH, SEARCH_PATH } from 'src/routes';
-import { DashboardModule } from './ui/features/dashboard/dashboard.module';
+import { SearchModule } from '@features/analytics/search/search.module';
+import { MENU_STATE_NAME } from '@state/database/menu/menu.state';
+import { RbkAuthGuard, RbkDatabaseStateGuard } from 'ngx-rbk-utils';
+import { DASHBOARD_PATH, HOME_PATH, LOGIN_PATH, SEARCH_PATH } from 'src/routes';
+import { DashboardModule } from './ui/features/analytics/dashboard/dashboard.module';
 import { HomeModule } from './ui/features/home/home.module';
 
 const routes: Routes = [
-  {
-    path: HOME_PATH,
-    loadChildren: (): Promise<HomeModule> => import('./ui/features/home/home.module').then(m => m.HomeModule)
-  },
-  // {
-  //   path: LOGIN_PAGE_PATH,
-  //   loadChildren: (): Promise<LoginModule> => import('./ui/pages/login/login.module').then(m => m.LoginModule)
-  // },
-  {
-    path: SEARCH_PATH,
-    // canActivate: [ RbkAuthGuard ],
-    loadChildren: (): Promise<SearchModule> => import('./ui/features/search/search.module').then(m => m.SearchModule)
-  },
-  {
-    path: DASHBOARD_PATH,
-    // canActivate: [ RbkAuthGuard ],
-    loadChildren: (): Promise<DashboardModule> => import('./ui/features/dashboard/dashboard.module').then(m => m.DashboardModule)
-  },
-  // {
-  //   path: ROUTE2_PATH,
-  //   loadChildren: (): Promise<Route2Module> => import('./ui/pages/route2/route2.module').then(m => m.Route2Module)
-  // },
+  { path: '', canActivate: [RbkDatabaseStateGuard], data: {requiredStates: [MENU_STATE_NAME]}, children: [
+    {
+      path: HOME_PATH,
+      loadChildren: (): Promise<HomeModule> => import('./ui/features/home/home.module').then(m => m.HomeModule)
+    },
+    {
+      path: SEARCH_PATH,
+      canActivate: [ RbkAuthGuard ],
+      loadChildren: (): Promise<SearchModule> => import('./ui/features/analytics/search/search.module').then(m => m.SearchModule)
+    },
+    {
+      path: DASHBOARD_PATH,
+      canActivate: [ RbkAuthGuard ],
+      loadChildren: (): Promise<DashboardModule> => import('./ui/features/analytics/dashboard/dashboard.module').then(m => m.DashboardModule)
+    },
+    {
+      path: LOGIN_PATH,
+      loadChildren: (): Promise<HomeModule> => import('./ui/login/login.module').then(m => m.LoginModule)
+    },
+  ]},
   {
     path: '',
     redirectTo: HOME_PATH,
