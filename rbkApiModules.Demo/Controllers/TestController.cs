@@ -43,5 +43,11 @@ namespace rbkApiModules.Demo.Controllers
         {
             return Ok("Autorizado");
         }
+
+        [HttpGet("test-normal")]
+        public ActionResult Test2()
+        {
+            return Ok("Autorizado");
+        }
     }
 }

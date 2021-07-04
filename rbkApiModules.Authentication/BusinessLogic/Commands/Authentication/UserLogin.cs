@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using rbkApiModules.Infrastructure.MediatR.Core;
+using System.Text.RegularExpressions;
 
 namespace rbkApiModules.Authentication
 {
@@ -132,6 +133,15 @@ namespace rbkApiModules.Authentication
                 }
 
                 _context.SaveChanges();
+
+                var username = user.Username;
+
+                var regex = new Regex("^[0-9]+$");
+
+                if (regex.Match(user.Username).Success && !String.IsNullOrEmpty(user.Email))
+                {
+                    username = user.Email;
+                }
 
                 var jwt = TokenGenerator.Generate(_jwtFactory, user.Username, claims, refreshToken);
 
