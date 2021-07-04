@@ -111,7 +111,7 @@ namespace rbkApiModules.Demo
 
             services.AddRbkApiAuthenticationModule(Configuration.GetSection(nameof(JwtIssuerOptions)));
 
-            services.AddSharedUIModule(Configuration);
+            services.AddRbkSharedUIModule(Configuration);
 
             services.AddRbkApiCommentsModule();
 
@@ -158,7 +158,7 @@ namespace rbkApiModules.Demo
                 .AddAuthenticationGroup("manager")
                 .AddAuthenticationGroup("client"));
 
-            app.UseSharedUIModule(options => options
+            app.UseRbkSharedUIModule(options => options
                 .UseAnalytics()
                 .UseDiagnostics()
                 .AddCustomRoute("/swagger/index.html", "Swagger", "fas fa-code"));

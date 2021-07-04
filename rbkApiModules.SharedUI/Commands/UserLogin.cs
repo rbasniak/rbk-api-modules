@@ -51,6 +51,11 @@ namespace rbkApiModules.SharedUI
 
             protected override async Task<object> ExecuteAsync(Command request)
             {
+                if (String.IsNullOrEmpty(_sharedUIAuthentication.Username))
+                {
+                    throw new SafeException("SharedUI credentials are not properly setup in the server");
+                }
+
                 if (_sharedUIAuthentication.Username.ToLower() != request.Username.ToLower() || _sharedUIAuthentication.Password != request.Password)
                 {
                     throw new SafeException("Invalid credentials");
