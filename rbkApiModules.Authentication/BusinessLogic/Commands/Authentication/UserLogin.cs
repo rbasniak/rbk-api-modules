@@ -143,7 +143,7 @@ namespace rbkApiModules.Authentication
                     username = user.Email;
                 }
 
-                var jwt = TokenGenerator.Generate(_jwtFactory, user.Username, claims, refreshToken);
+                var jwt = TokenGenerator.Generate(_jwtFactory, username, claims, refreshToken);
 
                 return (null, jwt);
             }
