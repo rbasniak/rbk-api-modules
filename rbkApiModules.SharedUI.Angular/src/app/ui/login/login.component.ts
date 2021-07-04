@@ -1,13 +1,12 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { SmzControlType, SmzForm, SmzFormsResponse, SmzPasswordControl, SmzTextControl } from 'ngx-smz-dialogs';
 import { SmzAppLogo } from 'ngx-smz-ui';
-import { AuthenticationActions } from 'ngx-rbk-utils';
+import { ApplicationSelectors, AuthenticationActions } from 'ngx-rbk-utils';
 import { SmzLayoutsConfig } from 'ngx-smz-ui';
-import { Actions, ofActionSuccessful, Select, Store } from '@ngxs/store';
+import { Actions, Select, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { UiSelectors } from 'ngx-smz-ui';
 import { environment } from '@environments/environment';
-import { map } from 'lodash-es';
 import { tap } from 'rxjs/operators';
 
 interface LoginData {
@@ -23,8 +22,8 @@ interface LoginData {
 })
 export class LoginComponent implements OnInit {
   @Select(UiSelectors.appContentLogo) public appLogo$: Observable<SmzAppLogo>;
+  @Select(ApplicationSelectors.isWaitingRequest('login')) public isLoading$: Observable<boolean>;
   public form: SmzForm<LoginData>;
-  public isLoading = false;
   public isProduction = environment.production;
 
   constructor(public readonly config: SmzLayoutsConfig, private store: Store, private actions$: Actions) {
@@ -32,7 +31,6 @@ export class LoginComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-
   }
 
   public createForm(): void {
@@ -65,8 +63,6 @@ export class LoginComponent implements OnInit {
   public login(form: SmzFormsResponse<LoginData>): void {
 
     if (form.isValid) {
-      this.isLoading = true;
-
       // this.store.dispatch(new AuthenticationActions.RemoteLogin(form.data.username, form.data.password));
       setTimeout(() => {
         this.store.dispatch(new AuthenticationActions.RemoteLogin(form.data.username, form.data.password));

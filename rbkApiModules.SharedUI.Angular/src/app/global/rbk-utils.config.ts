@@ -43,7 +43,7 @@ export const rbkConfig: NgxRbkUtilsConfig = {
       url: environment.production ? `${window.location.origin}/api/shared-ui/auth` : `${environment.serverUrl}/api/shared-ui/auth`,
       errorHandlingType: 'toast',
       responsePropertyName: 'accessToken',
-      loadingBehavior: 'global',
+      loadingBehavior: 'local',
     },
     refreshToken: {
       url: environment.production ? `${window.location.origin}/api/shared-ui/refresh-token` : `${environment.serverUrl}/api/shared-ui/refresh-token`,

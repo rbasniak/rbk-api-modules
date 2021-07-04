@@ -14,12 +14,12 @@ const routes: Routes = [
       loadChildren: (): Promise<HomeModule> => import('./ui/features/home/home.module').then(m => m.HomeModule)
     },
     {
-      path: SEARCH_PATH,
+      path: '',
       canActivate: [ RbkAuthGuard ],
       loadChildren: (): Promise<SearchModule> => import('./ui/features/analytics/search/search.module').then(m => m.SearchModule)
     },
     {
-      path: DASHBOARD_PATH,
+      path: '',
       canActivate: [ RbkAuthGuard ],
       loadChildren: (): Promise<DashboardModule> => import('./ui/features/analytics/dashboard/dashboard.module').then(m => m.DashboardModule)
     },

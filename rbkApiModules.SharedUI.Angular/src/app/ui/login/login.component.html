@@ -1,4 +1,4 @@
-<div class="login-page p-d-flex p-ai-center p-jc-center" [ngClass]="{ 'login-page-pulse': isLoading, 'login-page-dev': !isProduction }">
+<div class="login-page p-d-flex p-ai-center p-jc-center" [ngClass]="{ 'login-page-pulse': (isLoading$ | async), 'login-page-dev': !isProduction }">
   <div>
     <div class="p-d-flex p-ai-center p-align-center min-h-screen">
       <div class="login-card-container p-p-5">
@@ -16,7 +16,7 @@
 
             <!-- <span class="clickable hover:text-gray-600" (click)="forgotPassword()">Esqueci minha senha</span> -->
 
-            <button pButton [disabled]="!formComponent.isValid || isLoading" [icon]="isLoading ? 'fas fa-spinner fa-spin' : ''" type="button" label="LOGIN" (click)="login(formComponent.getData())"></button>
+            <button pButton [disabled]="!formComponent.isValid || (isLoading$ | async)" [icon]="(isLoading$ | async) ? 'fas fa-spinner fa-spin' : ''" type="button" label="LOGIN" (click)="login(formComponent.getData())"></button>
 
           </div>
 

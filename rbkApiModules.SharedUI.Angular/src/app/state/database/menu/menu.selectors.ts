@@ -64,6 +64,7 @@ export class MenuSelectors {
       items: [
         { label: 'Logout', icon: 'fas fa-sign-out-alt', command: (): void => {
           // TODO: como acessar a store aqui?
+          localStorage.clear();
           console.log('logout');
         } },
       ]

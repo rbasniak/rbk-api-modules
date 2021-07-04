@@ -8,6 +8,7 @@ import { PanelModule } from 'primeng/panel';
 import { CardModule } from 'primeng/card';
 import { DashboardPageComponent } from './page/dashboard-page.component';
 import { ToolbarModule } from 'primeng/toolbar';
+import { DASHBOARD_PATH } from 'src/routes';
 
 const data: SmzRouteData = {
   layout: {
@@ -24,7 +25,7 @@ const routes: Routes = [
     path: '',
     children: [
       {
-        path: '',
+        path: 'analytics/' + DASHBOARD_PATH,
         component: DashboardPageComponent,
         data
       },

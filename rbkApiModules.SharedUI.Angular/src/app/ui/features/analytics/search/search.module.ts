@@ -9,6 +9,7 @@ import { SearchPageComponent } from './page/search-page.component';
 import { FILTERING_OPTIONS_STATE_NAME } from '@state/database/analytics/filtering-options/filtering-options.state';
 import { PanelModule } from 'primeng/panel';
 import { CardModule } from 'primeng/card';
+import { SEARCH_PATH } from 'src/routes';
 
 const data: SmzRouteData = {
   layout: {
@@ -26,7 +27,7 @@ const routes: Routes = [
     path: '',
     children: [
       {
-        path: '',
+        path: 'analytics/' + SEARCH_PATH,
         canActivate: [ RbkDatabaseStateGuard ],
         component: SearchPageComponent,
         data
