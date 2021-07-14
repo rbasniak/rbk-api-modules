@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Filters;
 using rbkApiModules.Analytics.Core;
 using rbkApiModules.Analytics.SqlServer;
-using rbkApiModules.Auditing.UI;
 using rbkApiModules.Diagnostics.SqlServer;
 using rbkApiModules.Diagnostics.Core;
 using rbkApiModules.Demo.Models;
