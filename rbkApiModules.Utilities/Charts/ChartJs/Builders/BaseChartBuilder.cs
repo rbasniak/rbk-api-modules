@@ -27,6 +27,8 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
             Builder.Config.Interaction.SetIntersectMode(IntersectMode.Nearest);
         }
 
+        public abstract bool HasData { get; }
+
         public virtual TFactory OfType(ChartType type)
         {
             if (this is RadialChart && 
@@ -146,7 +148,10 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
         {
             if (Builder is LinearChart linearChart)
             {
-                linearChart.Data.Labels = linearChart.Data.Datasets.First().Data.Select(x => x.X).ToList();
+                if (linearChart.Data.Datasets.Count > 0)
+                {
+                    linearChart.Data.Labels = linearChart.Data.Datasets.First().Data.Select(x => x.X).ToList();
+                }
             }
 
             var serializedWithoutNulls = JsonConvert.SerializeObject(Builder, Formatting.Indented, new JsonSerializerSettings 

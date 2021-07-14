@@ -24,6 +24,11 @@ namespace rbkApiModules.Diagnostics.SqlServer
             _context.SaveChanges();
         }
 
+        public async Task<List<DiagnosticsEntry>> FilterAsync(DateTime from, DateTime to)
+        {
+            return await FilterAsync(from, to, null, null, null, null, null, null, null, null, null, null, null, null);
+        }
+
         public async Task<List<DiagnosticsEntry>> FilterAsync(DateTime from, DateTime to, string[] versions, string[] areas, 
             string[] layers, string[] domains, string[] sources, string[] users, string[] browsers, string[] agents, 
             string[] operatinSystems, string[] devices, string[] messages, string requestId)

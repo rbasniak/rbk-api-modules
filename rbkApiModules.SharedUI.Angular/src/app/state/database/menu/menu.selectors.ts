@@ -2,7 +2,9 @@ import { environment } from '@environments/environment';
 import { Selector } from '@ngxs/store';
 import { cloneDeep } from 'lodash-es';
 import { MenuItem } from 'primeng/api';
-import { DASHBOARD_PAGE_ROUTE, HOME_PAGE_ROUTE, SEARCH_PAGE_ROUTE } from 'src/routes';
+import { ANALYTICS_DASHBOARD_PAGE_ROUTE, ANALYTICS_SEARCH_PAGE_ROUTE, DIAGNOSTICS_SEARCH_PAGE_ROUTE,
+  DIAGNOSTICS_DASHBOARD_PAGE_ROUTE, ANALYTICS_PERFORMANCE_PAGE_ROUTE, ANALYTICS_ADMIN_PAGE_ROUTE,
+  DIAGNOSTICS_ADMIN_PAGE_ROUTE } from 'src/routes';
 import { MenuState, MenuStateModel } from './menu.state';
 
 export class MenuSelectors {
@@ -15,9 +17,10 @@ export class MenuSelectors {
         label: 'Statistics',
         icon: 'far fa-list-alt',
         items: [
-          { label: 'Search', icon: 'fas fa-search', routerLink: SEARCH_PAGE_ROUTE },
-          { label: 'Dashboard', icon: 'fas fa-chart-line', routerLink: DASHBOARD_PAGE_ROUTE },
-          { label: 'Performance', icon: 'fas fa-tachometer-alt', routerLink: [] },
+          { label: 'Search', icon: 'fas fa-search', routerLink: ANALYTICS_SEARCH_PAGE_ROUTE },
+          { label: 'Dashboard', icon: 'fas fa-chart-line', routerLink: ANALYTICS_DASHBOARD_PAGE_ROUTE },
+          { label: 'Performance', icon: 'fas fa-tachometer-alt', routerLink: ANALYTICS_PERFORMANCE_PAGE_ROUTE },
+          { label: 'Admin', icon: 'fas fa-user-shield', routerLink: ANALYTICS_ADMIN_PAGE_ROUTE },
         ]
       });
     }
@@ -27,8 +30,9 @@ export class MenuSelectors {
         label: 'Diagnostics',
         icon: 'far fa-list-alt',
         items: [
-          { label: 'Trace', icon: 'fas fa-search', routerLink: SEARCH_PAGE_ROUTE },
-          { label: 'Dashboard', icon: 'fas fa-chart-line', routerLink: DASHBOARD_PAGE_ROUTE },
+          { label: 'Search', icon: 'fas fa-bug', routerLink: DIAGNOSTICS_SEARCH_PAGE_ROUTE },
+          { label: 'Dashboard', icon: 'fas fa-chart-line', routerLink: DIAGNOSTICS_DASHBOARD_PAGE_ROUTE },
+          { label: 'Admin', icon: 'fas fa-user-shield', routerLink: DIAGNOSTICS_ADMIN_PAGE_ROUTE },
         ]
       });
     }

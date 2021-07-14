@@ -1,4 +1,4 @@
-import { FilterData } from '@models/filter-data';
+import { FilterData } from '@models/analytics/filter-data';
 
 export namespace SearchFeatureActions {
   export class Search {

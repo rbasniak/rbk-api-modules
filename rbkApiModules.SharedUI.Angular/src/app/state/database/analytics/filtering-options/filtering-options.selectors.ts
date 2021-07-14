@@ -1,4 +1,4 @@
-import { FilteringOptions } from '@models/filtering-options';
+import { FilteringOptions } from '@models/analytics/filtering-options';
 import { Selector } from '@ngxs/store';
 import { cloneDeep } from 'lodash-es';
 import { SimpleNamedEntity } from 'ngx-smz-dialogs';
@@ -37,7 +37,7 @@ export class FilteringOptionsSelectors {
   public static endpoints(state: FilteringOptionsStateModel): SimpleNamedEntity[] {
     if (state.lastUpdated == null) return this.noDataOptions;
 
-    return state.data.actions.map(x => ({ id: x, name: x === '' || x == null ? 'Without domain' : x }));
+    return state.data.actions.map(x => ({ id: x, name: x === '' || x == null ? 'Without endpoint' : x }));
   }
 
   @Selector([FilteringOptionsState])

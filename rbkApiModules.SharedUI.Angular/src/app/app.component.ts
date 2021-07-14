@@ -5,7 +5,7 @@ import { BoilerplateService } from 'ngx-rbk-utils';
 import { ThemeManagerService } from 'ngx-smz-ui';
 import { MenuItem, PrimeNGConfig } from 'primeng/api';
 import { Observable } from 'rxjs';
-import { DASHBOARD_PAGE_ROUTE, SEARCH_PAGE_ROUTE } from 'src/routes';
+import { ANALYTICS_DASHBOARD_PAGE_ROUTE, ANALYTICS_SEARCH_PAGE_ROUTE } from 'src/routes';
 
 @Component({
   selector: 'app-root',

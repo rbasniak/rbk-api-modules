@@ -1,4 +1,5 @@
-﻿using System;
+﻿using rbkApiModules.Infrastructure.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,76 +7,23 @@ using System.Threading.Tasks;
 
 namespace rbkApiModules.Utilities.Charts.ChartJs
 {
-    public class RadialChartBuilder : BaseChartBuilder<RadialChartBuilder, RadialChart>
+    public class RadialChartBuilder<T> : BaseChartBuilder<RadialChartBuilder<T>, RadialChart>
     {
-        public RadialChartBuilder(RadialChart chart) : base(chart)
-        {
+        internal IEnumerable<T> _originalData;
 
+        public RadialChartBuilder(IEnumerable<T> data) : base(new RadialChart())
+        {
+            _originalData = data; 
         }
 
-        public static RadialChartBuilder CreateRadialCategoryChart(List<NeutralCategoryPoint> data, bool appendExtraData)
+        public override bool HasData => Builder.Data.Datasets.SelectMany(x => x.Data).Any(x => x != 0);
+
+        public static RadialChartBuilder<T> CreateRadialCategoryChart(IEnumerable<T> data)
         {
-            return CreateRadialCategoryChart(data, Int32.MaxValue, String.Empty, appendExtraData);
+            return new RadialChartBuilder<T>(data);
         }
 
-        public static RadialChartBuilder CreateRadialCategoryChart(List<NeutralCategoryPoint> data, int maximumSeries, string mergedLabel, bool appendExtraData)
-        {
-            var chart = new RadialChart();
-
-            if (data.GroupBy(x => x.SerieId).Count() > 1) throw new NotSupportedException("Radial charts can have only one dataset");
-
-            var serie = new RadialDataset();
-            var groupedData = data.GroupBy(x => x.Category).OrderByDescending(x => x.Sum(v => v.Value)).ToList();
-
-            var untouchedData = new List<IGrouping<string, NeutralCategoryPoint>>();
-            var mergedData = new List<IGrouping<string, NeutralCategoryPoint>>();
-
-            if (groupedData.Count == maximumSeries)
-            {
-                maximumSeries = Int32.MaxValue;
-            }
-
-            for (int i = 0; i < maximumSeries - 1; i++)
-            {
-                if (i >= groupedData.Count) break;
-
-                untouchedData.Add(groupedData[i]);
-            }
-
-            for (int i = maximumSeries - 1; i < groupedData.Count; i++)
-            {
-                mergedData.Add(groupedData[i]);
-            }
-
-            foreach (var serieData in untouchedData)
-            {
-                serie.Data.Add(serieData.Sum(x => x.Value));
-                if (appendExtraData)
-                {
-                    serie.Extra.Add(serieData.SelectMany(x => x.Data).ToList());
-                }
-                chart.Data.Labels.Add(serieData.Key);
-            }
-
-            if (mergedData.Count > 0)
-            {
-                var allMergedData = mergedData.SelectMany(x => x);
-                serie.Data.Add(allMergedData.Sum(x => x.Value));
-
-                if (appendExtraData)
-                {
-                    serie.Extra.Add(allMergedData.SelectMany(x => x.Data).ToList());
-                }
-
-                chart.Data.Labels.Add(mergedLabel);
-            }
-
-            chart.Data.Datasets.Add(serie);
-
-            return new RadialChartBuilder(chart);
-        }
-
-        public RadialChartBuilder SetValuesRounding(int decimals)
+        public RadialChartBuilder<T> SetValuesRounding(int decimals)
         {
             var dataset = Builder.Data.Datasets.SingleOrDefault();
 
@@ -89,17 +37,17 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
             return this;
         }
 
-        public RadialChartBuilder Theme(params ColorPallete[] palletes)
+        public RadialChartBuilder<T> Theme(params ColorPallete[] palletes)
         {
             return Colors(ChartCollorSelector.GetColors(palletes), "ff");
         }
 
-        public RadialChartBuilder Theme(string backgroundTransparency, params ColorPallete[] palletes)
+        public RadialChartBuilder<T> Theme(string backgroundTransparency, params ColorPallete[] palletes)
         {
             return Colors(ChartCollorSelector.GetColors(palletes), backgroundTransparency);
         }
 
-        public RadialChartBuilder Colors(string[] colors, string backgroundTransparency = "ff")
+        public RadialChartBuilder<T> Colors(string[] colors, string backgroundTransparency = "ff")
         {
             if (colors == null || colors.Length == 0) throw new ArgumentException("You ness to speficify at least one color");
 
@@ -121,7 +69,7 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
             return this;
         }
 
-        public RadialChartBuilder RoundToNearestStorageUnit()
+        public RadialChartBuilder<T> RoundToNearestStorageUnit()
         { 
             var dataset = Builder.Data.Datasets.First();
 
@@ -161,6 +109,149 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
             {
                 Builder.Config.Plugins.Title.Text += $" ({unit})";
             }
+
+            return this;
+        }
+
+        public RadialDataBuilder<T> PreparaData()
+        {
+            return new RadialDataBuilder<T>(this);
+        }
+    }
+
+    public class RadialDataBuilder<T>
+    {
+        private RadialChartBuilder<T> _radialChartBuilder;
+        private Func<T, string> _seriesSelector;
+        private Func<T, object> _converter;
+        private bool _appendExtraData;
+        private int? _decimalPlaces;
+        private int _maximumSeries = Int32.MaxValue;
+        private string _mergeLabel;
+        private string _lastCall;
+        private int? _topX;
+
+        public RadialChartBuilder<T> Chart
+        {
+            get
+            {
+                if (_lastCall != nameof(ValueFrom)) throw new SafeException($"Last method called must be {nameof(ValueFrom)}");
+
+                return _radialChartBuilder;
+            }
+        }
+
+        public RadialDataBuilder(RadialChartBuilder<T> radialChartBuilder)
+        {
+            _radialChartBuilder = radialChartBuilder;
+        }
+
+        public RadialDataBuilder<T> AppendExtraData(Func<T, object> converter = null)
+        {
+            _appendExtraData = true;
+
+            if (converter == null)
+            {
+                _converter = x => (object)x;
+            }
+            else
+            {
+                _converter = converter;
+            }
+            return this;
+        }
+
+        public RadialDataBuilder<T> SeriesFrom(Func<T, string> seriesSelector)
+        {
+            _seriesSelector = seriesSelector;
+
+            return this;
+        }
+
+        public RadialDataBuilder<T> MaximumSeries(int value, string label)
+        {
+            _mergeLabel = label;
+            _maximumSeries = value;
+
+            return this;
+        }
+
+        public RadialDataBuilder<T> Take(int value)
+        {
+            _topX = value;
+
+            return this;
+        }
+
+        public RadialDataBuilder<T> ValueFrom(Func<IGrouping<string, T>, double> valueSelector)
+        {
+            _lastCall = nameof(ValueFrom);
+
+            var chart = new RadialChart();
+
+            var serie = new RadialDataset();
+            var groupedData = _radialChartBuilder._originalData.GroupBy(_seriesSelector).OrderByDescending(valueSelector).ToList();
+
+            var untouchedData = new List<IGrouping<string, T>>();
+            var mergedData = new List<IGrouping<string, T>>();
+
+            if (groupedData.Count == _maximumSeries)
+            {
+                _maximumSeries = Int32.MaxValue;
+            }
+
+            for (int i = 0; i < _maximumSeries - 1; i++)
+            {
+                if (i >= groupedData.Count) break;
+
+                untouchedData.Add(groupedData[i]);
+            }
+
+            for (int i = _maximumSeries - 1; i < groupedData.Count; i++)
+            {
+                mergedData.Add(groupedData[i]);
+            }
+
+            foreach (var serieData in untouchedData)
+            {
+                serie.Data.Add(valueSelector(serieData));
+                if (_appendExtraData)
+                {
+                    serie.Extra.Add(serieData.Select(x => _converter(x)).ToList());
+                }
+                chart.Data.Labels.Add(serieData.Key);
+            }
+
+            if (mergedData.Count > 0)
+            {
+                var allMergedData = mergedData.SelectMany(x => x).GroupBy(x => "default").First();
+                serie.Data.Add(valueSelector(allMergedData));
+
+                if (_appendExtraData)
+                {
+                    serie.Extra.Add(allMergedData.Select(x => x).Select(x => _converter(x)).ToList());
+                }
+
+                chart.Data.Labels.Add(_mergeLabel);
+            }
+
+            if (_topX != null)
+            {
+                serie.Data = serie.Data.Take(_topX.Value).ToList();
+                serie.Extra = serie.Extra.Take(_topX.Value).ToList();
+                chart.Data.Labels = chart.Data.Labels.Take(_topX.Value).ToList();
+            }
+
+            chart.Data.Datasets.Add(serie);
+
+            _radialChartBuilder.Builder.Data = chart.Data;
+
+            return this;
+        }
+
+        public RadialDataBuilder<T> RoundValues(int decimalPlaces)
+        {
+            _decimalPlaces = decimalPlaces;
 
             return this;
         }

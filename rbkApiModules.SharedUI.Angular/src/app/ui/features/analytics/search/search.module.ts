@@ -6,10 +6,10 @@ import { RbkDatabaseStateGuard } from 'ngx-rbk-utils';
 import { NgxSmzFormsModule } from 'ngx-smz-dialogs';
 import { ButtonModule } from 'primeng/button';
 import { SearchPageComponent } from './page/search-page.component';
-import { FILTERING_OPTIONS_STATE_NAME } from '@state/database/analytics/filtering-options/filtering-options.state';
+import { ANALYTICS_FILTERING_OPTIONS_STATE_NAME } from '@state/database/analytics/filtering-options/filtering-options.state';
 import { PanelModule } from 'primeng/panel';
 import { CardModule } from 'primeng/card';
-import { SEARCH_PATH } from 'src/routes';
+import { ANALYTICS_PATH, SEARCH_PATH } from 'src/routes';
 
 const data: SmzRouteData = {
   layout: {
@@ -19,7 +19,7 @@ const data: SmzRouteData = {
   title: 'Search',
   appArea: 'search',
   clearReusableRoutes: true,
-  requiredStates: [ FILTERING_OPTIONS_STATE_NAME ]
+  requiredStates: [ ANALYTICS_FILTERING_OPTIONS_STATE_NAME ]
 };
 
 const routes: Routes = [
@@ -27,7 +27,7 @@ const routes: Routes = [
     path: '',
     children: [
       {
-        path: 'analytics/' + SEARCH_PATH,
+        path: ANALYTICS_PATH + '/' + SEARCH_PATH,
         canActivate: [ RbkDatabaseStateGuard ],
         component: SearchPageComponent,
         data

@@ -3,10 +3,10 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/internal/Observable';
 import { BaseApiService } from 'ngx-rbk-utils';
 import { environment } from '@environments/environment';
-import { FilteringOptions } from '@models/filtering-options';
-import { FilterData } from '@models/filter-data';
+import { FilteringOptions } from '@models/analytics/filtering-options';
+import { FilterData } from '@models/analytics/filter-data';
 import { fixDates } from 'ngx-rbk-utils';
-import { SearchResults } from '@models/search-results';
+import { SearchResults } from '@models/analytics/search-results';
 import { ChartDefinition } from '@models/chart-definition';
 
 @Injectable({ providedIn: 'root' })

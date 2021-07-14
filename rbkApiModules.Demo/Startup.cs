@@ -20,7 +20,6 @@ using rbkApiModules.Analytics.Core;
 using rbkApiModules.Analytics.SqlServer;
 using rbkApiModules.Auditing.UI;
 using rbkApiModules.Diagnostics.SqlServer;
-using rbkApiModules.Diagnostics.UI;
 using rbkApiModules.Diagnostics.Core;
 using rbkApiModules.Demo.Models;
 using rbkApiModules.Infrastructure.MediatR.Core;
@@ -48,7 +47,6 @@ namespace rbkApiModules.Demo
 
         private Assembly[] AssembliesForServices => new Assembly[]
         {
-            Assembly.GetAssembly(typeof(DiagnosticsDataService))
         };
 
         private Assembly[] AssembliesForAutoMapper => new Assembly[]
@@ -119,9 +117,9 @@ namespace rbkApiModules.Demo
 
             services.AddRbkUIDefinitions(AssembliesUIDefinitions);
 
-            services.AddSqlServerRbkApiAnalyticsModule(Configuration, Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Analytics"));
+            services.AddSqlServerRbkApiAnalyticsModule(Configuration, "Data Source=50.31.134.17;Integrated Security=False;Initial Catalog=VarejoFacil.Production_Analytics;User ID=sa;Password=zemiko98sql;Connect Timeout=15;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
 
-            services.AddSqlServerRbkApiDiagnosticsModule(Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Diagnostics"));
+            services.AddSqlServerRbkApiDiagnosticsModule("Data Source=50.31.134.17;Integrated Security=False;Initial Catalog=VarejoFacil.Production_Diagnostics;User ID=sa;Password=zemiko98sql;Connect Timeout=999;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
 
             services.AddRbkApiPaypalModule<PaypalActions>();
 

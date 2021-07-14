@@ -46,7 +46,6 @@
     <ProjectReference Include="..\rbkApiModules.Comments\rbkApiModules.Comments.csproj" />
     <ProjectReference Include="..\rbkApiModules.Diagnostics.Core\rbkApiModules.Diagnostics.Core.csproj" />
     <ProjectReference Include="..\rbkApiModules.Diagnostics.SqlServer\rbkApiModules.Diagnostics.SqlServer.csproj" />
-    <ProjectReference Include="..\rbkApiModules.Diagnostics.UI\rbkApiModules.Diagnostics.UI.csproj" />
     <ProjectReference Include="..\rbkApiModules.Infrastructure.Api\rbkApiModules.Infrastructure.Api.csproj" />
     <ProjectReference Include="..\rbkApiModules.Infrastructure.MediatR\rbkApiModules.Infrastructure.MediatR.Core.csproj" />
     <ProjectReference Include="..\rbkApiModules.Infrastructure.Models\rbkApiModules.Infrastructure.Models.csproj" />

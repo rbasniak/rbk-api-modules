@@ -60,11 +60,13 @@ namespace rbkApiModules.Analytics.Core
                 {
                     Id = "versions",
                     Chart = items
-                        .GroupBy(x => x.Version)
-                        .OrderBy(x => x.Count())
-                        .Take(10)
-                        .Select(x => new NeutralCategoryPoint(x.Key, x.Count()))
-                        .CreateRadialChart(10, "Others", false)
+                        .CreateRadialChart()
+                            .PreparaData()
+                                .Take(10)
+                                .RoundValues(1)
+                                .SeriesFrom(x => x.Version)
+                                .ValueFrom(x => x.Count())
+                                .Chart
                             .OfType(ChartType.Doughnut)
                             .Theme(ColorPallete.Blue1, ColorPallete.Blue2)
                             .WithTitle("Versions")
@@ -77,12 +79,14 @@ namespace rbkApiModules.Analytics.Core
                 charts.Add(new ChartDefinition
                 {
                     Id = "users",
-                    Chart = items
-                        .GroupBy(x => x.Username)
-                        .OrderBy(x => x.Count())
-                        .Take(10)
-                        .Select(x => new NeutralCategoryPoint(x.Key, x.Count()))
-                        .CreateRadialChart(10, "Others", false)
+                    Chart = items 
+                        .CreateRadialChart()
+                            .PreparaData()
+                                .Take(10)
+                                .RoundValues(1)
+                                .SeriesFrom(x => x.Username)
+                                .ValueFrom(x => x.Count())
+                                .Chart
                             .OfType(ChartType.Doughnut)
                             .Theme(ColorPallete.Blue2, ColorPallete.Blue1)
                             .WithTitle("Users")
@@ -96,11 +100,13 @@ namespace rbkApiModules.Analytics.Core
                 {
                     Id = "responses",
                     Chart = items
-                        .GroupBy(x => x.Response)
-                        .OrderBy(x => x.Count())
-                        .Take(10)
-                        .Select(x => new NeutralCategoryPoint(x.Key.ToString(), x.Count()))
-                        .CreateRadialChart(10, "Others", false)
+                        .CreateRadialChart()
+                            .PreparaData()
+                                .Take(10)
+                                .RoundValues(1)
+                                .SeriesFrom(x => x.Response.ToString())
+                                .ValueFrom(x => x.Count())
+                                .Chart
                             .OfType(ChartType.Doughnut)
                             .Theme(ColorPallete.Blue1, ColorPallete.Blue2)
                             .WithTitle("Responses")
@@ -114,11 +120,13 @@ namespace rbkApiModules.Analytics.Core
                 {
                     Id = "actions",
                     Chart = items
-                        .GroupBy(x => x.Action)
-                        .OrderBy(x => x.Count())
-                        .Take(10)
-                        .Select(x => new NeutralCategoryPoint(x.Key.ToString(), x.Count()))
-                        .CreateRadialChart(10, "Others", false)
+                        .CreateRadialChart()
+                            .PreparaData()
+                                .Take(10)
+                                .RoundValues(1)
+                                .SeriesFrom(x => x.Action)
+                                .ValueFrom(x => x.Count())
+                                .Chart
                             .OfType(ChartType.Doughnut)
                             .Theme(ColorPallete.Blue2, ColorPallete.Blue1)
                             .WithTitle("Endpoints")

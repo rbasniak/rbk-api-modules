@@ -5,14 +5,14 @@ import { Injectable } from '@angular/core';
 import { AnalyticsService } from '@services/api/analytics.service';
 import { DashboardFeatureActions } from './dashboard.actions';
 
-export const DASHBOARD_FEATURE_STATE_NAME = 'DashboardFeature';
+export const ANALYTICS_DASHBOARD_FEATURE_STATE_NAME = 'analyticsDashboard';
 
 export interface DashboardFeatureStateModel {
   data: any;
 }
 
 @State<DashboardFeatureStateModel>({
-  name: DASHBOARD_FEATURE_STATE_NAME,
+  name: ANALYTICS_DASHBOARD_FEATURE_STATE_NAME,
   defaults: { data: null }
 })
 @Injectable()

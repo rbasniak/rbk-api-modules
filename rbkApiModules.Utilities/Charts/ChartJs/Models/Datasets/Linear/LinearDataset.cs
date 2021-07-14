@@ -13,6 +13,7 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
         public LinearDataset(string id): base(id)
         {
             Data = new List<Point>();
+            Label = id;
         }
 
         public string Type { get; internal set; }

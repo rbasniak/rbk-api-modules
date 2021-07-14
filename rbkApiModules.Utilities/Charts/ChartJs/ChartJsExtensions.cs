@@ -8,24 +8,14 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
 {
     public static class ChartJsExtensions
     {
-        public static LinearChartBuilder CreateLinearChart(this IEnumerable<NeutralDatePoint> data, GroupingType groupingType, bool appendExtraData, DateTime? forceStartDate = null, DateTime? forceEndDate = null)
+        public static LinearChartBuilder<T> CreateLinearChart<T>(this IEnumerable<T> data)
         {
-            return LinearChartBuilder.CreateLinearDateChart(data.ToList(), groupingType, appendExtraData, forceStartDate, forceEndDate);
-        }
+            return LinearChartBuilder<T>.CreateLinearDateChart(data.ToList());
+        }  
 
-        public static LinearChartBuilder CreateLinearChart(this IEnumerable<NeutralCategoryPoint> data, bool appendExtraData = true)
+        public static RadialChartBuilder<T> CreateRadialChart<T>(this IEnumerable<T> data)
         {
-            return LinearChartBuilder.CreateLinearCategoryChart(data.ToList(), appendExtraData);
-        }
-
-        public static RadialChartBuilder CreateRadialChart(this IEnumerable<NeutralCategoryPoint> data, int maximumSeries, string mergedLabel, bool appendExtraData = true)
-        {
-            return RadialChartBuilder.CreateRadialCategoryChart(data.ToList(), maximumSeries, mergedLabel, appendExtraData);
-        }
-
-        public static RadialChartBuilder CreateRadialChart(this IEnumerable<NeutralCategoryPoint> data, bool appendExtraData = true)
-        {
-            return RadialChartBuilder.CreateRadialCategoryChart(data.ToList(), Int32.MaxValue, "", appendExtraData);
+            return RadialChartBuilder<T>.CreateRadialCategoryChart(data);
         }
     }
 }

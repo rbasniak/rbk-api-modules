@@ -1,0 +1,106 @@
+<!-- <p-toolbar styleClass="my-toolbar">
+  <div class="p-toolbar-group-left">
+    <smz-form-group #filterForm [config]="formConfig"></smz-form-group>
+  </div>
+
+  <div class="p-toolbar-group-right">
+    <button pButton type="button" label="Search" (click)="filter(filterForm)" ></button>
+  </div>
+</p-toolbar> -->
+
+<p-panel header="SETTINGS">
+  <div class="p-d-flex p-jc-between p-ai-center">
+    <smz-form-group #filterForm [config]="formConfig"></smz-form-group>
+    <div class="mt-6">
+      <button pButton type="button" label="LOAD" (click)="filter(filterForm)" icon="fas fa-filter" iconPos="left"></button>
+    </div>
+  </div>
+</p-panel>
+
+<ng-container *ngIf="(data$ | async) as data">
+  <div class="p-mt-4">
+    <p-panel header="RESULTS" [toggleable]="true">
+      <div class="grid grid-cols-1 gap-4">
+        <smz-ui-chart [type]="data.totalErrors.type" [options]="data.totalErrors.config" [data]="data.totalErrors.data"
+          height="350px"></smz-ui-chart>
+      </div>
+      <hr>
+      <div class="grid grid-cols-4 gap-4">
+        <div class="col-span-3">
+          <smz-ui-chart [type]="data.sourceErrorsLinear.type" [options]="data.sourceErrorsLinear.config"
+            [data]="data.sourceErrorsLinear.data" height="350px"></smz-ui-chart>
+        </div>
+        <div class="col-span-1">
+          <smz-ui-chart [type]="data.sourceErrorsRadial.type" [options]="data.sourceErrorsRadial.config"
+            [data]="data.sourceErrorsRadial.data" height="350px"></smz-ui-chart>
+        </div>
+      </div>
+      <hr>
+      <div class="grid grid-cols-4 gap-4">
+        <div class="col-span-3">
+          <smz-ui-chart [type]="data.layerErrorsLinear.type" [options]="data.layerErrorsLinear.config"
+            [data]="data.layerErrorsLinear.data" height="350px"></smz-ui-chart>
+        </div>
+        <div class="col-span-1">
+          <smz-ui-chart [type]="data.layerErrorsRadial.type" [options]="data.layerErrorsRadial.config"
+            [data]="data.layerErrorsRadial.data" height="350px"></smz-ui-chart>
+        </div>
+      </div>
+      <hr>
+      <div class="grid grid-cols-4 gap-4">
+        <div class="col-span-3">
+          <smz-ui-chart [type]="data.areaErrorsLinear.type" [options]="data.areaErrorsLinear.config"
+            [data]="data.areaErrorsLinear.data" height="350px"></smz-ui-chart>
+        </div>
+        <div class="col-span-1">
+          <smz-ui-chart [type]="data.areaErrorsRadial.type" [options]="data.areaErrorsRadial.config"
+            [data]="data.areaErrorsRadial.data" height="350px"></smz-ui-chart>
+        </div>
+      </div>
+      <hr>
+      <div class="grid grid-cols-4 gap-4">
+        <div class="col-span-3">
+          <smz-ui-chart [type]="data.browserErrorsLinear.type" [options]="data.browserErrorsLinear.config"
+            [data]="data.browserErrorsLinear.data" height="350px"></smz-ui-chart>
+        </div>
+        <div class="col-span-1">
+          <smz-ui-chart [type]="data.browserErrorsRadial.type" [options]="data.browserErrorsRadial.config"
+            [data]="data.browserErrorsRadial.data" height="350px"></smz-ui-chart>
+        </div>
+      </div>
+      <hr>
+      <div class="grid grid-cols-4 gap-4">
+        <div class="col-span-3">
+          <smz-ui-chart [type]="data.operatingSystemErrorsLinear.type" [options]="data.operatingSystemErrorsLinear.config"
+            [data]="data.operatingSystemErrorsLinear.data" height="350px"></smz-ui-chart>
+        </div>
+        <div class="col-span-1">
+          <smz-ui-chart [type]="data.operatingSystemErrorsRadial.type" [options]="data.operatingSystemErrorsRadial.config"
+            [data]="data.operatingSystemErrorsRadial.data" height="350px"></smz-ui-chart>
+        </div>
+      </div>
+      <hr>
+      <div class="grid grid-cols-4 gap-4">
+        <div class="col-span-3">
+          <smz-ui-chart [type]="data.deviceErrorsLinear.type" [options]="data.deviceErrorsLinear.config"
+            [data]="data.deviceErrorsLinear.data" height="350px"></smz-ui-chart>
+        </div>
+        <div class="col-span-1">
+          <smz-ui-chart [type]="data.deviceErrorsRadial.type" [options]="data.deviceErrorsRadial.config"
+            [data]="data.deviceErrorsRadial.data" height="350px"></smz-ui-chart>
+        </div>
+      </div>
+      <hr>
+      <div class="grid grid-cols-4 gap-4">
+        <div class="col-span-3">
+          <smz-ui-chart [type]="data.userErrorsLinear.type" [options]="data.userErrorsLinear.config"
+            [data]="data.userErrorsLinear.data" height="350px"></smz-ui-chart>
+        </div>
+        <div class="col-span-1">
+          <smz-ui-chart [type]="data.userErrorsRadial.type" [options]="data.userErrorsRadial.config"
+            [data]="data.userErrorsRadial.data" height="350px"></smz-ui-chart>
+        </div>
+      </div>
+    </p-panel>
+  </div>
+</ng-container>

@@ -4,16 +4,16 @@ import { tap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { AnalyticsService } from '@services/api/analytics.service';
 import { SearchFeatureActions } from './search.actions';
-import { SearchResults } from '@models/search-results';
+import { SearchResults } from '@models/analytics/search-results';
 
-export const SEARCH_FEATURE_STATE_NAME = 'SearchFeature';
+export const ANALYTICS_SEARCH_FEATURE_STATE_NAME = 'analyticsSearch';
 
 export interface SearchFeatureStateModel {
   data: SearchResults;
 }
 
 @State<SearchFeatureStateModel>({
-  name: SEARCH_FEATURE_STATE_NAME,
+  name: ANALYTICS_SEARCH_FEATURE_STATE_NAME,
   defaults: { data: null }
 })
 @Injectable()

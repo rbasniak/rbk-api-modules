@@ -1,12 +1,16 @@
 import { environment } from '@environments/environment';
-import { FilteringOptionsActions } from '@state/database/analytics/filtering-options/filtering-options.actions';
-import { FilteringOptionsState, FILTERING_OPTIONS_STATE_NAME } from '@state/database/analytics/filtering-options/filtering-options.state';
+import { FilteringOptionsActions as AnalyticsFilteringOptionsActions } from '@state/database/analytics/filtering-options/filtering-options.actions';
+import { FilteringOptionsState as AnalyticsFilteringOptionsState, ANALYTICS_FILTERING_OPTIONS_STATE_NAME } from '@state/database/analytics/filtering-options/filtering-options.state';
+import { DashboardFeatureState as AnalyticsDashboardFeatureState, ANALYTICS_DASHBOARD_FEATURE_STATE_NAME } from '@state/features/analytics/dashboard/dashboard.state';
+import { SearchFeatureState as AnalyticsSearchFeatureState, ANALYTICS_SEARCH_FEATURE_STATE_NAME } from '@state/features/analytics/search/search.state';
 import { MenuActions } from '@state/database/menu/menu.actions';
 import { MenuState, MENU_STATE_NAME } from '@state/database/menu/menu.state';
-import { DashboardFeatureState, DASHBOARD_FEATURE_STATE_NAME } from '@state/features/analytics/dashboard/dashboard.state';
-import { SearchFeatureState, SEARCH_FEATURE_STATE_NAME } from '@state/features/analytics/search/search.state';
 import { NgxRbkUtilsConfig } from 'ngx-rbk-utils';
 import { ERROR_PAGE_PATH, HOME_PATH, LOGIN_PATH } from 'src/routes';
+import { FilteringOptionsActions as DiagnosticsFilteringOptionsActions } from '@state/database/diagnostics/filtering-options/filtering-options.actions';
+import { FilteringOptionsState as DiagnosticsFilteringOptionsState, DIAGNOSTICS_FILTERING_OPTIONS_STATE_NAME } from '@state/database/diagnostics/filtering-options/filtering-options.state';
+import { DashboardFeatureState as DiagnosticsDashboardFeatureState, DIAGNOSTICS_DASHBOARD_FEATURE_STATE_NAME } from '@state/features/diagnostics/dashboard/dashboard.state';
+import { SearchFeatureState as DiagnosticsSearchFeatureState, DIAGNOSTICS_SEARCH_FEATURE_STATE_NAME } from '@state/features/diagnostics/search/search.state';
 
 // Database
 
@@ -56,10 +60,16 @@ export const rbkConfig: NgxRbkUtilsConfig = {
   },
   state: {
     database: {
-      [FILTERING_OPTIONS_STATE_NAME]: {
-        state: FilteringOptionsState,
+      [ANALYTICS_FILTERING_OPTIONS_STATE_NAME]: {
+        state: AnalyticsFilteringOptionsState,
         cacheTimeout: 999,
-        loadAction: FilteringOptionsActions.LoadAll,
+        loadAction: AnalyticsFilteringOptionsActions.LoadAll,
+        clearFunction: (): any => ({ data: null, lastUpdated: null })
+      },
+      [DIAGNOSTICS_FILTERING_OPTIONS_STATE_NAME]: {
+        state: DiagnosticsFilteringOptionsState,
+        cacheTimeout: 999,
+        loadAction: DiagnosticsFilteringOptionsActions.LoadAll,
         clearFunction: (): any => ({ data: null, lastUpdated: null })
       },
       [MENU_STATE_NAME]: {
@@ -70,12 +80,20 @@ export const rbkConfig: NgxRbkUtilsConfig = {
       }
     },
     feature: {
-      [SEARCH_FEATURE_STATE_NAME]: {
-        state: SearchFeatureState,
+      [ANALYTICS_SEARCH_FEATURE_STATE_NAME]: {
+        state: AnalyticsSearchFeatureState,
         clearFunction: (): any => ({ results: [] })
       },
-      [DASHBOARD_FEATURE_STATE_NAME]: {
-        state: DashboardFeatureState,
+      [ANALYTICS_DASHBOARD_FEATURE_STATE_NAME]: {
+        state: AnalyticsDashboardFeatureState,
+        clearFunction: (): any => ({ results: [] })
+      },
+      [DIAGNOSTICS_SEARCH_FEATURE_STATE_NAME]: {
+        state: DiagnosticsSearchFeatureState,
+        clearFunction: (): any => ({ results: [] })
+      },
+      [DIAGNOSTICS_DASHBOARD_FEATURE_STATE_NAME]: {
+        state: DiagnosticsDashboardFeatureState,
         clearFunction: (): any => ({ results: [] })
       }
     }

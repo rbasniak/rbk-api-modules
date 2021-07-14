@@ -24,6 +24,7 @@ namespace rbkApiModules.Analytics.Core
 
             public DateTime DateFrom { get; set; }
             public DateTime DateTo { get; set; }
+            public GroupingType GroupingType { get; set; }
         } 
 
         public class Handler : BaseQueryHandler<Command>
@@ -47,14 +48,14 @@ namespace rbkApiModules.Analytics.Core
                 results.BiggestResquestsEndpoints = BuildBiggestResquestsEndpoints(data, request.DateFrom, request.DateTo);  
                 results.CachedRequestsProportion = BuildCachedRequestsProportion(data, request.DateFrom, request.DateTo);
 
-                results.DailyActiveUsers = BuildDailyActiveUsers(data, request.DateFrom, request.DateTo);  
-                results.DailyAuthenticationFailures = BuildDailyAuthenticationFailures(data, request.DateFrom, request.DateTo); 
-                results.DailyDatabaseUsage = BuildDailyDatabaseUsage(data, request.DateFrom, request.DateTo);  
-                results.DailyErrors = BuildDailyErrors(data, request.DateFrom, request.DateTo);  
-                results.DailyInboundTraffic = BuildDailyInboundTraffic(data, request.DateFrom, request.DateTo);  
-                results.DailyOutboundTraffic = BuildDailyOutboundTraffic(data, request.DateFrom, request.DateTo);  
-                results.DailyRequests = BuildDailyRequests(data, request.DateFrom, request.DateTo);  
-                results.DailyTransactions = BuildDailyTransactions(data, request.DateFrom, request.DateTo);  
+                results.DailyActiveUsers = BuildDailyActiveUsers(data, request.DateFrom, request.DateTo, request.GroupingType);  
+                results.DailyAuthenticationFailures = BuildDailyAuthenticationFailures(data, request.DateFrom, request.DateTo, request.GroupingType); 
+                results.DailyDatabaseUsage = BuildDailyDatabaseUsage(data, request.DateFrom, request.DateTo, request.GroupingType);  
+                results.DailyErrors = BuildDailyErrors(data, request.DateFrom, request.DateTo, request.GroupingType);  
+                results.DailyInboundTraffic = BuildDailyInboundTraffic(data, request.DateFrom, request.DateTo, request.GroupingType);  
+                results.DailyOutboundTraffic = BuildDailyOutboundTraffic(data, request.DateFrom, request.DateTo, request.GroupingType);  
+                results.DailyRequests = BuildDailyRequests(data, request.DateFrom, request.DateTo, request.GroupingType);  
+                results.DailyTransactions = BuildDailyTransactions(data, request.DateFrom, request.DateTo, request.GroupingType);  
 
                 results.EndpointErrorRates = BuildEndpointErrorRates(data, request.DateFrom, request.DateTo);  
                 results.MostActiveDays = BuildMostActiveDays(data, request.DateFrom, request.DateTo);
@@ -98,10 +99,13 @@ namespace rbkApiModules.Analytics.Core
             private object BuildAverageTransactionsPerEndpoint(List<AnalyticsEntry> data, DateTime from, DateTime to)
             {
                 var chart = PrefilterResults(data, from, to, null, null)
-                    .GroupBy(x => x.Action)
-                    .Select(x => new NeutralCategoryPoint("default", x.Key, Math.Round(x.Average(x => x.TransactionCount), 1)))
-                    .Take(10)
-                    .CreateRadialChart(false)
+                    .CreateRadialChart()
+                        .PreparaData()
+                            .Take(10)
+                            .RoundValues(1)
+                            .SeriesFrom(x => x.Action)
+                            .ValueFrom(x => x.Average(x => x.TransactionCount))
+                            .Chart
                         .OfType(ChartType.Doughnut)
                         .Theme(ColorPallete.Blue2, ColorPallete.Blue1)
                         .Responsive()
@@ -119,21 +123,24 @@ namespace rbkApiModules.Analytics.Core
             private object BuildBiggestResponsesEndpoints(List<AnalyticsEntry> data, DateTime from, DateTime to)
             {
                 var chart = PrefilterResults(data, from, to, new[] { "200", "204" }, null)
-                    .GroupBy(x => x.Action)
-                    .Select(x => new NeutralCategoryPoint("default", x.Key, Math.Round(x.Average(x => x.ResponseSize), 1)))
-                    .Take(10)
-                    .CreateRadialChart(false)
-                        .OfType(ChartType.Doughnut)
-                        .Theme(ColorPallete.Blue2, ColorPallete.Blue1)
-                        .Responsive()
-                        .WithTitle("Biggest response sizes")
-                            .Font(16)
-                            .Padding(8, 24)
+                    .CreateRadialChart()
+                        .PreparaData()
+                            .Take(10)
+                            .RoundValues(1)
+                            .SeriesFrom(x => x.Action)
+                            .ValueFrom(x => x.Average(x => x.ResponseSize))
                             .Chart
-                        .WithTooltips()
-                            .Chart
-                        .RoundToNearestStorageUnit()
-                        .Build();
+                    .OfType(ChartType.Doughnut)
+                    .Theme(ColorPallete.Blue2, ColorPallete.Blue1)
+                    .Responsive()
+                    .WithTitle("Biggest response sizes")
+                        .Font(16)
+                        .Padding(8, 24)
+                        .Chart
+                    .WithTooltips()
+                        .Chart
+                    .RoundToNearestStorageUnit()
+                    .Build();
 
                 return chart;
             }
@@ -141,10 +148,13 @@ namespace rbkApiModules.Analytics.Core
             private object BuildBiggestResquestsEndpoints(List<AnalyticsEntry> data, DateTime from, DateTime to)
             { 
                 var chart = PrefilterResults(data, from, to, new[] { "200", "204" }, null)
-                    .GroupBy(x => x.Action)
-                    .Select(x => new NeutralCategoryPoint("default", x.Key, Math.Round(x.Average(x => x.RequestSize), 1)))
-                    .Take(10)
-                    .CreateRadialChart(false)
+                    .CreateRadialChart()
+                        .PreparaData()
+                            .Take(10)
+                            .RoundValues(1)
+                            .SeriesFrom(x => x.Action)
+                            .ValueFrom(x => x.Average(x => x.RequestSize))
+                            .Chart
                         .OfType(ChartType.Doughnut)
                         .Theme(ColorPallete.Blue2, ColorPallete.Blue1)
                         .Responsive()
@@ -163,10 +173,13 @@ namespace rbkApiModules.Analytics.Core
             private object BuildCachedRequestsProportion(List<AnalyticsEntry> data, DateTime from, DateTime to)
             { 
                 var chart = PrefilterResults(data, from, to, new[] { "200", "204" }, null)
-                    .GroupBy(x => x.Action)
-                    .Select(x => new NeutralCategoryPoint("default", x.Key, x.Count(y => y.WasCached) / (double)x.Count() * 100.0))
-                    .Take(10)
-                    .CreateRadialChart(false)
+                    .CreateRadialChart()
+                        .PreparaData()
+                            .Take(10)
+                            .RoundValues(1)
+                            .SeriesFrom(x => x.Action)
+                            .ValueFrom(x => x.Count(y => y.WasCached) / (double)x.Count() * 100.0)
+                            .Chart
                         .OfType(ChartType.Doughnut)
                         .Theme(ColorPallete.Blue2, ColorPallete.Blue1)
                         .Responsive()
@@ -181,254 +194,294 @@ namespace rbkApiModules.Analytics.Core
                 return chart;
             }
 
-            private object BuildDailyActiveUsers(List<AnalyticsEntry> data, DateTime from, DateTime to)
+            private object BuildDailyActiveUsers(List<AnalyticsEntry> data, DateTime from, DateTime to, GroupingType groupingType)
             {
-                var chart = PrefilterResults(data, from, to, null, null)
-                        .GroupBy(x => x.Timestamp.Date)
-                        .Select(x => new NeutralDatePoint("default", x.Key, x.GroupBy(x => x.Username).Count()))
-                    .CreateLinearChart(GroupingType.Daily, false, from, to)
-                    .OfType(ChartType.Line)
-                    .Theme(ColorPallete.Blue2)
-                    .Responsive()
-                    .WithTitle("Daily active users")
-                        .Font(16)
-                        .Padding(8, 24)
-                        .Chart
-                    .WithTooltips()
-                        .Chart
-                    .WithYAxis("x")
-                        .AutoSkip(10)
-                        .Chart
-                    .WithYAxis("y")
-                        .Range(0, null)
-                        .Chart
-                    .SetupDataset("default")
-                        .Thickness(3)
-                        .Chart
-                    .Build();
+                var chart = PrefilterResults(data, from, to, new[] { "200", "204" }, null)
+                                .CreateLinearChart()
+                                    .PreparaData(groupingType)
+                                        .EnforceStartDate(from)
+                                        .EnforceEndDate(to)
+                                        .SingleSerie()
+                                        .DateFrom(x => x.Timestamp)
+                                        .ValueFrom(x => x.GroupBy(x => x.Username).Count())
+                                        .Chart
+                                    .OfType(ChartType.Line)
+                                    .Theme(ColorPallete.Blue2)
+                                    .Responsive()
+                                    .WithTitle("Daily active users")
+                                        .Font(16)
+                                        .Padding(8, 24)
+                                        .Chart
+                                    .WithTooltips()
+                                        .Chart
+                                    .WithYAxis("x")
+                                        .AutoSkip(10)
+                                        .Chart
+                                    .WithYAxis("y")
+                                        .Range(0, null)
+                                        .Chart
+                                    .SetupDatasets()
+                                        .Thickness(3)
+                                        .Chart
+                                    .Build();
 
                 return chart;
             }
 
-            private object BuildDailyAuthenticationFailures(List<AnalyticsEntry> data, DateTime from, DateTime to)
-            { 
+            private object BuildDailyAuthenticationFailures(List<AnalyticsEntry> data, DateTime from, DateTime to, GroupingType groupingType)
+            {
                 var chart = PrefilterResults(data, from, to, new[] { "401", "403" }, null)
-                    .GroupBy(x => x.Timestamp.Date)
-                    .Select(x => new NeutralDatePoint("default", x.Key, x.Count()))
-                .CreateLinearChart(GroupingType.Daily, false, from, to)
-                .OfType(ChartType.Line)
-                .Theme(ColorPallete.Blue2)
-                .Responsive()
-                .WithTitle("Daily authentication failures")
-                    .Font(16)
-                    .Padding(8, 24)
-                    .Chart
-                .WithTooltips()
-                    .Chart
-                .WithYAxis("x")
-                    .AutoSkip(10)
-                    .Chart
-                .WithYAxis("y")
-                    .Range(0, null)
-                    .Chart
-                .SetupDataset("default")
-                    .Thickness(3)
-                    .Chart
-                .Build();
+                                .CreateLinearChart()
+                                    .PreparaData(groupingType)
+                                        .EnforceStartDate(from)
+                                        .EnforceEndDate(to)
+                                        .SingleSerie()
+                                        .DateFrom(x => x.Timestamp)
+                                        .ValueFrom(x => x.GroupBy(x => x.Username).Count())
+                                        .Chart
+                                    .OfType(ChartType.Line)
+                                    .Theme(ColorPallete.Blue2)
+                                    .Responsive()
+                                    .WithTitle("Daily authentication failures")
+                                        .Font(16)
+                                        .Padding(8, 24)
+                                        .Chart
+                                    .WithTooltips()
+                                        .Chart
+                                    .WithYAxis("x")
+                                        .AutoSkip(10)
+                                        .Chart
+                                    .WithYAxis("y")
+                                        .Range(0, null)
+                                        .Chart
+                                    .SetupDatasets()
+                                        .Thickness(3)
+                                        .Chart
+                                    .Build();
 
                 return chart;
             }
 
-            private object BuildDailyDatabaseUsage(List<AnalyticsEntry> data, DateTime from, DateTime to)
+            private object BuildDailyDatabaseUsage(List<AnalyticsEntry> data, DateTime from, DateTime to, GroupingType groupingType)
             { 
                 var chart = PrefilterResults(data, from, to, null, null)
-                    .GroupBy(x => x.Timestamp.Date)
-                    .Select(x => new NeutralDatePoint("default", x.Key, x.Sum(x => x.TotalTransactionTime)))
-                .CreateLinearChart(GroupingType.Daily, false, from, to)
-                .OfType(ChartType.Line)
-                .Theme(ColorPallete.Blue2)
-                .Responsive()
-                .WithTitle("Daily database usage (total seconds)")
-                    .Font(16)
-                    .Padding(8, 24)
-                    .Chart
-                .WithTooltips()
-                    .Chart
-                .WithYAxis("x")
-                    .AutoSkip(10)
-                    .Chart
-                .WithYAxis("y")
-                    .Range(0, null)
-                    .Chart
-                .SetupDataset("default")
-                    .Thickness(3)
-                    .Chart
-                .Build();
+                                .CreateLinearChart()
+                                    .PreparaData(groupingType)
+                                        .EnforceStartDate(from)
+                                        .EnforceEndDate(to)
+                                        .SingleSerie()
+                                        .DateFrom(x => x.Timestamp)
+                                        .ValueFrom(x => x.Sum(x => x.TotalTransactionTime))
+                                        .Chart
+                                    .OfType(ChartType.Line)
+                                    .Theme(ColorPallete.Blue2)
+                                    .Responsive()
+                                    .WithTitle("Daily database usage (total seconds)")
+                                        .Font(16)
+                                        .Padding(8, 24)
+                                        .Chart
+                                    .WithTooltips()
+                                        .Chart
+                                    .WithYAxis("x")
+                                        .AutoSkip(10)
+                                        .Chart
+                                    .WithYAxis("y")
+                                        .Range(0, null)
+                                        .Chart
+                                    .SetupDatasets()
+                                        .Thickness(3)
+                                        .Chart
+                                    .Build();
 
                 return chart;
             }
 
-            private object BuildDailyErrors(List<AnalyticsEntry> data, DateTime from, DateTime to)
+            private object BuildDailyErrors(List<AnalyticsEntry> data, DateTime from, DateTime to, GroupingType groupingType)
             { 
                 var chart = PrefilterResults(data, from, to, new[] { "500" }, null)
-                    .GroupBy(x => x.Timestamp.Date)
-                    .Select(x => new NeutralDatePoint("default", x.Key, x.Count()))
-                .CreateLinearChart(GroupingType.Daily, false, from, to)
-                .OfType(ChartType.Line)
-                .Theme(ColorPallete.Blue2)
-                .Responsive()
-                .WithTitle("Daily errors")
-                    .Font(16)
-                    .Padding(8, 24)
-                    .Chart
-                .WithTooltips()
-                    .Chart
-                .WithYAxis("x")
-                    .AutoSkip(10)
-                    .Chart
-                .WithYAxis("y")
-                    .Range(0, null)
-                    .Chart
-                .SetupDataset("default")
-                    .Thickness(3)
-                    .Chart
-                .Build();
+                                .CreateLinearChart()
+                                    .PreparaData(groupingType)
+                                        .EnforceStartDate(from)
+                                        .EnforceEndDate(to)
+                                        .SingleSerie()
+                                        .DateFrom(x => x.Timestamp)
+                                        .ValueFrom(x => x.Count())
+                                        .Chart
+                                    .OfType(ChartType.Line)
+                                    .Theme(ColorPallete.Blue2)
+                                    .Responsive()
+                                    .WithTitle("Daily errors")
+                                        .Font(16)
+                                        .Padding(8, 24)
+                                        .Chart
+                                    .WithTooltips()
+                                        .Chart
+                                    .WithYAxis("x")
+                                        .AutoSkip(10)
+                                        .Chart
+                                    .WithYAxis("y")
+                                        .Range(0, null)
+                                        .Chart
+                                    .SetupDatasets()
+                                        .Thickness(3)
+                                        .Chart
+                                    .Build();
 
                 return chart;
             }
 
-            private object BuildDailyInboundTraffic(List<AnalyticsEntry> data, DateTime from, DateTime to)
+            private object BuildDailyInboundTraffic(List<AnalyticsEntry> data, DateTime from, DateTime to, GroupingType groupingType)
             { 
                 var chart = PrefilterResults(data, from, to, null, null)
-                    .GroupBy(x => x.Timestamp.Date)
-                    .Select(x => new NeutralDatePoint("default", x.Key, x.Sum(x => x.RequestSize)))
-                .CreateLinearChart(GroupingType.Daily, false, from, to)
-                .OfType(ChartType.Line)
-                .Theme(ColorPallete.Blue2)
-                .Responsive()
-                .WithTitle("Daily inbound traffic")
-                    .Font(16)
-                    .Padding(8, 24)
-                    .Chart
-                .WithTooltips()
-                    .Chart
-                .WithYAxis("x")
-                    .AutoSkip(10)
-                    .Chart
-                .WithYAxis("y")
-                    .Range(0, null)
-                    .Chart
-                .SetupDataset("default")
-                    .RoundToNearestStorageUnit(true)
-                    .Thickness(3)
-                    .Chart
-                .Build(); 
+                                .CreateLinearChart()
+                                    .PreparaData(groupingType)
+                                        .EnforceStartDate(from)
+                                        .EnforceEndDate(to)
+                                        .SingleSerie()
+                                        .DateFrom(x => x.Timestamp)
+                                        .ValueFrom(x => x.Sum(x => x.RequestSize))
+                                        .Chart
+                                    .OfType(ChartType.Line)
+                                    .Theme(ColorPallete.Blue2)
+                                    .Responsive()
+                                    .WithTitle("Daily inbound traffic")
+                                        .Font(16)
+                                        .Padding(8, 24)
+                                        .Chart
+                                    .WithTooltips()
+                                        .Chart
+                                    .WithYAxis("x")
+                                        .AutoSkip(10)
+                                        .Chart
+                                    .WithYAxis("y")
+                                        .Range(0, null)
+                                        .Chart
+                                    .SetupDatasets()
+                                        .Thickness(3)
+                                        .Chart
+                                    .Build();
 
                 return chart;
             }
 
-            private object BuildDailyOutboundTraffic(List<AnalyticsEntry> data, DateTime from, DateTime to)
+            private object BuildDailyOutboundTraffic(List<AnalyticsEntry> data, DateTime from, DateTime to, GroupingType groupingType)
             {
                 var chart = PrefilterResults(data, from, to, null, null)
-                    .GroupBy(x => x.Timestamp.Date)
-                    .Select(x => new NeutralDatePoint("default", x.Key, x.Sum(x => x.ResponseSize)))
-                .CreateLinearChart(GroupingType.Daily, false, from, to)
-                .OfType(ChartType.Line)
-                .Theme(ColorPallete.Blue2)
-                .Responsive()
-                .WithTitle("Daily outbound traffic")
-                    .Font(16)
-                    .Padding(8, 24)
-                    .Chart
-                .WithTooltips()
-                    .Chart
-                .WithYAxis("x")
-                    .AutoSkip(10)
-                    .Chart
-                .WithYAxis("y")
-                    .Range(0, null)
-                    .Chart
-                .SetupDataset("default")
-                    .RoundToNearestStorageUnit(true)
-                    .Thickness(3)
-                    .Chart
-                .Build();
+                                .CreateLinearChart()
+                                    .PreparaData(groupingType)
+                                        .EnforceStartDate(from)
+                                        .EnforceEndDate(to)
+                                        .SingleSerie()
+                                        .DateFrom(x => x.Timestamp)
+                                        .ValueFrom(x => x.Sum(x => x.ResponseSize))
+                                        .Chart
+                                    .OfType(ChartType.Line)
+                                    .Theme(ColorPallete.Blue2)
+                                    .Responsive()
+                                    .WithTitle("Daily outbound traffic")
+                                        .Font(16)
+                                        .Padding(8, 24)
+                                        .Chart
+                                    .WithTooltips()
+                                        .Chart
+                                    .WithYAxis("x")
+                                        .AutoSkip(10)
+                                        .Chart
+                                    .WithYAxis("y")
+                                        .Range(0, null)
+                                        .Chart
+                                    .SetupDatasets()
+                                        .Thickness(3)
+                                        .Chart
+                                    .Build();
 
                 return chart;
             }
 
-            private object BuildDailyRequests(List<AnalyticsEntry> data, DateTime from, DateTime to)
+            private object BuildDailyRequests(List<AnalyticsEntry> data, DateTime from, DateTime to, GroupingType groupingType)
             {
                 var chart = PrefilterResults(data, from, to, null, null)
-                    .GroupBy(x => x.Timestamp.Date)
-                    .Select(x => new NeutralDatePoint("default", x.Key, x.Count()))
-                .CreateLinearChart(GroupingType.Daily, false, from, to)
-                .OfType(ChartType.Line)
-                .Theme(ColorPallete.Blue2)
-                .Responsive()
-                .WithTitle("Daily API calls")
-                    .Font(16)
-                    .Padding(8, 24)
-                    .Chart
-                .WithTooltips()
-                    .Chart
-                .WithYAxis("x")
-                    .AutoSkip(10)
-                    .Chart
-                .WithYAxis("y")
-                    .Range(0, null)
-                    .Chart
-                .SetupDataset("default")
-                    .Thickness(3)
-                    .Chart
-                .Build();
+                                .CreateLinearChart()
+                                    .PreparaData(groupingType)
+                                        .EnforceStartDate(from)
+                                        .EnforceEndDate(to)
+                                        .SingleSerie()
+                                        .DateFrom(x => x.Timestamp)
+                                        .ValueFrom(x => x.Count())
+                                        .Chart
+                                    .OfType(ChartType.Line)
+                                    .Theme(ColorPallete.Blue2)
+                                    .Responsive()
+                                    .WithTitle("Daily requests")
+                                        .Font(16)
+                                        .Padding(8, 24)
+                                        .Chart
+                                    .WithTooltips()
+                                        .Chart
+                                    .WithYAxis("x")
+                                        .AutoSkip(10)
+                                        .Chart
+                                    .WithYAxis("y")
+                                        .Range(0, null)
+                                        .Chart
+                                    .SetupDatasets()
+                                        .Thickness(3)
+                                        .Chart
+                                    .Build();
 
                 return chart;
             }
 
-            private object BuildDailyTransactions(List<AnalyticsEntry> data, DateTime from, DateTime to)
-            { 
+            private object BuildDailyTransactions(List<AnalyticsEntry> data, DateTime from, DateTime to, GroupingType groupingType)
+            {
                 var chart = PrefilterResults(data, from, to, null, null)
-                    .GroupBy(x => x.Timestamp.Date)
-                    .Select(x => new NeutralDatePoint("default", x.Key, x.Sum(x => x.TransactionCount)))
-                .CreateLinearChart(GroupingType.Daily, false, from, to)
-                .OfType(ChartType.Line)
-                .Theme(ColorPallete.Blue2)
-                .Responsive()
-                .WithTitle("Daily database transactions")
-                    .Font(16)
-                    .Padding(8, 24)
-                    .Chart
-                .WithTooltips()
-                    .Chart
-                .WithYAxis("x")
-                    .AutoSkip(10)
-                    .Chart
-                .WithYAxis("y")
-                    .Range(0, null)
-                    .Chart
-                .SetupDataset("default")
-                    .Thickness(3)
-                    .Chart
-                .Build();
+                                .CreateLinearChart()
+                                    .PreparaData(groupingType)
+                                        .EnforceStartDate(from)
+                                        .EnforceEndDate(to)
+                                        .SingleSerie()
+                                        .DateFrom(x => x.Timestamp)
+                                        .ValueFrom(x => x.Sum(x => x.TransactionCount))
+                                        .Chart
+                                    .OfType(ChartType.Line)
+                                    .Theme(ColorPallete.Blue2)
+                                    .Responsive()
+                                    .WithTitle("Daily inbound traffic")
+                                        .Font(16)
+                                        .Padding(8, 24)
+                                        .Chart
+                                    .WithTooltips()
+                                        .Chart
+                                    .WithYAxis("x")
+                                        .AutoSkip(10)
+                                        .Chart
+                                    .WithYAxis("y")
+                                        .Range(0, null)
+                                        .Chart
+                                    .SetupDatasets()
+                                        .Thickness(3)
+                                        .Chart
+                                    .Build();
 
                 return chart;
             }
 
             private object BuildEndpointErrorRates(List<AnalyticsEntry> data, DateTime from, DateTime to)
             { 
-                var chart = PrefilterResults(data, from, to, null, null)
-                    .GroupBy(x => x.Action)
-                    .Where(x => x.Key != null)
-                    .Select(x => 
-                    {
-                        var success = (double)x.Count(y => y.Response == 200 || y.Response == 204);
-                        var errors = (double)x.Count(y => y.Response != 200 && y.Response != 204 && y.Response != 400 && y.Response != 401 && y.Response != 403);
+                var chart = PrefilterResults(data, from, to, null, null).Where(x => !String.IsNullOrEmpty(x.Action))
+                    .CreateRadialChart()
+                        .PreparaData()
+                            .Take(10)
+                            .RoundValues(1)
+                            .SeriesFrom(x => x.Action)
+                            .ValueFrom(x => 
+                            {
+                                var success = (double)x.Count(y => y.Response == 200 || y.Response == 204);
+                                var errors = (double)x.Count(y => y.Response != 200 && y.Response != 204 && y.Response != 400 && y.Response != 401 && y.Response != 403);
 
-                        return new NeutralCategoryPoint("default", x.Key, errors / (success + errors) * 100.0);
-                    })
-                    .Take(10)
-                    .CreateRadialChart(false)
+                                return errors / (success + errors) * 100.0;
+                            })
+                            .Chart
                         .OfType(ChartType.Doughnut)
                         .Theme(ColorPallete.Blue1, ColorPallete.Blue2)
                         .Responsive()
@@ -446,9 +499,11 @@ namespace rbkApiModules.Analytics.Core
             private object BuildMostActiveDays(List<AnalyticsEntry> data, DateTime from, DateTime to)
             {
                 var chart = PrefilterResults(data, from, to, null, null)
-                    .GroupBy(x => x.Timestamp.DayOfWeek.ToString())
-                    .Select(x => new NeutralCategoryPoint("default", x.Key, x.Count()))
                     .CreateLinearChart()
+                        .PreparaData()
+                            .SeriesFrom(x => x.Timestamp.DayOfWeek.ToString())
+                            .ValueFrom(x => x.Count())
+                            .Chart
                         .OfType(ChartType.Bar)
                         .Theme("77", ColorPallete.Blue2, ColorPallete.Blue1)
                         .Responsive()
@@ -463,6 +518,14 @@ namespace rbkApiModules.Analytics.Core
                             .RoundedBorders(5)
                             .Thickness(3)
                             .Chart
+                        .ReorderCategories(
+                            DayOfWeek.Monday.ToString(), 
+                            DayOfWeek.Tuesday.ToString(), 
+                            DayOfWeek.Wednesday.ToString(), 
+                            DayOfWeek.Thursday.ToString(), 
+                            DayOfWeek.Friday.ToString(), 
+                            DayOfWeek.Saturday.ToString(), 
+                            DayOfWeek.Sunday.ToString())
                         .Build();
 
                 return chart;
@@ -471,10 +534,11 @@ namespace rbkApiModules.Analytics.Core
             private object BuildMostActiveHours(List<AnalyticsEntry> data, DateTime from, DateTime to)
             { 
                 var chart = PrefilterResults(data, from, to, null, null)
-                    .GroupBy(x => x.Timestamp.Hour)
-                    .OrderBy(x => x.Key)
-                    .Select(x => new NeutralCategoryPoint("default", x.Key.ToString("00"), x.Count()))
                     .CreateLinearChart()
+                        .PreparaData()
+                            .SeriesFrom(x => x.Timestamp.Hour.ToString("00"))
+                            .ValueFrom(x => x.Count())
+                            .Chart
                         .OfType(ChartType.Bar)
                         .SetColors(new string[] { "#345DB3" }, "77")
                         .Responsive()
@@ -489,6 +553,7 @@ namespace rbkApiModules.Analytics.Core
                             .RoundedBorders(5)
                             .Thickness(3)
                             .Chart
+                        .ReorderCategories("00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23")
                         .Build();
 
                 return chart;
@@ -496,11 +561,14 @@ namespace rbkApiModules.Analytics.Core
 
             private object BuildMostActiveDomains(List<AnalyticsEntry> data, DateTime from, DateTime to)
             { 
-                var chart = PrefilterResults(data, from, to, null, null)
-                    .GroupBy(x => x.Domain)
-                    .Select(x => new NeutralCategoryPoint("default", x.Key, x.Count()))
-                    .Take(10)
-                    .CreateRadialChart(false)
+                var chart = PrefilterResults(data, from, to, null, null) 
+                    .CreateRadialChart()
+                        .PreparaData()
+                            .Take(10)
+                            .RoundValues(1)
+                            .SeriesFrom(x => x.Domain)
+                            .ValueFrom(x => x.Count())
+                            .Chart
                         .OfType(ChartType.Doughnut)
                         .Theme(ColorPallete.Blue2, ColorPallete.Blue1)
                         .Responsive()
@@ -519,10 +587,13 @@ namespace rbkApiModules.Analytics.Core
             private object MostActiveUsers(List<AnalyticsEntry> data, DateTime from, DateTime to)
             { 
                 var chart = PrefilterResults(data, from, to, null, null)
-                    .GroupBy(x => x.Username)
-                    .Select(x => new NeutralCategoryPoint("default", String.IsNullOrEmpty(x.Key) ? "Anonymous" : x.Key, x.Count()))
-                    .Take(10)
-                    .CreateRadialChart(false)
+                    .CreateRadialChart()
+                        .PreparaData()
+                            .Take(10)
+                            .RoundValues(1)
+                            .SeriesFrom(x => x.Username)
+                            .ValueFrom(x => x.Count())
+                            .Chart
                         .OfType(ChartType.Doughnut)
                         .Theme(ColorPallete.Blue2, ColorPallete.Blue1)
                         .Responsive()
@@ -540,10 +611,13 @@ namespace rbkApiModules.Analytics.Core
             private object MostFailedEndpoints(List<AnalyticsEntry> data, DateTime from, DateTime to)
             { 
                 var chart = PrefilterResults(data, from, to, new[] { "500" }, null)
-                    .GroupBy(x => x.Action)
-                    .Select(x => new NeutralCategoryPoint("default", x.Key, x.Count()))
-                    .Take(10)
-                    .CreateRadialChart(false)
+                    .CreateRadialChart()
+                        .PreparaData()
+                            .Take(10)
+                            .RoundValues(1)
+                            .SeriesFrom(x => x.Action)
+                            .ValueFrom(x => x.Count())
+                            .Chart
                         .OfType(ChartType.Doughnut)
                         .Theme(ColorPallete.Blue2, ColorPallete.Blue1)
                         .Responsive()
@@ -560,11 +634,14 @@ namespace rbkApiModules.Analytics.Core
 
             private object MostResourceHungryEndpoint(List<AnalyticsEntry> data, DateTime from, DateTime to)
             {
-                var chart = PrefilterResults(data, from, to, null, null)
-                    .GroupBy(x => x.Action)
-                    .Select(x => new NeutralCategoryPoint("default", x.Key, Math.Round(x.Average(y => y.TotalTransactionTime), 0)))
-                    .Take(10)
-                    .CreateRadialChart(false)
+                var chart = PrefilterResults(data, from, to, null, null) 
+                    .CreateRadialChart()
+                        .PreparaData()
+                            .Take(10)
+                            .RoundValues(1)
+                            .SeriesFrom(x => x.Action)
+                            .ValueFrom(x => x.Average(y => y.TotalTransactionTime))
+                            .Chart
                         .OfType(ChartType.Doughnut)
                         .Theme(ColorPallete.Blue2, ColorPallete.Blue1)
                         .Responsive()
@@ -582,10 +659,13 @@ namespace rbkApiModules.Analytics.Core
             private object BuildMostUsedEndpoints(List<AnalyticsEntry> data, DateTime from, DateTime to)
             { 
                 var chart = PrefilterResults(data, from, to, null, null)
-                    .GroupBy(x => x.Action)
-                    .Select(x => new NeutralCategoryPoint("default", x.Key, x.Count()))
-                    .Take(10)
-                    .CreateRadialChart(false)
+                    .CreateRadialChart()
+                        .PreparaData()
+                            .Take(10)
+                            .RoundValues(1)
+                            .SeriesFrom(x => x.Action)
+                            .ValueFrom(x => x.Count())
+                            .Chart
                         .OfType(ChartType.Doughnut)
                         .Theme(ColorPallete.Blue2, ColorPallete.Blue1)
                         .Responsive()
@@ -603,10 +683,13 @@ namespace rbkApiModules.Analytics.Core
             private object BuildSlowestReadEndpoints(List<AnalyticsEntry> data, DateTime from, DateTime to)
             { 
                 var chart = PrefilterResults(data, from, to, new[] { "200", "204" }, null)
-                    .GroupBy(x => x.Action)
-                    .Select(x => new NeutralCategoryPoint("default", x.Key, Math.Round(x.Average(y => y.Duration), 0)))
-                    .Take(10)
-                    .CreateRadialChart(false)
+                    .CreateRadialChart()
+                        .PreparaData()
+                            .Take(10)
+                            .RoundValues(1)
+                            .SeriesFrom(x => x.Action)
+                            .ValueFrom(x => x.Average(y => y.Duration))
+                            .Chart
                         .OfType(ChartType.Doughnut)
                         .Theme(ColorPallete.Blue2, ColorPallete.Blue1)
                         .Responsive()
@@ -624,10 +707,13 @@ namespace rbkApiModules.Analytics.Core
             private object BuildTotalTimeComsumptionPerReadEndpoint(List<AnalyticsEntry> data, DateTime from, DateTime to)
             { 
                 var chart = PrefilterResults(data, from, to, new[] { "200", "204" }, new[] { "GET" })
-                    .GroupBy(x => x.Action)
-                    .Select(x => new NeutralCategoryPoint("default", x.Key, x.Sum(y => y.Duration)))
-                    .Take(10)
-                    .CreateRadialChart(false)
+                    .CreateRadialChart()
+                        .PreparaData()
+                            .Take(10)
+                            .RoundValues(1)
+                            .SeriesFrom(x => x.Action)
+                            .ValueFrom(x => x.Sum(y => y.Duration))
+                            .Chart
                         .OfType(ChartType.Doughnut)
                         .Theme(ColorPallete.Blue2, ColorPallete.Blue1)
                         .Responsive()

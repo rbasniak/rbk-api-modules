@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { AnalyticsEntry } from '@models/analytics-entry';
+import { AnalyticsEntry } from '@models/analytics/analytics-entry';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { Select, Store } from '@ngxs/store';
 import { FilteringOptionsSelectors } from '@state/database/analytics/filtering-options/filtering-options.selectors';
@@ -102,7 +102,7 @@ export class SearchPageComponent implements OnInit {
     };
 
     const endpoint: SmzMultiSelectControl<string> = {
-      propertyName: 'endpoints', type: SmzControlType.MULTI_SELECT, name: 'Endpoints', validatorsPreset: { isRequired: false }, defaultLabel: 'All endpoints',
+      propertyName: 'actions', type: SmzControlType.MULTI_SELECT, name: 'Endpoints', validatorsPreset: { isRequired: false }, defaultLabel: 'All endpoints',
       defaultValue: null, showFilter: true, options: this.store.selectSnapshot(FilteringOptionsSelectors.endpoints),
       template: { extraLarge: { row: 'col-3' } }
     };

@@ -1,4 +1,4 @@
-import { AnalyticsEntry } from '@models/analytics-entry';
+import { AnalyticsEntry } from '@models/analytics/analytics-entry';
 import { ChartDefinition } from '@models/chart-definition';
 import { Selector } from '@ngxs/store';
 import { cloneDeep } from 'lodash-es';

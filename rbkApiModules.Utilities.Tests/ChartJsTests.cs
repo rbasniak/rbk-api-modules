@@ -41,7 +41,12 @@ namespace rbkApiModules.Utilities.Tests
                 new NeutralDatePoint("open", new DateTime(2021, 06, 01), 27),
             };
 
-            var chart = data1.CreateLinearChart(GroupingType.Monthly, true) 
+            var chart = data1.CreateLinearChart() 
+                .PreparaData(GroupingType.Monthly)
+                    .SeriesFrom(x => x.SerieId)
+                    .DateFrom(x => x.Date)
+                    .ValueFrom(x => x.Sum(x => x.Value))
+                    .Chart
                 .OfType(ChartType.Mixed)
                 .Padding(0, 0, 5, 0)
                 .WithTitle("Índice de Atendimento de Gestão de Mudanças")  
@@ -128,7 +133,12 @@ namespace rbkApiModules.Utilities.Tests
                 new NeutralDatePoint("Dataset 1", new DateTime(2021, 06, 01), 45),
             };
 
-            var chart = data1.CreateLinearChart(GroupingType.Monthly, true)
+            var chart = data1.CreateLinearChart()
+                .PreparaData(GroupingType.Monthly)
+                    .SeriesFrom(x => x.SerieId)
+                    .DateFrom(x => x.Date)
+                    .ValueFrom(x => x.Sum(x => x.Value))
+                    .Chart
                 .OfType(ChartType.Mixed)
                 .WithTitle("Chart.js Combined Line/Bar Chart")
                     .Chart
@@ -172,7 +182,12 @@ namespace rbkApiModules.Utilities.Tests
                 new NeutralDatePoint("Dataset 2", new DateTime(2021, 06, 01), 60),
             };
 
-            var chart = data1.CreateLinearChart(GroupingType.Monthly, true)
+            var chart = data1.CreateLinearChart()
+                .PreparaData(GroupingType.Monthly)
+                    .SeriesFrom(x => x.SerieId)
+                    .DateFrom(x => x.Date)
+                    .ValueFrom(x => x.Sum(x => x.Value))
+                    .Chart
                 .OfType(ChartType.Line)
                 .WithTitle("Line Chart")
                     .Chart
@@ -214,7 +229,12 @@ namespace rbkApiModules.Utilities.Tests
                 new NeutralDatePoint("Data 2", new DateTime(2021, 06, 01), 60),
             };
 
-            var chart = data1.CreateLinearChart(GroupingType.Monthly, true)
+            var chart = data1.CreateLinearChart()
+                .PreparaData(GroupingType.Monthly)
+                    .SeriesFrom(x => x.SerieId)
+                    .DateFrom(x => x.Date)
+                    .ValueFrom(x => x.Sum(x => x.Value))
+                    .Chart
                 .OfType(ChartType.Bar)
                 .WithTooltips()
                     .Chart
@@ -263,7 +283,12 @@ namespace rbkApiModules.Utilities.Tests
                 new NeutralDatePoint("Data 3", new DateTime(2021, 06, 01), 10),
             };
 
-            var chart = data1.CreateLinearChart(GroupingType.Monthly, true)
+            var chart = data1.CreateLinearChart()
+                .PreparaData(GroupingType.Monthly)
+                    .SeriesFrom(x => x.SerieId)
+                    .DateFrom(x => x.Date)
+                    .ValueFrom(x => x.Sum(x => x.Value))
+                    .Chart
                 .OfType(ChartType.StackedBar)
                 .WithTitle("Bar Chart - Stacked")
                     .Chart
@@ -347,7 +372,12 @@ namespace rbkApiModules.Utilities.Tests
                 new NeutralDatePoint("Data 2", new DateTime(2021, 06, 01), 60),
             };
 
-            var chart = data1.CreateLinearChart(GroupingType.Monthly, true)
+            var chart = data1.CreateLinearChart()
+                .PreparaData(GroupingType.Monthly)
+                    .SeriesFrom(x => x.SerieId)
+                    .DateFrom(x => x.Date)
+                    .ValueFrom(x => x.Sum(x => x.Value))
+                    .Chart
                 .OfType(ChartType.Bar)
                 .WithTooltips()
                     .Chart
@@ -380,7 +410,12 @@ namespace rbkApiModules.Utilities.Tests
                 new NeutralDatePoint("Data 1", new DateTime(2021, 06, 01), 3),
             };
 
-            var chart = data1.CreateLinearChart(GroupingType.Monthly, true)
+            var chart = data1.CreateLinearChart()
+                .PreparaData(GroupingType.Monthly)
+                    .SeriesFrom(x => x.SerieId)
+                    .DateFrom(x => x.Date)
+                    .ValueFrom(x => x.Sum(x => x.Value))
+                    .Chart
                 .OfType(ChartType.Bar)
                 .WithTooltips()
                     .Chart

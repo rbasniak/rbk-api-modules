@@ -20,11 +20,11 @@
 <ng-container *ngIf="(data$ | async) as data">
   <div class="p-mt-4">
     <p-panel header="ACTIVITY" [toggleable]="true">
-      <div class="grid grid-cols-1 gap-4 p-mb-6">
+      <div class="grid grid-cols-1 gap-4 mb-6">
         <smz-ui-chart [type]="data.dailyRequests.type" [options]="data.dailyRequests.config" [data]="data.dailyRequests.data"
           height="300px"></smz-ui-chart>
       </div>
-      <div class="grid grid-cols-3 gap-4 p-mb-6">
+      <div class="grid grid-cols-3 gap-4 mb-6">
         <div class="col-span-1">
           <smz-ui-chart [type]="data.mostActiveUsers.type" [options]="data.mostActiveUsers.config" [data]="data.mostActiveUsers.data"
             height="300px"></smz-ui-chart>
@@ -38,11 +38,11 @@
             height="300px"></smz-ui-chart>
         </div>
       </div>
-      <div class="grid grid-cols-1 gap-4 p-mb-3">
+      <div class="grid grid-cols-1 gap-4 mb-3">
         <smz-ui-chart [type]="data.dailyActiveUsers.type" [options]="data.dailyActiveUsers.config" [data]="data.dailyActiveUsers.data"
           height="300px"></smz-ui-chart>
       </div>
-      <div class="grid grid-cols-2 gap-4 p-mb-3">
+      <div class="grid grid-cols-2 gap-4 mb-3">
         <div class="col-span-1">
           <smz-ui-chart [type]="data.mostActiveDays.type" [options]="data.mostActiveDays.config" [data]="data.mostActiveDays.data"
             height="300px"></smz-ui-chart>
@@ -56,8 +56,16 @@
   </div>
 
   <div class="p-mt-4">
+    <p-panel header="USER SESSIONS" [toggleable]="true">
+      <div class="grid grid-cols-3 gap-4 mb-6">
+        <h3>To be implemented...</h3>
+      </div>
+    </p-panel>
+  </div>
+
+  <div class="p-mt-4">
     <p-panel header="ERRORS" [toggleable]="true">
-      <div class="grid grid-cols-3 gap-4 p-mb-6">
+      <div class="grid grid-cols-3 gap-4 mb-6">
         <div class="col-span-2">
           <smz-ui-chart [type]="data.dailyErrors.type" [options]="data.dailyErrors.config" [data]="data.dailyErrors.data"
             height="300px"></smz-ui-chart>
@@ -82,7 +90,7 @@
 
   <div class="p-mt-4">
     <p-panel header="TRAFIC" [toggleable]="true">
-      <div class="grid grid-cols-3 gap-4 p-mb-6">
+      <div class="grid grid-cols-3 gap-4 mb-6">
         <div class="col-span-2">
           <smz-ui-chart [type]="data.dailyInboundTraffic.type" [options]="data.dailyInboundTraffic.config" [data]="data.dailyInboundTraffic.data"
             height="300px"></smz-ui-chart>
@@ -107,7 +115,7 @@
 
   <div class="p-mt-4">
     <p-panel header="PERFORMANCE" [toggleable]="true">
-      <div class="grid grid-cols-3 gap-4 p-mb-6">
+      <div class="grid grid-cols-3 gap-4 mb-6">
         <div class="col-span-1">
           <smz-ui-chart [type]="data.totalTimeComsumptionPerReadEndpoint.type" [options]="data.totalTimeComsumptionPerReadEndpoint.config" [data]="data.totalTimeComsumptionPerReadEndpoint.data"
             height="300px"></smz-ui-chart>
@@ -126,7 +134,7 @@
 
   <div class="p-mt-4">
     <p-panel header="DATABASE USAGE" [toggleable]="true">
-      <div class="grid grid-cols-3 gap-4 p-mb-6">
+      <div class="grid grid-cols-3 gap-4 mb-6">
         <div class="col-span-2">
           <smz-ui-chart [type]="data.dailyTransactions.type" [options]="data.dailyTransactions.config" [data]="data.dailyTransactions.data"
             height="300px"></smz-ui-chart>

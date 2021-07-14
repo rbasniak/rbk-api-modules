@@ -2,11 +2,11 @@ import { State, Action, StateContext, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { FilteringOptions } from '@models/filtering-options';
+import { FilteringOptions } from '@models/analytics/filtering-options';
 import { AnalyticsService } from '@services/api/analytics.service';
 import { FilteringOptionsActions } from './filtering-options.actions';
 
-export const FILTERING_OPTIONS_STATE_NAME = 'filteringOptions';
+export const ANALYTICS_FILTERING_OPTIONS_STATE_NAME = 'analyticsFilteringOptions';
 
 export interface FilteringOptionsStateModel {
   lastUpdated: Date | null;
@@ -14,7 +14,7 @@ export interface FilteringOptionsStateModel {
 }
 
 @State<FilteringOptionsStateModel>({
-  name: FILTERING_OPTIONS_STATE_NAME,
+  name: ANALYTICS_FILTERING_OPTIONS_STATE_NAME,
   defaults: { lastUpdated: null, data: null }
 })
 @Injectable()
