@@ -270,6 +270,8 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
 
         public LinearDateDataBuilder<T> ValueFrom(Func<IGrouping<DateTime, T>, double> valueSelector)
         {
+            if (_dateSelector == null) throw new SafeException($"{nameof(DateFrom)} must be called before {nameof(ValueFrom)} in charts with Date axis");
+
             _lastCall = nameof(ValueFrom);
 
             var fromDate = _forceStartDate.HasValue ? _forceStartDate.Value : _linearChartBuilder._originalData.Min(x => _dateSelector(x));

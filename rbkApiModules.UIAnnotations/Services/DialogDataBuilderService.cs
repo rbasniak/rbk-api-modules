@@ -241,7 +241,7 @@ namespace rbkApiModules.UIAnnotations
             {
                 return DialogControlTypes.List;
             }
-            else if (_type.FullName.StartsWith("System.Collections.Generic.List`1"))
+            else if (_type.FullName.StartsWith("System.Collections.Generic.List`1") || _type.FullName.StartsWith("System.Collections.Generic.IEnumerable`1"))
             {
                 return DialogControlTypes.MultiSelect;
             }
