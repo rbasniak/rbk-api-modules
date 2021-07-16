@@ -215,8 +215,9 @@ namespace rbkApiModules.UIAnnotations
             {
                 return DialogControlTypes.Number;
             }
-            else if (_type.FullName == typeof(Single).FullName || _type.FullName == typeof(Double).FullName ||
-                     _type.FullName == typeof(Single?).FullName || _type.FullName == typeof(Double?).FullName)
+            else if (_type.FullName == typeof(Single).FullName || _type.FullName == typeof(Single?).FullName ||
+                     _type.FullName == typeof(Double).FullName || _type.FullName == typeof(Double?).FullName ||
+                     _type.FullName == typeof(Decimal).FullName || _type.FullName == typeof(Decimal?).FullName)
             {
                 return DialogControlTypes.Number;
             }
