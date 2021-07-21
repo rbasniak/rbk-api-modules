@@ -29,6 +29,7 @@ namespace rbkApiModules.Analytics.SqlServer
         }
 
         public DbSet<AnalyticsEntry> Data { get; set; }
+        public DbSet<SessionEntry> Sessions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

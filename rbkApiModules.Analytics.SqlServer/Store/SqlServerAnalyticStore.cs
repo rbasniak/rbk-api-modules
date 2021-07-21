@@ -145,5 +145,11 @@ namespace rbkApiModules.Analytics.SqlServer
 
             return data;
         }
+
+        public void StoreSession(SessionEntry session)
+        {
+            _context.Sessions.Add(session);
+            _context.SaveChanges();
+        }
     }
 }

@@ -20,6 +20,7 @@ namespace rbkApiModules.Demo.Controllers
         [HttpGet("test-all-clients")]
         public ActionResult TestAllClients()
         {
+            var temp = HttpContext.User.Identity.IsAuthenticated;
             return Ok("Autorizado");
         }
 

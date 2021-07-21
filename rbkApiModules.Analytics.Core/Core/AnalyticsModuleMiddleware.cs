@@ -18,6 +18,7 @@ namespace rbkApiModules.Analytics.Core
         private List<Func<HttpContext, bool>> _exclude;
         private readonly RequestDelegate _next;
         private string _version;
+        
         public AnalyticsModuleMiddleware(RequestDelegate next, AnalyticsModuleOptions options)
         {
             _next = next;
@@ -181,6 +182,7 @@ namespace rbkApiModules.Analytics.Core
         private List<Func<HttpContext, bool>> _exclude;
         private bool _seedSampleDatabase;
         private string _version;
+        private int _idleInterval;
 
         public AnalyticsModuleOptions()
         {
@@ -199,6 +201,7 @@ namespace rbkApiModules.Analytics.Core
         public bool SeedSampleDatabase => _seedSampleDatabase;
 
         public string Version => _version;
+        public int SessionIdleLimit => _idleInterval;
 
         public AnalyticsModuleOptions UseDemoData()
         {
@@ -212,6 +215,16 @@ namespace rbkApiModules.Analytics.Core
             return this;
         }
 
+        /// <summary>
+        /// Enable the session analytics feature
+        /// </summary>
+        /// <param name="iddleInterval">Maximum idle interval, in minutes</param>
+        /// <returns></returns>
+        public AnalyticsModuleOptions UseSessionAnalytics(int idleInterval)
+        {
+            _idleInterval = idleInterval;
+            return this;
+        }
 
         public AnalyticsModuleOptions LimitToPath(string path) => Exclude(x => !x.Request.Path.StartsWithSegments(path));
 

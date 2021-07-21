@@ -12,21 +12,21 @@ namespace rbkApiModules.Analytics.Core
     public class SessionAnalyticsMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly bool _useSessionsMiddleware;
-        private readonly int _sessionInactivityLimit;
+        private readonly AnalyticsModuleOptions _options;
         private static List<SessionData> Sessions = new List<SessionData>();
 
         public SessionAnalyticsMiddleware(RequestDelegate next, AnalyticsModuleOptions options)
         {
             _next = next;
-            //_useSessionsMiddleware = options.SessionMiddlewareEnabled;
-            //_sessionInactivityLimit = options.SessionInactivityLimit;
+            _options = options;
         }
 
         public async Task Invoke(HttpContext context)
         {
             try
             {
+                await _next(context);
+
                 if (context.User.Identity.IsAuthenticated)
                 {
                     var username = context.User.Identity.Name.ToLower();
@@ -41,24 +41,44 @@ namespace rbkApiModules.Analytics.Core
                             Start = DateTime.UtcNow,
                             End = DateTime.UtcNow,
                         };
+
+                        Sessions.Add(existingSession);
                     }
                     else
                     {
-                        existingSession.End = DateTime.UtcNow;
+                        if (existingSession.Inactivity <= _options.SessionIdleLimit)
+                        {
+                            existingSession.End = DateTime.UtcNow;
+                        }
                     }
 
+                    var createNewUserSession = false;
                     var sessionsToRemove = new List<SessionData>();
-
-                    foreach (var session in Sessions.Where(x => x.Inactivity >= _sessionInactivityLimit))
+                    foreach (var session in Sessions.Where(x => x.Inactivity >= _options.SessionIdleLimit))
                     {
-                        // var store = context.RequestServices.GetService<IAnalyticModuleStore>();
-                        // store.StoreData(data);
+                        var store = context.RequestServices.GetService<IAnalyticModuleStore>();
+                        store.StoreSession(new SessionEntry(session.Username, session.Start, session.End));
+
+                        if (session.Username == username)
+                        {
+                            createNewUserSession = true;
+                        }
                     }
 
-                    Sessions = Sessions.Where(x => x.Inactivity < _sessionInactivityLimit).ToList();
-                }
+                    if (createNewUserSession)
+                    {
+                        existingSession = new SessionData
+                        {
+                            Username = username,
+                            Start = DateTime.UtcNow,
+                            End = DateTime.UtcNow,
+                        };
 
-                await _next(context);
+                        Sessions.Add(existingSession);
+                    }
+
+                    Sessions = Sessions.Where(x => x.Inactivity < _options.SessionIdleLimit).ToList();
+                }
             }
             finally
             {
