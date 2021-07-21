@@ -478,5 +478,10 @@ namespace rbkApiModules.Analytics.Core.Tests
         {
             Data = request;
         }
+
+        public void StoreSession(SessionEntry session)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
