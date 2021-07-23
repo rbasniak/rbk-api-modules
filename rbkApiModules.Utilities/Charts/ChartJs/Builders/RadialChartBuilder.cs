@@ -214,7 +214,14 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
 
             foreach (var serieData in untouchedData)
             {
-                serie.Data.Add(valueSelector(serieData));
+                var value = valueSelector(serieData);
+
+                if (_decimalPlaces.HasValue)
+                {
+                    value = Math.Round(value, _decimalPlaces.Value);
+                }
+
+                serie.Data.Add(value);
                 if (_appendExtraData)
                 {
                     serie.Extra.Add(serieData.Select(x => _converter(x)).ToList());

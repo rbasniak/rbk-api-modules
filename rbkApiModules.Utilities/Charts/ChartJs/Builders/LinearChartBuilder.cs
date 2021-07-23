@@ -190,6 +190,24 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
 
             return this;
         }
+
+        public LinearChartBuilder<T> SetColors(ColorPallete pallete, params int[] indices)
+        {
+            var colors = ChartCollorSelector.GetColors(pallete);
+
+            for (int i = 0; i < Builder.Data.Datasets.Count; i++)
+            {
+                var color = i < colors.Length ? colors[indices[i]] : "#777777";
+
+                Builder.Data.Datasets[i].BackgroundColor = color.ToLower() + "ff";
+                Builder.Data.Datasets[i].BorderColor = color.ToLower();
+
+                Builder.Data.Datasets[i].PointBackgroundColor = color.ToLower();
+                Builder.Data.Datasets[i].PointBorderColor = color.ToLower();
+            }
+
+            return this;
+        } 
     }
 
     public class LinearDateDataBuilder<T>
@@ -204,6 +222,7 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
         private bool _appendExtraData;
         private int? _decimalPlaces;
         private string _lastCall;
+        private int? _topX;
 
         public LinearChartBuilder<T> Chart
         {
@@ -230,6 +249,12 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
         public LinearDateDataBuilder<T> EnforceEndDate(DateTime date)
         {
             _forceEndDate = date;
+            return this;
+        }
+        public LinearDateDataBuilder<T> Take(int value)
+        {
+            _topX = value;
+
             return this;
         }
 
@@ -309,6 +334,11 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
 
             chart.Data.Datasets = chart.Data.Datasets.OrderByDescending(x => x.Data.Sum(x => x.Y)).ToList();
 
+            if (_topX != null)
+            {
+                chart.Data.Datasets = chart.Data.Datasets.Take(_topX.Value).ToList();
+            }
+
             _linearChartBuilder.Builder.Data = chart.Data;
 
             return this; 
@@ -368,12 +398,22 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
     public class LinearCategoryDataBuilder<T>
     {
         private LinearChartBuilder<T> _linearChartBuilder;
+        private Func<T, string> _categorySelector;
         private Func<T, string> _seriesSelector;
         private Func<T, object> _converter;
         private bool _appendExtraData;
         private int? _decimalPlaces;
+        private string _lastCall;
 
-        public LinearChartBuilder<T> Chart => _linearChartBuilder;
+        public LinearChartBuilder<T> Chart
+        {
+            get
+            {
+                if (_lastCall != nameof(ValueFrom)) throw new SafeException($"Last method called must be {nameof(ValueFrom)}");
+
+                return _linearChartBuilder;
+            }
+        }
 
         public LinearCategoryDataBuilder(LinearChartBuilder<T> linearChartBuilder)
         {
@@ -395,23 +435,36 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
             return this;
         }
 
+        public LinearCategoryDataBuilder<T> CategoryFrom(Func<T, string> categorySelector)
+        {
+            _categorySelector = categorySelector;
+
+            return this;
+        }
+
         public LinearCategoryDataBuilder<T> SeriesFrom(Func<T, string> seriesSelector)
         {
             _seriesSelector = seriesSelector;
 
             return this;
-        }  
+        }
 
         public LinearCategoryDataBuilder<T> ValueFrom(Func<IGrouping<string, T>, double> valueSelector)
         {
+            if (_categorySelector == null) throw new SafeException($"{nameof(CategoryFrom)} must be called before {nameof(ValueFrom)} in charts with Category axis");
+
+            _lastCall = nameof(ValueFrom);
+
             var chart = new LinearChart();
 
-            foreach (var serieData in _linearChartBuilder._originalData.GroupBy(x => "default"))
+            foreach (var serieData in _linearChartBuilder._originalData.GroupBy(x => _categorySelector(x)))
             {
-                var serie = new LinearDataset("default");
+                var serie = new LinearDataset(_categorySelector(serieData.First()));
 
-                foreach (var groupedSerieData in serieData.GroupBy(x => _seriesSelector(x)))
+                foreach (var groupedSerieData in serieData.GroupBy(x => _categorySelector(x)))
                 {
+                    var point = serie.Data.Single(x => x.X == new Point(_categorySelector(groupedSerieData.First()), 0, null).X);
+
                     var value = valueSelector(groupedSerieData);
 
                     if (_decimalPlaces != null)
@@ -419,24 +472,65 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
                         value = Math.Round(value, _decimalPlaces.Value);
                     }
 
-                    List<object> extraData = new List<object>();
+                    point.Y = value;
 
                     if (_appendExtraData)
                     {
-                        extraData = groupedSerieData.Select(_converter).ToList();
+                        point.Data = groupedSerieData.Select(_converter);
                     }
-
-                    serie.Data.Add(new Point(groupedSerieData.Key.ToString(), value, extraData));
-
                 }
 
                 chart.Data.Datasets.Add(serie);
             }
 
+            chart.Data.Datasets = chart.Data.Datasets.OrderByDescending(x => x.Data.Sum(x => x.Y)).ToList();
+
+            // TODO: Top X
+            //if (_topX != null)
+            //{
+            //    chart.Data.Datasets = chart.Data.Datasets.Take(_topX.Value).ToList();
+            //}
+
             _linearChartBuilder.Builder.Data = chart.Data;
 
             return this;
         }
+
+        //public LinearCategoryDataBuilder<T> ValueFrom(Func<IGrouping<string, T>, double> valueSelector)
+        //{
+        //    var chart = new LinearChart();
+
+        //    foreach (var serieData in _linearChartBuilder._originalData.GroupBy(x => "default"))
+        //    {
+        //        var serie = new LinearDataset("default");
+
+        //        foreach (var groupedSerieData in serieData.GroupBy(x => _categorySelector(x)))
+        //        {
+        //            var value = valueSelector(groupedSerieData);
+
+        //            if (_decimalPlaces != null)
+        //            {
+        //                value = Math.Round(value, _decimalPlaces.Value);
+        //            }
+
+        //            List<object> extraData = new List<object>();
+
+        //            if (_appendExtraData)
+        //            {
+        //                extraData = groupedSerieData.Select(_converter).ToList();
+        //            }
+
+        //            serie.Data.Add(new Point(groupedSerieData.Key.ToString(), value, extraData));
+
+        //        }
+
+        //        chart.Data.Datasets.Add(serie);
+        //    }
+
+        //    _linearChartBuilder.Builder.Data = chart.Data;
+
+        //    return this;
+        //}
 
         public LinearCategoryDataBuilder<T> RoundValues(int decimalPlaces)
         {
