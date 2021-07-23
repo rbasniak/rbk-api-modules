@@ -457,14 +457,12 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
 
             var chart = new LinearChart();
 
-            foreach (var serieData in _linearChartBuilder._originalData.GroupBy(x => _categorySelector(x)))
+            foreach (var serieData in _linearChartBuilder._originalData.GroupBy(x => _seriesSelector(x)))
             {
-                var serie = new LinearDataset(_categorySelector(serieData.First()));
+                var serie = new LinearDataset(_seriesSelector(serieData.First()));
 
                 foreach (var groupedSerieData in serieData.GroupBy(x => _categorySelector(x)))
                 {
-                    var point = serie.Data.Single(x => x.X == new Point(_categorySelector(groupedSerieData.First()), 0, null).X);
-
                     var value = valueSelector(groupedSerieData);
 
                     if (_decimalPlaces != null)
@@ -472,12 +470,14 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
                         value = Math.Round(value, _decimalPlaces.Value);
                     }
 
-                    point.Y = value;
+                    List<object> extraData = null;
 
                     if (_appendExtraData)
                     {
-                        point.Data = groupedSerieData.Select(_converter);
+                        extraData = groupedSerieData.Select(_converter).ToList();
                     }
+
+                    serie.Data.Add(new Point(_categorySelector(groupedSerieData.First()), value, extraData));
                 }
 
                 chart.Data.Datasets.Add(serie);
@@ -492,6 +492,13 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
             //}
 
             _linearChartBuilder.Builder.Data = chart.Data;
+
+            return this;
+        }
+
+        public LinearCategoryDataBuilder<T> SingleSerie()
+        {
+            _seriesSelector = x => "default";
 
             return this;
         }

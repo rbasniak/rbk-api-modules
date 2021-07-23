@@ -538,6 +538,96 @@ namespace rbkApiModules.Utilities.Tests
             }));
         }
 
+        [Fact]
+        public void Sprints()
+        {
+            var data = new List<SpeedSeries>
+            {
+                new SpeedSeries("done", "Sprint88", 50),
+                new SpeedSeries("extra", "Sprint88", 5),
+
+                new SpeedSeries("done", "Sprint89", 75),
+                new SpeedSeries("extra", "Sprint89", 3),
+
+                new SpeedSeries("done", "Sprint90", 63),
+                new SpeedSeries("extra", "Sprint90", 9),
+
+                new SpeedSeries("done", "Sprint91", 95),
+                new SpeedSeries("extra", "Sprint91", 0)
+            };
+
+            var results = data.CreateLinearChart()
+                .PreparaData()
+                    .SeriesFrom(x => x.SerieId)
+                    .CategoryFrom(x => x.SprintName)
+                    .ValueFrom(x => x.Sum(x => x.Value))
+                    .Chart
+                .Responsive()
+                .OfType(ChartType.Bar)
+                .Theme(ColorPallete.Spring1)
+                .WithLegend()
+                    .Chart
+                .Build();
+
+            Debug.WriteLine(JsonConvert.SerializeObject(results, new JsonSerializerSettings
+            {
+                Formatting = Formatting.Indented,
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            }));
+        }
+
+        [Fact]
+        public void Sprints2()
+        {
+            var data = new List<SpeedSeries>
+            {
+                new SpeedSeries("done", "Sprint88", 50),
+                new SpeedSeries("extra", "Sprint88", 5),
+
+                new SpeedSeries("done", "Sprint89", 75),
+                new SpeedSeries("extra", "Sprint89", 3),
+
+                new SpeedSeries("done", "Sprint90", 63),
+                new SpeedSeries("extra", "Sprint90", 9),
+
+                new SpeedSeries("done", "Sprint91", 95),
+                new SpeedSeries("extra", "Sprint91", 0)
+            };
+
+            var results = data.CreateLinearChart()
+                .PreparaData()
+                    .SingleSerie()
+                    .CategoryFrom(x => x.SprintName)
+                    .ValueFrom(x => x.Sum(x => x.Value))
+                    .Chart
+                .Responsive()
+                .OfType(ChartType.Bar)
+                .Theme(ColorPallete.Spring1)
+                .WithLegend()
+                    .Chart
+                .Build();
+
+            Debug.WriteLine(JsonConvert.SerializeObject(results, new JsonSerializerSettings
+            {
+                Formatting = Formatting.Indented,
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            }));
+        }
+
+        private class SpeedSeries
+        {
+            public SpeedSeries(string serieId, string sprintName, double value)
+            {
+                SerieId = serieId;
+                Value = value;
+                SprintName = sprintName;
+            }
+
+            public string SprintName { get; set; }
+            public double Value { get; set; }
+            public string SerieId { get; set; }
+        }
+
 
 
         //    [Fact]
