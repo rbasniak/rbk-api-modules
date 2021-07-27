@@ -10,7 +10,7 @@ namespace rbkApiModules.Analytics.Core
             Username = username;
             Start = start;
             End = end;
-            Duration = (end - start).TotalMinutes;
+            Duration = (float)(end - start).TotalMinutes;
         } 
 
         public Guid Id { get; set; }
@@ -18,6 +18,6 @@ namespace rbkApiModules.Analytics.Core
         public DateTime End { get; set; }
         [MaxLength(128)]
         public string Username { get; set; }
-        public double Duration { get; set; }
+        public float Duration { get; set; }
     }
 }

@@ -41,7 +41,7 @@ namespace rbkApiModules.Analytics.Core
             {
                 var results = new AnalyticsDashboard();
 
-                var data = await _context.FilterAsync(request.DateFrom, request.DateTo);
+                var data = await _context.FilterStatisticsAsync(request.DateFrom, request.DateTo);
 
                 results.AverageTransactionsPerEndpoint = BuildAverageTransactionsPerEndpoint(data, request.DateFrom, request.DateTo);   
                 results.BiggestResponsesEndpoints = BuildBiggestResponsesEndpoints(data, request.DateFrom, request.DateTo); 

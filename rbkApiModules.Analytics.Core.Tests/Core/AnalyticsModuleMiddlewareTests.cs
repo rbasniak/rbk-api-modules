@@ -452,24 +452,24 @@ namespace rbkApiModules.Analytics.Core.Tests
     {
         public AnalyticsEntry Data { get; set; }
 
-        public Task<List<AnalyticsEntry>> AllAsync()
+        public Task<List<AnalyticsEntry>> GetStatisticsAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Task<FilterOptionListData> AllFilteringLists()
+        public Task<FilterOptionListData> GetFilteringLists()
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<AnalyticsEntry>> FilterAsync(DateTime from, DateTime to, string[] versions, 
+        public Task<List<AnalyticsEntry>> FilterStatisticsAsync(DateTime from, DateTime to, string[] versions, 
             string[] areas, string[] domains, string[] actions, string[] users, string[] agents, 
             int[] responses, string[] methods, int duration, string entityId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<AnalyticsEntry>> FilterAsync(DateTime from, DateTime to)
+        public Task<List<AnalyticsEntry>> FilterStatisticsAsync(DateTime from, DateTime to)
         {
             throw new NotImplementedException();
         }
@@ -480,6 +480,11 @@ namespace rbkApiModules.Analytics.Core.Tests
         }
 
         public void StoreSession(SessionEntry session)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<SessionEntry>> GetSessionsAsync(DateTime dateFrom, DateTime dateTo)
         {
             throw new NotImplementedException();
         }

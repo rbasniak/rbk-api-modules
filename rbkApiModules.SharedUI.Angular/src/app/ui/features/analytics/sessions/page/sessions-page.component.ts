@@ -1,24 +1,23 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { AnalyticsEntry } from '@models/analytics/analytics-entry';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { Select, Store } from '@ngxs/store';
-import { DashboardFeatureActions } from '@state/features/analytics/dashboard/dashboard.actions';
-import { DashboardFeatureSelectors } from '@state/features/analytics/dashboard/dashboard.selectors';
 import { FormGroupComponent, SmzCalendarControl, SmzControlType, SmzDropDownControl, SmzForm } from 'ngx-smz-dialogs';
-import { Observable } from 'rxjs';
 import * as moment_ from 'moment';
+import { SessionsFeatureSelectors } from '@state/features/analytics/sessions/sessions.selectors';
+import { Observable } from 'rxjs';
+import { SessionsFeatureActions } from '@state/features/analytics/sessions/sessions.actions';
 
 const moment = moment_;
 
 @UntilDestroy()
 @Component({
-  selector: 'app-dashboard-page',
-  templateUrl: 'dashboard-page.component.html',
-  styleUrls: ['dashboard-page.component.scss'],
+  selector: 'app-sessions-page',
+  templateUrl: 'sessions-page.component.html',
+  styleUrls: ['sessions-page.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class DashboardPageComponent implements OnInit {
-  @Select(DashboardFeatureSelectors.data) public data$: Observable<any>;
+export class SessionsPageComponent implements OnInit {
+  @Select(SessionsFeatureSelectors.data) public data$: Observable<any>;
 
   public formConfig: SmzForm<unknown> = null;
 
@@ -63,6 +62,6 @@ export class DashboardPageComponent implements OnInit {
 
   public filter(event: FormGroupComponent): void {
     const response = event.getData().data as any;
-    this.store.dispatch(new DashboardFeatureActions.Filter(response.dateFrom, response.dateTo, response.groupingId));
+    this.store.dispatch(new SessionsFeatureActions.LoadAll(response.dateFrom, response.dateTo, response.groupingId));
   }
 }

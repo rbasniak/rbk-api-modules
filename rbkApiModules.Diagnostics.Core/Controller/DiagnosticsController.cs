@@ -51,6 +51,16 @@ namespace rbkApiModules.Diagnostics.Core
             var result = await Mediator.Send(data);
 
             return HttpResponse(result);
-        }  
+        }
+
+        [IgnoreOnCodeGeneration]
+        [HttpPost]
+        [Route("delete-old-data")]
+        public async Task<ActionResult> DeleteOldData([FromBody] DeletePriorFrom.Command data)
+        {
+            var result = await Mediator.Send(data);
+
+            return HttpResponse(result);
+        }
     }
 }

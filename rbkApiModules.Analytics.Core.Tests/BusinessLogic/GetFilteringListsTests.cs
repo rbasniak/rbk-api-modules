@@ -47,7 +47,7 @@ namespace rbkApiModules.Analytics.Core.Tests
                 });
             }
 
-            storeMock.Setup(x => x.AllAsync()).Returns(Task.FromResult(analytics));
+            storeMock.Setup(x => x.GetStatisticsAsync()).Returns(Task.FromResult(analytics));
 
             var command = new GetFilteringLists.Command();
 

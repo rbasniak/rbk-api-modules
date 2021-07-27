@@ -12,13 +12,15 @@ namespace rbkApiModules.Analytics.Core
     public class SessionAnalyticsMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly AnalyticsModuleOptions _options;
-        private static List<SessionData> Sessions = new List<SessionData>();
+        internal static List<SessionData> Sessions = new List<SessionData>();
+        internal static bool IsLocked = false;
+        internal static bool HasStarted = false;
+        internal static int SessionTimeout;
 
         public SessionAnalyticsMiddleware(RequestDelegate next, AnalyticsModuleOptions options)
         {
             _next = next;
-            _options = options;
+            SessionTimeout = options.SessionIdleLimit;
         }
 
         public async Task Invoke(HttpContext context)
@@ -29,55 +31,44 @@ namespace rbkApiModules.Analytics.Core
 
                 if (context.User.Identity.IsAuthenticated)
                 {
-                    var username = context.User.Identity.Name.ToLower();
+                    HasStarted = true;
 
-                    var existingSession = Sessions.SingleOrDefault(x => x.Username == username);
-
-                    if (existingSession == null)
+                    if (!IsLocked)
                     {
-                        existingSession = new SessionData
-                        {
-                            Username = username,
-                            Start = DateTime.UtcNow,
-                            End = DateTime.UtcNow,
-                        };
+                        var username = context.User.Identity.Name.ToLower();
 
-                        Sessions.Add(existingSession);
-                    }
-                    else
-                    {
-                        if (existingSession.Inactivity <= _options.SessionIdleLimit)
+                        var existingSession = Sessions.OrderByDescending(x => x.Start).FirstOrDefault(x => x.Username == username);
+
+                        if (existingSession == null)
                         {
-                            existingSession.End = DateTime.UtcNow;
+                            var session = new SessionData
+                            {
+                                Username = username,
+                                Start = DateTime.UtcNow,
+                                End = DateTime.UtcNow,
+                            };
+
+                            Sessions.Add(session);
+                        }
+                        else
+                        {
+                            if (existingSession.Inactivity <= SessionTimeout)
+                            {
+                                existingSession.End = DateTime.UtcNow;
+                            }
+                            else
+                            {
+                                var session = new SessionData
+                                {
+                                    Username = username,
+                                    Start = DateTime.UtcNow,
+                                    End = DateTime.UtcNow,
+                                };
+
+                                Sessions.Add(session);
+                            }
                         }
                     }
-
-                    var createNewUserSession = false;
-                    var sessionsToRemove = new List<SessionData>();
-                    foreach (var session in Sessions.Where(x => x.Inactivity >= _options.SessionIdleLimit))
-                    {
-                        var store = context.RequestServices.GetService<IAnalyticModuleStore>();
-                        store.StoreSession(new SessionEntry(session.Username, session.Start, session.End));
-
-                        if (session.Username == username)
-                        {
-                            createNewUserSession = true;
-                        }
-                    }
-
-                    if (createNewUserSession)
-                    {
-                        existingSession = new SessionData
-                        {
-                            Username = username,
-                            Start = DateTime.UtcNow,
-                            End = DateTime.UtcNow,
-                        };
-
-                        Sessions.Add(existingSession);
-                    }
-
-                    Sessions = Sessions.Where(x => x.Inactivity < _options.SessionIdleLimit).ToList();
                 }
             }
             finally

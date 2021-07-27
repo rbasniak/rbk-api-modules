@@ -15,5 +15,6 @@ namespace rbkApiModules.Diagnostics.Commons
             string[] messages, string requestId);
 
         Task<List<DiagnosticsEntry>> AllAsync();
+        void DeleteOldEntries(int daysToKeep);
     }
 }

@@ -30,7 +30,7 @@ namespace rbkApiModules.Analytics.SqlServer
             _context.SaveChanges();
         } 
 
-        public async Task<List<AnalyticsEntry>> FilterAsync(DateTime from, DateTime to, string[] versions, string[] areas,
+        public async Task<List<AnalyticsEntry>> FilterStatisticsAsync(DateTime from, DateTime to, string[] versions, string[] areas,
             string[] domains, string[] actions, string[] users, string[] agents, int[] responses, string[] methods, int duration, string entityId)
         {
             from = from.AddHours(_timezoneOffsetours);
@@ -90,7 +90,7 @@ namespace rbkApiModules.Analytics.SqlServer
             return result;
         }
 
-        public async Task<List<AnalyticsEntry>> FilterAsync(DateTime from, DateTime to)
+        public async Task<List<AnalyticsEntry>> FilterStatisticsAsync(DateTime from, DateTime to)
         {
             from = from.AddHours(_timezoneOffsetours);
             to = to.AddHours(_timezoneOffsetours);
@@ -107,7 +107,7 @@ namespace rbkApiModules.Analytics.SqlServer
             return FixTimezone(result);
         }
 
-        public async Task<List<AnalyticsEntry>> AllAsync()
+        public async Task<List<AnalyticsEntry>> GetStatisticsAsync()
         {
             return FixTimezone(await _context.Data.ToListAsync());
         }
@@ -117,7 +117,7 @@ namespace rbkApiModules.Analytics.SqlServer
             return data.Select(x => x.FixTimezone(_timezoneOffsetours)).ToList();
         }
 
-        public async Task<FilterOptionListData> AllFilteringLists()
+        public async Task<FilterOptionListData> GetFilteringLists()
         {
             var data = new FilterOptionListData();
 
@@ -150,6 +150,16 @@ namespace rbkApiModules.Analytics.SqlServer
         {
             _context.Sessions.Add(session);
             _context.SaveChanges();
+        }
+
+        public Task<List<SessionEntry>> GetSessionsAsync(DateTime dateFrom, DateTime dateTo)
+        {
+            return _context.Sessions.Where(x => x.Start.Date >= dateFrom.Date && x.End.Date <= dateTo.Date).ToListAsync();
+        }
+
+        public void DeleteStatisticsFromMatchingPathAsync(string searchText)
+        {
+            _context.RemoveRange(_context.Data.Where(x => x.Path.ToLower().Contains(searchText.ToLower())));
         }
     }
 }

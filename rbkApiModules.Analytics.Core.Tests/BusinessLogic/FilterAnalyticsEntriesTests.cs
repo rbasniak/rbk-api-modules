@@ -19,7 +19,7 @@ namespace rbkApiModules.Analytics.Core.Tests
         {
             var storeMock = new Mock<IAnalyticModuleStore>();
 
-            storeMock.Setup(x => x.FilterAsync(
+            storeMock.Setup(x => x.FilterStatisticsAsync(
                 It.IsAny<DateTime>(),
                 It.IsAny<DateTime>(),
                 It.IsAny<string[]>(),

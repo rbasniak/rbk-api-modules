@@ -51,7 +51,7 @@ namespace rbkApiModules.Analytics.Core
 
             protected override async Task<object> ExecuteAsync(Command request)
             {
-                var items = await _context.FilterAsync(request.DateFrom, request.DateTo, request.Versions, request.Areas, request.Domains, request.Actions,
+                var items = await _context.FilterStatisticsAsync(request.DateFrom, request.DateTo, request.Versions, request.Areas, request.Domains, request.Actions,
                     request.Users, request.Agents, request.Responses, null, request.Duration, request.EntityId);
 
                 var charts = new List<ChartDefinition>();

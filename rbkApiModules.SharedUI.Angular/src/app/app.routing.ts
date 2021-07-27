@@ -11,6 +11,7 @@ import { AdminModule as DiagnosticsAdminModule } from './ui/features/diagnostics
 import { AdminModule as AnalyticsAdminModule } from './ui/features/analytics/admin/admin.module';
 import { HomeModule } from './ui/features/home/home.module';
 import { PerformanceModule } from './ui/features/analytics/performance/performance.module';
+import { SessionsModule } from './ui/features/analytics/sessions/sessions.module';
 
 const routes: Routes = [
   { path: '', canActivate: [RbkDatabaseStateGuard], data: {requiredStates: [MENU_STATE_NAME]}, children: [
@@ -52,6 +53,11 @@ const routes: Routes = [
       path: '',
       canActivate: [ RbkAuthGuard ],
       loadChildren: (): Promise<PerformanceModule> => import('./ui/features/analytics/performance/performance.module').then(m => m.PerformanceModule)
+    },
+    {
+      path: '',
+      canActivate: [ RbkAuthGuard ],
+      loadChildren: (): Promise<SessionsModule> => import('./ui/features/analytics/sessions/sessions.module').then(m => m.SessionsModule)
     },
     {
       path: LOGIN_PATH,

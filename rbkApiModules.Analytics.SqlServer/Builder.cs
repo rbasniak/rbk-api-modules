@@ -20,6 +20,8 @@ namespace rbkApiModules.Analytics.SqlServer
     {
         public static void AddSqlServerRbkApiAnalyticsModule(this IServiceCollection services, IConfiguration Configuration, string connectionString)
         {
+            services.AddHostedService<SessionWriter>();
+
             services.AddTransient<ITransactionCounter, TransactionCounter>();
 
             services.AddTransient<DatabaseAnalyticsInterceptor>();

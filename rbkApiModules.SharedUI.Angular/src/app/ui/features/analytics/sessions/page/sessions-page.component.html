@@ -1,0 +1,60 @@
+<!-- <p-toolbar styleClass="my-toolbar">
+  <div class="p-toolbar-group-left">
+    <smz-form-group #filterForm [config]="formConfig"></smz-form-group>
+  </div>
+
+  <div class="p-toolbar-group-right">
+    <button pButton type="button" label="Search" (click)="filter(filterForm)" ></button>
+  </div>
+</p-toolbar> -->
+
+<p-panel header="SETTINGS">
+  <div class="p-d-flex p-jc-between p-ai-center">
+    <smz-form-group #filterForm [config]="formConfig"></smz-form-group>
+    <div class="mt-6">
+      <button pButton type="button" label="LOAD" (click)="filter(filterForm)" icon="fas fa-filter" iconPos="left"></button>
+    </div>
+  </div>
+</p-panel>
+
+<ng-container *ngIf="(data$ | async) as data">
+  <div class="p-mt-4">
+    <p-panel header="RESULTS" [toggleable]="true">
+      <div class="grid grid-cols-4 gap-4">
+        <div class="col-span-3">
+          <smz-ui-chart [type]="data.totalDailyUseTime.type" [options]="data.totalDailyUseTime.config"
+            [data]="data.totalDailyUseTime.data" height="350px"></smz-ui-chart>
+        </div>
+        <div class="col-span-1">
+          <smz-ui-chart [type]="data.totalAccumulatedUseTime.type" [options]="data.totalAccumulatedUseTime.config"
+            [data]="data.totalAccumulatedUseTime.data" height="350px"></smz-ui-chart>
+        </div>
+      </div>
+      <hr>
+      <div class="grid grid-cols-4 gap-4">
+        <div class="col-span-3">
+          <smz-ui-chart [type]="data.dailyUseTimePerUser.type" [options]="data.dailyUseTimePerUser.config"
+            [data]="data.dailyUseTimePerUser.data" height="350px"></smz-ui-chart>
+        </div>
+        <div class="col-span-1">
+          <smz-ui-chart [type]="data.accumulatedUseTimePerUser.type" [options]="data.accumulatedUseTimePerUser.config"
+            [data]="data.accumulatedUseTimePerUser.data" height="350px"></smz-ui-chart>
+        </div>
+      </div>
+      <hr>
+      <div class="grid grid-cols-1">
+        <div class="col-span-1">
+          <smz-ui-chart [type]="data.averageSessionTime.type" [options]="data.averageSessionTime.config"
+            [data]="data.averageSessionTime.data" height="350px"></smz-ui-chart>
+        </div>
+      </div>
+      <hr>
+      <div class="grid grid-cols-1">
+        <div class="col-span-1">
+          <smz-ui-chart [type]="data.dailySessions.type" [options]="data.dailySessions.config"
+            [data]="data.dailySessions.data" height="350px"></smz-ui-chart>
+        </div>
+      </div>
+    </p-panel>
+  </div>
+</ng-container>

@@ -65,7 +65,7 @@ namespace rbkApiModules.Analytics.Core.Tests
 
             // Debug.WriteLine(JsonConvert.SerializeObject(analytics));
 
-            storeMock.Setup(x => x.FilterAsync(
+            storeMock.Setup(x => x.FilterStatisticsAsync(
                 It.IsAny<DateTime>(),
                 It.IsAny<DateTime>())).Returns(Task.FromResult(analytics));
 

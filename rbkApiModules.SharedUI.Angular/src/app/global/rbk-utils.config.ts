@@ -11,6 +11,10 @@ import { FilteringOptionsActions as DiagnosticsFilteringOptionsActions } from '@
 import { FilteringOptionsState as DiagnosticsFilteringOptionsState, DIAGNOSTICS_FILTERING_OPTIONS_STATE_NAME } from '@state/database/diagnostics/filtering-options/filtering-options.state';
 import { DashboardFeatureState as DiagnosticsDashboardFeatureState, DIAGNOSTICS_DASHBOARD_FEATURE_STATE_NAME } from '@state/features/diagnostics/dashboard/dashboard.state';
 import { SearchFeatureState as DiagnosticsSearchFeatureState, DIAGNOSTICS_SEARCH_FEATURE_STATE_NAME } from '@state/features/diagnostics/search/search.state';
+import { SessionsFeatureState as AnalyticsSessionFeatureState, ANALYTICS_SESSIONS_FEATURE_STATE_NAME } from '@state/features/analytics/sessions/sessions.state';
+import { AdminFeatureState as AnalyticsAdminFeatureState, ANALYTICS_ADMIN_FEATURE_STATE_NAME } from '@state/features/analytics/admin/admin.state';
+import { AdminFeatureState as DiagnosticsAdminFeatureState, DIAGNOSTICS_ADMIN_FEATURE_STATE_NAME } from '@state/features/diagnostics/admin/admin.state';
+import { PerformanceFeatureState as AnalyticsPerformanceFeatureState, ANALYTICS_PERFORMANCE_FEATURE_STATE_NAME } from '@state/features/analytics/performance/performance.state';
 
 // Database
 
@@ -88,12 +92,28 @@ export const rbkConfig: NgxRbkUtilsConfig = {
         state: AnalyticsDashboardFeatureState,
         clearFunction: (): any => ({ results: [] })
       },
+      [ANALYTICS_SESSIONS_FEATURE_STATE_NAME]: {
+        state: AnalyticsSessionFeatureState,
+        clearFunction: (): any => ({ results: [] })
+      },
       [DIAGNOSTICS_SEARCH_FEATURE_STATE_NAME]: {
         state: DiagnosticsSearchFeatureState,
         clearFunction: (): any => ({ results: [] })
       },
       [DIAGNOSTICS_DASHBOARD_FEATURE_STATE_NAME]: {
         state: DiagnosticsDashboardFeatureState,
+        clearFunction: (): any => ({ results: [] })
+      },
+      [DIAGNOSTICS_ADMIN_FEATURE_STATE_NAME]: {
+        state: DiagnosticsAdminFeatureState,
+        clearFunction: (): any => ({ results: [] })
+      },
+      [ANALYTICS_ADMIN_FEATURE_STATE_NAME]: {
+        state: AnalyticsAdminFeatureState,
+        clearFunction: (): any => ({ results: [] })
+      },
+      [ANALYTICS_PERFORMANCE_FEATURE_STATE_NAME]: {
+        state: AnalyticsPerformanceFeatureState,
         clearFunction: (): any => ({ results: [] })
       }
     }

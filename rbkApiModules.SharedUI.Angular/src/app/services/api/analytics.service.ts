@@ -8,6 +8,8 @@ import { FilterData } from '@models/analytics/filter-data';
 import { fixDates } from 'ngx-rbk-utils';
 import { SearchResults } from '@models/analytics/search-results';
 import { ChartDefinition } from '@models/chart-definition';
+import { SessionsData } from '@models/analytics/sessions-data';
+import { PerformanceData } from '@models/analytics/performance-data';
 
 @Injectable({ providedIn: 'root' })
 export class AnalyticsService extends BaseApiService {
@@ -33,6 +35,18 @@ export class AnalyticsService extends BaseApiService {
 
   public getDashboardData(dateFrom: Date, dateTo: Date, groupingType: number): Observable<ChartDefinition[]> {
     return this.http.post<ChartDefinition[]>(`${this.endpoint}/dashboard`, { dateFrom, dateTo, groupingType }, this.generateDefaultHeaders({}));
+  }
+
+  public getPerformanceData(endpoint: string, dateFrom: Date, dateTo: Date, groupingType: number): Observable<PerformanceData> {
+    return this.http.post<PerformanceData>(`${this.endpoint}/performance`, { endpoint, dateFrom, dateTo, groupingType }, this.generateDefaultHeaders({}));
+  }
+
+  public getSessionsData(dateFrom: Date, dateTo: Date, groupingType: number): Observable<SessionsData> {
+    return this.http.post<SessionsData>(`${this.endpoint}/sessions`, { dateFrom, dateTo, groupingType }, this.generateDefaultHeaders({}));
+  }
+
+  public deleteBasedOnPathText(searchText: string): Observable<void> {
+    return this.http.post<void>(`${this.endpoint}/delete-matching-path`, { searchText }, this.generateDefaultHeaders({}));
   }
 }
 

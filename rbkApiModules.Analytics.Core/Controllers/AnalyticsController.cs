@@ -41,6 +41,24 @@ namespace rbkApiModules.Analytics.Core
             var result = await Mediator.Send(data);
 
             return HttpResponse(result);
-        } 
+        }
+
+        [HttpPost]
+        [Route("sessions")]
+        public async Task<ActionResult<SessionsDashboard>> GetSessionsData([FromBody] GetSessionData.Command data)
+        {
+            var result = await Mediator.Send(data);
+
+            return HttpResponse(result);
+        }
+
+        [HttpPost]
+        [Route("delete-matching-path")]
+        public async Task<ActionResult<SessionsDashboard>> DeleteMatchingPath([FromBody] DeleteFromPath.Command data)
+        {
+            var result = await Mediator.Send(data);
+
+            return HttpResponse(result);
+        }
     }
 }

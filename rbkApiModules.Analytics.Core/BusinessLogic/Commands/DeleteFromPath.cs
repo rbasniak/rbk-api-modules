@@ -1,19 +1,27 @@
 ﻿using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using rbkApiModules.Infrastructure.Models;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using rbkApiModules.Infrastructure.MediatR.Core;
+using rbkApiModules.Utilities;
+using rbkApiModules.Utilities.Charts.ChartJs;
+using rbkApiModules.Utilities.Charts;
+using rbkApiModules.Diagnostics.Commons;
 
 namespace rbkApiModules.Analytics.Core
 {
-    public class GetFilteringLists
+    public class DeleteFromPath
     {
-        public class Command : IRequest<QueryResponse>
+        public class Command : IRequest<CommandResponse>
         {
-        }  
+            public string SearchText { get; set; }
+        }
 
-        public class Handler : BaseQueryHandler<Command>
+        public class Handler : BaseCommandHandler<Command>
         {
             private readonly IAnalyticModuleStore _context;
 
@@ -25,7 +33,9 @@ namespace rbkApiModules.Analytics.Core
 
             protected override async Task<object> ExecuteAsync(Command request)
             {
-                return await _context.GetFilteringLists();
+                _context.DeleteStatisticsFromMatchingPathAsync(request.SearchText);
+
+                return await Task.FromResult((object)null);
             }
         }
     }

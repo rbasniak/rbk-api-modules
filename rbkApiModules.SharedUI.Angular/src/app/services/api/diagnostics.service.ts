@@ -34,4 +34,8 @@ export class DiagnosticsService extends BaseApiService {
   public getDashboardData(dateFrom: Date, dateTo: Date, groupingType: number): Observable<ChartDefinition[]> {
     return this.http.post<ChartDefinition[]>(`${this.endpoint}/dashboard`, { dateFrom, dateTo, groupingType }, this.generateDefaultHeaders({}));
   }
+
+  public deleteOldData(daysToKeep: number): Observable<void> {
+    return this.http.post<void>(`${this.endpoint}/delete-old-data`, { daysToKeep }, this.generateDefaultHeaders({}));
+  }
 }

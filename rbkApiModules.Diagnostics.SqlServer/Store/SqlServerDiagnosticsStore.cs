@@ -122,5 +122,16 @@ namespace rbkApiModules.Diagnostics.SqlServer
         {
             return await _context.Data.ToListAsync();
         }
+
+        public void DeleteOldEntries(int daysToKeep)
+        {
+            var limit = DateTime.UtcNow.AddDays(-daysToKeep);
+
+            var results = _context.Data.Where(x => x.Timestamp < limit).ToList();
+
+            _context.RemoveRange(results);
+
+            _context.SaveChanges();
+        }
     }
 }

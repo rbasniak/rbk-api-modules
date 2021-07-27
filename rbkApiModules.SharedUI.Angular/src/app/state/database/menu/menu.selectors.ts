@@ -4,7 +4,7 @@ import { cloneDeep } from 'lodash-es';
 import { MenuItem } from 'primeng/api';
 import { ANALYTICS_DASHBOARD_PAGE_ROUTE, ANALYTICS_SEARCH_PAGE_ROUTE, DIAGNOSTICS_SEARCH_PAGE_ROUTE,
   DIAGNOSTICS_DASHBOARD_PAGE_ROUTE, ANALYTICS_PERFORMANCE_PAGE_ROUTE, ANALYTICS_ADMIN_PAGE_ROUTE,
-  DIAGNOSTICS_ADMIN_PAGE_ROUTE } from 'src/routes';
+  DIAGNOSTICS_ADMIN_PAGE_ROUTE, ANALYTICS_SESSIONS_PAGE_ROUTE} from 'src/routes';
 import { MenuState, MenuStateModel } from './menu.state';
 
 export class MenuSelectors {
@@ -18,9 +18,10 @@ export class MenuSelectors {
         icon: 'far fa-list-alt',
         items: [
           { label: 'Search', icon: 'fas fa-search', routerLink: ANALYTICS_SEARCH_PAGE_ROUTE },
-          { label: 'Dashboard', icon: 'fas fa-chart-line', routerLink: ANALYTICS_DASHBOARD_PAGE_ROUTE },
+          { label: 'Overview', icon: 'fas fa-chart-line', routerLink: ANALYTICS_DASHBOARD_PAGE_ROUTE },
+          { label: 'Sessions', icon: 'fas fa-user-clock', routerLink: ANALYTICS_SESSIONS_PAGE_ROUTE },
           { label: 'Performance', icon: 'fas fa-tachometer-alt', routerLink: ANALYTICS_PERFORMANCE_PAGE_ROUTE },
-          { label: 'Admin', icon: 'fas fa-user-shield', routerLink: ANALYTICS_ADMIN_PAGE_ROUTE },
+          { label: 'Admin', icon: 'fas fa-shield-alt', routerLink: ANALYTICS_ADMIN_PAGE_ROUTE },
         ]
       });
     }
@@ -31,8 +32,8 @@ export class MenuSelectors {
         icon: 'far fa-list-alt',
         items: [
           { label: 'Search', icon: 'fas fa-bug', routerLink: DIAGNOSTICS_SEARCH_PAGE_ROUTE },
-          { label: 'Dashboard', icon: 'fas fa-chart-line', routerLink: DIAGNOSTICS_DASHBOARD_PAGE_ROUTE },
-          { label: 'Admin', icon: 'fas fa-user-shield', routerLink: DIAGNOSTICS_ADMIN_PAGE_ROUTE },
+          { label: 'Overview', icon: 'fas fa-chart-line', routerLink: DIAGNOSTICS_DASHBOARD_PAGE_ROUTE },
+          { label: 'Admin', icon: 'fas fa-shield-alt', routerLink: DIAGNOSTICS_ADMIN_PAGE_ROUTE },
         ]
       });
     }
