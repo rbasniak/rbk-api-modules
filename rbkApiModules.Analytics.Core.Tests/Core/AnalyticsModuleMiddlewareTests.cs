@@ -488,5 +488,10 @@ namespace rbkApiModules.Analytics.Core.Tests
         {
             throw new NotImplementedException();
         }
+
+        public void DeleteStatisticsFromMatchingPathAsync(string searchText)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
