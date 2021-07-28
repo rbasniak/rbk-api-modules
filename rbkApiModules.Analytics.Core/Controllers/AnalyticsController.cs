@@ -60,5 +60,14 @@ namespace rbkApiModules.Analytics.Core
 
             return HttpResponse(result);
         }
+
+        [HttpPost]
+        [Route("current-sessions")]
+        public async Task<ActionResult<SessionsDashboard>> CurrentSessions([FromBody] GetCurrentSessions.Command data)
+        {
+            var result = await Mediator.Send(data);
+
+            return HttpResponse(result);
+        }
     }
 }

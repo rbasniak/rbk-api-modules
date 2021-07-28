@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 using rbkApiModules.Diagnostics.Commons;
 using rbkApiModules.Utilities;
+using System.Collections.Generic;
 
 namespace rbkApiModules.Analytics.Core
 {
@@ -17,6 +18,7 @@ namespace rbkApiModules.Analytics.Core
         private Timer _timer;
         private readonly IServiceProvider _services;
         private IHttpContextAccessor _httpContextAccessor;
+        internal static List<string> Log = new List<string>();
 
         public SessionWriter(IHttpContextAccessor httpContextAccessor, IServiceProvider services)
         {
@@ -37,17 +39,37 @@ namespace rbkApiModules.Analytics.Core
 
             SessionAnalyticsMiddleware.IsLocked = true;
 
+            var recorededSessions = 0;
+
             try
             {
                 using (var scope = _services.CreateScope())
                 {
                     foreach (var session in SessionAnalyticsMiddleware.Sessions.Where(x => x.Inactivity >= SessionAnalyticsMiddleware.SessionTimeout))
                     {
-                        var store = scope.ServiceProvider.GetRequiredService<IAnalyticModuleStore>();
-                        store.StoreSession(new SessionEntry(session.Username, session.Start, session.End));
+                        if (session.Duration > 0.1)
+                        {
+                            var store = scope.ServiceProvider.GetRequiredService<IAnalyticModuleStore>();
+                            store.StoreSession(new SessionEntry(session.Username, session.Start, session.End));
+                            recorededSessions++;
+                        }
                     }
 
                     SessionAnalyticsMiddleware.Sessions = SessionAnalyticsMiddleware.Sessions.Where(x => x.Inactivity < SessionAnalyticsMiddleware.SessionTimeout).ToList();
+                }
+
+                if (Log.Count >= 100)
+                {
+                    Log.RemoveAt(99);
+                }
+
+                if (recorededSessions == 0)
+                {
+                    Log.Insert(0, $"{DateTime.UtcNow.ToString()}: No sessions recorded");
+                }
+                else
+                {
+                    Log.Insert(0, $"{DateTime.UtcNow.ToString("u")}: {recorededSessions} new sessions recorded");
                 }
             }
             catch (Exception ex)
