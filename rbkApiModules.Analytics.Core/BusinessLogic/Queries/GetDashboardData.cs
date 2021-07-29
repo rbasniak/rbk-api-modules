@@ -501,7 +501,8 @@ namespace rbkApiModules.Analytics.Core
                 var chart = PrefilterResults(data, from, to, null, null)
                     .CreateLinearChart()
                         .PreparaData()
-                            .SeriesFrom(x => x.Timestamp.DayOfWeek.ToString())
+                            .CategoryFrom(x => x.Timestamp.DayOfWeek.ToString())
+                            .SingleSerie()
                             .ValueFrom(x => x.Count())
                             .Chart
                         .OfType(ChartType.Bar)
@@ -536,7 +537,8 @@ namespace rbkApiModules.Analytics.Core
                 var chart = PrefilterResults(data, from, to, null, null)
                     .CreateLinearChart()
                         .PreparaData()
-                            .SeriesFrom(x => x.Timestamp.Hour.ToString("00"))
+                            .CategoryFrom(x => x.Timestamp.Hour.ToString("00"))
+                            .SingleSerie()
                             .ValueFrom(x => x.Count())
                             .Chart
                         .OfType(ChartType.Bar)
