@@ -6,7 +6,8 @@
   <base href="/" id="baseHref">
   <script>
     (function() {
-      document.getElementById('baseHref').href = '/' + window.location.pathname.split('/')[1] + '/shared-ui/';
+      const baseHref = window.location.pathname.split('/')[1] === 'shared-ui' ? '/shared-ui/' : '/' + window.location.pathname.split('/')[1] + '/shared-ui/';
+      document.getElementById('baseHref').href = baseHref;
     })();
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">

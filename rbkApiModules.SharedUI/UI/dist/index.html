@@ -4,7 +4,8 @@
   <base href="/" id="baseHref">
   <script>
     (function() {
-      document.getElementById('baseHref').href = '/' + window.location.pathname.split('/')[1] + '/shared-ui/';
+      const baseHref = window.location.pathname.split('/')[1] === 'shared-ui' ? '/shared-ui/' : '/' + window.location.pathname.split('/')[1] + '/shared-ui/';
+      document.getElementById('baseHref').href = baseHref;
     })();
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,3 +15,5 @@
   <app-root></app-root>
 <script src="runtime.b0da0333c04c94085ec7.js" defer></script><script src="polyfills.dc887965c9f265e8ea3b.js" defer></script><script src="scripts.ea5fcf5575ed4de9a3cc.js" defer></script><script src="main.165b54e617f1744af3e0.js" defer></script>
 </body></html>
+
+
