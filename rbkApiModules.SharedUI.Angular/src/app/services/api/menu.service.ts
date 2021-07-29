@@ -4,10 +4,11 @@ import { Observable } from 'rxjs/internal/Observable';
 import { BaseApiService } from 'ngx-rbk-utils';
 import { environment } from '@environments/environment';
 import { MenuData } from '@models/menu-info';
+import { getUrl } from '@services/utils';
 
 @Injectable({ providedIn: 'root' })
 export class MenuService extends BaseApiService {
-  private endpoint = `${window.location.origin}/api/shared-ui`;
+  private endpoint = `${getUrl()}/api/shared-ui`;
 
   constructor(private http: HttpClient) {
     super();

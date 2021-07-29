@@ -1,5 +1,6 @@
 import { environment } from '@environments/environment';
 import { Selector } from '@ngxs/store';
+import { getUrl } from '@services/utils';
 import { cloneDeep } from 'lodash-es';
 import { MenuItem } from 'primeng/api';
 import { ANALYTICS_DASHBOARD_PAGE_ROUTE, ANALYTICS_SEARCH_PAGE_ROUTE, DIAGNOSTICS_SEARCH_PAGE_ROUTE,
@@ -39,7 +40,7 @@ export class MenuSelectors {
     }
 
     if (state.data.customRoutes.length > 0) {
-      let url = window.location.origin;
+      let url = getUrl();
 
       if (!environment.production) {
         url = `${environment.serverUrl}`;

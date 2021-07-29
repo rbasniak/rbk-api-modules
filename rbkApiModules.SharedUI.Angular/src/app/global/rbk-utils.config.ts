@@ -15,6 +15,7 @@ import { SessionsFeatureState as AnalyticsSessionFeatureState, ANALYTICS_SESSION
 import { AdminFeatureState as AnalyticsAdminFeatureState, ANALYTICS_ADMIN_FEATURE_STATE_NAME } from '@state/features/analytics/admin/admin.state';
 import { AdminFeatureState as DiagnosticsAdminFeatureState, DIAGNOSTICS_ADMIN_FEATURE_STATE_NAME } from '@state/features/diagnostics/admin/admin.state';
 import { PerformanceFeatureState as AnalyticsPerformanceFeatureState, ANALYTICS_PERFORMANCE_FEATURE_STATE_NAME } from '@state/features/analytics/performance/performance.state';
+import { getUrl } from '@services/utils';
 
 // Database
 
@@ -48,13 +49,13 @@ export const rbkConfig: NgxRbkUtilsConfig = {
   authentication: {
     localStoragePrefix: 'RBK',
     login: {
-      url: environment.production ? `${window.location.origin}/api/shared-ui/auth` : `${environment.serverUrl}/api/shared-ui/auth`,
+      url: environment.production ? `${getUrl()}/api/shared-ui/auth` : `${environment.serverUrl}/api/shared-ui/auth`,
       errorHandlingType: 'toast',
       responsePropertyName: 'accessToken',
       loadingBehavior: 'local',
     },
     refreshToken: {
-      url: environment.production ? `${window.location.origin}/api/shared-ui/refresh-token` : `${environment.serverUrl}/api/shared-ui/refresh-token`,
+      url: environment.production ? `${getUrl()}/api/shared-ui/refresh-token` : `${environment.serverUrl}/api/shared-ui/refresh-token`,
       errorHandlingType: 'toast',
       responsePropertyName: 'refreshToken',
       loadingBehavior: 'global',

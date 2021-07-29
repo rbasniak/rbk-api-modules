@@ -10,10 +10,11 @@ import { SearchResults } from '@models/analytics/search-results';
 import { ChartDefinition } from '@models/chart-definition';
 import { SessionsData } from '@models/analytics/sessions-data';
 import { PerformanceData } from '@models/analytics/performance-data';
+import { getUrl } from '@services/utils';
 
 @Injectable({ providedIn: 'root' })
 export class AnalyticsService extends BaseApiService {
-  private endpoint = `${window.location.origin}/api/analytics`;
+  private endpoint = `${getUrl()}/api/analytics`;
 
   constructor(private http: HttpClient) {
     super();

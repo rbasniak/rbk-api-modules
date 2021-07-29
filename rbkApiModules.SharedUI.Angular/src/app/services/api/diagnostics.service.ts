@@ -8,10 +8,11 @@ import { ChartDefinition } from '@models/chart-definition';
 import { FilteringOptions } from '@models/diagnostics/filtering-options';
 import { SearchResults } from '@models/diagnostics/search-results';
 import { FilterData } from '@models/diagnostics/filter-data';
+import { getUrl } from '@services/utils';
 
 @Injectable({ providedIn: 'root' })
 export class DiagnosticsService extends BaseApiService {
-  private endpoint = `${window.location.origin}/api/diagnostics`;
+  private endpoint = `${getUrl()}/api/diagnostics`;
 
   constructor(private http: HttpClient) {
     super();
