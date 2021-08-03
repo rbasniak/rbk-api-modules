@@ -1225,6 +1225,11 @@
     "merge-source-map" "^1.1.0"
     "schema-utils" "^2.7.0"
 
+"@juggle/resize-observer@^3.3.1":
+  "integrity" "sha512-zMM9Ds+SawiUkakS7y94Ymqx+S0ORzpG3frZirN3l+UlXUmSUR7hF4wxCVqW+ei94JzV5kt0uXBcoOEAuiydrw=="
+  "resolved" "https://registry.npmjs.org/@juggle/resize-observer/-/resize-observer-3.3.1.tgz"
+  "version" "3.3.1"
+
 "@ngneat/until-destroy@^8.0.0", "@ngneat/until-destroy@^8.0.4":
   "integrity" "sha512-FBh40y22VLFBOReBNOEhSn9dWix0AVYdEAF08N54jUYOGTbwjSORe/hjCrpuxcEdlw3lgTO5r2EgEl3n+kvfyA=="
   "resolved" "https://registry.npmjs.org/@ngneat/until-destroy/-/until-destroy-8.0.4.tgz"
@@ -2500,10 +2505,10 @@
   "resolved" "https://registry.npmjs.org/chardet/-/chardet-0.7.0.tgz"
   "version" "0.7.0"
 
-"chart.js@^3.3.2":
-  "integrity" "sha512-H0hSO7xqTIrwxoACqnSoNromEMfXvfuVnrbuSt2TuXfBDDofbnto4zuZlRtRvC73/b37q3wGAWZyUU41QPvNbA=="
-  "resolved" "https://registry.npmjs.org/chart.js/-/chart.js-3.3.2.tgz"
-  "version" "3.3.2"
+"chart.js@^3.3.2", "chart.js@^3.5.0":
+  "integrity" "sha512-J1a4EAb1Gi/KbhwDRmoovHTRuqT8qdF0kZ4XgwxpGethJHUdDrkqyPYwke0a+BuvSeUxPf8Cos6AX2AB8H8GLA=="
+  "resolved" "https://registry.npmjs.org/chart.js/-/chart.js-3.5.0.tgz"
+  "version" "3.5.0"
 
 "check-outdated@^2.8.0":
   "integrity" "sha512-u9Wk5h+fWg+UOT0uVF6/LrsLUsg9kUi7/NAM4tCjyhbkpYfROR1bWBkKilipICKfn9EpHz94dcDum73oAViV5g=="

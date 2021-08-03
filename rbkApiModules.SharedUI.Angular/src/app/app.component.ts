@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Select, Store } from '@ngxs/store';
+import { Select } from '@ngxs/store';
 import { MenuSelectors } from '@state/database/menu/menu.selectors';
 import { BoilerplateService } from 'ngx-rbk-utils';
 import { ThemeManagerService } from 'ngx-smz-ui';
 import { MenuItem, PrimeNGConfig } from 'primeng/api';
 import { Observable } from 'rxjs';
-import { ANALYTICS_DASHBOARD_PAGE_ROUTE, ANALYTICS_SEARCH_PAGE_ROUTE } from 'src/routes';
+import {ResizeObserver as ResizeObserverPolyfill} from '@juggle/resize-observer';
 
 @Component({
   selector: 'app-root',
@@ -21,5 +21,9 @@ export class AppComponent implements OnInit {
 
   public ngOnInit(): void {
     this.primengConfig.ripple = true;
+
+    if (typeof window !== 'undefined') {
+      window.ResizeObserver = window.ResizeObserver || ResizeObserverPolyfill;
+    }
   }
 }
