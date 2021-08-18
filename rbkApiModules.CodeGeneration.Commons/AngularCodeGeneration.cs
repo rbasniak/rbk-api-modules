@@ -623,7 +623,7 @@ export class {Name}Selectors {{
             code.AppendLine("import { environment } from '@environments/environment';");
             code.AppendLine("import { HttpClient } from '@angular/common/http';");
             code.AppendLine("import { Observable } from 'rxjs/internal/Observable';");
-            code.AppendLine("import { BaseApiService } from 'ngx-rbk-utils';");
+            code.AppendLine("import { BaseApiService } from 'ngx-smz-ui';");
             code.AppendLine("{{EXTERNAL_REFERENCES}}");
             code.AppendLine("@Injectable({ providedIn: 'root' })");
             code.AppendLine("export class " + Name + " extends BaseApiService {");
@@ -668,7 +668,7 @@ export class {Name}Selectors {{
                 
                 if (method.ReturnType != null && method.ReturnType.HasDateProperty)
                 {
-                    externalReferences.Add("import { fixDates } from 'ngx-rbk-utils';");
+                    externalReferences.Add("import { fixDates } from 'ngx-smz-ui';");
                     terminator = ".pipe(";
                 }
 
@@ -824,7 +824,7 @@ export class {Name}Selectors {{
             if (type.Name == "SimpleNamedEntity")
             {
                 Filepath = null;
-                ImportStatement = $"import {{ {type.Name} }} from 'ngx-smz-dialogs';";
+                ImportStatement = $"import {{ {type.Name} }} from 'ngx-smz-ui';";
             }
             else if (type.Name == "TreeNode")
             {
@@ -865,7 +865,7 @@ export class {Name}Selectors {{
                 var optional = property.IsOptional ? "?" : "";
                 code.AppendLine($"  {property.Declaration};");
 
-                if (!property.Type.IsNative && property.Name != Name)
+                if (!property.Type.IsNative && property.Type.Name != Name)
                 {
                     externalReferences.Add(models.First(x => x.Name == property.Type.Name).ImportStatement);
                 }
