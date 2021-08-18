@@ -242,17 +242,23 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
 
         public LinearDateDataBuilder<T> EnforceStartDate(DateTime date)
         {
+            _lastCall = nameof(EnforceStartDate);
+
             _forceStartDate = date;
             return this;
         }
 
         public LinearDateDataBuilder<T> EnforceEndDate(DateTime date)
         {
+            _lastCall = nameof(EnforceEndDate);
+
             _forceEndDate = date;
             return this;
         }
         public LinearDateDataBuilder<T> Take(int value)
         {
+            _lastCall = nameof(Take);
+
             _topX = value;
 
             return this;
@@ -260,6 +266,8 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
 
         public LinearDateDataBuilder<T> AppendExtraData(Func<T, object> converter = null)
         {
+            _lastCall = nameof(AppendExtraData);
+
             _appendExtraData = true;
             if (converter == null)
             {
@@ -274,6 +282,8 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
 
         public LinearDateDataBuilder<T> SeriesFrom(Func<T, string> seriesSelector)
         {
+            _lastCall = nameof(SeriesFrom);
+
             _seriesSelector = seriesSelector;
 
             return this;
@@ -281,6 +291,8 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
 
         public LinearDateDataBuilder<T> SingleSerie()
         {
+            _lastCall = nameof(SingleSerie);
+
             _seriesSelector = x => "default";
 
             return this;
@@ -288,6 +300,8 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
 
         public LinearDateDataBuilder<T> DateFrom(Func<T, DateTime> dateSelector)
         {
+            _lastCall = nameof(DateFrom);
+
             _dateSelector = dateSelector;
 
             return this;
@@ -347,6 +361,8 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
 
         public LinearDateDataBuilder<T> RoundValues(int decimalPlaces)
         {
+            _lastCall = nameof(RoundValues);
+
             _decimalPlaces = decimalPlaces;
 
             return this;

@@ -600,7 +600,7 @@ export class {Name}Selectors {{
             Name = controller.Name + "Service";
 
             Filename = $"{CodeGenerationUtilities.ToTypeScriptFileCase(controller.Name) + ".service"}";
-            Filepath = $"services\\api\\{Filename}.ts";
+            Filepath = Path.Join($"services", "api", $"{Filename}.ts");
             ImportStatement = $"import {{ {Name} }} from '@services/api/{Filename}';";
 
             BaseRoute = controller.Route;
@@ -833,7 +833,7 @@ export class {Name}Selectors {{
             }
             else
             {
-                Filepath = $"models\\{CodeGenerationUtilities.ToTypeScriptFileCase(type.Name)}.ts";
+                Filepath = Path.Join("models", $"{CodeGenerationUtilities.ToTypeScriptFileCase(type.Name)}.ts");
                 ImportStatement = $"import {{ {type.Name} }} from '@models/{Filename}';";
             }
 

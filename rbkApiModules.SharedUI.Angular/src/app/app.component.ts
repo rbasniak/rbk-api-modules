@@ -5,7 +5,7 @@ import { BoilerplateService } from 'ngx-rbk-utils';
 import { ThemeManagerService } from 'ngx-smz-ui';
 import { MenuItem, PrimeNGConfig } from 'primeng/api';
 import { Observable } from 'rxjs';
-import {ResizeObserver as ResizeObserverPolyfill} from '@juggle/resize-observer';
+import { ResizeObserver as ResizeObserverPolyfill } from '@juggle/resize-observer';
 
 @Component({
   selector: 'app-root',
