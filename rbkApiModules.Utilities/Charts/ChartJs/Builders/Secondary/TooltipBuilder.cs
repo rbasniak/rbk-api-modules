@@ -40,7 +40,9 @@
 
         public TooltipBuilder<TFactory, TChart> AtVerticalAxis()
         {
-            Chart.Builder.Config.Plugins.Tooltip.SetTooltipPosition(TooltipPosition.Index);
+            Chart.Builder.Config.Plugins.Tooltip.SetTooltipPosition(TooltipPosition.Nearest);
+            Chart.Builder.Config.Interaction.Mode = "index";
+            Chart.Builder.Config.Plugins.Tooltip.SetMode(TooltipMode.Index);
 
             return this;
         }
