@@ -38,6 +38,13 @@
             return this;
         }
 
+        public TooltipBuilder<TFactory, TChart> AtVerticalAxis()
+        {
+            Chart.Builder.Config.Plugins.Tooltip.SetTooltipPosition(TooltipPosition.Index);
+
+            return this;
+        }
+
         public TooltipBuilder<TFactory, TChart> Border(string color, double width)
         {
             Chart.Builder.Config.Plugins.Tooltip.BorderColor = color;
