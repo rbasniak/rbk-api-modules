@@ -4,7 +4,7 @@ import { tap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { AnalyticsService } from '@services/api/analytics.service';
 import { AdminFeatureActions } from './admin.actions';
-import { ToastActions } from 'ngx-rbk-utils';
+import { ToastActions } from 'ngx-smz-ui';
 
 export const ANALYTICS_ADMIN_FEATURE_STATE_NAME = 'analyticsAdmin';
 

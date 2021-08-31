@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { NgxSmzFormsModule } from 'ngx-smz-dialogs';
+import { NgxSmzFormsModule } from 'ngx-smz-ui';
 import { SmzRouteData } from 'ngx-smz-ui';
 import { ButtonModule } from 'primeng/button';
 import { LoginComponent } from './login.component';

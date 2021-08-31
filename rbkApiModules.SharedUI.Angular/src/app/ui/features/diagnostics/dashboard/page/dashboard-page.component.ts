@@ -3,7 +3,7 @@ import { UntilDestroy } from '@ngneat/until-destroy';
 import { Select, Store } from '@ngxs/store';
 import { DashboardFeatureActions } from '@state/features/diagnostics/dashboard/dashboard.actions';
 import { DashboardFeatureSelectors } from '@state/features/diagnostics/dashboard/dashboard.selectors';
-import { FormGroupComponent, SmzCalendarControl, SmzControlType, SmzDropDownControl, SmzForm } from 'ngx-smz-dialogs';
+import { FormGroupComponent, SmzCalendarControl, SmzControlType, SmzDropDownControl, SmzForm } from 'ngx-smz-ui';
 import { Observable } from 'rxjs';
 import * as moment_ from 'moment';
 

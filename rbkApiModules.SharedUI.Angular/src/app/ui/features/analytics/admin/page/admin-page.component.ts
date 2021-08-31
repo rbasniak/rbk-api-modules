@@ -2,7 +2,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { Store } from '@ngxs/store';
 import { AdminFeatureActions } from '@state/features/analytics/admin/admin.actions';
-import { Confirmable, FormGroupComponent, SmzControlType, SmzForm, SmzTextControl } from 'ngx-smz-dialogs';
+import { Confirmable, FormGroupComponent, SmzControlType, SmzForm, SmzTextControl } from 'ngx-smz-ui';
 
 @UntilDestroy()
 @Component({

@@ -1,0 +1,71 @@
+.smz-button-success {
+    .ui-button {
+        color: #fff;
+        background-color: #107d11;
+        border: 1px solid #107d11;
+
+        &:hover {
+            color: #fff;
+            background-color: #107d11;
+        }
+    }
+
+    .p-button {
+        color: #fff;
+        background-color: #107d11;
+        border: 1px solid #107d11;
+
+        &:hover {
+            color: #fff;
+            background-color: #107d11;
+        }
+    }
+}
+
+.smz-button-ghost {
+    .ui-button {
+        color: #007ad9;
+        background-color: #fff;
+        border: 1px solid #007ad9;
+
+        &:hover {
+            color: #fff;
+            background-color: #007ad9;
+        }
+    }
+
+    .p-button {
+        color: #007ad9;
+        background-color: #fff;
+        border: 1px solid #007ad9;
+
+        &:hover {
+            color: #fff;
+            background-color: #007ad9;
+        }
+    }
+}
+
+.smz-button-danger {
+    .ui-button {
+        color: #fff;
+        background-color: #f44336;
+        border: 1px solid #f44336;
+
+        &:hover {
+            color: #fff;
+            background-color: #e53935;
+        }
+    }
+
+    .p-button {
+        color: #fff !important;
+        background-color: #f44336 !important;
+        border: 1px solid #f44336 !important;
+
+        &:hover {
+            color: #fff !important;
+            background-color: #e53935 !important;
+        }
+    }
+}

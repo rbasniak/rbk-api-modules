@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { BaseApiService } from 'ngx-rbk-utils';
+import { BaseApiService } from 'ngx-smz-ui';
 import { environment } from '@environments/environment';
-import { fixDates } from 'ngx-rbk-utils';
+import { fixDates } from 'ngx-smz-ui';
 import { ChartDefinition } from '@models/chart-definition';
 import { FilteringOptions } from '@models/diagnostics/filtering-options';
 import { SearchResults } from '@models/diagnostics/search-results';

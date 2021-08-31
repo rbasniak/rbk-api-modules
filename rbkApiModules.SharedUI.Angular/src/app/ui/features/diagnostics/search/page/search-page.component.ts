@@ -5,7 +5,7 @@ import { Select, Store } from '@ngxs/store';
 import { FilteringOptionsSelectors } from '@state/database/diagnostics/filtering-options/filtering-options.selectors';
 import { SearchFeatureActions } from '@state/features/diagnostics/search/search.actions';
 import { SearchFeatureSelectors } from '@state/features/diagnostics/search/search.selectors';
-import { FormGroupComponent, SmzCalendarControl, SmzControlType, SmzForm, SmzMultiSelectControl, SmzTextControl } from 'ngx-smz-dialogs';
+import { FormGroupComponent, SmzCalendarControl, SmzControlType, SmzForm, SmzMultiSelectControl, SmzTextControl } from 'ngx-smz-ui';
 import { SmzTableBuilder, SmzTableState } from 'ngx-smz-ui';
 import { Observable } from 'rxjs';
 import { ChartDefinition } from '@models/chart-definition';
@@ -162,7 +162,6 @@ export class SearchPageComponent implements OnInit {
   }
 
   public toggleExpansion(item: any, id: string): void {
-    console.log(item, id);
     if (item[`${id}Expanded`] == null) {
       item[`${id}Expanded`] = true;
     }

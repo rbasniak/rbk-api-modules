@@ -21,5 +21,6 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
 
         public string Type { get; internal set; }
         public Configuration Config { get; internal set; }
+        public bool AllowEmpty { get; internal set; }
     }
 }

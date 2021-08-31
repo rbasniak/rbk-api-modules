@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { SearchModule as AnalyticsSearchModule } from '@features/analytics/search/search.module';
 import { SearchModule as DiagnosticsSearchModule} from '@features/diagnostics/search/search.module';
 import { MENU_STATE_NAME } from '@state/database/menu/menu.state';
-import { RbkAuthGuard, RbkDatabaseStateGuard } from 'ngx-rbk-utils';
+import { RbkAuthGuard, RbkDatabaseStateGuard } from 'ngx-smz-ui';
 import { HOME_PATH, LOGIN_PATH } from 'src/routes';
 import { DashboardModule as AnalyticsDashboardhModule } from './ui/features/analytics/dashboard/dashboard.module';
 import { DashboardModule as DiagnosticsDashboardModule } from './ui/features/diagnostics/dashboard/dashboard.module';

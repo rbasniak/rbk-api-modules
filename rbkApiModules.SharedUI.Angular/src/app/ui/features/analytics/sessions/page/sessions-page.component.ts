@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { Select, Store } from '@ngxs/store';
-import { FormGroupComponent, SmzCalendarControl, SmzControlType, SmzDropDownControl, SmzForm } from 'ngx-smz-dialogs';
+import { FormGroupComponent, SmzCalendarControl, SmzControlType, SmzDropDownControl, SmzForm } from 'ngx-smz-ui';
 import * as moment_ from 'moment';
 import { SessionsFeatureSelectors } from '@state/features/analytics/sessions/sessions.selectors';
 import { Observable } from 'rxjs';

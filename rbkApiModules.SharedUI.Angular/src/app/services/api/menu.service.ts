@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/internal/Observable';
-import { BaseApiService } from 'ngx-rbk-utils';
+import { BaseApiService } from 'ngx-smz-ui';
 import { environment } from '@environments/environment';
 import { MenuData } from '@models/menu-info';
 import { getUrl } from '@services/utils';

@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { SmzControlType, SmzForm, SmzFormsResponse, SmzPasswordControl, SmzTextControl } from 'ngx-smz-dialogs';
+import { SmzControlType, SmzForm, SmzFormsResponse, SmzPasswordControl, SmzTextControl } from 'ngx-smz-ui';
 import { SmzAppLogo } from 'ngx-smz-ui';
-import { ApplicationSelectors, AuthenticationActions } from 'ngx-rbk-utils';
+import { ApplicationSelectors, AuthenticationActions } from 'ngx-smz-ui';
 import { SmzLayoutsConfig } from 'ngx-smz-ui';
 import { Actions, Select, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';

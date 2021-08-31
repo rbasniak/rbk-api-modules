@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NgxSmzTablesModule, SmzChartModule, SmzRouteData } from 'ngx-smz-ui';
-import { NgxSmzFormsModule } from 'ngx-smz-dialogs';
+import { NgxSmzFormsModule } from 'ngx-smz-ui';
 import { ButtonModule } from 'primeng/button';
 import { PanelModule } from 'primeng/panel';
 import { CardModule } from 'primeng/card';

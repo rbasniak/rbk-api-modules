@@ -17,6 +17,7 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
     {
         public TChart Builder { get; }
 
+
         protected BaseChartBuilder(TChart chart)
         {
             Builder = chart;
@@ -137,6 +138,18 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
             return (TFactory)this;
         }
 
+        /// <summary>
+        /// By default, the chart returns the "empty" type if there are no series, or with the sum of 
+        /// all datasets of all series is zero. If you want to show a chart (specially for linear charts)
+        /// in this situation, use this option
+        /// </summary>
+        public TFactory AllowEmpty()
+        {
+            Builder.AllowEmpty = true;
+
+            return (TFactory)this;
+        }
+
         public TFactory Responsive()
         {
             Builder.Config.MaintainAspectRatio = false;
@@ -152,6 +165,11 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
                 {
                     linearChart.Data.Labels = linearChart.Data.Datasets.First().Data.Select(x => x.X).ToList();
                 }
+            }
+
+            if (!HasData && !Builder.AllowEmpty)
+            {
+                Builder.Type = "empty";
             }
 
             var serializedWithoutNulls = JsonConvert.SerializeObject(Builder, Formatting.Indented, new JsonSerializerSettings 

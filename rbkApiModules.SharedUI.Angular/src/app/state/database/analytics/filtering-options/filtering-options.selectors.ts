@@ -1,7 +1,7 @@
 import { FilteringOptions } from '@models/analytics/filtering-options';
 import { Selector } from '@ngxs/store';
 import { cloneDeep } from 'lodash-es';
-import { SimpleNamedEntity } from 'ngx-smz-dialogs';
+import { SimpleNamedEntity } from 'ngx-smz-ui';
 import { FilteringOptionsState, FilteringOptionsStateModel } from './filtering-options.state';
 
 export class FilteringOptionsSelectors {

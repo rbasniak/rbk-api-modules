@@ -1,4 +1,4 @@
-import { SmzControlType, SmzDialogsConfig, SmzFormsPresets } from 'ngx-smz-dialogs';
+import { SmzControlType, SmzDialogsConfig, SmzFormsPresets } from 'ngx-smz-ui';
 
 export const compactPreset: SmzFormsPresets = {
   formTemplates: {

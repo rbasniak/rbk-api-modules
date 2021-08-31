@@ -5,7 +5,7 @@ import { DashboardFeatureState as AnalyticsDashboardFeatureState, ANALYTICS_DASH
 import { SearchFeatureState as AnalyticsSearchFeatureState, ANALYTICS_SEARCH_FEATURE_STATE_NAME } from '@state/features/analytics/search/search.state';
 import { MenuActions } from '@state/database/menu/menu.actions';
 import { MenuState, MENU_STATE_NAME } from '@state/database/menu/menu.state';
-import { NgxRbkUtilsConfig } from 'ngx-rbk-utils';
+import { NgxRbkUtilsConfig } from 'ngx-smz-ui';
 import { ERROR_PAGE_PATH, HOME_PATH, LOGIN_PATH } from 'src/routes';
 import { FilteringOptionsActions as DiagnosticsFilteringOptionsActions } from '@state/database/diagnostics/filtering-options/filtering-options.actions';
 import { FilteringOptionsState as DiagnosticsFilteringOptionsState, DIAGNOSTICS_FILTERING_OPTIONS_STATE_NAME } from '@state/database/diagnostics/filtering-options/filtering-options.state';

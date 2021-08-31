@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/internal/Observable';
-import { BaseApiService } from 'ngx-rbk-utils';
+import { BaseApiService } from 'ngx-smz-ui';
 import { environment } from '@environments/environment';
 import { FilteringOptions } from '@models/analytics/filtering-options';
 import { FilterData } from '@models/analytics/filter-data';
-import { fixDates } from 'ngx-rbk-utils';
+import { fixDates } from 'ngx-smz-ui';
 import { SearchResults } from '@models/analytics/search-results';
 import { ChartDefinition } from '@models/chart-definition';
 import { SessionsData } from '@models/analytics/sessions-data';

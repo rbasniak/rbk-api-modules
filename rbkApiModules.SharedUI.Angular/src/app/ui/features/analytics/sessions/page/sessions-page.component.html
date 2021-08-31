@@ -20,7 +20,7 @@
 <ng-container *ngIf="(data$ | async) as data">
   <div class="p-mt-4">
     <p-panel header="RESULTS" [toggleable]="true">
-      <div class="grid grid-cols-4 gap-4">
+      <div class="grid grid-cols-4 gap-4 chart-container">
         <div class="col-span-3">
           <smz-ui-chart [type]="data.totalDailyUseTime.type" [options]="data.totalDailyUseTime.config"
             [data]="data.totalDailyUseTime.data" height="350px"></smz-ui-chart>
@@ -31,7 +31,7 @@
         </div>
       </div>
       <hr>
-      <div class="grid grid-cols-4 gap-4">
+      <div class="grid grid-cols-4 gap-4 chart-container">
         <div class="col-span-3">
           <smz-ui-chart [type]="data.dailyUseTimePerUser.type" [options]="data.dailyUseTimePerUser.config"
             [data]="data.dailyUseTimePerUser.data" height="350px"></smz-ui-chart>
@@ -42,14 +42,14 @@
         </div>
       </div>
       <hr>
-      <div class="grid grid-cols-1">
+      <div class="grid grid-cols-1 chart-container">
         <div class="col-span-1">
           <smz-ui-chart [type]="data.averageSessionTime.type" [options]="data.averageSessionTime.config"
             [data]="data.averageSessionTime.data" height="350px"></smz-ui-chart>
         </div>
       </div>
       <hr>
-      <div class="grid grid-cols-1">
+      <div class="grid grid-cols-1 chart-container">
         <div class="col-span-1">
           <smz-ui-chart [type]="data.dailySessions.type" [options]="data.dailySessions.config"
             [data]="data.dailySessions.data" height="350px"></smz-ui-chart>

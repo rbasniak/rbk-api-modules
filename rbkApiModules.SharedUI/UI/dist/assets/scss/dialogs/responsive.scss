@@ -1,0 +1,32 @@
+.smz_form_grid_container {
+
+    .container-fluid {
+        width: 100%;
+        margin-right: auto;
+        margin-left: auto;
+    }
+}
+
+.flex-gap-1 > * {
+    padding: 0.25rem 0.25rem !important;
+  }
+
+.flex-gap-1 {
+    margin: -0.25rem -0.25rem !important;
+}
+
+.flex-gap-2 > * {
+    padding: 0.5rem 0.5rem !important;
+  }
+
+.flex-gap-2 {
+    margin: -0.5rem -0.5rem !important;
+}
+
+.flex-gap-4 > * {
+    padding: 1rem 1rem !important;
+  }
+
+.flex-gap-4 {
+    margin: -1rem -1rem !important;
+}

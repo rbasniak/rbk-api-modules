@@ -5,7 +5,7 @@ import { Select, Store } from '@ngxs/store';
 import { FilteringOptionsSelectors } from '@state/database/analytics/filtering-options/filtering-options.selectors';
 import { SearchFeatureActions } from '@state/features/analytics/search/search.actions';
 import { SearchFeatureSelectors } from '@state/features/analytics/search/search.selectors';
-import { FormGroupComponent, SmzCalendarControl, SmzControlType, SmzForm, SmzMultiSelectControl, SmzTextControl } from 'ngx-smz-dialogs';
+import { FormGroupComponent, SmzCalendarControl, SmzControlType, SmzForm, SmzMultiSelectControl, SmzTextControl } from 'ngx-smz-ui';
 import { SmzTableBuilder, SmzTableState } from 'ngx-smz-ui';
 import { Observable } from 'rxjs';
 import { ChartDefinition } from '@models/chart-definition';

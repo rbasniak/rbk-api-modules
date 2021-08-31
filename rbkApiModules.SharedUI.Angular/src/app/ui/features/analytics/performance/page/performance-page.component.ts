@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { Store } from '@ngxs/store';
-import { SmzForm } from 'ngx-smz-dialogs';
+import { SmzForm } from 'ngx-smz-ui';
 import * as moment_ from 'moment';
 
 const moment = moment_;

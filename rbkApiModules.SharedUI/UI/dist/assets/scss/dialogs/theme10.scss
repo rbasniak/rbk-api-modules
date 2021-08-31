@@ -1,0 +1,81 @@
+smz-dynamicDialog {
+    .ui-dialog {
+        padding: 0;
+        -webkit-box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.16);
+        -moz-box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.16);
+        box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.16);
+    }
+    .ui-dialog .ui-dialog-titlebar {
+        border: 1px solid #c8c8c8;
+        background-color: #f4f4f4;
+        color: #333333;
+        padding: 1em;
+        font-weight: 700;
+        border-bottom: 0 none;
+    }
+    .ui-dialog .ui-dialog-titlebar .ui-dialog-title {
+        margin: 0;
+        float: none;
+    }
+    .ui-dialog .ui-dialog-titlebar .ui-dialog-titlebar-icon {
+        color: #848484;
+        border: 0 none;
+        padding: 0;
+        margin-left: 0.5em;
+        -moz-transition: color 0.2s;
+        -o-transition: color 0.2s;
+        -webkit-transition: color 0.2s;
+        transition: color 0.2s;
+    }
+    .ui-dialog .ui-dialog-titlebar .ui-dialog-titlebar-icon:hover {
+        color: #333333;
+    }
+    .ui-dialog .ui-dialog-content {
+        background-color: #ffffff;
+        color: #333333;
+        border: 1px solid #c8c8c8;
+        padding: 0.571em 1em;
+    }
+    .ui-dialog .ui-dialog-footer {
+        border: 1px solid #c8c8c8;
+        background-color: #ffffff;
+        color: #333333;
+        padding: 0.571em 1em;
+        margin: 0;
+        text-align: right;
+        position: relative;
+        top: -1px;
+    }
+    .ui-dialog .ui-dialog-footer button {
+        margin: 0 0.5em 0 0;
+        width: auto;
+    }
+    .ui-dialog.ui-confirm-dialog .ui-dialog-content {
+        padding: 1.5em;
+    }
+    .ui-dialog.ui-confirm-dialog .ui-dialog-content > span {
+        float: none;
+        display: inline-block;
+        vertical-align: middle;
+        line-height: 14px;
+        margin: 0;
+    }
+    .ui-dialog.ui-confirm-dialog .ui-dialog-content > span.ui-icon {
+        margin-right: 0.35em;
+        font-size: 16px;
+    }
+
+    .ui-toolbar {
+        background-color: unset !important;
+        border: unset !important;
+        padding: 0 !important;
+    }
+    .ui-toolbar button {
+        vertical-align: middle;
+    }
+    .ui-toolbar .ui-toolbar-separator {
+        vertical-align: middle;
+        color: #848484;
+        margin: 0 0.5em;
+    }
+}

@@ -1,4 +1,4 @@
-import { ApplicationStateModel, AppStateModel, FeaturesState } from 'ngx-rbk-utils';
+import { ApplicationStateModel, AppStateModel, FeaturesState } from 'ngx-smz-ui';
 import { DatabaseState } from './database/database.state';
 
 export interface RootStateModel extends AppStateModel {

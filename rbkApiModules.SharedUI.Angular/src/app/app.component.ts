@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Select } from '@ngxs/store';
 import { MenuSelectors } from '@state/database/menu/menu.selectors';
-import { BoilerplateService } from 'ngx-rbk-utils';
+import { BoilerplateService } from 'ngx-smz-ui';
 import { ThemeManagerService } from 'ngx-smz-ui';
 import { MenuItem, PrimeNGConfig } from 'primeng/api';
 import { Observable } from 'rxjs';
