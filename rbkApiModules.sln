@@ -183,6 +183,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "coverage", "coverage", "{0A
 		CovereageReport.ps1 = CovereageReport.ps1
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notifications", "Notifications", "{11BAD1A2-46DA-4256-B62A-1CA070958DAE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.Notifications", "rbkApiModules.Notifications\rbkApiModules.Notifications.csproj", "{07A5F78E-0FBF-4B19-AE97-F3033667905F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -385,6 +389,10 @@ Global
 		{C38A4146-4275-47FE-912F-A59CB78E8A1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C38A4146-4275-47FE-912F-A59CB78E8A1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C38A4146-4275-47FE-912F-A59CB78E8A1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07A5F78E-0FBF-4B19-AE97-F3033667905F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07A5F78E-0FBF-4B19-AE97-F3033667905F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07A5F78E-0FBF-4B19-AE97-F3033667905F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07A5F78E-0FBF-4B19-AE97-F3033667905F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -468,6 +476,8 @@ Global
 		{B35DCDEE-5826-4415-A83B-4DEF6779637B} = {28AEC725-3257-4A72-BC8B-C6ABB827A897}
 		{0677567A-489F-4B36-85DA-EA926A514AFA} = {0EBB95D9-AB99-405B-8305-9B16BCCE8492}
 		{0A2C56F5-75C3-4DAC-A201-2F1387375AD3} = {0EBB95D9-AB99-405B-8305-9B16BCCE8492}
+		{11BAD1A2-46DA-4256-B62A-1CA070958DAE} = {A1A68EE5-8E91-449C-96A8-CCC5BF135D48}
+		{07A5F78E-0FBF-4B19-AE97-F3033667905F} = {11BAD1A2-46DA-4256-B62A-1CA070958DAE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9AAC09BF-43DC-408B-8F24-24DAA39DA1E8}

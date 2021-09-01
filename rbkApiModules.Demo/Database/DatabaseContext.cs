@@ -39,6 +39,7 @@ namespace rbkApiModules.Demo.Database
             {
                 typeof(DatabaseContext).Assembly,
                 typeof(CommentEntity.Command).Assembly,
+                typeof(DeleteNotification.Command).Assembly,
                 typeof(UserLogin.Command).Assembly,
                 typeof(CreatePlan.Command).Assembly,
             });

@@ -29,6 +29,7 @@ using rbkApiModules.Demo.Models.StateMachine;
 using rbkApiModules.Payment.SqlServer;
 using rbkApiModules.Paypal.SqlServer;
 using rbkApiModules.SharedUI;
+using rbkApiModules.Notifications;
 
 namespace rbkApiModules.Demo
 {
@@ -50,6 +51,7 @@ namespace rbkApiModules.Demo
 
         private Assembly[] AssembliesForAutoMapper => new Assembly[]
         {
+            Assembly.GetAssembly(typeof(NotificationsMappings)),
             Assembly.GetAssembly(typeof(CommentsMappings)),
             Assembly.GetAssembly(typeof(RoleMappings)),
             Assembly.GetAssembly(typeof(PlanMappings)),
@@ -66,6 +68,7 @@ namespace rbkApiModules.Demo
             Assembly.GetAssembly(typeof(FilterDiagnosticsEntries.Command)),
             Assembly.GetAssembly(typeof(CreateWebhookEvent.Command)),
             Assembly.GetAssembly(typeof(CreatePlan.Command)),
+            Assembly.GetAssembly(typeof(DeleteNotification.Command)),
             // Assembly.GetAssembly(typeof(AuditingPostProcessingBehavior<,>))
         };
 
@@ -111,6 +114,8 @@ namespace rbkApiModules.Demo
             services.AddRbkSharedUIModule(Configuration);
 
             services.AddRbkApiCommentsModule();
+
+            services.AddRbkApiNotificationsModule();
 
             services.AddScoped<IUserdataCommentService, UserdataCommentService>();
 

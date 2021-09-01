@@ -1,6 +1,8 @@
 ﻿using rbkApiModules.Authentication;
 using rbkApiModules.Demo.Models;
 using rbkApiModules.Demo.Models.StateMachine;
+using rbkApiModules.Notifications;
+using rbkApiModules.Notifications.Models;
 using rbkApiModules.Payment.SqlServer;
 using System;
 using System.Collections.Generic;
@@ -44,6 +46,10 @@ namespace rbkApiModules.Demo.Database.StateMachine
                 }
             }
 
+            context.SaveChanges();
+
+            var notification = new Notification("Solicitações", "Titulo", "Body", "Rota", "Link", "bdqr", NotificationType.Info);
+            context.Add(notification);
             context.SaveChanges();
 
             var libraGroup = new StateGroup("LIBRA");
