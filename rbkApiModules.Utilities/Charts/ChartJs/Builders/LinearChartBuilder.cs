@@ -317,6 +317,8 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
         {
             if (_dateSelector == null) throw new SafeException($"{nameof(DateFrom)} must be called before {nameof(ValueFrom)} in charts with Date axis");
 
+            if (_linearChartBuilder._originalData.Count() == 0) return this;
+
             _lastCall = nameof(ValueFrom);
 
             var fromDate = _forceStartDate.HasValue ? _forceStartDate.Value : _linearChartBuilder._originalData.Min(x => _dateSelector(x));
