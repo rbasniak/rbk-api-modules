@@ -40,6 +40,8 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
         {
             foreach (var dataset in _datasets)
             {
+                if (dataset == null) continue;
+
                 foreach (var item in dataset.Data)
                 {
                     item.RoundValue(decimals);
@@ -53,6 +55,8 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
         {
             foreach (var dataset in _datasets)
             {
+                if (dataset == null) continue;
+
                 dataset.Label = label;
             }
 
@@ -63,6 +67,8 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
         {
             foreach (var dataset in _datasets)
             {
+                if (dataset == null) continue;
+
                 dataset.BorderWidth = thickness;
             }
 
@@ -73,6 +79,8 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
         {
             foreach (var dataset in _datasets)
             {
+                if (dataset == null) continue;
+
                 dataset.yAxisID = axisId;
             }
 
@@ -83,6 +91,8 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
         {
             foreach (var dataset in _datasets)
             {
+                if (dataset == null) continue;
+
                 dataset.BackgroundColor = color + transparency;
                 dataset.BorderColor = color;
 
@@ -97,6 +107,8 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
         {
             foreach (var dataset in _datasets)
             {
+                if (dataset == null) continue;
+
                 dataset.BarPercentage = value;
             }
 
@@ -107,6 +119,8 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
         {
             foreach (var dataset in _datasets)
             {
+                if (dataset == null) continue;
+
                 dataset.SetPointStyle(style);
             }
 
@@ -117,6 +131,8 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
         {
             foreach (var dataset in _datasets)
             {
+                if (dataset == null) continue;
+
                 dataset.PointRadius = radius;
 
                 if (hitRadius != null)
@@ -132,6 +148,8 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
         {
             foreach (var dataset in _datasets)
             {
+                if (dataset == null) continue;
+
                 dataset.BorderRadius = radius;
                 dataset.BorderSkipped = false;
             }
@@ -143,6 +161,8 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
         {
             foreach (var dataset in _datasets)
             {
+                if (dataset == null) continue;
+
                 var averageSize = dataset.Data.Average(x => x.Y);
                 var unit = String.Empty;
 
