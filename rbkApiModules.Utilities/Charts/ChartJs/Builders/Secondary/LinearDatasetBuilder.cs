@@ -18,6 +18,8 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
         {
             foreach (var dataset in _datasets)
             {
+                if (dataset == null) continue;
+
                 dataset.SetDatasetType(type);
 
                 if (type == DatasetType.Line)
