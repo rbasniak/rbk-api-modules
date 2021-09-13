@@ -50,11 +50,17 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
 
             if (orderedDatasets != null && orderedDatasets.Count > 0)
             {
-                dataset.Order = orderedDatasets.Max(x => x.Order) + 1;
+                if (dataset != null)
+                {
+                    dataset.Order = orderedDatasets.Max(x => x.Order) + 1;
+                }
             }   
             else
             {
-                dataset.Order = 0;
+                if (dataset != null)
+                {
+                    dataset.Order = 0;
+                }
             }
 
             return new LinearDatasetBuilder<LinearChartBuilder<T>, LinearChart>(this, new[] { dataset });
