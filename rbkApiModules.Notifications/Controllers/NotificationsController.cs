@@ -12,7 +12,7 @@ namespace rbkApiModules.Notifications
         /// <summary>
         /// Retorna uma lista de notificações
         /// </summary>
-        [HttpPost("notifications")]
+        [HttpPost("all")]
         public async Task<ActionResult<NotificationDto[]>> GetNotifications(GetNotifications.Command data)
         {
             return HttpResponse<NotificationDto[]>(await Mediator.Send(data));
@@ -21,7 +21,7 @@ namespace rbkApiModules.Notifications
         /// <summary>
         /// Atualiza o status de um array de notificações
         /// </summary>
-        [HttpPut("update-notifications-status")]
+        [HttpPut("update")]
         public async Task<ActionResult<string[]>> UpdateNotifications(UpdateNotificationStatus.Command data)
         {
             return HttpResponse<string[]>(await Mediator.Send(data));
@@ -30,7 +30,7 @@ namespace rbkApiModules.Notifications
         /// <summary>
         /// Deleta um array de notificações
         /// </summary>
-        [HttpDelete("delete-notifications")]
+        [HttpPost("delete")]
         public async Task<ActionResult<string[]>> DeleteNotifications(DeleteNotification.Command data)
         {
             var result = await Mediator.Send(data);
