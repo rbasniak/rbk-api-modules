@@ -64,77 +64,78 @@ namespace rbkApiModules.Analytics.Core
 
             private object BuildEvolutionChart(List<AnalyticsEntry> data, string endpoint, Func<AnalyticsEntry, double> selector, string title, DateTime from, DateTime to, GroupingType groupingType)
             {
-                var chart = data.CreateLinearChart()
-                    .PreparaData(groupingType)
-                        .EnforceStartDate(from)
-                        .EnforceEndDate(to)
-                        .SeriesFrom(x => new [] { x => "Minimum", x => "Maximum", x => "Average" })
-                        .DateFrom(x => x.Timestamp)
-                        .ValueFrom(x => new [] { x => x.Duration.Min(), x => x.Duration.Max(), x => x.Duration.Average() })
-                        .Chart
-                    .OfType(ChartType.Line)
-                    .Responsive() 
-                    .WithTooltips()
-                        .Chart
-                    .WithYAxis("x")
-                        .AutoSkip(10)
-                        .Chart
-                    .WithYAxis("y")
-                        .Range(0, null)
-                        .Chart
-                    .SetupDataset("Minimum")
-                        .Color("#FF0000")
-                        .PointRadius(0)
-                        .Thickness(3)
-                        .Chart
-                    .SetupDataset("Maximum")
-                        .Color("#FF0000")
-                        .PointRadius(0)
-                        .Thickness(3)
-                        .Chart
-                    .SetupDataset("Average")
-                        .Color("#00FF00")
-                        .PointRadius(0)
-                        .Thickness(3)
-                        .Chart
-                    .Build();
+                var chart = data.Where(x => x.Action.ToLower() == endpoint.ToLower())
+                    .CreateLinearChart()
+                        .PreparaData(groupingType)
+                            .EnforceStartDate(from)
+                            .EnforceEndDate(to)
+                            .DateFrom(x => x.Timestamp)
+                            .AddSerie("Minimum", x => { return x.Min(x => selector(x)); })
+                            .AddSerie("Average", x => x.Average(x => selector(x)))
+                            .AddSerie("Maximum", x => x.Max(x => selector(x)))
+                            .Chart
+                        .OfType(ChartType.Line)
+                        .Responsive() 
+                        .WithTooltips()
+                            .Chart
+                        .WithYAxis("x")
+                            .AutoSkip(10)
+                            .Chart
+                        .WithYAxis("y")
+                            .Range(0, null)
+                            .Chart
+                        .SetupDataset("Average")
+                            .Color("#01579b")
+                            .Thickness(3)
+                            .Chart
+                        .SetupDataset("Minimum")
+                            .Color("#33691e")
+                            .PointRadius(2)
+                            .Thickness(1)
+                            .Chart
+                        .SetupDataset("Maximum")
+                            .Color("#b71c1c")
+                            .PointRadius(2)
+                            .Thickness(1)
+                            .Chart
+                        .Build();
 
                 return chart;
             }
 
             private object BuildDistributionChart(List<AnalyticsEntry> data, string endpoint, Func<AnalyticsEntry, double> selector, string title, DateTime from, DateTime to, GroupingType groupingType)
             {
-                var chart = data.CreateLinearChart()
-                        .PreparaData()
-                            .CategoryFrom(x => x.Timestamp.DayOfWeek.ToString())
-                            .SingleSerie()
-                            .ValueFrom(x => x.Count())
-                            .Chart
-                        .OfType(ChartType.Bar)
-                        .Theme("77", ColorPallete.Blue2, ColorPallete.Blue1)
-                        .Responsive()
-                        .WithTitle("Most active days of the week")
-                            .Font(16)
-                            .Padding(8, 24)
-                            .Chart
-                        .WithTooltips()
-                            .Chart
-                        .SetupDataset("default")
-                            .OfType(DatasetType.Bar)
-                            .RoundedBorders(5)
-                            .Thickness(3)
-                            .Chart
-                        .ReorderCategories(
-                            DayOfWeek.Monday.ToString(),
-                            DayOfWeek.Tuesday.ToString(),
-                            DayOfWeek.Wednesday.ToString(),
-                            DayOfWeek.Thursday.ToString(),
-                            DayOfWeek.Friday.ToString(),
-                            DayOfWeek.Saturday.ToString(),
-                            DayOfWeek.Sunday.ToString())
-                        .Build();
+                //var chart = data.CreateLinearChart()
+                //        .PreparaData()
+                //            .CategoryFrom(x => x.Timestamp.DayOfWeek.ToString())
+                //            .SingleSerie()
+                //            .ValueFrom(x => x.Count())
+                //            .Chart
+                //        .OfType(ChartType.Bar)
+                //        .Theme("77", ColorPallete.Blue2, ColorPallete.Blue1)
+                //        .Responsive()
+                //        .WithTitle("Most active days of the week")
+                //            .Font(16)
+                //            .Padding(8, 24)
+                //            .Chart
+                //        .WithTooltips()
+                //            .Chart
+                //        .SetupDataset("default")
+                //            .OfType(DatasetType.Bar)
+                //            .RoundedBorders(5)
+                //            .Thickness(3)
+                //            .Chart
+                //        .ReorderCategories(
+                //            DayOfWeek.Monday.ToString(),
+                //            DayOfWeek.Tuesday.ToString(),
+                //            DayOfWeek.Wednesday.ToString(),
+                //            DayOfWeek.Thursday.ToString(),
+                //            DayOfWeek.Friday.ToString(),
+                //            DayOfWeek.Saturday.ToString(),
+                //            DayOfWeek.Sunday.ToString())
+                //        .Build();
 
-                return chart;
+                return null;
             }
         }
     }

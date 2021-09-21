@@ -139,6 +139,11 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
             return new LinearCategoryDataBuilder<T>(this);
         }
 
+        public HistogramDataBuilder<T> PreparaData(int intervalCount)
+        {
+            return new HistogramDataBuilder<T>(this);
+        }
+
         public LinearChartBuilder<T> ReorderCategories(Func<List<Point>, IEnumerable<Point>> expression)
         {
             var labels = new List<string>();
@@ -229,12 +234,13 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
         private int? _decimalPlaces;
         private string _lastCall;
         private int? _topX;
+        private LinearChart _chart;
 
         public LinearChartBuilder<T> Chart
         {
             get
             {
-                if (_lastCall != nameof(ValueFrom)) throw new SafeException($"Last method called must be {nameof(ValueFrom)}");
+                if (_lastCall != nameof(ValueFrom) && _lastCall != nameof(AddSerie)) throw new SafeException($"Last method called must be {nameof(ValueFrom)} or {nameof(AddSerie)}");
 
                 return _linearChartBuilder;
             }
@@ -365,7 +371,59 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
 
             return this; 
         }
-         
+
+        public LinearDateDataBuilder<T> AddSerie(string name, Func<IGrouping<DateTime, T>, double> valueSelector)
+        {
+            _lastCall = nameof(AddSerie);
+
+            if (_linearChartBuilder._originalData.Count() == 0) return this;
+
+            var fromDate = _forceStartDate.HasValue ? _forceStartDate.Value : _linearChartBuilder._originalData.Min(x => _dateSelector(x));
+            var toDate = _forceEndDate.HasValue ? _forceEndDate.Value : _linearChartBuilder._originalData.Max(x => _dateSelector(x));
+
+            if (_chart == null)
+            {
+                _chart = new LinearChart();
+            }
+
+            var serie = new LinearDataset(name);
+
+            serie.Data = BuildLineChartAxis(fromDate, toDate, _groupingType);
+
+            var serieData = _linearChartBuilder._originalData.GroupBy(x => "name").First();
+
+            foreach (var groupedSerieData in serieData.GroupBy(x => _dateSelector(x).GetGroupDate(_groupingType)))
+            {
+                var point = serie.Data.Single(x => x.X == new Point(_dateSelector(groupedSerieData.First()), 0, _groupingType, null).X);
+
+                var value = valueSelector(groupedSerieData);
+
+                if (_decimalPlaces != null)
+                {
+                    value = Math.Round(value, _decimalPlaces.Value);
+                }
+
+                point.Y = value;
+
+                if (_appendExtraData)
+                {
+                    point.Data = groupedSerieData.Select(_converter);
+                }
+            }
+
+            _chart.Data.Datasets.Add(serie);
+
+            _chart.Data.Datasets = _chart.Data.Datasets.OrderByDescending(x => x.Data.Sum(x => x.Y)).ToList();
+
+            if (_topX != null)
+            {
+                throw new SafeException("TopX is not allowed with 'AddSeries'");
+            }
+
+            _linearChartBuilder.Builder.Data = _chart.Data;
+
+            return this;
+        }
 
         public LinearDateDataBuilder<T> RoundValues(int decimalPlaces)
         {
@@ -569,6 +627,131 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
 
             return this;
         }
+    }
+
+    public class HistogramDataBuilder<T>
+    {
+        private LinearChartBuilder<T> _linearChartBuilder;
+        private Func<T, object> _converter;
+        private bool _appendExtraData;
+        private int? _decimalPlaces;
+        private string _lastCall;
+
+        private int _intervals;
+        private double? _intervalRound;
+        private double? _intervalMin;
+        private double? _intervalMax;
+
+        public LinearChartBuilder<T> Chart
+        {
+            get
+            {
+                return _linearChartBuilder;
+            }
+        }
+
+        public HistogramDataBuilder(LinearChartBuilder<T> linearChartBuilder)
+        {
+            _linearChartBuilder = linearChartBuilder;
+        }
+
+        public HistogramDataBuilder<T> AppendExtraData(Func<T, object> converter = null)
+        {
+            _appendExtraData = true;
+
+            if (converter == null)
+            {
+                _converter = x => (object)x;
+            }
+            else
+            {
+                _converter = converter;
+            }
+            return this;
+        }
+
+        public HistogramDataBuilder<T> ValuesFrom(Func<T, double> seriesSelector)
+        {
+            _lastCall = nameof(Compile);
+
+            var chart = new LinearChart();
+
+            var data = _linearChartBuilder._originalData;
+
+            var min = _intervalMin ?? data.Min(x => seriesSelector(x));
+            var max = _intervalMax ?? data.Max(x => seriesSelector(x));
+
+            min = 987;
+            max = 5536;
+            _intervals = 10;
+            _intervalRound = 175;
+
+            var delta = (max - min) / _intervals;
+
+            if (_intervalRound != null)
+            {
+                min = Math.Floor(min / _intervalRound.Value) * _intervalRound.Value;
+                max = (Math.Floor(max / _intervalRound.Value) + 1) * _intervalRound.Value;
+
+                var delta1 = Math.Floor(delta / _intervalRound.Value);
+                var delta2 = Math.Floor(delta / _intervalRound.Value) + 1;
+
+                var count1 = (max - min) / delta1;
+                var count2 = (max - min) / delta2;
+
+                var test1 = Math.Abs(count1 - _intervals);
+                var test2 = Math.Abs(count2 - _intervals);
+
+                if (test1 < test2)
+                {
+                    delta = delta1;
+                }
+                else
+                {
+                    delta = delta2;
+                }
+
+                var value = min;
+
+                var intervals = 1;
+
+                while(value < max)
+                {
+                    intervals++;
+                    value += delta;
+                }
+            }
+
+            var serie = new LinearDataset("Default");
+
+            for (int i = 0; i < _intervals; i++)
+            {
+                double a = i * delta;
+                double b = a + delta;
+
+                var relatedData = data.Where(x => seriesSelector(x) <= min && seriesSelector(x) < max).ToList();
+
+                List<object> extraData = null;
+
+                if (_appendExtraData)
+                {
+                    extraData = relatedData.Select(_converter).ToList();
+                }
+
+                serie.Data.Add(new Point($"{a}", relatedData.Count, extraData));
+            }
+
+            chart.Data.Datasets.Add(serie);
+
+            _linearChartBuilder.Builder.Data = chart.Data;
+
+            return this;
+        }
+
+        public HistogramDataBuilder<T> Compile()
+        {
+            
+        }  
     }
 
     public enum DatasetBuildMode

@@ -1,1 +1,107 @@
-<h3>Performance placeholder</h3>
+<p-panel header="SETTINGS">
+  <div class="p-d-flex p-jc-between p-ai-center">
+    <smz-form-group #filterForm [config]="formConfig"></smz-form-group>
+    <div class="mt-6">
+      <button pButton type="button" label="LOAD" (click)="filter(filterForm)" icon="fas fa-filter"
+        iconPos="left"></button>
+    </div>
+  </div>
+</p-panel>
+
+<ng-container *ngIf="(data$ | async) as data">
+  <div class="p-mt-4">
+    <p-panel header="DURATION" [toggleable]="true">
+      <div class="grid grid-cols-3 gap-4 mb-6">
+        <div class="col-span-1">
+          <ng-container *ngVar="data.durationDistribution as chartData">
+            <!-- <smz-ui-chart [type]="chartData.type" [options]="chartData.config" [data]="chartData.data"
+              height="300px"></smz-ui-chart> -->
+          </ng-container>
+        </div>
+        <div class="col-span-2">
+          <ng-container *ngVar="data.durationEvolution as chartData">
+            <smz-ui-chart [type]="chartData.type" [options]="chartData.config" [data]="chartData.data" height="300px">
+            </smz-ui-chart>
+          </ng-container>
+        </div>
+      </div>
+    </p-panel>
+  </div>
+
+  <div class="p-mt-4">
+    <p-panel header="INPUT SIZE" [toggleable]="true">
+      <div class="grid grid-cols-3 gap-4 mb-6">
+        <div class="col-span-1">
+          <ng-container *ngVar="data.inSizeDistribution as chartData">
+            <!-- <smz-ui-chart [type]="chartData.type" [options]="chartData.config" [data]="chartData.data"
+              height="300px"></smz-ui-chart> -->
+          </ng-container>
+        </div>
+        <div class="col-span-2">
+          <ng-container *ngVar="data.inSizeEvolution as chartData">
+            <smz-ui-chart [type]="chartData.type" [options]="chartData.config" [data]="chartData.data" height="300px">
+            </smz-ui-chart>
+          </ng-container>
+        </div>
+      </div>
+    </p-panel>
+  </div>
+
+  <div class="p-mt-4">
+    <p-panel header="OUTPUT SIZE" [toggleable]="true">
+      <div class="grid grid-cols-3 gap-4 mb-6">
+        <div class="col-span-1">
+          <ng-container *ngVar="data.outSizeDistribution as chartData">
+            <!-- <smz-ui-chart [type]="chartData.type" [options]="chartData.config" [data]="chartData.data"
+            height="300px"></smz-ui-chart> -->
+          </ng-container>
+        </div>
+        <div class="col-span-2">
+          <ng-container *ngVar="data.outSizeEvolution as chartData">
+            <smz-ui-chart [type]="chartData.type" [options]="chartData.config" [data]="chartData.data" height="300px">
+            </smz-ui-chart>
+          </ng-container>
+        </div>
+      </div>
+    </p-panel>
+  </div>
+
+  <div class="p-mt-4">
+    <p-panel header="TRANSACTION COUNT" [toggleable]="true">
+      <div class="grid grid-cols-3 gap-4 mb-6">
+        <div class="col-span-1">
+          <ng-container *ngVar="data.transactionCountDistribution as chartData">
+            <!-- <smz-ui-chart [type]="chartData.type" [options]="chartData.config" [data]="chartData.data"
+            height="300px"></smz-ui-chart> -->
+          </ng-container>
+        </div>
+        <div class="col-span-2">
+          <ng-container *ngVar="data.transactionCountEvolution as chartData">
+            <smz-ui-chart [type]="chartData.type" [options]="chartData.config" [data]="chartData.data" height="300px">
+            </smz-ui-chart>
+          </ng-container>
+        </div>
+      </div>
+    </p-panel>
+  </div>
+
+  <div class="p-mt-4">
+    <p-panel header="DATABASE TIME" [toggleable]="true">
+      <div class="grid grid-cols-3 gap-4 mb-6">
+        <div class="col-span-1">
+          <ng-container *ngVar="data.databaseDurationDistribution as chartData">
+            <!-- <smz-ui-chart [type]="chartData.type" [options]="chartData.config" [data]="chartData.data"
+            height="300px"></smz-ui-chart> -->
+          </ng-container>
+        </div>
+        <div class="col-span-2">
+          <ng-container *ngVar="data.databaseDurationEvolution as chartData">
+            <smz-ui-chart [type]="chartData.type" [options]="chartData.config" [data]="chartData.data" height="300px">
+            </smz-ui-chart>
+          </ng-container>
+        </div>
+      </div>
+    </p-panel>
+  </div>
+
+</ng-container>

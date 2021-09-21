@@ -25,7 +25,11 @@ export class AnalyticsService extends BaseApiService {
   }
 
   public getFilteringOptions(): Observable<FilteringOptions> {
-    return this.http.get<FilteringOptions>(`${this.endpoint}/filter-options`, this.generateDefaultHeaders({}));
+    return this.http.get<FilteringOptions>(`${this.endpoint}/filter-options/all`, this.generateDefaultHeaders({}));
+  }
+
+  public getActionNames(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.endpoint}/filter-options/actions`, this.generateDefaultHeaders({}));
   }
 
   public search(data: FilterData): Observable<SearchResults> {

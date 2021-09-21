@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { NgxSmzTablesModule, SmzChartModule, SmzRouteData } from 'ngx-smz-ui';
+import { NgVarDirective, NgVarModule, NgxSmzTablesModule, RbkDatabaseStateGuard, SmzChartModule, SmzRouteData } from 'ngx-smz-ui';
 import { NgxSmzFormsModule } from 'ngx-smz-ui';
 import { ButtonModule } from 'primeng/button';
 import { PanelModule } from 'primeng/panel';
@@ -9,6 +9,7 @@ import { CardModule } from 'primeng/card';
 import { ToolbarModule } from 'primeng/toolbar';
 import { ANALYTICS_PATH, PERFORMANCE_PATH } from 'src/routes';
 import { PerformancePageComponent } from './page/performance-page.component';
+import { ANALYTICS_FILTERING_OPTIONS_STATE_NAME } from '@state/database/analytics/filtering-options/filtering-options.state';
 
 const data: SmzRouteData = {
   layout: {
@@ -18,6 +19,7 @@ const data: SmzRouteData = {
   title: 'Performance',
   appArea: 'performance',
   clearReusableRoutes: true,
+  requiredStates: [ ANALYTICS_FILTERING_OPTIONS_STATE_NAME ]
 };
 
 const routes: Routes = [
@@ -27,7 +29,8 @@ const routes: Routes = [
       {
         path: ANALYTICS_PATH + '/' + PERFORMANCE_PATH,
         component: PerformancePageComponent,
-        data
+        canActivate: [ RbkDatabaseStateGuard ],
+        data,
       },
     ]
   },
@@ -43,6 +46,7 @@ const routes: Routes = [
     NgxSmzTablesModule,
     ToolbarModule,
     SmzChartModule,
+    NgVarModule,
     CardModule
   ],
   exports: [],

@@ -144,7 +144,7 @@ namespace rbkApiModules.Analytics.SqlServer
             data.Versions = analytics.Select(x => x.Version).Distinct().OrderBy(x => x).ToList();
 
             return data;
-        }
+        } 
 
         public void StoreSession(SessionEntry session)
         {

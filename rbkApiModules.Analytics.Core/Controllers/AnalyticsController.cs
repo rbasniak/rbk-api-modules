@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using rbkApiModules.CodeGeneration.Commons;
 using rbkApiModules.Infrastructure.Api;
 using rbkApiModules.Infrastructure.Models;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
@@ -17,13 +18,13 @@ namespace rbkApiModules.Analytics.Core
     public class AnalyticsController: BaseController
     {
         [HttpGet]
-        [Route("filter-options")]
+        [Route("filter-options/all")]
         public async Task<ActionResult<FilterOptionListData>> GetFilterData()
         {
             var result = await Mediator.Send(new GetFilteringLists.Command());
 
             return HttpResponse(result);
-        }
+        } 
 
         [HttpPost]
         [Route("search")]
@@ -37,6 +38,15 @@ namespace rbkApiModules.Analytics.Core
         [HttpPost]
         [Route("dashboard")]
         public async Task<ActionResult<AnalyticsDashboard>> GetDashboardData([FromBody] GetDashboardData.Command data)
+        {
+            var result = await Mediator.Send(data);
+
+            return HttpResponse(result);
+        }
+
+        [HttpPost]
+        [Route("performance")]
+        public async Task<ActionResult<PerformanceDashboard>> GetPerformanceData([FromBody] GetPerformanceData.Command data)
         {
             var result = await Mediator.Send(data);
 
