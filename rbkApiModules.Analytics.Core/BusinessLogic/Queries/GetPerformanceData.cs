@@ -64,6 +64,10 @@ namespace rbkApiModules.Analytics.Core
 
             private object BuildEvolutionChart(List<AnalyticsEntry> data, string endpoint, Func<AnalyticsEntry, double> selector, string title, DateTime from, DateTime to, GroupingType groupingType)
             {
+                var data1 = data.Where(x => x.Path.ToLower() == endpoint.ToLower()).ToList();
+                var data2 = data.Where(x => x.Timestamp >= from && x.Timestamp <= to).ToList();
+                var data3 = data.Select(x => x.Action).Distinct();
+
                 var chart = data.Where(x => x.Action.ToLower() == endpoint.ToLower())
                     .CreateLinearChart()
                         .PreparaData(groupingType)
@@ -105,37 +109,24 @@ namespace rbkApiModules.Analytics.Core
 
             private object BuildDistributionChart(List<AnalyticsEntry> data, string endpoint, Func<AnalyticsEntry, double> selector, string title, DateTime from, DateTime to, GroupingType groupingType)
             {
-                //var chart = data.CreateLinearChart()
-                //        .PreparaData()
-                //            .CategoryFrom(x => x.Timestamp.DayOfWeek.ToString())
-                //            .SingleSerie()
-                //            .ValueFrom(x => x.Count())
-                //            .Chart
-                //        .OfType(ChartType.Bar)
-                //        .Theme("77", ColorPallete.Blue2, ColorPallete.Blue1)
-                //        .Responsive()
-                //        .WithTitle("Most active days of the week")
-                //            .Font(16)
-                //            .Padding(8, 24)
-                //            .Chart
-                //        .WithTooltips()
-                //            .Chart
-                //        .SetupDataset("default")
-                //            .OfType(DatasetType.Bar)
-                //            .RoundedBorders(5)
-                //            .Thickness(3)
-                //            .Chart
-                //        .ReorderCategories(
-                //            DayOfWeek.Monday.ToString(),
-                //            DayOfWeek.Tuesday.ToString(),
-                //            DayOfWeek.Wednesday.ToString(),
-                //            DayOfWeek.Thursday.ToString(),
-                //            DayOfWeek.Friday.ToString(),
-                //            DayOfWeek.Saturday.ToString(),
-                //            DayOfWeek.Sunday.ToString())
-                //        .Build();
+                var chart = data.CreateLinearChart()
+                        .PreparaData(10)
+                            .SetDesiredIntervalFraction(100)
+                            .ValuesFrom(x => selector(x))
+                            .Chart
+                        .OfType(ChartType.Bar)
+                        .Theme("77", ColorPallete.Blue2, ColorPallete.Blue1)
+                        .Responsive()
+                        .WithTooltips()
+                            .Chart
+                        .SetupDataset("default")
+                            .OfType(DatasetType.Bar)
+                            .RoundedBorders(5)
+                            .Thickness(3)
+                            .Chart
+                        .Build();
 
-                return null;
+                return chart;
             }
         }
     }

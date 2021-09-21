@@ -141,7 +141,7 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
 
         public HistogramDataBuilder<T> PreparaData(int intervalCount)
         {
-            return new HistogramDataBuilder<T>(this);
+            return new HistogramDataBuilder<T>(this, intervalCount);
         }
 
         public LinearChartBuilder<T> ReorderCategories(Func<List<Point>, IEnumerable<Point>> expression)
@@ -650,8 +650,9 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
             }
         }
 
-        public HistogramDataBuilder(LinearChartBuilder<T> linearChartBuilder)
+        public HistogramDataBuilder(LinearChartBuilder<T> linearChartBuilder, int intervals)
         {
+            _intervals = intervals;
             _linearChartBuilder = linearChartBuilder;
         }
 
@@ -670,21 +671,21 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
             return this;
         }
 
+        public HistogramDataBuilder<T> SetDesiredIntervalFraction(double value)
+        {
+            _intervalRound = value;
+
+            return this;
+        }
+
         public HistogramDataBuilder<T> ValuesFrom(Func<T, double> seriesSelector)
         {
-            _lastCall = nameof(Compile);
-
             var chart = new LinearChart();
 
             var data = _linearChartBuilder._originalData;
 
             var min = _intervalMin ?? data.Min(x => seriesSelector(x));
             var max = _intervalMax ?? data.Max(x => seriesSelector(x));
-
-            min = 987;
-            max = 5536;
-            _intervals = 10;
-            _intervalRound = 175;
 
             var delta = (max - min) / _intervals;
 
@@ -693,8 +694,8 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
                 min = Math.Floor(min / _intervalRound.Value) * _intervalRound.Value;
                 max = (Math.Floor(max / _intervalRound.Value) + 1) * _intervalRound.Value;
 
-                var delta1 = Math.Floor(delta / _intervalRound.Value);
-                var delta2 = Math.Floor(delta / _intervalRound.Value) + 1;
+                var delta1 = (Math.Floor(delta / _intervalRound.Value)) * _intervalRound.Value;
+                var delta2 = (Math.Floor(delta / _intervalRound.Value) + 1) * _intervalRound.Value;
 
                 var count1 = (max - min) / delta1;
                 var count2 = (max - min) / delta2;
@@ -720,16 +721,18 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
                     intervals++;
                     value += delta;
                 }
+
+                _intervals = intervals;
             }
 
-            var serie = new LinearDataset("Default");
+            var serie = new LinearDataset("default");
 
             for (int i = 0; i < _intervals; i++)
             {
                 double a = i * delta;
                 double b = a + delta;
 
-                var relatedData = data.Where(x => seriesSelector(x) <= min && seriesSelector(x) < max).ToList();
+                var relatedData = data.Where(x => seriesSelector(x) >= a && seriesSelector(x) < b).ToList();
 
                 List<object> extraData = null;
 
@@ -743,15 +746,12 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
 
             chart.Data.Datasets.Add(serie);
 
+            chart.Data.Labels = chart.Data.Datasets.First().Data.Select(x => x.X.ToString()).ToList();
+            
             _linearChartBuilder.Builder.Data = chart.Data;
 
             return this;
-        }
-
-        public HistogramDataBuilder<T> Compile()
-        {
-            
-        }  
+        } 
     }
 
     public enum DatasetBuildMode

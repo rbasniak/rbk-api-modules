@@ -121,10 +121,10 @@ namespace rbkApiModules.Demo
 
             services.AddRbkUIDefinitions(AssembliesUIDefinitions);
 
-            //services.AddSqlServerRbkApiAnalyticsModule(Configuration, "Data Source=50.31.134.17;Integrated Security=False;Initial Catalog=VarejoFacil.Production_Analytics;User ID=sa;Password=zemiko98sql;Connect Timeout=15;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+            services.AddSqlServerRbkApiAnalyticsModule(Configuration, "Data Source=50.31.134.17;Integrated Security=False;Initial Catalog=VarejoFacil.Production_Analytics;User ID=sa;Password=zemiko98sql;Connect Timeout=15;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
             //services.AddSqlServerRbkApiDiagnosticsModule("Data Source=50.31.134.17;Integrated Security=False;Initial Catalog=VarejoFacil.Production_Diagnostics;User ID=sa;Password=zemiko98sql;Connect Timeout=999;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
 
-            services.AddSqlServerRbkApiAnalyticsModule(Configuration, Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Analytics"));
+            //services.AddSqlServerRbkApiAnalyticsModule(Configuration, Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Analytics"));
 
             services.AddSqlServerRbkApiDiagnosticsModule(Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Diagnostics"));
 
