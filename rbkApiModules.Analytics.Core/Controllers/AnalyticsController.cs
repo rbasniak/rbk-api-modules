@@ -79,5 +79,14 @@ namespace rbkApiModules.Analytics.Core
 
             return HttpResponse(result);
         }
+
+        [HttpPost]
+        [Route("fix-api-slash")]
+        public async Task<ActionResult> FixApiSlash()
+        {
+            var result = await Mediator.Send(new NormalizePathsAndActions.Command());
+
+            return HttpResponse(result);
+        }
     }
 }

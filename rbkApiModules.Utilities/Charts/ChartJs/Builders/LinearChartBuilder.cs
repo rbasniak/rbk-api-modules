@@ -684,6 +684,8 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
 
             var data = _linearChartBuilder._originalData;
 
+            if (data.Count() == 0) return this;
+
             var min = _intervalMin ?? data.Min(x => seriesSelector(x));
             var max = _intervalMax ?? data.Max(x => seriesSelector(x));
 
@@ -714,7 +716,7 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
 
                 var value = min;
 
-                var intervals = 1;
+                var intervals = 0;
 
                 while(value < max)
                 {
@@ -729,7 +731,7 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
 
             for (int i = 0; i < _intervals; i++)
             {
-                double a = i * delta;
+                double a = min + i * delta;
                 double b = a + delta;
 
                 var relatedData = data.Where(x => seriesSelector(x) >= a && seriesSelector(x) < b).ToList();

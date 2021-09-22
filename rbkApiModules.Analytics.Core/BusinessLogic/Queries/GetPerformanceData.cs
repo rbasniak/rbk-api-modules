@@ -44,20 +44,26 @@ namespace rbkApiModules.Analytics.Core
 
                 var data = await _context.FilterPerformanceData(request.Endpoint, request.DateFrom, request.DateTo);
 
-                results.DurationDistribution = BuildDistributionChart(data, x => x.Duration, "");   
-                results.DurationEvolution = BuildEvolutionChart(data, x => x.Duration, "", request.DateFrom, request.DateTo, request.GroupingType);
+                var durationData = data.Where(x => x.TransactionCount > 0).OrderBy(x => x.Duration).ToList();
+                durationData = durationData.Take((int)(durationData.Count * 0.99)).ToList();
 
-                results.InSizeDistribution = BuildDistributionChart(data, x => x.RequestSize, "");
-                results.InSizeEvolution = BuildEvolutionChart(data, x => x.RequestSize, "", request.DateFrom, request.DateTo, request.GroupingType);
+                results.DurationDistribution = BuildDistributionChart(durationData, x => x.Duration, "");   
+                results.DurationEvolution = BuildEvolutionChart(durationData, x => x.Duration, "", request.DateFrom, request.DateTo, request.GroupingType);
 
-                results.OutSizeDistribution = BuildDistributionChart(data, x => x.ResponseSize, "");
-                results.OutSizeEvolution = BuildEvolutionChart(data, x => x.ResponseSize, "", request.DateFrom, request.DateTo, request.GroupingType);
+                results.InSizeDistribution = BuildDistributionChart(data.Where(x => x.RequestSize > 0).ToList(), x => x.RequestSize, "");
+                results.InSizeEvolution = BuildEvolutionChart(data.Where(x => x.RequestSize > 0).ToList(), x => x.RequestSize, "", request.DateFrom, request.DateTo, request.GroupingType);
 
-                results.TransactionCountDistribution = BuildDistributionChart(data, x => x.TransactionCount, "");
-                results.TransactionCountEvolution = BuildEvolutionChart(data, x => x.TransactionCount, "", request.DateFrom, request.DateTo, request.GroupingType);
+                results.OutSizeDistribution = BuildDistributionChart(data.Where(x => x.ResponseSize > 0).ToList(), x => x.ResponseSize, "");
+                results.OutSizeEvolution = BuildEvolutionChart(data.Where(x => x.ResponseSize > 0).ToList(), x => x.ResponseSize, "", request.DateFrom, request.DateTo, request.GroupingType);
 
-                results.DatabaseDurationDistribution = BuildDistributionChart(data, x => x.TotalTransactionTime, "");
-                results.DatabaseDurationEvolution = BuildEvolutionChart(data, x => x.TotalTransactionTime, "", request.DateFrom, request.DateTo, request.GroupingType);
+                results.TransactionCountDistribution = BuildDistributionChart(data.Where(x => x.TransactionCount > 0).ToList(), x => x.TransactionCount, "");
+                results.TransactionCountEvolution = BuildEvolutionChart(data.Where(x => x.TransactionCount > 0).ToList(), x => x.TransactionCount, "", request.DateFrom, request.DateTo, request.GroupingType);
+
+                var databaseTimeData = data.Where(x => x.TransactionCount > 0).OrderBy(x => x.TotalTransactionTime).ToList();
+                databaseTimeData = databaseTimeData.Take((int)(databaseTimeData.Count * 0.99)).ToList();
+
+                results.DatabaseDurationDistribution = BuildDistributionChart(databaseTimeData, x => x.TotalTransactionTime, "");
+                results.DatabaseDurationEvolution = BuildEvolutionChart(databaseTimeData, x => x.TotalTransactionTime, "", request.DateFrom, request.DateTo, request.GroupingType);
 
                 return results;
             }
@@ -77,6 +83,7 @@ namespace rbkApiModules.Analytics.Core
                         .OfType(ChartType.Line)
                         .Responsive() 
                         .WithTooltips()
+                            .AtVerticalAxis()
                             .Chart
                         .WithYAxis("x")
                             .AutoSkip(10)

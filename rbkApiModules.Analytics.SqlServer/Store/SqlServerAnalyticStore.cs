@@ -126,13 +126,13 @@ namespace rbkApiModules.Analytics.SqlServer
         {
             var data = new FilterOptionListData();
 
-            data.Actions = await _context.Data.Select(x => x.Action).Distinct().ToListAsync();
-            data.Agents = await _context.Data.Select(x => x.UserAgent).Distinct().ToListAsync();
-            data.Areas = await _context.Data.Select(x => x.Area).Distinct().ToListAsync();
-            data.Domains = await _context.Data.Select(x => x.Domain).Distinct().ToListAsync();
-            data.Responses = await _context.Data.Select(x => x.Response.ToString()).Distinct().ToListAsync();
-            data.Users = await _context.Data.Select(x => x.Username).Distinct().ToListAsync();
-            data.Versions = await _context.Data.Select(x => x.Version).Distinct().ToListAsync();
+            data.Actions = await _context.Data.Select(x => x.Action).Distinct().OrderBy(x => x).ToListAsync();
+            data.Agents = await _context.Data.Select(x => x.UserAgent).Distinct().OrderBy(x => x).ToListAsync();
+            data.Areas = await _context.Data.Select(x => x.Area).Distinct().OrderBy(x => x).ToListAsync();
+            data.Domains = await _context.Data.Select(x => x.Domain).Distinct().OrderBy(x => x).ToListAsync();
+            data.Responses = await _context.Data.Select(x => x.Response.ToString()).OrderBy(x => x).Distinct().ToListAsync();
+            data.Users = await _context.Data.Select(x => x.Username).Distinct().OrderBy(x => x).ToListAsync();
+            data.Versions = await _context.Data.Select(x => x.Version).Distinct().OrderBy(x => x).ToListAsync();
 
             data.StartDate = (await _context.Data.OrderBy(x => x.Timestamp).FirstAsync()).Timestamp.Date;
             data.EndDate = (await _context.Data.OrderBy(x => x.Timestamp).FirstAsync()).Timestamp.Date;
@@ -163,6 +163,26 @@ namespace rbkApiModules.Analytics.SqlServer
                 .Select(x => new { x.Action, x.Duration, x.RequestSize, x.ResponseSize, x.Timestamp, x.TotalTransactionTime, x.TransactionCount })
                 .Select(x => new PerformanceEntry { Action = x.Action, Duration = x.Duration, RequestSize = x.RequestSize, ResponseSize = x.ResponseSize, Timestamp = x.Timestamp, TransactionCount = x.TransactionCount, TotalTransactionTime = x.TotalTransactionTime })
                 .ToListAsync();
+        }
+
+        public void NormalizePathsAndActions()
+        {
+            var results = _context.Data.ToList();
+
+            foreach (var item in results)
+            {
+                if (item.Action.Contains(" api/"))
+                {
+                    item.Action = item.Action.Replace(" api/", " /api/");
+                }
+
+                if (item.Path.Contains(" api/"))
+                {
+                    item.Action = item.Path.Replace(" api/", " /api/");
+                }
+            }
+
+            _context.SaveChanges();
         }
     }
 }
