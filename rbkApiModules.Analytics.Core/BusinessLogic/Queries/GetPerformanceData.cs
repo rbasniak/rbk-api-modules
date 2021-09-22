@@ -42,33 +42,29 @@ namespace rbkApiModules.Analytics.Core
             {
                 var results = new PerformanceDashboard();
 
-                var data = await _context.FilterStatisticsAsync(request.DateFrom, request.DateTo, null, null, null, new string[] { }, null, null, new int[] { 200, 201, 204 }, null, 0, null);
+                var data = await _context.FilterPerformanceData(request.Endpoint, request.DateFrom, request.DateTo);
 
-                results.DurationDistribution = BuildDistributionChart(data, request.Endpoint, x => x.Duration, "", request.DateFrom, request.DateTo, request.GroupingType);   
-                results.DurationEvolution = BuildEvolutionChart(data, request.Endpoint, x => x.Duration, "", request.DateFrom, request.DateTo, request.GroupingType);
+                results.DurationDistribution = BuildDistributionChart(data, x => x.Duration, "");   
+                results.DurationEvolution = BuildEvolutionChart(data, x => x.Duration, "", request.DateFrom, request.DateTo, request.GroupingType);
 
-                results.InSizeDistribution = BuildDistributionChart(data, request.Endpoint, x => x.RequestSize, "", request.DateFrom, request.DateTo, request.GroupingType);
-                results.InSizeEvolution = BuildEvolutionChart(data, request.Endpoint, x => x.RequestSize, "", request.DateFrom, request.DateTo, request.GroupingType);
+                results.InSizeDistribution = BuildDistributionChart(data, x => x.RequestSize, "");
+                results.InSizeEvolution = BuildEvolutionChart(data, x => x.RequestSize, "", request.DateFrom, request.DateTo, request.GroupingType);
 
-                results.OutSizeDistribution = BuildDistributionChart(data, request.Endpoint, x => x.ResponseSize, "", request.DateFrom, request.DateTo, request.GroupingType);
-                results.OutSizeEvolution = BuildEvolutionChart(data, request.Endpoint, x => x.ResponseSize, "", request.DateFrom, request.DateTo, request.GroupingType);
+                results.OutSizeDistribution = BuildDistributionChart(data, x => x.ResponseSize, "");
+                results.OutSizeEvolution = BuildEvolutionChart(data, x => x.ResponseSize, "", request.DateFrom, request.DateTo, request.GroupingType);
 
-                results.TransactionCountDistribution = BuildDistributionChart(data, request.Endpoint, x => x.TransactionCount, "", request.DateFrom, request.DateTo, request.GroupingType);
-                results.TransactionCountEvolution = BuildEvolutionChart(data, request.Endpoint, x => x.TransactionCount, "", request.DateFrom, request.DateTo, request.GroupingType);
+                results.TransactionCountDistribution = BuildDistributionChart(data, x => x.TransactionCount, "");
+                results.TransactionCountEvolution = BuildEvolutionChart(data, x => x.TransactionCount, "", request.DateFrom, request.DateTo, request.GroupingType);
 
-                results.DatabaseDurationDistribution = BuildDistributionChart(data, request.Endpoint, x => x.TotalTransactionTime, "", request.DateFrom, request.DateTo, request.GroupingType);
-                results.DatabaseDurationEvolution = BuildEvolutionChart(data, request.Endpoint, x => x.TotalTransactionTime, "", request.DateFrom, request.DateTo, request.GroupingType);
+                results.DatabaseDurationDistribution = BuildDistributionChart(data, x => x.TotalTransactionTime, "");
+                results.DatabaseDurationEvolution = BuildEvolutionChart(data, x => x.TotalTransactionTime, "", request.DateFrom, request.DateTo, request.GroupingType);
 
                 return results;
             }
 
-            private object BuildEvolutionChart(List<AnalyticsEntry> data, string endpoint, Func<AnalyticsEntry, double> selector, string title, DateTime from, DateTime to, GroupingType groupingType)
+            private object BuildEvolutionChart(List<PerformanceEntry> data, Func<PerformanceEntry, double> selector, string title, DateTime from, DateTime to, GroupingType groupingType)
             {
-                var data1 = data.Where(x => x.Path.ToLower() == endpoint.ToLower()).ToList();
-                var data2 = data.Where(x => x.Timestamp >= from && x.Timestamp <= to).ToList();
-                var data3 = data.Select(x => x.Action).Distinct();
-
-                var chart = data.Where(x => x.Action.ToLower() == endpoint.ToLower())
+                var chart = data
                     .CreateLinearChart()
                         .PreparaData(groupingType)
                             .EnforceStartDate(from)
@@ -107,9 +103,10 @@ namespace rbkApiModules.Analytics.Core
                 return chart;
             }
 
-            private object BuildDistributionChart(List<AnalyticsEntry> data, string endpoint, Func<AnalyticsEntry, double> selector, string title, DateTime from, DateTime to, GroupingType groupingType)
+            private object BuildDistributionChart(List<PerformanceEntry> data, Func<PerformanceEntry, double> selector, string title)
             {
-                var chart = data.CreateLinearChart()
+                var chart = data
+                    .CreateLinearChart()
                         .PreparaData(10)
                             .SetDesiredIntervalFraction(100)
                             .ValuesFrom(x => selector(x))

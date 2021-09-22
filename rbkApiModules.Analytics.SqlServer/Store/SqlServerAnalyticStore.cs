@@ -117,31 +117,25 @@ namespace rbkApiModules.Analytics.SqlServer
             return data.Select(x => x.FixTimezone(_timezoneOffsetours)).ToList();
         }
 
+        private List<PerformanceEntry> FixTimezone(List<PerformanceEntry> data)
+        {
+            return data.Select(x => x.FixTimezone(_timezoneOffsetours)).ToList();
+        }
+
         public async Task<FilterOptionListData> GetFilteringLists()
         {
             var data = new FilterOptionListData();
 
-            var analytics = await _context.Data.Select(x => new 
-            {
-                Date = x.Timestamp,
-                Action = x.Action,
-                UserAgent = x.UserAgent,
-                Area = x.Area,
-                Domain = x.Domain,
-                Response = x.Response,
-                Username = x.Username,
-                Version = x.Version
-            }).ToListAsync();
+            data.Actions = await _context.Data.Select(x => x.Action).Distinct().ToListAsync();
+            data.Agents = await _context.Data.Select(x => x.UserAgent).Distinct().ToListAsync();
+            data.Areas = await _context.Data.Select(x => x.Area).Distinct().ToListAsync();
+            data.Domains = await _context.Data.Select(x => x.Domain).Distinct().ToListAsync();
+            data.Responses = await _context.Data.Select(x => x.Response.ToString()).Distinct().ToListAsync();
+            data.Users = await _context.Data.Select(x => x.Username).Distinct().ToListAsync();
+            data.Versions = await _context.Data.Select(x => x.Version).Distinct().ToListAsync();
 
-            data.StartDate = analytics.Last().Date;
-            data.EndDate = analytics.First().Date;
-            data.Actions = analytics.Select(x => x.Action).Distinct().OrderBy(x => x).ToList();
-            data.Agents = analytics.Select(x => x.UserAgent).Distinct().OrderBy(x => x).ToList();
-            data.Areas = analytics.Select(x => x.Area).Distinct().OrderBy(x => x).ToList();
-            data.Domains = analytics.Select(x => x.Domain).Distinct().OrderBy(x => x).ToList();
-            data.Responses = analytics.Select(x => x.Response.ToString()).Distinct().OrderBy(x => x).ToList();
-            data.Users = analytics.Select(x => x.Username).Distinct().OrderBy(x => x).ToList();
-            data.Versions = analytics.Select(x => x.Version).Distinct().OrderBy(x => x).ToList();
+            data.StartDate = (await _context.Data.OrderBy(x => x.Timestamp).FirstAsync()).Timestamp.Date;
+            data.EndDate = (await _context.Data.OrderBy(x => x.Timestamp).FirstAsync()).Timestamp.Date;
 
             return data;
         } 
@@ -152,14 +146,23 @@ namespace rbkApiModules.Analytics.SqlServer
             _context.SaveChanges();
         }
 
-        public Task<List<SessionEntry>> GetSessionsAsync(DateTime dateFrom, DateTime dateTo)
+        public async Task<List<SessionEntry>> GetSessionsAsync(DateTime dateFrom, DateTime dateTo)
         {
-            return _context.Sessions.Where(x => x.Start.Date >= dateFrom.Date && x.End.Date <= dateTo.Date).ToListAsync();
+            return await _context.Sessions.Where(x => x.Start.Date >= dateFrom.Date && x.End.Date <= dateTo.Date).ToListAsync();
         }
 
         public void DeleteStatisticsFromMatchingPathAsync(string searchText)
         {
             _context.RemoveRange(_context.Data.Where(x => x.Path.ToLower().Contains(searchText.ToLower())));
+        }
+
+        public async Task<List<PerformanceEntry>> FilterPerformanceData(string endpoint, DateTime dateFrom, DateTime dateTo)
+        {
+            return await _context.Data
+                .Where(x => x.Action == endpoint && x.Timestamp >= dateFrom && x.Timestamp <= dateTo && (x.Response == 200 || x.Response == 201 || x.Response == 204))
+                .Select(x => new { x.Action, x.Duration, x.RequestSize, x.ResponseSize, x.Timestamp, x.TotalTransactionTime, x.TransactionCount })
+                .Select(x => new PerformanceEntry { Action = x.Action, Duration = x.Duration, RequestSize = x.RequestSize, ResponseSize = x.ResponseSize, Timestamp = x.Timestamp, TransactionCount = x.TransactionCount, TotalTransactionTime = x.TotalTransactionTime })
+                .ToListAsync();
         }
     }
 }
