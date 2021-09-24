@@ -25,7 +25,6 @@ export class PerformanceFeatureState {
   public filter$(ctx: StateContext<PerformanceFeatureStateModel>, action: PerformanceFeatureActions.LoadAll): Observable<PerformanceData> {
     return this.analytics.getPerformanceData(action.endpoint, action.dateFrom, action.dateTo, action.groupingType).pipe(
       tap((result: PerformanceData) => {
-        console.log(result);
         ctx.patchState({
           data: result,
         });

@@ -154,20 +154,32 @@ namespace rbkApiModules.Analytics.SqlServer
         public void DeleteStatisticsFromMatchingPathAsync(string searchText)
         {
             _context.RemoveRange(_context.Data.Where(x => x.Path.ToLower().Contains(searchText.ToLower())));
+            _context.SaveChanges();
         }
 
         public async Task<List<PerformanceEntry>> FilterPerformanceData(string endpoint, DateTime dateFrom, DateTime dateTo)
         {
             return await _context.Data
-                .Where(x => x.Action == endpoint && x.Timestamp >= dateFrom && x.Timestamp <= dateTo && (x.Response == 200 || x.Response == 201 || x.Response == 204))
-                .Select(x => new { x.Action, x.Duration, x.RequestSize, x.ResponseSize, x.Timestamp, x.TotalTransactionTime, x.TransactionCount })
-                .Select(x => new PerformanceEntry { Action = x.Action, Duration = x.Duration, RequestSize = x.RequestSize, ResponseSize = x.ResponseSize, Timestamp = x.Timestamp, TransactionCount = x.TransactionCount, TotalTransactionTime = x.TotalTransactionTime })
+                .Where(x => x.Action == endpoint && x.Timestamp >= dateFrom && x.Timestamp <= dateTo)
+                .Select(x => new { x.Action, x.Duration, x.RequestSize, x.ResponseSize, x.Timestamp, x.TotalTransactionTime, x.TransactionCount, x.Response, x.Username })
+                .Select(x => new PerformanceEntry 
+                    { 
+                        Action = x.Action, 
+                        Duration = x.Duration, 
+                        RequestSize = x.RequestSize, 
+                        ResponseSize = x.ResponseSize, 
+                        Timestamp = x.Timestamp, 
+                        TransactionCount = x.TransactionCount, 
+                        TotalTransactionTime = x.TotalTransactionTime,
+                        Username = x.Username,
+                        HasError = x.Response > 204 && x.Response != 400
+                    })
                 .ToListAsync();
         }
 
         public void NormalizePathsAndActions()
         {
-            var results = _context.Data.ToList();
+            var results = _context.Data.Where(x => x.Action != null).ToList();
 
             foreach (var item in results)
             {

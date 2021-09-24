@@ -15,6 +15,8 @@ namespace rbkApiModules.Analytics.Core
         public long ResponseSize { get; set; }
         public long RequestSize { get; set; }
         public int Duration { get; set; }
+        public bool HasError { get; set; }
+        public string Username { get; set; }
         public int TotalTransactionTime { get; set; }
         public int TransactionCount { get; set; }
 
