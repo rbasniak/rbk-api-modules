@@ -69,6 +69,11 @@ namespace rbkApiModules.UIAnnotations
     {
         private readonly Type _type;
 
+        public InputControl(string propertyName)
+        {
+            Name = propertyName;
+        }
+
         public InputControl(string propertyName, Type type, RequiredAttribute requiredAttribute, MinLengthAttribute minlengAttribute,
             MaxLengthAttribute maxlengAttribute, DialogDataAttribute dialogDataAttribute)
         {
