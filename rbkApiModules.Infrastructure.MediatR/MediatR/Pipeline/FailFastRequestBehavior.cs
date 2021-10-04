@@ -53,20 +53,11 @@ namespace rbkApiModules.Infrastructure.MediatR.Core
 
                 var composedValidators = _validators.ToList();
 
-                foreach (var item in _validators)
-                {
-                    File.AppendAllText("log.txt", item.ToString());
-                }
-
                 foreach (var @interface in interfaces)
                 {
                     var ivalidator = typeof(IValidator<>);
                     var generic = ivalidator.MakeGenericType(@interface);
                     var validator = _httpContextAccessor.HttpContext.RequestServices.GetService(generic);
-
-                    File.AppendAllText("log.txt", ivalidator.FullName);
-                    File.AppendAllText("log.txt", generic.ToString());
-                    File.AppendAllText("log.txt", validator.ToString());
 
                     if (validator != null)
                     {
@@ -74,21 +65,48 @@ namespace rbkApiModules.Infrastructure.MediatR.Core
                     }
                 }
 
-                foreach (var item in composedValidators)
+                //foreach (var item in composedValidators)
+                //{
+                //    File.AppendAllText("log.txt", item.ToString());
+                //    var result = item.Validate(context);
+                //    File.AppendAllText("log.txt", result.ToString());
+                //}
+
+                var temp1 = composedValidators
+                    .Select(async v => await v.ValidateAsync(context)).ToList();
+
+                foreach (var validator in temp1)
                 {
-                    File.AppendAllText("log.txt", item.ToString());
-                    var result = item.Validate(context);
-                    File.AppendAllText("log.txt", result.ToString());
+                    File.AppendAllText("log.txt", "\n------------------------------------------------------");
+                    foreach (var error in validator.Result.Errors)
+                    {
+                        if (error == null) continue;
+
+                        File.AppendAllText("log.txt", "\n" + error.PropertyName + ": " + error.ErrorMessage );
+                    }
                 }
 
+                var temp2 = temp1.SelectMany(result => result.Result.Errors).ToList();
                 
+                File.AppendAllText("log.txt", "\n======================================================");
 
+                foreach (var message in temp2)
+                {
+                    if (message == null) continue;
+
+                    File.AppendAllText("log.txt", "\n------------------------------------------------------");
+                    File.AppendAllText("log.txt", "\n" + message.PropertyName + ": " + message.ErrorMessage);
+                }
+
+                var temp3 = temp2.Where(f => f != null).ToList();
+
+                var failures = temp3;
                 // Cuidado com Task.Result, pode ocasionar deadlocks.
-                var failures = composedValidators
-                    .Select(async v => await v.ValidateAsync(context))
-                    .SelectMany(result => result.Result.Errors)
-                    .Where(f => f != null)
-                    .ToList();
+                //var failures = composedValidators
+                //    .Select(async v => await v.ValidateAsync(context))
+                //    .SelectMany(result => result.Result.Errors)
+                //    .Where(f => f != null)
+                //    .ToList();
 
                 if (failures.Any())
                 {
