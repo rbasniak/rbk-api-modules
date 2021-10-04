@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using System.IO;
 
 namespace rbkApiModules.Infrastructure.MediatR.Core
 {
@@ -48,7 +49,14 @@ namespace rbkApiModules.Infrastructure.MediatR.Core
                 // Then serarch for the other validators using the interfaces implemented by the command
                 var interfaces = request.GetType().GetInterfaces().Where(x => !x.FullName.Contains("MediatR"));
 
+                File.AppendAllText("log.txt", interfaces.Count().ToString());
+
                 var composedValidators = _validators.ToList();
+
+                foreach (var item in _validators)
+                {
+                    File.AppendAllText("log.txt", item.ToString());
+                }
 
                 foreach (var @interface in interfaces)
                 {
@@ -56,11 +64,24 @@ namespace rbkApiModules.Infrastructure.MediatR.Core
                     var generic = ivalidator.MakeGenericType(@interface);
                     var validator = _httpContextAccessor.HttpContext.RequestServices.GetService(generic);
 
+                    File.AppendAllText("log.txt", ivalidator.FullName);
+                    File.AppendAllText("log.txt", generic.ToString());
+                    File.AppendAllText("log.txt", validator.ToString());
+
                     if (validator != null)
                     {
                         composedValidators.Add((IValidator)validator);
                     }
                 }
+
+                foreach (var item in composedValidators)
+                {
+                    File.AppendAllText("log.txt", item.ToString());
+                    var result = item.Validate(context);
+                    File.AppendAllText("log.txt", result.ToString());
+                }
+
+                
 
                 // Cuidado com Task.Result, pode ocasionar deadlocks.
                 var failures = composedValidators
