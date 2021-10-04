@@ -14,10 +14,11 @@ namespace rbkApiModules.Demo.BusinessLogic
 {
     public class TestCommand
     {
-        public class Command : IRequest<CommandResponse>
+        public class Command : IRequest<CommandResponse>, ITestExternalValidator
         {
             public string Data1 { get; set; }
             public string Data2 { get; set; }
+            public string Data3 { get; set; }
         }
 
         public class Validator : AbstractValidator<Command>
@@ -30,12 +31,20 @@ namespace rbkApiModules.Demo.BusinessLogic
 
                 RuleFor(x => x.Data1)
                     .Must(MustTest).WithMessage("Testeeee");
+
+                RuleFor(x => x.Data3)
+                    .Must(MustTest2).WithMessage("xxxxxxxxxxxxxxxx");
             }
 
             private bool MustTest(Command command, string test)
             {
                 return false;
-            } 
+            }
+
+            private bool MustTest2(Command command, string test)
+            {
+                return true;
+            }
         }
 
         public class Handler : BaseCommandHandler<Command, DatabaseContext>
@@ -51,6 +60,23 @@ namespace rbkApiModules.Demo.BusinessLogic
 
                 return (null, null);
             }
+        }
+    }
+
+    public interface ITestExternalValidator
+    {
+        public string Data2 { get; set; }
+    }
+
+    public class PlantDomainValidator : AbstractValidator<ITestExternalValidator>
+    {
+        private readonly DatabaseContext _context;
+        public PlantDomainValidator(DatabaseContext context, IHttpContextAccessor httpContextAccessor)
+        {
+            _context = context;
+
+            RuleFor(x => x.Data2)
+                .IsRequired();
         }
     }
 }

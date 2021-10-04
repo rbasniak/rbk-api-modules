@@ -49,8 +49,6 @@ namespace rbkApiModules.Infrastructure.MediatR.Core
                 // Then serarch for the other validators using the interfaces implemented by the command
                 var interfaces = request.GetType().GetInterfaces().Where(x => !x.FullName.Contains("MediatR"));
 
-                File.AppendAllText("log.txt", interfaces.Count().ToString());
-
                 var composedValidators = _validators.ToList();
 
                 foreach (var @interface in interfaces)
@@ -63,50 +61,15 @@ namespace rbkApiModules.Infrastructure.MediatR.Core
                     {
                         composedValidators.Add((IValidator)validator);
                     }
-                }
+                } 
 
-                //foreach (var item in composedValidators)
-                //{
-                //    File.AppendAllText("log.txt", item.ToString());
-                //    var result = item.Validate(context);
-                //    File.AppendAllText("log.txt", result.ToString());
-                //}
-
-                var temp1 = composedValidators
-                    .Select(async v => await v.ValidateAsync(context)).ToList();
-
-                foreach (var validator in temp1)
-                {
-                    File.AppendAllText("log.txt", "\n------------------------------------------------------");
-                    foreach (var error in validator.Result.Errors)
-                    {
-                        if (error == null) continue;
-
-                        File.AppendAllText("log.txt", "\n" + error.PropertyName + ": " + error.ErrorMessage );
-                    }
-                }
-
-                var temp2 = temp1.SelectMany(result => result.Result.Errors).ToList();
-                
-                File.AppendAllText("log.txt", "\n======================================================");
-
-                foreach (var message in temp2)
-                {
-                    if (message == null) continue;
-
-                    File.AppendAllText("log.txt", "\n------------------------------------------------------");
-                    File.AppendAllText("log.txt", "\n" + message.PropertyName + ": " + message.ErrorMessage);
-                }
-
-                var temp3 = temp2.Where(f => f != null).ToList();
-
-                var failures = temp3;
                 // Cuidado com Task.Result, pode ocasionar deadlocks.
-                //var failures = composedValidators
-                //    .Select(async v => await v.ValidateAsync(context))
-                //    .SelectMany(result => result.Result.Errors)
-                //    .Where(f => f != null)
-                //    .ToList();
+                var failures = composedValidators
+                    .Select(async v => await v.ValidateAsync(context))
+                    .SelectMany(result => result.Result.Errors)
+                    .Where(f => f != null)
+                    .Distinct()
+                    .ToList();
 
                 if (failures.Any())
                 {
