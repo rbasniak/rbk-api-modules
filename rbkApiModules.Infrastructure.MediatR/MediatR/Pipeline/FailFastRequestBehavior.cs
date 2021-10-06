@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using System.IO;
 
 namespace rbkApiModules.Infrastructure.MediatR.Core
 {
@@ -60,13 +61,14 @@ namespace rbkApiModules.Infrastructure.MediatR.Core
                     {
                         composedValidators.Add((IValidator)validator);
                     }
-                }
+                } 
 
                 // Cuidado com Task.Result, pode ocasionar deadlocks.
                 var failures = composedValidators
                     .Select(async v => await v.ValidateAsync(context))
                     .SelectMany(result => result.Result.Errors)
                     .Where(f => f != null)
+                    .Distinct()
                     .ToList();
 
                 if (failures.Any())

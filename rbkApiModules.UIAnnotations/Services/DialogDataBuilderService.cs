@@ -69,6 +69,11 @@ namespace rbkApiModules.UIAnnotations
     {
         private readonly Type _type;
 
+        public InputControl(string propertyName)
+        {
+            Name = propertyName;
+        }
+
         public InputControl(string propertyName, Type type, RequiredAttribute requiredAttribute, MinLengthAttribute minlengAttribute,
             MaxLengthAttribute maxlengAttribute, DialogDataAttribute dialogDataAttribute)
         {
@@ -180,7 +185,7 @@ namespace rbkApiModules.UIAnnotations
         public bool Required { get; set; }
         public int? MinLength { get; set; }
         public int? MaxLength { get; set; }
-        public List<SimpleNamedEntity<int>> Data { get; set; }
+        public List<SimpleNamedEntity<object>> Data { get; set; }
 
         public string EntityLabelPropertyName { get; set; }
 
@@ -261,9 +266,9 @@ namespace rbkApiModules.UIAnnotations
             return propertyName.EndsWith("Id") ? propertyName.Substring(0, propertyName.Length - 2) : propertyName;
         }
 
-        private List<SimpleNamedEntity<int>> EnumToSimpleNamedList(Type type)
+        private List<SimpleNamedEntity<object>> EnumToSimpleNamedList(Type type)
         {
-            var results = new List<SimpleNamedEntity<int>>();
+            var results = new List<SimpleNamedEntity<object>>();
             var names = Enum.GetNames(type);
             for (int i = 0; i < names.Length; i++)
             {
@@ -274,11 +279,11 @@ namespace rbkApiModules.UIAnnotations
 
                 if (fds != null)
                 {
-                    results.Add(new SimpleNamedEntity<int> { Id = id, Name = (fds as DescriptionAttribute).Description });
+                    results.Add(new SimpleNamedEntity<object> { Id = id, Name = (fds as DescriptionAttribute).Description });
                 }
                 else
                 {
-                    results.Add(new SimpleNamedEntity<int> { Id = id, Name = field.Name });
+                    results.Add(new SimpleNamedEntity<object> { Id = id, Name = field.Name });
                 }
             }
 

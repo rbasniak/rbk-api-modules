@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using rbkApiModules.Authentication.AuthenticationGroups;
 using rbkApiModules.Demo.BusinessLogic;
+using rbkApiModules.Demo.DataTransfer;
 using rbkApiModules.Infrastructure.Api;
 using rbkApiModules.Utilities;
 using rbkApiModules.Utilities.Extensions;
@@ -49,6 +50,15 @@ namespace rbkApiModules.Demo.Controllers
         public ActionResult Test2()
         {
             return Ok("Autorizado");
+        }
+
+        [HttpPut]
+        [AllowAnonymous]
+        public async Task<ActionResult<DocumentDetails>> MessageTest(TestCommand.Command data)
+        {
+            var result = await Mediator.Send(data);
+
+            return HttpResponse<DocumentDetails>(result);
         }
     }
 }

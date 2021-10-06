@@ -5,7 +5,7 @@
     <IsPackable>true</IsPackable>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <Version>2.12.5</Version>
+    <Version>2.13.6</Version>
     <Authors>rbasniak</Authors>
     <Product>rbkApiModules</Product>
     <Copyright>rbasniak</Copyright>
@@ -25,8 +25,8 @@
 	  <PrivateAssets>all</PrivateAssets>
 	  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>
-	<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.1.5" />
-	<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUi" Version="6.1.5" />
+	<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.2.2" />
+	<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUi" Version="6.2.2" />
   </ItemGroup>
 
   <ItemGroup>

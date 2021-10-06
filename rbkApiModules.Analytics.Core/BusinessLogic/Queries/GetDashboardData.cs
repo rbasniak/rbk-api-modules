@@ -99,6 +99,7 @@ namespace rbkApiModules.Analytics.Core
             private object BuildAverageTransactionsPerEndpoint(List<AnalyticsEntry> data, DateTime from, DateTime to)
             {
                 var chart = PrefilterResults(data, from, to, null, null)
+                    .Where(x => x.TransactionCount > 0)
                     .CreateRadialChart()
                         .PreparaData()
                             .Take(10)
@@ -265,6 +266,7 @@ namespace rbkApiModules.Analytics.Core
             private object BuildDailyDatabaseUsage(List<AnalyticsEntry> data, DateTime from, DateTime to, GroupingType groupingType)
             { 
                 var chart = PrefilterResults(data, from, to, null, null)
+                    .Where(x => x.TransactionCount > 0)
                                 .CreateLinearChart()
                                     .PreparaData(groupingType)
                                         .EnforceStartDate(from)
@@ -344,7 +346,7 @@ namespace rbkApiModules.Analytics.Core
                                     .OfType(ChartType.Line)
                                     .Theme(ColorPallete.Blue2)
                                     .Responsive()
-                                    .WithTitle("Daily inbound traffic")
+                                    .WithTitle("Daily inbound traffic (bytes)")
                                         .Font(16)
                                         .Padding(8, 24)
                                         .Chart
@@ -378,7 +380,7 @@ namespace rbkApiModules.Analytics.Core
                                     .OfType(ChartType.Line)
                                     .Theme(ColorPallete.Blue2)
                                     .Responsive()
-                                    .WithTitle("Daily outbound traffic")
+                                    .WithTitle("Daily outbound traffic (bytes)")
                                         .Font(16)
                                         .Padding(8, 24)
                                         .Chart
@@ -435,6 +437,7 @@ namespace rbkApiModules.Analytics.Core
             private object BuildDailyTransactions(List<AnalyticsEntry> data, DateTime from, DateTime to, GroupingType groupingType)
             {
                 var chart = PrefilterResults(data, from, to, null, null)
+                    .Where(x => x.TransactionCount > 0)
                                 .CreateLinearChart()
                                     .PreparaData(groupingType)
                                         .EnforceStartDate(from)
@@ -446,7 +449,7 @@ namespace rbkApiModules.Analytics.Core
                                     .OfType(ChartType.Line)
                                     .Theme(ColorPallete.Blue2)
                                     .Responsive()
-                                    .WithTitle("Daily inbound traffic")
+                                    .WithTitle("Daily inbound traffic (bytes)")
                                         .Font(16)
                                         .Padding(8, 24)
                                         .Chart

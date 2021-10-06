@@ -44,22 +44,27 @@ namespace rbkApiModules.Analytics.Core
 
                 var data = await _context.FilterPerformanceData(request.Endpoint, request.DateFrom, request.DateTo);
 
-                var durationData = data.Where(x => x.TransactionCount > 0).OrderBy(x => x.Duration).ToList();
+                var durationData = data
+                    .Where(x => x.TransactionCount > 0 && !x.HasError)
+                    .OrderBy(x => x.Duration).ToList();
                 durationData = durationData.Take((int)(durationData.Count * 0.99)).ToList();
+
+                results.DailyUsage = BuildDailyUsageChart(durationData, request.DateFrom, request.DateTo, request.GroupingType);
+                results.UserUsage = BuildUserUsageChart(durationData);
 
                 results.DurationDistribution = BuildDistributionChart(durationData, x => x.Duration, "");   
                 results.DurationEvolution = BuildEvolutionChart(durationData, x => x.Duration, "", request.DateFrom, request.DateTo, request.GroupingType);
 
-                results.InSizeDistribution = BuildDistributionChart(data.Where(x => x.RequestSize > 0).ToList(), x => x.RequestSize, "");
-                results.InSizeEvolution = BuildEvolutionChart(data.Where(x => x.RequestSize > 0).ToList(), x => x.RequestSize, "", request.DateFrom, request.DateTo, request.GroupingType);
+                results.InSizeDistribution = BuildDistributionChart(data.Where(x => x.RequestSize > 0 && !x.HasError).ToList(), x => x.RequestSize, "");
+                results.InSizeEvolution = BuildEvolutionChart(data.Where(x => x.RequestSize > 0 && !x.HasError).ToList(), x => x.RequestSize, "", request.DateFrom, request.DateTo, request.GroupingType);
 
-                results.OutSizeDistribution = BuildDistributionChart(data.Where(x => x.ResponseSize > 0).ToList(), x => x.ResponseSize, "");
-                results.OutSizeEvolution = BuildEvolutionChart(data.Where(x => x.ResponseSize > 0).ToList(), x => x.ResponseSize, "", request.DateFrom, request.DateTo, request.GroupingType);
+                results.OutSizeDistribution = BuildDistributionChart(data.Where(x => x.ResponseSize > 0 && !x.HasError).ToList(), x => x.ResponseSize, "");
+                results.OutSizeEvolution = BuildEvolutionChart(data.Where(x => x.ResponseSize > 0 && !x.HasError).ToList(), x => x.ResponseSize, "", request.DateFrom, request.DateTo, request.GroupingType);
 
-                results.TransactionCountDistribution = BuildDistributionChart(data.Where(x => x.TransactionCount > 0).ToList(), x => x.TransactionCount, "");
-                results.TransactionCountEvolution = BuildEvolutionChart(data.Where(x => x.TransactionCount > 0).ToList(), x => x.TransactionCount, "", request.DateFrom, request.DateTo, request.GroupingType);
+                results.TransactionCountDistribution = BuildDistributionChart(data.Where(x => x.TransactionCount > 0 && !x.HasError).ToList(), x => x.TransactionCount, "");
+                results.TransactionCountEvolution = BuildEvolutionChart(data.Where(x => x.TransactionCount > 0 && !x.HasError).ToList(), x => x.TransactionCount, "", request.DateFrom, request.DateTo, request.GroupingType);
 
-                var databaseTimeData = data.Where(x => x.TransactionCount > 0).OrderBy(x => x.TotalTransactionTime).ToList();
+                var databaseTimeData = data.Where(x => x.TransactionCount > 0 && !x.HasError).OrderBy(x => x.TotalTransactionTime).ToList();
                 databaseTimeData = databaseTimeData.Take((int)(databaseTimeData.Count * 0.99)).ToList();
 
                 results.DatabaseDurationDistribution = BuildDistributionChart(databaseTimeData, x => x.TotalTransactionTime, "");
@@ -76,7 +81,7 @@ namespace rbkApiModules.Analytics.Core
                             .EnforceStartDate(from)
                             .EnforceEndDate(to)
                             .DateFrom(x => x.Timestamp)
-                            .AddSerie("Minimum", x => { return x.Min(x => selector(x)); })
+                            .AddSerie("Minimum", x => x.Min(x => selector(x)))
                             .AddSerie("Average", x => x.Average(x => selector(x)))
                             .AddSerie("Maximum", x => x.Max(x => selector(x)))
                             .Chart
@@ -110,6 +115,42 @@ namespace rbkApiModules.Analytics.Core
                 return chart;
             }
 
+            private object BuildDailyUsageChart(List<PerformanceEntry> data, DateTime from, DateTime to, GroupingType groupingType)
+            {
+                var chart = data
+                    .CreateLinearChart()
+                        .PreparaData(groupingType)
+                            .EnforceStartDate(from)
+                            .EnforceEndDate(to)
+                            .DateFrom(x => x.Timestamp)
+                            .AddSerie("Hits", x => x.Count())
+                            .AddSerie("Errors", x => x.Where(x => x.HasError).Count())
+                            .Chart
+                        .OfType(ChartType.Line)
+                        .Responsive()
+                        .WithTooltips()
+                            .AtVerticalAxis()
+                            .Chart
+                        .WithYAxis("x")
+                            .AutoSkip(10)
+                            .Chart
+                        .WithYAxis("y")
+                            .Range(0, null)
+                            .Chart
+                        .SetupDataset("Hits")
+                            .Color("#01579b")
+                            .Thickness(3)
+                            .Chart
+                        .SetupDataset("Errors")
+                            .Color("#b71c1c")
+                            .PointRadius(2)
+                            .Thickness(1)
+                            .Chart
+                        .Build();
+
+                return chart;
+            }
+
             private object BuildDistributionChart(List<PerformanceEntry> data, Func<PerformanceEntry, double> selector, string title)
             {
                 var chart = data
@@ -130,6 +171,28 @@ namespace rbkApiModules.Analytics.Core
                             .Chart
                         .Build();
 
+                return chart;
+            }
+
+            private object BuildUserUsageChart(List<PerformanceEntry> data)
+            {
+                var chart = data
+                    .CreateRadialChart()
+                        .PreparaData()
+                            .RoundValues(1)
+                            .SeriesFrom(x => x.Username)
+                            //.MaximumSeries(10, "Outros")
+                            .Take(10)
+                            .ValueFrom(x => x.Count())
+                            .Chart
+                        .OfType(ChartType.Doughnut)
+                        .Theme(ColorPallete.Bright1, ColorPallete.Bright2)
+                        .Responsive()
+                        // .Padding(0, 0, 48, 48)
+                        .WithTooltips()
+                            .Chart
+                        .Build();
+                
                 return chart;
             }
         }

@@ -10,6 +10,23 @@
 
 <ng-container *ngIf="(data$ | async) as data">
   <div class="p-mt-4">
+    <p-panel header="USAGE" [toggleable]="true">
+      <div class="grid grid-cols-3 gap-4 mb-6">
+        <div class="col-span-1">
+          <ng-container *ngVar="data.userUsage as chartData">
+            <smz-ui-chart [type]="chartData.type" [options]="chartData.config" [data]="chartData.data" height="300px"></smz-ui-chart>
+          </ng-container>
+        </div>
+        <div class="col-span-2">
+          <ng-container *ngVar="data.dailyUsage as chartData">
+            <smz-ui-chart [type]="chartData.type" [options]="chartData.config" [data]="chartData.data" height="300px"></smz-ui-chart>
+          </ng-container>
+        </div>
+      </div>
+    </p-panel>
+  </div>
+
+  <div class="p-mt-4">
     <p-panel header="DURATION" [toggleable]="true">
       <div class="grid grid-cols-3 gap-4 mb-6">
         <div class="col-span-1">
@@ -33,14 +50,12 @@
       <div class="grid grid-cols-3 gap-4 mb-6">
         <div class="col-span-1">
           <ng-container *ngVar="data.inSizeDistribution as chartData">
-            <smz-ui-chart [type]="chartData.type" [options]="chartData.config" [data]="chartData.data"
-              height="300px"></smz-ui-chart>
+            <smz-ui-chart [type]="chartData.type" [options]="chartData.config" [data]="chartData.data" height="300px"></smz-ui-chart>
           </ng-container>
         </div>
         <div class="col-span-2">
           <ng-container *ngVar="data.inSizeEvolution as chartData">
-            <smz-ui-chart [type]="chartData.type" [options]="chartData.config" [data]="chartData.data" height="300px">
-            </smz-ui-chart>
+            <smz-ui-chart [type]="chartData.type" [options]="chartData.config" [data]="chartData.data" height="300px"></smz-ui-chart>
           </ng-container>
         </div>
       </div>
@@ -52,14 +67,12 @@
       <div class="grid grid-cols-3 gap-4 mb-6">
         <div class="col-span-1">
           <ng-container *ngVar="data.outSizeDistribution as chartData">
-            <smz-ui-chart [type]="chartData.type" [options]="chartData.config" [data]="chartData.data"
-            height="300px"></smz-ui-chart>
+            <smz-ui-chart [type]="chartData.type" [options]="chartData.config" [data]="chartData.data" height="300px"></smz-ui-chart>
           </ng-container>
         </div>
         <div class="col-span-2">
           <ng-container *ngVar="data.outSizeEvolution as chartData">
-            <smz-ui-chart [type]="chartData.type" [options]="chartData.config" [data]="chartData.data" height="300px">
-            </smz-ui-chart>
+            <smz-ui-chart [type]="chartData.type" [options]="chartData.config" [data]="chartData.data" height="300px"></smz-ui-chart>
           </ng-container>
         </div>
       </div>
@@ -71,14 +84,12 @@
       <div class="grid grid-cols-3 gap-4 mb-6">
         <div class="col-span-1">
           <ng-container *ngVar="data.transactionCountDistribution as chartData">
-            <smz-ui-chart [type]="chartData.type" [options]="chartData.config" [data]="chartData.data"
-            height="300px"></smz-ui-chart>
+            <smz-ui-chart [type]="chartData.type" [options]="chartData.config" [data]="chartData.data" height="300px"></smz-ui-chart>
           </ng-container>
         </div>
         <div class="col-span-2">
           <ng-container *ngVar="data.transactionCountEvolution as chartData">
-            <smz-ui-chart [type]="chartData.type" [options]="chartData.config" [data]="chartData.data" height="300px">
-            </smz-ui-chart>
+            <smz-ui-chart [type]="chartData.type" [options]="chartData.config" [data]="chartData.data" height="300px"></smz-ui-chart>
           </ng-container>
         </div>
       </div>
@@ -90,14 +101,12 @@
       <div class="grid grid-cols-3 gap-4 mb-6">
         <div class="col-span-1">
           <ng-container *ngVar="data.databaseDurationDistribution as chartData">
-            <smz-ui-chart [type]="chartData.type" [options]="chartData.config" [data]="chartData.data"
-            height="300px"></smz-ui-chart>
+            <smz-ui-chart [type]="chartData.type" [options]="chartData.config" [data]="chartData.data" height="300px"></smz-ui-chart>
           </ng-container>
         </div>
         <div class="col-span-2">
           <ng-container *ngVar="data.databaseDurationEvolution as chartData">
-            <smz-ui-chart [type]="chartData.type" [options]="chartData.config" [data]="chartData.data" height="300px">
-            </smz-ui-chart>
+            <smz-ui-chart [type]="chartData.type" [options]="chartData.config" [data]="chartData.data" height="300px"></smz-ui-chart>
           </ng-container>
         </div>
       </div>

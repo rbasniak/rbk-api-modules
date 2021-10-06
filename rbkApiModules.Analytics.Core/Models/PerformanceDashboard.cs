@@ -16,6 +16,8 @@ namespace rbkApiModules.Analytics.Core
         public object TransactionCountEvolution { get; set; }
         public object DatabaseDurationDistribution { get; set; }
         public object DatabaseDurationEvolution { get; set; }
+        public object DailyUsage { get; set; }
+        public object UserUsage { get; set; }
     }
 
 }
