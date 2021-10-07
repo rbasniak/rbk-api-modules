@@ -27,8 +27,14 @@ namespace rbkApiModules.Demo.Database.StateMachine
             var manager = new ManagerUser("manager", "manager@manage.com", "123123", false, new Manager("Jane Doe", paidPlan));
             manager.Confirm();
             context.Set<BaseUser>().Add(manager);
-
             manager.Manager.SetTrialKey(new TrialKey(paidPlan, 30));
+
+            var admin = new ManagerUser("admin", "admin@manage.com", "123123", false, new Manager("Admin", paidPlan));
+            admin.Confirm();
+            context.Set<BaseUser>().Add(admin);
+            admin.Manager.SetTrialKey(new TrialKey(paidPlan, 30));
+
+
 
             var claims = new List<Claim>
             {

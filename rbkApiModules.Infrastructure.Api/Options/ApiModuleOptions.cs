@@ -16,6 +16,8 @@ namespace rbkApiModules.Infrastructure.Api
 
         public List<ApplicationRoute> Routes => _routes;
 
+        public bool HasSpaOnRoot { get; internal set; }
+
         public ApiModuleOptions SetEnvironment(bool isProduction)
         {
             _isProduction = isProduction;
@@ -37,6 +39,12 @@ namespace rbkApiModules.Infrastructure.Api
         public ApiModuleOptions AddRoute(string pathString, string indexFilePath)
         {
             _routes.Add(new ApplicationRoute(pathString, indexFilePath));
+            return this;
+        }
+
+        public ApiModuleOptions UseSpaOnRoot()
+        {
+            HasSpaOnRoot = true;
             return this;
         }
     }

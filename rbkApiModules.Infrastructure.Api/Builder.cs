@@ -211,8 +211,33 @@ namespace rbkApiModules.Infrastructure.Api
                 });
             });
 
-            app.UseDefaultFiles();
-            app.UseStaticFiles();
+            if (options.HasSpaOnRoot)
+            {
+                app.MapWhen((context) => {
+                    var isApi = context.Request.Path.StartsWithSegments("/api");
+                    var hasOtherSpaRoutes = false;
+
+                    foreach (var route in options.Routes)
+                    {
+                        hasOtherSpaRoutes = hasOtherSpaRoutes || context.Request.Path.StartsWithSegments(route.PathString);
+                    }
+
+                    return !isApi && !hasOtherSpaRoutes;
+                }, (appBuilder) =>
+                {
+                    app.UseStaticFiles();
+                    appBuilder.UseRouting();
+                    appBuilder.UseEndpoints(endpoints =>
+                    {
+                        endpoints.MapFallbackToFile("/index.html");
+                    });
+                });
+            }
+            else
+            {
+                app.UseDefaultFiles();
+                app.UseStaticFiles();
+            }
 
             return app;
         }
