@@ -215,6 +215,7 @@ namespace rbkApiModules.Infrastructure.Api
             {
                 app.MapWhen((context) => {
                     var isApi = context.Request.Path.StartsWithSegments("/api");
+                    var isSharedUi = context.Request.Path.StartsWithSegments("/shared-ui");
                     var hasOtherSpaRoutes = false;
 
                     foreach (var route in options.Routes)
@@ -222,7 +223,7 @@ namespace rbkApiModules.Infrastructure.Api
                         hasOtherSpaRoutes = hasOtherSpaRoutes || context.Request.Path.StartsWithSegments(route.PathString);
                     }
 
-                    return !isApi && !hasOtherSpaRoutes;
+                    return !isApi && !hasOtherSpaRoutes && !isSharedUi;
                 }, (appBuilder) =>
                 {
                     app.UseStaticFiles();

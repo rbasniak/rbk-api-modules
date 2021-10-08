@@ -25,8 +25,17 @@ namespace rbkApiModules.SharedUI
             app.UseFileServer(new FileServerOptions
             {
                 RequestPath = "/shared-ui",
-                FileProvider = new ManifestEmbeddedFileProvider(
-                assembly: Assembly.GetAssembly(typeof(Builder)), "UI/dist")
+                FileProvider = new ManifestEmbeddedFileProvider(assembly: Assembly.GetAssembly(typeof(Builder)), "UI/dist"),
+            });
+
+            app.MapWhen((context) => context.Request.Path.StartsWithSegments("/shared-ui"), (appBuilder) =>
+            {
+                app.UseStaticFiles();
+                appBuilder.UseRouting();
+                appBuilder.UseEndpoints(endpoints =>
+                {
+                    endpoints.MapFallbackToFile("/shared-ui/index.html");
+                });
             });
 
             return app;
