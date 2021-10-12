@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -30,6 +31,7 @@ namespace rbkApiModules.Infrastructure.Api
         public bool IsProduction { get; set; }
         public bool UseBasicAuthentication { get; set; }
         public List<Profile> AutomapperProfiles { get; set; }
+        public Action<CorsOptions> CorsOptions { get; set; }
     }
 
     [ExcludeFromCodeCoverage]
@@ -99,7 +101,22 @@ namespace rbkApiModules.Infrastructure.Api
 
             services.AddRouting(options => options.LowercaseUrls = true);
 
-            services.AddCors();
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                                  builder =>
+                                  {
+                                      builder.AllowAnyMethod()
+                                      .AllowAnyHeader()
+                                      .AllowAnyOrigin()
+                                      .WithExposedHeaders("Content-Disposition");
+                                  });
+            });
+
+            if (options.CorsOptions != null)
+            {
+                services.AddCors(options.CorsOptions);
+            }
 
             services.AddSwaggerGen(config =>
             {
@@ -184,8 +201,6 @@ namespace rbkApiModules.Infrastructure.Api
                 });
             }
 
-            app.UseCors(c => c.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().WithExposedHeaders("Content-Disposition"));
-
             foreach (var route in options.Routes)
             {
                 app.MapWhen((context) => context.Request.Path.StartsWithSegments(route.PathString), (appBuilder) =>
@@ -202,6 +217,14 @@ namespace rbkApiModules.Infrastructure.Api
             app.MapWhen((context) => context.Request.Path.StartsWithSegments("/api"), (appBuilder) =>
             {
                 appBuilder.UseRouting();
+                if(options.DefaultCorsPolicy != null)
+                {
+                    app.UseCors(options.DefaultCorsPolicy);
+                }
+                else
+                {
+                    app.UseCors();
+                }
                 appBuilder.UseAuthentication();
                 appBuilder.UseAuthorization();
 
