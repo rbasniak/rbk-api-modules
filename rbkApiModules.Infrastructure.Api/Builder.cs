@@ -219,11 +219,11 @@ namespace rbkApiModules.Infrastructure.Api
                 appBuilder.UseRouting();
                 if(options.DefaultCorsPolicy != null)
                 {
-                    app.UseCors(options.DefaultCorsPolicy);
+                    appBuilder.UseCors(options.DefaultCorsPolicy);
                 }
                 else
                 {
-                    app.UseCors();
+                    appBuilder.UseCors();
                 }
                 appBuilder.UseAuthentication();
                 appBuilder.UseAuthorization();
