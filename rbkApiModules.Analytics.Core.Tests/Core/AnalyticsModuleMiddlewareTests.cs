@@ -493,5 +493,15 @@ namespace rbkApiModules.Analytics.Core.Tests
         {
             throw new NotImplementedException();
         }
+
+        public Task<List<PerformanceEntry>> FilterPerformanceData(string endpoint, DateTime dateFrom, DateTime dateTo)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void NormalizePathsAndActions()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

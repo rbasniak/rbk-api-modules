@@ -121,11 +121,10 @@ namespace rbkApiModules.Demo
 
             services.AddRbkUIDefinitions(AssembliesUIDefinitions);
 
-            //services.AddSqlServerRbkApiAnalyticsModule(Configuration, "Data Source=50.31.134.17;Integrated Security=False;Initial Catalog=VarejoFacil.Production_Analytics;User ID=sa;Password=zemiko98sql;Connect Timeout=15;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
-            //services.AddSqlServerRbkApiDiagnosticsModule("Data Source=50.31.134.17;Integrated Security=False;Initial Catalog=VarejoFacil.Production_Diagnostics;User ID=sa;Password=zemiko98sql;Connect Timeout=999;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+            // services.AddSqlServerRbkApiAnalyticsModule(Configuration, "Data Source=50.31.134.17;Integrated Security=False;Initial Catalog=VarejoFacil.Production_Analytics;User ID=sa;Password=zemiko98sql;Connect Timeout=15;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+            // services.AddSqlServerRbkApiDiagnosticsModule("Data Source=50.31.134.17;Integrated Security=False;Initial Catalog=VarejoFacil.Production_Diagnostics;User ID=sa;Password=zemiko98sql;Connect Timeout=999;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
 
             services.AddSqlServerRbkApiAnalyticsModule(Configuration, Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Analytics"));
-
             services.AddSqlServerRbkApiDiagnosticsModule(Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Diagnostics"));
 
             services.AddRbkApiPaypalModule<PaypalActions>();
@@ -145,6 +144,9 @@ namespace rbkApiModules.Demo
                 .LimitToPath("/api")
                 .ExcludeMethods("OPTIONS")
                 .ExcludePath(new[] { "/api/test/download" })
+                .ExcludePath(new[] { "/analytics" })
+                .ExcludePath(new[] { "/diagnostics" })
+                .ExcludeStatusCodes(new[] { 401 })
                 .UseSessionAnalytics(5)
                 .UseDemoData()
             );
@@ -154,8 +156,9 @@ namespace rbkApiModules.Demo
             app.UseRbkApiDefaultSetup(options => options
                 .SetEnvironment(!Environment.IsDevelopment())
                 // Configuration example
-                //.AddRoute(new ApplicationRoute("/patient", "/patient/index.html"))
-                //.AddRoute(new ApplicationRoute("/professional", "/professional/index.html"))
+                .UseSpaOnRoot()
+                .AddRoute("/patient", "/patient/index.html")
+                .AddRoute("/professional", "/professional/index.html")
             );
 
             app.UseRbkApiAuthenticationModule(options => options

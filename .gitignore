@@ -355,3 +355,4 @@ MigrationBackup/
 /rbkApiModules.Demo/wwwroot/_temp
 
 !/@Tools/*.pdb
+/analytics.csv

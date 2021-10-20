@@ -15,6 +15,8 @@ namespace rbkApiModules.Analytics.Core
         Task<List<AnalyticsEntry>> GetStatisticsAsync();
         Task<FilterOptionListData> GetFilteringLists();
         Task<List<SessionEntry>> GetSessionsAsync(DateTime dateFrom, DateTime dateTo);
+        Task<List<PerformanceEntry>> FilterPerformanceData(string endpoint, DateTime dateFrom, DateTime dateTo);
         void DeleteStatisticsFromMatchingPathAsync(string searchText);
+        void NormalizePathsAndActions();
     }
 }

@@ -9,6 +9,8 @@ namespace rbkApiModules.Utilities
     {
         public static string ToBetterString(this Exception ex, string prepend = null)
         {
+            if (ex == null) return "";
+
             var exceptionMessage = new StringBuilder();
 
             exceptionMessage.Append(Environment.NewLine + prepend + "Exception:" + ex.GetType());
