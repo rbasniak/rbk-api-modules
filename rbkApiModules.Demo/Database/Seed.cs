@@ -48,8 +48,24 @@ namespace rbkApiModules.Demo.Database.StateMachine
 
             context.SaveChanges();
 
-            var notification = new Notification("Solicitações", "Titulo", "Body", "Rota", "Link", "bdqr", NotificationType.Info);
-            context.Add(notification);
+            var notification1 = new Notification("Solicitações", "Aguardando aprovação", "Documento xyz está aguardando aprovação.", "route1", "", "manager", NotificationType.Success);
+            context.Add(notification1);
+
+            var notification2 = new Notification("Solicitações", "Aguardando revisão", "Documento xyz está aguardando revisão", "route1", "", "manager", NotificationType.Help);
+            context.Add(notification2);
+
+            var notification3 = new Notification("Alertas", "Falha crítica no sistema", "Verificamos que existe uma falha crítica no setor de cadastramento.", "", "", "manager", NotificationType.Danger);
+            context.Add(notification3);
+
+            var notification4 = new Notification("Sistema", "Nova versão disponível", "A versão 2.0 já se encontra disponível para download. Acesse o link para saber mais detalhes", "", "https://www.google.com.br", "manager", NotificationType.Info);
+            context.Add(notification4);
+
+            var notification5 = new Notification("Solicitações", "Pendencias | Documento xyz", "Existem pendências que precisam ser revistas no documento xyz", "route1", "", "manager", NotificationType.Warning);
+            context.Add(notification5);
+
+            var notification6 = new Notification("Solicitações", "Pendencias | Documento xyz", "Existem pendências que precisam ser revistas no documento xyz", "route1", "", "client", NotificationType.Warning);
+            context.Add(notification6);
+
             context.SaveChanges();
 
             var libraGroup = new StateGroup("LIBRA");

@@ -26,6 +26,12 @@ namespace rbkApiModules.Notifications.Models
         /// <summary>
         /// Visualizada. O usuário já visualizou.
         /// </summary>
-        Viewed
+        Viewed,
+
+        /// <summary>
+        /// Arquivado. O usuário moveu manualmente a notificação
+        /// para a pasta de arquivados.
+        /// </summary>
+        Archived,
     }
 }
