@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace rbkApiModules.Payment.SqlServer
 {
-    [Route("/[controller]")]
+    [Route("api/trial-keys")]
     [ApiController]
     [AllowAnonymous]
     public class TrialKeysController : BaseController

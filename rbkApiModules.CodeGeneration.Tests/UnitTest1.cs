@@ -26,7 +26,7 @@ namespace rbkApiModules.CodeGeneration.Tests
                 Assembly.LoadFrom(@"D:\Repositories\horizonte\medical-horizon\backend\MedicalHorizon.Api\bin\Debug\net5.0\MedicalHorizon.Api.dll"),
             };
 
-            var codeGenerator = new AngularCodeGenerator(@"D:\Repositories\horizonte\medical-horizon\frontend\professional\src\app\auto-generated");
+            var codeGenerator = new AngularCodeGenerator(null, @"D:\Repositories\horizonte\medical-horizon\frontend\professional\src\app\auto-generated");
             var data = codeGenerator.GetData();
         }
     }

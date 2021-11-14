@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\rbkApiModules.CodeGeneration.Commons\rbkApiModules.CodeGeneration.Commons.csproj" />
+    <ProjectReference Include="..\rbkApiModules.CodeGeneration\rbkApiModules.CodeGeneration.csproj" />
   </ItemGroup>
 
 </Project>

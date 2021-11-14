@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using rbkApiModules.Authentication.AuthenticationGroups;
+using rbkApiModules.CodeGeneration.Commons;
 using rbkApiModules.Demo.BusinessLogic;
 using rbkApiModules.Demo.DataTransfer;
 using rbkApiModules.Infrastructure.Api;
@@ -15,6 +16,7 @@ namespace rbkApiModules.Demo.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [CodeGenerationScope("project-c")]
     public class TestController: BaseController
     {
         [RbkAuthorize(Group = "client")]

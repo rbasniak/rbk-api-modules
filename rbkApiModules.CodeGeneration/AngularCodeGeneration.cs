@@ -16,10 +16,12 @@ namespace rbkApiModules.CodeGeneration
     public class AngularCodeGenerator
     {
         private string _basePath = "";
+        private string _projectId = "";
 
-        public AngularCodeGenerator(string basePath)
+        public AngularCodeGenerator(string projectId, string basePath)
         {
             _basePath = basePath;
+            _projectId = projectId;
         }
 
         public object GetData()
@@ -27,7 +29,7 @@ namespace rbkApiModules.CodeGeneration
             var servicesFolder = Path.Combine(_basePath, "services", "api");
             Directory.CreateDirectory(servicesFolder);
 
-            var controllers = GetControllers();
+            var controllers = GetControllers(_projectId);
 
             var models = new List<TypeInfo>();
 
@@ -124,7 +126,7 @@ namespace rbkApiModules.CodeGeneration
             return propertyType.Name;
         }
 
-        private ControllerInfo[] GetControllers()
+        private ControllerInfo[] GetControllers(string projectId)
         {
             var result = new StringBuilder();
 
@@ -151,15 +153,65 @@ namespace rbkApiModules.CodeGeneration
             }
 
             var controllers = new List<ControllerInfo>();
+
             foreach (var assembly in loadedAssemblies)
             {
-                controllers.AddRange(assembly.GetTypes()
+                var assemblyControllers = (assembly.GetTypes()
                     .Where(myType => myType.IsClass
                             && !myType.IsAbstract
                             && !myType.Name.StartsWith("Base")
                             && myType.IsSubclassOf(typeof(ControllerBase))
                             && !myType.HasAttribute<IgnoreOnCodeGenerationAttribute>())
-                    .Select(x => new ControllerInfo(x)));
+                    .Select(x => new ControllerInfo(x, projectId)));
+
+                foreach (var controller in assemblyControllers)
+                {
+                    if (!String.IsNullOrEmpty(_projectId))
+                    {
+                        if (controller.Scopes.Length > 0)
+                        {
+                            var include = controller.Scopes.Any(x => x == projectId);
+
+                            if (!include)
+                            {
+                                continue;
+                            }
+                        }
+                    }
+
+                    var actionsToIgnore = new List<EndpointInfo>();
+
+                    if (!String.IsNullOrEmpty(projectId))
+                    {
+                        foreach (var action in controller.Endpoints)
+                        {
+                            if (CodeGenerationModuleOptions.Instance.IgnoreOptions.TryGetValue(projectId, out var patterns))
+                            {
+                                foreach (var pattern in patterns)
+                                {
+                                    var actionRoute = String.IsNullOrEmpty(action.Route) ? "" : ("/" + action.Route);
+                                    var completeRoute1 = $"{action.Method.ToString().ToUpper()} {controller.Route}{action.Route}";
+                                    var completeRoute2 = $"* {controller.Route}{action.Route}";
+
+                                    if (completeRoute1.ToLower().StartsWith(pattern.ToLower()) || completeRoute2.ToLower().StartsWith(pattern.ToLower()))
+                                    {
+                                        actionsToIgnore.Add(action);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    foreach (var action in actionsToIgnore)
+                    {
+                        controller.Endpoints.Remove(action);
+                    }
+
+                    if (controller.Endpoints.Count > 0)
+                    {
+                        controllers.Add(controller);
+                    }
+                }
             }
 
             return controllers.ToArray();
@@ -333,7 +385,7 @@ namespace rbkApiModules.CodeGeneration
 
     public class ControllerInfo
     {
-        public ControllerInfo(Type type)
+        public ControllerInfo(Type type, string projectId)
         {
             Type = type;
 
@@ -348,16 +400,28 @@ namespace rbkApiModules.CodeGeneration
                 StoreType = attribute.Type;
             }
 
-            Endpoints = GetEndpoints(type);
+            if (type.HasAttribute<CodeGenerationScopeAttribute>())
+            {
+                var attribute = type.GetAttribute<CodeGenerationScopeAttribute>();
+
+                Scopes = attribute.Scopes;
+            }
+            else
+            {
+                Scopes = new string[0];
+            }
+
+            Endpoints = GetEndpoints(type, projectId);
         }
 
         public Type Type { get; private set; }
         public string Name { get; private set; }
+        public string[] Scopes { get; private set; }
         public string Route { get; private set; }
-        public EndpointInfo[] Endpoints { get; private set; }
+        public List<EndpointInfo> Endpoints { get; private set; }
         public StoreType? StoreType { get; private set; }
 
-        private EndpointInfo[] GetEndpoints(Type controllerType)
+        private List<EndpointInfo> GetEndpoints(Type controllerType, string projectId)
         {
             var methods = controllerType.GetMethods()
                 .Where(x => x.GetCustomAttributes().Any(x => x.GetType().IsSubclassOf(typeof(HttpMethodAttribute))) && !x.HasAttribute<IgnoreOnCodeGenerationAttribute>());
@@ -366,10 +430,34 @@ namespace rbkApiModules.CodeGeneration
 
             foreach (var action in methods)
             {
-                results.Add(new EndpointInfo(this, action));
+                var validScope = true;
+
+                if (action.HasAttribute<CodeGenerationScopeAttribute>())
+                {
+                    var attribute = action.GetAttribute<CodeGenerationScopeAttribute>();
+
+                    if (!attribute.Scopes.Any(x => x == projectId))
+                    {
+                        validScope = false;
+                    }
+                }
+                else if (controllerType.HasAttribute<CodeGenerationScopeAttribute>())
+                {
+                    var attribute = controllerType.GetAttribute<CodeGenerationScopeAttribute>();
+
+                    if (!attribute.Scopes.Any(x => x == projectId))
+                    {
+                        validScope = false;
+                    }
+                }
+
+                if (validScope)
+                {
+                    results.Add(new EndpointInfo(this, action));
+                }
             }
 
-            return results.ToArray();
+            return results;
         }
     }
 
@@ -464,7 +552,7 @@ namespace rbkApiModules.CodeGeneration
             {
                 Name = controller.Name;
 
-                if (controller.Endpoints.Length != 1) throw new Exception("Readonly stores can have only one endpoint");
+                if (controller.Endpoints.Count != 1) throw new Exception("Readonly stores can have only one endpoint");
 
                 Actions = new NgxsActionFile();
                 Actions.Name = Name;

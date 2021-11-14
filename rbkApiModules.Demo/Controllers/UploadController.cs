@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Primitives;
+using rbkApiModules.CodeGeneration.Commons;
 using rbkApiModules.Demo.Controllers.Abstract;
 using System.Threading.Tasks;
 
@@ -14,6 +15,7 @@ namespace rbkApiModules.Demo.Controllers
     {
         [HttpPut]
         [Route("instance/confirm")]
+        [CodeGenerationScope("project-c")]
         public async Task<ActionResult> ConfirmInstance()
         {
             var result = await ProcessUploadedFile(0);

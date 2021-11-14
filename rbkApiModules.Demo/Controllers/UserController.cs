@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Demo.Models;
 using System.Linq;
 using rbkApiModules.Demo.DataTransfer;
+using rbkApiModules.CodeGeneration.Commons;
 
 namespace rbkApiModules.Demo.Controllers
 {
@@ -20,6 +21,7 @@ namespace rbkApiModules.Demo.Controllers
     public class UserController : BaseController
     {
         [HttpPost]
+        [CodeGenerationScope("project-b")]
         public async Task<ActionResult> Create(CreateUser.Command data)
         {
             return HttpResponse(await Mediator.Send(data));
@@ -31,24 +33,28 @@ namespace rbkApiModules.Demo.Controllers
             return HttpResponse<SimpleNamedEntity[]>(await Mediator.Send(new GetAllDemoUsers.Command()));
         }
 
+        [CodeGenerationScope("project-b")]
         [HttpGet("date-test1")]
         public async Task<ActionResult<DummyDate[]>> DateTest1()
         {
             return HttpResponse<DummyDate[]>(await Mediator.Send(new GetAllDemoUsers.Command()));
         }
 
+        [CodeGenerationScope("project-b")]
         [HttpGet("date-test2")]
         public async Task<ActionResult<SubDummyDate>> DateTest2()
         {
             return HttpResponse<SubDummyDate>(await Mediator.Send(new GetAllDemoUsers.Command()));
         }
 
+        [CodeGenerationScope("project-b")]
         [HttpGet("{id}")]
         public async Task<ActionResult<SimpleNamedEntity>> Single(Guid id)
         {
             return HttpResponse<SimpleNamedEntity>(await Mediator.Send(new GetUserDetails.Command { Id = id }));
         }
 
+        [CodeGenerationScope("project-b")]
         [AllowAnonymous]
         [HttpGet("test")]
         public async Task<ActionResult> Single([FromServices] DatabaseContext context)

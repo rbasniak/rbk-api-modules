@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30317.65
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.31903.286
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0EBB95D9-AB99-405B-8305-9B16BCCE8492}"
 	ProjectSection(SolutionItems) = preProject
@@ -185,7 +185,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "coverage", "coverage", "{0A
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notifications", "Notifications", "{11BAD1A2-46DA-4256-B62A-1CA070958DAE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.Notifications", "rbkApiModules.Notifications\rbkApiModules.Notifications.csproj", "{07A5F78E-0FBF-4B19-AE97-F3033667905F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Notifications", "rbkApiModules.Notifications\rbkApiModules.Notifications.csproj", "{07A5F78E-0FBF-4B19-AE97-F3033667905F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.CodeGeneration", "rbkApiModules.CodeGeneration\rbkApiModules.CodeGeneration.csproj", "{D36FA3D6-691B-459D-AE91-6923C267565C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -393,6 +395,10 @@ Global
 		{07A5F78E-0FBF-4B19-AE97-F3033667905F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07A5F78E-0FBF-4B19-AE97-F3033667905F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{07A5F78E-0FBF-4B19-AE97-F3033667905F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D36FA3D6-691B-459D-AE91-6923C267565C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D36FA3D6-691B-459D-AE91-6923C267565C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D36FA3D6-691B-459D-AE91-6923C267565C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D36FA3D6-691B-459D-AE91-6923C267565C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -478,6 +484,7 @@ Global
 		{0A2C56F5-75C3-4DAC-A201-2F1387375AD3} = {0EBB95D9-AB99-405B-8305-9B16BCCE8492}
 		{11BAD1A2-46DA-4256-B62A-1CA070958DAE} = {A1A68EE5-8E91-449C-96A8-CCC5BF135D48}
 		{07A5F78E-0FBF-4B19-AE97-F3033667905F} = {11BAD1A2-46DA-4256-B62A-1CA070958DAE}
+		{D36FA3D6-691B-459D-AE91-6923C267565C} = {9A642167-AD70-4152-9314-125945860E1B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9AAC09BF-43DC-408B-8F24-24DAA39DA1E8}

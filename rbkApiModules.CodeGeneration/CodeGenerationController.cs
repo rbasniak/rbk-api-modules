@@ -26,13 +26,20 @@ namespace rbkApiModules.CodeGeneration.Commons
         }
 
         [HttpGet]
-        public async Task<ActionResult> Get(bool directUpdate)
+        public async Task<ActionResult> Get(bool directUpdate, string projectId)
         {
             String basePath;
             if (directUpdate)
             {
+                var searchString = $"frontend\\src\\app\\auto-generated*";
+
+                if (!String.IsNullOrEmpty(projectId))
+                {
+                    searchString = $"frontend\\{projectId}\\src\\app\\auto-generated*"; ;
+                }
+
                 var applicationPath = new DirectoryInfo(_environment.ContentRootPath);
-                var codePath = Directory.GetDirectories(applicationPath.Parent.Parent.FullName, "*auto-generated*", SearchOption.AllDirectories);
+                var codePath = Directory.GetDirectories(applicationPath.Parent.Parent.FullName, searchString, SearchOption.AllDirectories);
 
                 if (codePath.Length != 1)
                 {
@@ -58,7 +65,7 @@ namespace rbkApiModules.CodeGeneration.Commons
                     return Ok("Não foi possível apagar os arquivos no repositório");
                 }
 
-                basePath = codePath.First();
+                basePath = codePath.First(); 
             }
             else
             {
@@ -67,14 +74,14 @@ namespace rbkApiModules.CodeGeneration.Commons
             
             if (directUpdate)
             {
-                var codeGenerator = new AngularCodeGenerator(basePath);
+                var codeGenerator = new AngularCodeGenerator(projectId, basePath);
                 var data = codeGenerator.GetData();
 
                 return Ok("Arquivos atualizados com sucesso :)");
             }
             else
             {
-                var codeGenerator = new AngularCodeGenerator(Path.Combine(basePath, "code"));
+                var codeGenerator = new AngularCodeGenerator(projectId, Path.Combine(basePath, "code"));
                 var data = codeGenerator.GetData();
 
                 var zipFile = Path.Combine(basePath, "code.zip");

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using rbkApiModules.CodeGeneration.Commons;
 using rbkApiModules.Demo.BusinessLogic;
 using rbkApiModules.Demo.Models;
 using rbkApiModules.Infrastructure.Api;
@@ -17,6 +18,7 @@ namespace rbkApiModules.Demo.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [AllowAnonymous]
+    [CodeGenerationScope("project-a")]
     public class BlogsController : BaseController
     {
         [HttpGet]

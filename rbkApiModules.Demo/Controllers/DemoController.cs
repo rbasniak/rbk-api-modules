@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using rbkApiModules.CodeGeneration.Commons;
 using rbkApiModules.Infrastructure.Api;
 using rbkApiModules.Infrastructure.MediatR.Core;
 using rbkApiModules.Infrastructure.Models;
@@ -38,6 +39,7 @@ namespace rbkApiModules.Demo
             }
         }
 
+        [CodeGenerationScope("project-a", "project-b")]
         [HttpGet]
         public ActionResult All()
         {
@@ -47,6 +49,7 @@ namespace rbkApiModules.Demo
             return HttpResponse(response);
         }
 
+        [CodeGenerationScope("project-b")]
         [HttpGet("Countries")]
         public ActionResult Countries()
         {
@@ -58,6 +61,7 @@ namespace rbkApiModules.Demo
 
 
         [HttpPost]
+        [CodeGenerationScope("project-a")]
         public ActionResult Create(EntityCreation data)
         {
             var response = new CommandResponse();
@@ -86,6 +90,7 @@ namespace rbkApiModules.Demo
             return HttpResponse(response);
         }
 
+        [CodeGenerationScope("project-b")]
         [HttpPut]
         public ActionResult Update(EntityUpdate data)
         {

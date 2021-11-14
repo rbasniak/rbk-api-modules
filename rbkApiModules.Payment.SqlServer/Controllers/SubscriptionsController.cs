@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace rbkApiModules.Payment.SqlServer
 {
-    [Route("/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class SubscriptionsController : BaseController
     {

@@ -30,6 +30,7 @@ using rbkApiModules.Payment.SqlServer;
 using rbkApiModules.Paypal.SqlServer;
 using rbkApiModules.SharedUI;
 using rbkApiModules.Notifications;
+using rbkApiModules.CodeGeneration;
 
 namespace rbkApiModules.Demo
 {
@@ -171,6 +172,28 @@ namespace rbkApiModules.Demo
                 .UseAnalytics()
                 .UseDiagnostics()
                 .AddCustomRoute("/swagger/index.html", "Swagger", "fas fa-code"));
+
+            app.UseRbkCodeGenerationModule(options => options
+                .ForScope("project-a")
+                    .IgnoreRoutesContaining("* api/access")
+                    .IgnoreRoutesContaining("* api/comments")
+                    .IgnoreRoutesContaining("* api/diagnostics")
+                    .IgnoreRoutesContaining("* api/notifications")
+                    .IgnoreRoutesContaining("* api/paypal")
+                    .IgnoreRoutesContaining("* api/plans")
+                    .IgnoreRoutesContaining("* api/subscriptions")
+                    .IgnoreRoutesContaining("* api/trial-keys")
+                    .IgnoreRoutesContaining("* api/auth")
+                .ForScope("project-b")
+                    .IgnoreRoutesContaining("* api/access")
+                    .IgnoreRoutesContaining("* api/comments")
+                    .IgnoreRoutesContaining("* api/diagnostics")
+                    .IgnoreRoutesContaining("* api/notifications")
+                    .IgnoreRoutesContaining("* api/paypal")
+                    .IgnoreRoutesContaining("* api/plans")
+                    .IgnoreRoutesContaining("* api/subscriptions")
+                    .IgnoreRoutesContaining("* api/trial-keys")
+                    .IgnoreRoutesContaining("* api/auth"));
         }
     }
 }

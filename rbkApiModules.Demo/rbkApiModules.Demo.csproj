@@ -42,6 +42,7 @@
     <ProjectReference Include="..\rbkApiModules.Auditing.SqlServer\rbkApiModules.Auditing.SqlServer.csproj" />
     <ProjectReference Include="..\rbkApiModules.Authentication\rbkApiModules.Authentication.csproj" />
     <ProjectReference Include="..\rbkApiModules.CodeGeneration.Commons\rbkApiModules.CodeGeneration.Commons.csproj" />
+    <ProjectReference Include="..\rbkApiModules.CodeGeneration\rbkApiModules.CodeGeneration.csproj" />
     <ProjectReference Include="..\rbkApiModules.Comments\rbkApiModules.Comments.csproj" />
     <ProjectReference Include="..\rbkApiModules.Diagnostics.Core\rbkApiModules.Diagnostics.Core.csproj" />
     <ProjectReference Include="..\rbkApiModules.Diagnostics.SqlServer\rbkApiModules.Diagnostics.SqlServer.csproj" />
