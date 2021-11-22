@@ -31,24 +31,24 @@ namespace rbkApiModules.CodeGeneration.Commons
             String basePath;
             if (directUpdate)
             {
-                var searchString = $"frontend\\src\\app\\auto-generated*";
+                var searchString = Path.Combine("frontend", "src", "app", "auto-generated");
 
                 if (!String.IsNullOrEmpty(projectId))
                 {
-                    searchString = $"frontend\\{projectId}\\src\\app\\auto-generated*"; ;
+                    searchString = Path.Combine("frontend", projectId, "src", "app", "auto-generated");
                 }
 
                 var applicationPath = new DirectoryInfo(_environment.ContentRootPath);
-                var codePath = Directory.GetDirectories(applicationPath.Parent.Parent.FullName, searchString, SearchOption.AllDirectories);
+                var codePath = Path.Combine(applicationPath.Parent.Parent.FullName, searchString);
 
-                if (codePath.Length != 1)
+                if (!Directory.Exists(codePath))
                 {
-                    return Ok("Não foi possivel localizar o repositírio");
+                    return Ok("Não foi possivel localizar o repositório");
                 }
 
                 try
                 {
-                    var files = Directory.GetFiles(codePath.First(), "*.*", SearchOption.AllDirectories);
+                    var files = Directory.GetFiles(codePath, "*.*", SearchOption.AllDirectories);
 
                     foreach (var file in files)
                     {
@@ -65,13 +65,12 @@ namespace rbkApiModules.CodeGeneration.Commons
                     return Ok("Não foi possível apagar os arquivos no repositório");
                 }
 
-                basePath = codePath.First(); 
+                basePath = codePath;
             }
             else
             {
                 basePath = Path.Combine(_environment.ContentRootPath, "wwwroot", "_temp", Guid.NewGuid().ToString());
             }
-            
             if (directUpdate)
             {
                 var codeGenerator = new AngularCodeGenerator(projectId, basePath);
