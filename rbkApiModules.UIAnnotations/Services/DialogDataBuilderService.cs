@@ -137,7 +137,7 @@ namespace rbkApiModules.UIAnnotations
 
             if (enumType != null)
             {
-                Data = EnumToSimpleNamedList(enumType);
+                Data = EnumToSimpleNamedList(enumType).OrderBy(x => x.Name).ToList();
             }
 
             // -- 
