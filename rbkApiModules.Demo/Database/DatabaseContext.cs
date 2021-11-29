@@ -42,6 +42,7 @@ namespace rbkApiModules.Demo.Database
                 typeof(DeleteNotification.Command).Assembly,
                 typeof(UserLogin.Command).Assembly,
                 typeof(CreatePlan.Command).Assembly,
+                typeof(SeedHistoryConfig).Assembly,
             });
         } 
     }

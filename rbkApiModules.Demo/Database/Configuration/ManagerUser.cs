@@ -9,7 +9,7 @@ namespace rbkApiModules.Demo.Database
     { 
         public void Configure(EntityTypeBuilder<ManagerUser> entity)
         {
-
+            base.Configure<ManagerUser>(entity);
         }
     }
 }
