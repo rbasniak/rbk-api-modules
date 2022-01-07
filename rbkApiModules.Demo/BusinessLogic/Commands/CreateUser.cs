@@ -22,6 +22,7 @@ namespace rbkApiModules.Demo.BusinessLogic
             public string Password { get; set; }
             public string Name { get; set; }
             public Guid UserId { get; set; }
+            public Position Position { get; set; }
         }
 
         public class Validator : AbstractValidator<Command>

@@ -21,7 +21,6 @@ namespace rbkApiModules.Demo.Controllers
     public class UserController : BaseController
     {
         [HttpPost]
-        [CodeGenerationScope("project-b")]
         public async Task<ActionResult> Create(CreateUser.Command data)
         {
             return HttpResponse(await Mediator.Send(data));

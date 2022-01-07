@@ -22,7 +22,6 @@ namespace rbkApiModules.CodeGeneration.Commons
                 type == typeof(Int32) ||
                 type == typeof(Int64) ||
                 type == typeof(Object) ||
-                type.IsEnum ||
                 type.Name == typeof(SimpleNamedEntity<>).Name;
         }
 

@@ -4,6 +4,7 @@ using rbkApiModules.CodeGeneration.Commons;
 using rbkApiModules.Infrastructure.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -904,6 +905,7 @@ export class {Name}Selectors {{
     {
         public TypescriptModel(TypeInfo type)
         {
+            OriginalType = type.Type;
             // if (type.Name.Contains("Tree")) Debugger.Break();
 
             Name = type.Name;
@@ -935,12 +937,25 @@ export class {Name}Selectors {{
         }
 
         public string Name { get; set; }
+        public Type OriginalType { get; set; }
         public List<TypescriptProperty> Properties { get; private set; }
         public string Filename { get; private set; }
         public string Filepath { get; private set; }
         public string ImportStatement { get; private set; }
 
         public string GenerateCode(List<TypescriptModel> models)
+        {
+            if (OriginalType.IsEnum)
+            {
+                return GenerateEnumCode(models);
+            }
+            else
+            {
+                return GenerateInterfaceCode(models);
+            }
+        }
+
+        public string GenerateInterfaceCode(List<TypescriptModel> models)
         {
             var code = new StringBuilder();
 
@@ -965,6 +980,65 @@ export class {Name}Selectors {{
 
             return code.ToString();
         }
+
+        public string GenerateEnumCode(List<TypescriptModel> models)
+        {
+            var codePart1 = new StringBuilder();
+            var codePart2 = new StringBuilder();
+            var codePart3 = new StringBuilder();
+
+            codePart1.Append("import { SimpleNamedEntity } from 'ngx-smz-ui';" + Environment.NewLine + Environment.NewLine);
+
+            var externalReferences = new HashSet<string>();
+            codePart1.Append($"export enum {Name}" + " {" + Environment.NewLine);
+            codePart2.Append($"export const {Name}Description: {{ [key in {Name}]: string }} = {{{Environment.NewLine}");
+            codePart3.Append($"export const {Name}Values: SimpleNamedEntity[] = [{Environment.NewLine}");
+
+            var names = Enum.GetNames(OriginalType);
+            for (int i = 0; i < names.Length; i++)
+            {
+                var name = names[i];
+                var field = OriginalType.GetField(name);
+                var id = (int)Enum.Parse(OriginalType, name);
+
+                var propertyName = System.Text.RegularExpressions.Regex.Replace(field.Name, "([a-z])([A-Z])", "$1_$2").ToUpper();
+
+                var displayName = field.Name;
+                var fds = field.GetCustomAttributes(typeof(DescriptionAttribute), true).FirstOrDefault();
+                if (fds != null)
+                {
+                    displayName = (fds as DescriptionAttribute).Description;
+                }
+
+                codePart1.AppendLine($"  {propertyName} = {id},");
+                
+                codePart2.AppendLine($"  [{Name}.{propertyName}]: '{displayName}',");
+
+                codePart3.AppendLine($"  {{ id: {id}, name: '{displayName}' }}, ");
+
+                /*
+                    Examples: 
+
+                    function cases() {
+
+                      const response: { type: InputType } = { type: 2 };
+
+                      const fromApiData = InputTypeDescription[response.type];
+                      // fromApiData = 'Fluxo'
+
+                      const fromTypescript = InputTypeDescription[InputType.FLOW];
+                      // fromTypescript = 'Fluxo'
+
+                    }
+                */
+            }
+
+            codePart1.AppendLine("}" + Environment.NewLine);
+            codePart2.AppendLine("}" + Environment.NewLine);
+            codePart3.AppendLine("]" + Environment.NewLine);
+
+            return codePart1.ToString() + codePart2.ToString() + codePart3.ToString();
+        } 
 
         public override string ToString()
         {
@@ -1090,13 +1164,7 @@ export class {Name}Selectors {{
             {
                 IsNative = true;
                 Name = "{ id: number, name: string }";
-            }
-
-            if (type.Type.IsEnum)
-            {
-                IsNative = true;
-                Name = "number";
-            }
+            } 
         }
 
         public string Name { get; set; }
