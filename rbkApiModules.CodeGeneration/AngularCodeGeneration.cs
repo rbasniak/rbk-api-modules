@@ -987,12 +987,12 @@ export class {Name}Selectors {{
             var codePart2 = new StringBuilder();
             var codePart3 = new StringBuilder();
 
-            codePart1.Append("import { SimpleNamedEntity } from 'ngx-smz-ui';" + Environment.NewLine + Environment.NewLine);
+            codePart1.Append("import { SimpleEntity } from 'ngx-smz-ui';" + Environment.NewLine + Environment.NewLine);
 
             var externalReferences = new HashSet<string>();
             codePart1.Append($"export enum {Name}" + " {" + Environment.NewLine);
             codePart2.Append($"export const {Name}Description: {{ [key in {Name}]: string }} = {{{Environment.NewLine}");
-            codePart3.Append($"export const {Name}Values: SimpleNamedEntity[] = [{Environment.NewLine}");
+            codePart3.Append($"export const {Name}Values: SimpleEntity<number>[] = [{Environment.NewLine}");
 
             var names = Enum.GetNames(OriginalType);
             for (int i = 0; i < names.Length; i++)
@@ -1014,7 +1014,7 @@ export class {Name}Selectors {{
                 
                 codePart2.AppendLine($"  [{Name}.{propertyName}]: '{displayName}',");
 
-                codePart3.AppendLine($"  {{ id: {id}, name: '{displayName}' }}, ");
+                codePart3.AppendLine($"  {{ id: {id}, name: '{displayName}' }},");
 
                 /*
                     Examples: 
@@ -1034,8 +1034,8 @@ export class {Name}Selectors {{
             }
 
             codePart1.AppendLine("}" + Environment.NewLine);
-            codePart2.AppendLine("}" + Environment.NewLine);
-            codePart3.AppendLine("]" + Environment.NewLine);
+            codePart2.AppendLine("};" + Environment.NewLine);
+            codePart3.AppendLine("];");
 
             return codePart1.ToString() + codePart2.ToString() + codePart3.ToString();
         } 
