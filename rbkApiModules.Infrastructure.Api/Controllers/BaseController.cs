@@ -52,18 +52,33 @@ namespace rbkApiModules.Infrastructure.Api
 
                     return Ok(results);
                 }
-                catch (SafeException ex)
+                catch (AutoMapperMappingException ex)
                 {
-                    response.AddHandledError(ex.Message);
+                    if (ex.InnerException != null)
+                    {
+                        if (ex.InnerException is SafeException safeException1)
+                        {
+                            response.AddHandledError(safeException1.Message);
+                            return HttpErrorResponse(response);
+                        }
+                        else
+                        {
+                            if (ex.InnerException.InnerException != null)
+                            {
+                                if (ex.InnerException.InnerException is SafeException safeException2)
+                                {
+                                    response.AddHandledError(safeException2.Message);
+                                    return HttpErrorResponse(response);
+                                }
+                            }
+                        }
+                    }
+
+                    response.AddUnhandledError(ex.Message);
                     return HttpErrorResponse(response);
                 }
                 catch (Exception ex)
                 {
-                    if (ex.InnerException != null && ex.InnerException is SafeException safeException)
-                    {
-                        response.AddHandledError(safeException.Message);
-                        return HttpErrorResponse(response);
-                    }
                     response.AddUnhandledError(ex.Message);
                     return HttpErrorResponse(response);
                 }
@@ -102,7 +117,6 @@ namespace rbkApiModules.Infrastructure.Api
                 {
                     return Ok();
                 }
-                
             }
             else
             {
