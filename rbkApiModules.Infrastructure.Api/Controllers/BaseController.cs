@@ -39,14 +39,29 @@ namespace rbkApiModules.Infrastructure.Api
         {
             if (response.Status == CommandStatus.Valid)
             {
-                var results = Mapper.Map<T>(response.Result);
+                T results;
 
-                if (cacheId != null)
+                try
                 {
-                    Cache.Set(cacheId, response.Result);
-                }
+                    results = Mapper.Map<T>(response.Result);
 
-                return Ok(results);
+                    if (cacheId != null)
+                    {
+                        Cache.Set(cacheId, response.Result);
+                    }
+
+                    return Ok(results);
+                }
+                catch (SafeException ex)
+                {
+                    response.AddHandledError(ex.Message);
+                    return HttpErrorResponse(response);
+                }
+                catch (Exception ex)
+                {
+                    response.AddUnhandledError(ex.Message);
+                    return HttpErrorResponse(response);
+                }
             }
             else
             {

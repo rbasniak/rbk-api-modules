@@ -66,6 +66,7 @@ namespace rbkApiModules.Analytics.Core
                                 .RoundValues(1)
                                 .SeriesFrom(x => x.Version)
                                 .ValueFrom(x => x.Count())
+                                .AppendExtraData()
                                 .Chart
                             .OfType(ChartType.Doughnut)
                             .Theme(ColorPallete.Blue1, ColorPallete.Blue2)

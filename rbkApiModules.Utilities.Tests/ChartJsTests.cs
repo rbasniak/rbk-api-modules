@@ -614,6 +614,37 @@ namespace rbkApiModules.Utilities.Tests
             }));
         }
 
+        [Fact]
+        public void Maneuvers()
+        {
+            var data = new List<ChartData>
+            {
+                new ChartData("Concluidas", 53, new [] { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() }),
+                new ChartData("Não executadas", 47, new [] { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() }),
+            };
+
+            var results = data.CreateRadialChart()
+                .PreparaData()
+                    .SeriesFrom(x => x.Label)
+                    .AppendExtraData(x => x.Data)
+                    .ValueFrom(x => x.First().Value)
+                    .Chart
+                .OfType(ChartType.Pie)
+                .Theme(ColorPallete.Spring1)
+                .WithTooltips()
+                    .Chart
+                .WithLegend()
+                    .At(PositionType.Bottom)
+                    .Chart
+                .Build();
+
+            Debug.WriteLine(JsonConvert.SerializeObject(results, new JsonSerializerSettings
+            {
+                Formatting = Formatting.Indented,
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            }));
+        }
+
         private class SpeedSeries
         {
             public SpeedSeries(string serieId, string sprintName, double value)
@@ -762,6 +793,20 @@ namespace rbkApiModules.Utilities.Tests
         //                .At(PositionType.Right)
         //            .Build(true);
         //    }
+    }
+
+    public class ChartData
+    {
+        public ChartData(string label, double value, object data)
+        {
+            Label = label;
+            Value = value;
+            Data = data;
+        }
+
+        public string Label { get; set; }
+        public double Value { get; set; }
+        public object Data { get; set; }
     }
 }
 

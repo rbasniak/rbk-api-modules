@@ -1177,3 +1177,19 @@ export class {Name}Selectors {{
     }
 
 }
+/* 
+    TODO: 
+    - Actions (CRUD)
+    - State
+        - Arquivo separado com a config do RBK
+    - Selector (all, by id)
+    
+    - Component (html + ts)
+        - Lista
+        - CRUD em diálogos com ui definitions
+    - Modulo
+    - Rotas
+
+    FUTURO: estudar code generation com msbuild
+
+ */
