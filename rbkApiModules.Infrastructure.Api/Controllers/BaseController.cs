@@ -59,6 +59,11 @@ namespace rbkApiModules.Infrastructure.Api
                 }
                 catch (Exception ex)
                 {
+                    if (ex.InnerException != null && ex.InnerException is SafeException safeException)
+                    {
+                        response.AddHandledError(safeException.Message);
+                        return HttpErrorResponse(response);
+                    }
                     response.AddUnhandledError(ex.Message);
                     return HttpErrorResponse(response);
                 }
