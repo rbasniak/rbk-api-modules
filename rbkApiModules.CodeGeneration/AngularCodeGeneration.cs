@@ -32,7 +32,7 @@ namespace rbkApiModules.CodeGeneration
 
             var controllers = GetControllers(_projectId);
 
-            var models = new List<TypeInfo>();
+            var models = GetForcedTypescriptModels(_projectId);
 
             var index = 0;
 
@@ -104,6 +104,36 @@ namespace rbkApiModules.CodeGeneration
             return new { Controllers = controllers, Models = models.Select(x => x.Name) };
         }
 
+        private List<TypeInfo> GetForcedTypescriptModels(string projectId)
+        {
+            var loadedAssemblies = GetRevelantAssemblies();
+
+            var models = new List<TypeInfo>();
+
+            foreach (var assembly in loadedAssemblies)
+            {
+                var modelTypes = (assembly.GetTypes()
+                    .Where(myType => myType.IsClass
+                            && !myType.IsAbstract
+                            && myType.HasAttribute<ForceTypescriptModelGenerationAttribute>()))
+                    .ToArray();
+
+                foreach (var modelType in modelTypes)
+                {
+                    var attribute = modelType.GetAttribute<ForceTypescriptModelGenerationAttribute>();
+
+                    var include = attribute.Scopes.Length == 0 || attribute.Scopes.Any(x => x == projectId);
+
+                    if (include)
+                    {
+                        models.Add(new TypeInfo(modelType));
+                    }
+                }
+            }
+
+            return models;
+        }
+
         private string GetTypeScriptPropertyType(Type propertyType, out bool isExternalReference)
         {
             isExternalReference = false;
@@ -131,27 +161,7 @@ namespace rbkApiModules.CodeGeneration
         {
             var result = new StringBuilder();
 
-            AppDomain currentDomain = AppDomain.CurrentDomain;
-            var assemblies = currentDomain.GetAssemblies();
-
-            var loadedAssemblies = new List<Assembly>();
-
-            foreach (var assembly in assemblies)
-            {
-                if (!assembly.FullName.StartsWith("Microsoft.") &&
-                    !assembly.FullName.StartsWith("AutoMapper") &&
-                    !assembly.FullName.StartsWith("netstandard") &&
-                    !assembly.FullName.StartsWith("Swashbuckle.") &&
-                    !assembly.FullName.StartsWith("MediatR") &&
-                    !assembly.FullName.StartsWith("FluentValidation") &&
-                    !assembly.FullName.StartsWith("MediatR.") &&
-                    !assembly.FullName.StartsWith("mscorlib") &&
-                    !assembly.FullName.StartsWith("Anonymously") &&
-                    !assembly.FullName.StartsWith("System."))
-                {
-                    loadedAssemblies.Add(assembly);
-                }
-            }
+            var loadedAssemblies = GetRevelantAssemblies();
 
             var controllers = new List<ControllerInfo>();
 
@@ -216,6 +226,33 @@ namespace rbkApiModules.CodeGeneration
             }
 
             return controllers.ToArray();
+        }
+
+        private Assembly[] GetRevelantAssemblies()
+        {
+            AppDomain currentDomain = AppDomain.CurrentDomain;
+            var assemblies = currentDomain.GetAssemblies();
+
+            var loadedAssemblies = new List<Assembly>();
+
+            foreach (var assembly in assemblies)
+            {
+                if (!assembly.FullName.StartsWith("Microsoft.") &&
+                    !assembly.FullName.StartsWith("AutoMapper") &&
+                    !assembly.FullName.StartsWith("netstandard") &&
+                    !assembly.FullName.StartsWith("Swashbuckle.") &&
+                    !assembly.FullName.StartsWith("MediatR") &&
+                    !assembly.FullName.StartsWith("FluentValidation") &&
+                    !assembly.FullName.StartsWith("MediatR.") &&
+                    !assembly.FullName.StartsWith("mscorlib") &&
+                    !assembly.FullName.StartsWith("Anonymously") &&
+                    !assembly.FullName.StartsWith("System."))
+                {
+                    loadedAssemblies.Add(assembly);
+                }
+            }
+
+            return assemblies.ToArray();
         }
     }
 
