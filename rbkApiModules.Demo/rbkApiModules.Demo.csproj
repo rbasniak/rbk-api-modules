@@ -37,7 +37,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\rbkApiModules.Analytics.Core\rbkApiModules.Analytics.Core.csproj" />
-    <ProjectReference Include="..\rbkApiModules.Analytics.SqlServer\rbkApiModules.Analytics.SqlServer.csproj" />
+    <ProjectReference Include="..\rbkApiModules.Analytics.Relational\rbkApiModules.Analytics.Relational.csproj" />
     <ProjectReference Include="..\rbkApiModules.Auditing.Core\rbkApiModules.Auditing.Core.csproj" />
     <ProjectReference Include="..\rbkApiModules.Auditing.SqlServer\rbkApiModules.Auditing.SqlServer.csproj" />
     <ProjectReference Include="..\rbkApiModules.Authentication\rbkApiModules.Authentication.csproj" />
@@ -45,7 +45,7 @@
     <ProjectReference Include="..\rbkApiModules.CodeGeneration\rbkApiModules.CodeGeneration.csproj" />
     <ProjectReference Include="..\rbkApiModules.Comments\rbkApiModules.Comments.csproj" />
     <ProjectReference Include="..\rbkApiModules.Diagnostics.Core\rbkApiModules.Diagnostics.Core.csproj" />
-    <ProjectReference Include="..\rbkApiModules.Diagnostics.SqlServer\rbkApiModules.Diagnostics.SqlServer.csproj" />
+    <ProjectReference Include="..\rbkApiModules.Diagnostics.Relational\rbkApiModules.Diagnostics.Relational.csproj" />
     <ProjectReference Include="..\rbkApiModules.Infrastructure.Api\rbkApiModules.Infrastructure.Api.csproj" />
     <ProjectReference Include="..\rbkApiModules.Infrastructure.MediatR\rbkApiModules.Infrastructure.MediatR.Core.csproj" />
     <ProjectReference Include="..\rbkApiModules.Infrastructure.Models\rbkApiModules.Infrastructure.Models.csproj" />

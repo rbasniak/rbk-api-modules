@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using rbkApiModules.Analytics.Core;
 using System;
@@ -7,17 +6,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace rbkApiModules.Analytics.SqlServer
+namespace rbkApiModules.Analytics.Relational
 {
     /// <summary>
-    /// Store para SQL Server
+    /// Store para bancos relacionais
     /// </summary>
-    public class SqlServerAnalyticStore : IAnalyticModuleStore
+    public class RelationalAnalyticStore : IAnalyticModuleStore
     {
         private double _timezoneOffsetours = 0;
-        private readonly SqlServerAnalyticsContext _context;
+        private readonly BaseAnalyticsContext _context;
 
-        public SqlServerAnalyticStore(SqlServerAnalyticsContext context, IOptions<RbkAnalyticsModuleOptions> options)
+        public RelationalAnalyticStore(BaseAnalyticsContext context, IOptions<RbkAnalyticsModuleOptions> options)
         {
             _context = context;
 

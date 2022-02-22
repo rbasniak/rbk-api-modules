@@ -40,7 +40,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Auditing.Core
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Auditing.SqlServer", "rbkApiModules.Auditing.SqlServer\rbkApiModules.Auditing.SqlServer.csproj", "{004F868A-5304-4DD7-BC94-418A7D8BD9D5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Analytics.SqlServer", "rbkApiModules.Analytics.SqlServer\rbkApiModules.Analytics.SqlServer.csproj", "{5BFE3565-58F0-4BD2-8EF4-B71FDE9BCF40}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Analytics.Relational", "rbkApiModules.Analytics.Relational\rbkApiModules.Analytics.Relational.csproj", "{5BFE3565-58F0-4BD2-8EF4-B71FDE9BCF40}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Analytics.Core", "rbkApiModules.Analytics.Core\rbkApiModules.Analytics.Core.csproj", "{C389CDA7-F8C8-4664-9B7F-31E99A861FFF}"
 EndProject
@@ -62,7 +62,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Diagnostics", "Diagnostics"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Diagnostics.Core", "rbkApiModules.Diagnostics.Core\rbkApiModules.Diagnostics.Core.csproj", "{143E6CCD-8CF8-41B5-BD1F-FEDC65A134EC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Diagnostics.SqlServer", "rbkApiModules.Diagnostics.SqlServer\rbkApiModules.Diagnostics.SqlServer.csproj", "{6EF3EE57-1EC5-42E7-B5A7-0370A06B45C3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Diagnostics.Relational", "rbkApiModules.Diagnostics.Relational\rbkApiModules.Diagnostics.Relational.csproj", "{6EF3EE57-1EC5-42E7-B5A7-0370A06B45C3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Diagnostics.Commons", "rbkApiModules.Diagnostics.Commons\rbkApiModules.Diagnostics.Commons.csproj", "{F68D9D60-3456-4834-BD3A-068FCC124F17}"
 EndProject
@@ -112,7 +112,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D7B74E94
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Analytics.Core.Tests", "rbkApiModules.Analytics.Core.Tests\rbkApiModules.Analytics.Core.Tests.csproj", "{5BE1569D-FF51-46A3-AF72-6C19BC84F7C1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Analytics.SqlServer.Tests", "rbkApiModules.Analytics.SqlServer.Tests\rbkApiModules.Analytics.SqlServer.Tests.csproj", "{9E206352-DCA6-45F2-B6ED-9394D32D7EBC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Analytics.Relational.Tests", "rbkApiModules.Analytics.Relational.Tests\rbkApiModules.Analytics.Relational.Tests.csproj", "{9E206352-DCA6-45F2-B6ED-9394D32D7EBC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{812A19EC-AA1D-4870-ADB6-122CD3B9015B}"
 EndProject
@@ -134,7 +134,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Diagnostics.C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Diagnostics.Commons.Tests", "rbkApiModules.Diagnostics.Commons.Tests\rbkApiModules.Diagnostics.Commons.Tests.csproj", "{0ECD5E0F-A179-4BB4-BD17-41BC8B9F6020}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Diagnostics.SqlServer.Tests", "rbkApiModules.Diagnostics.SqlServer.Tests\rbkApiModules.Diagnostics.SqlServer.Tests.csproj", "{410D203B-3808-4754-8B44-53E25AD03454}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Diagnostics.Relational.Tests", "rbkApiModules.Diagnostics.Relational.Tests\rbkApiModules.Diagnostics.Relational.Tests.csproj", "{410D203B-3808-4754-8B44-53E25AD03454}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{58233CAB-B869-4B8F-8C95-296A4F005D82}"
 EndProject
@@ -187,7 +187,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notifications", "Notificati
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Notifications", "rbkApiModules.Notifications\rbkApiModules.Notifications.csproj", "{07A5F78E-0FBF-4B19-AE97-F3033667905F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.CodeGeneration", "rbkApiModules.CodeGeneration\rbkApiModules.CodeGeneration.csproj", "{D36FA3D6-691B-459D-AE91-6923C267565C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.CodeGeneration", "rbkApiModules.CodeGeneration\rbkApiModules.CodeGeneration.csproj", "{D36FA3D6-691B-459D-AE91-6923C267565C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Logs", "Logs", "{44499586-81A6-40C6-8B7D-CADBC265DF3E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Logs.Relational", "rbkApiModules.Logs.Relational\rbkApiModules.Logs.Relational.csproj", "{ECBB6DB2-43D5-42F7-BA44-D034FF0BCDBB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Logs.Core", "rbkApiModules.Logs.Core\rbkApiModules.Logs.Core.csproj", "{0E92F658-F346-415A-8D7C-A72DDD4B56A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -399,6 +405,14 @@ Global
 		{D36FA3D6-691B-459D-AE91-6923C267565C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D36FA3D6-691B-459D-AE91-6923C267565C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D36FA3D6-691B-459D-AE91-6923C267565C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ECBB6DB2-43D5-42F7-BA44-D034FF0BCDBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECBB6DB2-43D5-42F7-BA44-D034FF0BCDBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECBB6DB2-43D5-42F7-BA44-D034FF0BCDBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECBB6DB2-43D5-42F7-BA44-D034FF0BCDBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E92F658-F346-415A-8D7C-A72DDD4B56A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E92F658-F346-415A-8D7C-A72DDD4B56A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E92F658-F346-415A-8D7C-A72DDD4B56A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E92F658-F346-415A-8D7C-A72DDD4B56A4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -485,6 +499,9 @@ Global
 		{11BAD1A2-46DA-4256-B62A-1CA070958DAE} = {A1A68EE5-8E91-449C-96A8-CCC5BF135D48}
 		{07A5F78E-0FBF-4B19-AE97-F3033667905F} = {11BAD1A2-46DA-4256-B62A-1CA070958DAE}
 		{D36FA3D6-691B-459D-AE91-6923C267565C} = {9A642167-AD70-4152-9314-125945860E1B}
+		{44499586-81A6-40C6-8B7D-CADBC265DF3E} = {A1A68EE5-8E91-449C-96A8-CCC5BF135D48}
+		{ECBB6DB2-43D5-42F7-BA44-D034FF0BCDBB} = {44499586-81A6-40C6-8B7D-CADBC265DF3E}
+		{0E92F658-F346-415A-8D7C-A72DDD4B56A4} = {44499586-81A6-40C6-8B7D-CADBC265DF3E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9AAC09BF-43DC-408B-8F24-24DAA39DA1E8}

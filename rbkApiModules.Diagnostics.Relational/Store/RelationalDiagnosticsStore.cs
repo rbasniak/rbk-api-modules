@@ -5,15 +5,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace rbkApiModules.Diagnostics.SqlServer
+namespace rbkApiModules.Diagnostics.Relational
 {
     /// <summary>
-    /// Store para SQL Server
+    /// Store para bancos relacionais
     /// </summary>
-    public class SqlServerDiagnosticsStore : IDiagnosticsModuleStore
+    public class RelationalDiagnosticsStore : IDiagnosticsModuleStore
     {
-        private readonly SqlServerDiagnosticsContext _context;
-        public SqlServerDiagnosticsStore(SqlServerDiagnosticsContext context)
+        private readonly BaseDiagnosticsContext _context;
+        public RelationalDiagnosticsStore(BaseDiagnosticsContext context)
         {
             _context = context;
         }

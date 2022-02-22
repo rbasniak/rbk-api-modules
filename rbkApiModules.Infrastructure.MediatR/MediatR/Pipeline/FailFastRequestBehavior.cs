@@ -98,6 +98,23 @@ namespace rbkApiModules.Infrastructure.MediatR.Core
                     return next();
                 }
             }
+            catch (KindaSafeException ex)
+            {
+                if (ex.InnerException != null && ex.InnerException is KindaSafeException)
+                {
+                    return Errors(new List<ValidationFailure> { new ValidationFailure(null, ex.InnerException.Message) });
+                }
+
+                var diagnosticsStore = _httpContextAccessor.HttpContext.RequestServices.GetService<IDiagnosticsModuleStore>();
+
+                if (diagnosticsStore != null)
+                {
+                    var exceptionData = new DiagnosticsEntry(_httpContextAccessor.HttpContext, request.GetType().FullName + " (Validator)", ex, request);
+                    diagnosticsStore.StoreData(exceptionData);
+                }
+
+                return Errors(new List<ValidationFailure> { new ValidationFailure(null, ex.Message) });
+            }
             catch (SafeException ex)
             {
                 return Errors(new List<ValidationFailure> { new ValidationFailure(null, ex.Message) });

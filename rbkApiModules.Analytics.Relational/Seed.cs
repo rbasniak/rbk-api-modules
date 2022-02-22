@@ -2,12 +2,12 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace rbkApiModules.Analytics.SqlServer
+namespace rbkApiModules.Analytics.Relational
 {
     [ExcludeFromCodeCoverage]
     public static class Seed
     {
-        public static void SeedDatabase(SqlServerAnalyticsContext context)
+        public static void SeedDatabase(BaseAnalyticsContext context)
         {
             var random = new Random(32019);
 

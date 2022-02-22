@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\rbkApiModules.Analytics.SqlServer\rbkApiModules.Analytics.SqlServer.csproj" />
+    <ProjectReference Include="..\rbkApiModules.Analytics.Relational\rbkApiModules.Analytics.Relational.csproj" />
     <ProjectReference Include="..\rbkApiModules.Utilities.Testing\rbkApiModules.Utilities.Testing.csproj" />
   </ItemGroup>
 

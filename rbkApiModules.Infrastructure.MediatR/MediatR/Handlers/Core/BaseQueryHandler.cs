@@ -26,6 +26,11 @@ namespace rbkApiModules.Infrastructure.MediatR.Core
 
                 response.Result = result;
             }
+            catch (KindaSafeException ex)
+            {
+                response.AddHandledError(ex.Message);
+                StoreDiagnosticsData(request, ex);
+            }
             catch (SafeException ex)
             {
                 response.AddHandledError(ex.Message);
