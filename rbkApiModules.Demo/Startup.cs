@@ -101,6 +101,7 @@ namespace rbkApiModules.Demo
                 Version = "v1",
                 SwaggerXmlPath = xmlPath,
                 IsProduction = !Environment.IsDevelopment(),
+                ForceHttps = true,
                 AutomapperProfiles = new List<Profile>
                 {
                     new StatesMappings<State, Event, Transition, Document, StateChangeEvent, StateGroup, QueryDefinitionGroup, QueryDefinition, QueryDefinitionToState, QueryDefinitionToGroup>()

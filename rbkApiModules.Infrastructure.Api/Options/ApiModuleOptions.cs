@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Routing;
+using System;
+using System.Collections.Generic;
 
 namespace rbkApiModules.Infrastructure.Api
 {
@@ -10,6 +12,7 @@ namespace rbkApiModules.Infrastructure.Api
         private string _defaultCorsPolicy = null;
 
         private readonly List<ApplicationRoute> _routes = new();
+        private Action<IEndpointRouteBuilder> _hubMappingAction;
 
         public bool IsProduction => _isProduction;
         public bool UsingSwagger => _useSwagger;
@@ -17,6 +20,7 @@ namespace rbkApiModules.Infrastructure.Api
         public string DefaultCorsPolicy => _defaultCorsPolicy;
 
         public List<ApplicationRoute> Routes => _routes;
+        public Action<IEndpointRouteBuilder> HubMappingAction => _hubMappingAction;
 
         public bool HasSpaOnRoot { get; internal set; }
 
@@ -41,6 +45,12 @@ namespace rbkApiModules.Infrastructure.Api
         public ApiModuleOptions AddRoute(string pathString, string indexFilePath)
         {
             _routes.Add(new ApplicationRoute(pathString, indexFilePath));
+            return this;
+        }
+
+        public ApiModuleOptions MappingSignalRHubs(Action<IEndpointRouteBuilder> action)
+        {
+            _hubMappingAction = action;
             return this;
         }
 

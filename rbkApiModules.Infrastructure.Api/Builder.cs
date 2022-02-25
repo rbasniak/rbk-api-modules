@@ -22,6 +22,11 @@ namespace rbkApiModules.Infrastructure.Api
     [ExcludeFromCodeCoverage]
     public class RbkApiInfrastructureModuleOptions
     {
+        public RbkApiInfrastructureModuleOptions()
+        {
+            ForceHttps = true;
+        }
+
         public Assembly[] AssembliesForServices { get; set; }
         public Assembly[] AssembliesForAutoMapper { get; set; }
         public List<IActionFilter> Filters { get; set; }
@@ -32,6 +37,7 @@ namespace rbkApiModules.Infrastructure.Api
         public bool UseBasicAuthentication { get; set; }
         public List<Profile> AutomapperProfiles { get; set; }
         public Action<CorsOptions> CorsOptions { get; set; }
+        public bool ForceHttps { get; set; }
     }
 
     [ExcludeFromCodeCoverage]
@@ -82,11 +88,14 @@ namespace rbkApiModules.Infrastructure.Api
             services.AddSingleton(mapper);
             mapper.ConfigurationProvider.AssertConfigurationIsValid();
 
-            services.AddHttpsRedirection(options =>
+            if (options.ForceHttps)
             {
-                options.RedirectStatusCode = StatusCodes.Status308PermanentRedirect;
-                options.HttpsPort = 443;
-            });
+                services.AddHttpsRedirection(options =>
+                {
+                    options.RedirectStatusCode = StatusCodes.Status308PermanentRedirect;
+                    options.HttpsPort = 443;
+                });
+            }
 
             if (options.Filters != null)
             {
@@ -231,6 +240,11 @@ namespace rbkApiModules.Infrastructure.Api
                 appBuilder.UseEndpoints(endpoints =>
                 {
                     endpoints.MapControllers();
+
+                    if (options.HubMappingAction != null)
+                    {
+                        options.HubMappingAction(endpoints);
+                    }
                 });
             });
 
