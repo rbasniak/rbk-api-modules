@@ -25,12 +25,14 @@ namespace rbkApiModules.Analytics.Relational
 
             services.Configure<RbkAnalyticsModuleOptions>(Configuration.GetSection(nameof(RbkAnalyticsModuleOptions)));
 
-            services.AddDbContext<SqlServerAnalyticsContext>((scope, options) => options
-                .UseSqlServer(connectionString)
-                .AddInterceptors(scope.GetRequiredService<DatabaseDiagnosticsInterceptor>())
+            services.AddDbContext<BaseAnalyticsContext, SqlServerAnalyticsContext>((scope, options) =>
+            {
+                options
+                    .UseSqlServer(connectionString)
+                    .AddInterceptors(scope.GetRequiredService<DatabaseDiagnosticsInterceptor>());
+            });
             //.EnableDetailedErrors()
             //.EnableSensitiveDataLogging()
-            );
 
             services.AddTransient<IAnalyticModuleStore, RelationalAnalyticStore>();
         }
@@ -51,7 +53,7 @@ namespace rbkApiModules.Analytics.Relational
 
             using (var scope = scopeFactory.CreateScope())
             {
-                using (var context = scope.ServiceProvider.GetService<SqlServerAnalyticsContext>())
+                using (var context = scope.ServiceProvider.GetService<BaseAnalyticsContext>())
                 {
                     context.Database.EnsureCreated();
 
@@ -100,7 +102,7 @@ namespace rbkApiModules.Analytics.Relational
             return app;
         }
 
-        public static void AddSqLiteRbkApiAnalyticsModule(this IServiceCollection services, IConfiguration Configuration, string connectionString)
+        public static void AddSQLiteRbkApiAnalyticsModule(this IServiceCollection services, IConfiguration Configuration, string connectionString)
         {
             services.AddHostedService<SessionWriter>();
 
@@ -114,10 +116,12 @@ namespace rbkApiModules.Analytics.Relational
                 .UseSqlite(connectionString)
             );
 
+            services.AddTransient<BaseAnalyticsContext>(_ => new SQLiteAnalyticsContext(connectionString));
+
             services.AddTransient<IAnalyticModuleStore, RelationalAnalyticStore>();
         }
 
-        public static IApplicationBuilder UseSqLiteRbkApiAnalyticsModule(this IApplicationBuilder app, Action<AnalyticsModuleOptions> configureOptions)
+        public static IApplicationBuilder UseSQLiteRbkApiAnalyticsModule(this IApplicationBuilder app, Action<AnalyticsModuleOptions> configureOptions)
         {
             var options = new AnalyticsModuleOptions();
             configureOptions(options);

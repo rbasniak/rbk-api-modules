@@ -23,6 +23,8 @@ namespace rbkApiModules.Diagnostics.Relational
                 //.EnableSensitiveDataLogging()
             );
 
+            services.AddTransient<BaseDiagnosticsContext, SqlServerDiagnosticsContext>();
+
             services.AddTransient<IDiagnosticsModuleStore, RelationalDiagnosticsStore>();
         }
 
@@ -80,6 +82,8 @@ namespace rbkApiModules.Diagnostics.Relational
             services.AddDbContext<SQLiteDiagnosticsContext>((scope, options) => options
                 .UseSqlite(connectionString)
             );
+
+            services.AddTransient<BaseDiagnosticsContext, SQLiteDiagnosticsContext>();
 
             services.AddTransient<IDiagnosticsModuleStore, RelationalDiagnosticsStore>();
         }

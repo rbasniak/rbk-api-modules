@@ -7,16 +7,18 @@ namespace rbkApiModules.Logs.Relational
 {
     public static class Builder
     {
-        public static void AddSqlServerRbkApiLogModule(this IServiceCollection services, string connectionString)
+        public static void AddSqlServerRbkApiLogsModule(this IServiceCollection services, string connectionString)
         {
             services.AddDbContext<SqlServerLogContext>((scope, options) => options
                 .UseSqlServer(connectionString)
             );
 
+            services.AddTransient<BaseLogContext, SqlServerLogContext>();
+
             services.AddTransient<ILogsModuleStore, RelationalLogStore>();
         }
 
-        public static IApplicationBuilder UseSqlServerRbkApiDiagnosticsModule(this IApplicationBuilder app)
+        public static IApplicationBuilder UseSqlServerRbkApiLogsModule(this IApplicationBuilder app)
         {
             var scopeFactory = app.ApplicationServices.GetService<IServiceScopeFactory>();
 
@@ -31,16 +33,18 @@ namespace rbkApiModules.Logs.Relational
             return app;
         }
 
-        public static void AddSQLiteRbkApiLogModule(this IServiceCollection services, string connectionString)
+        public static void AddSQLiteRbkApiLogsModule(this IServiceCollection services, string connectionString)
         {
             services.AddDbContext<SQLiteLogContext>((scope, options) => options
                 .UseSqlite(connectionString)
             );
 
+            services.AddTransient<BaseLogContext, SQLiteLogContext>();
+
             services.AddTransient<ILogsModuleStore, RelationalLogStore>();
         }
 
-        public static IApplicationBuilder UseSQLiteRbkApiDiagnosticsModule(this IApplicationBuilder app)
+        public static IApplicationBuilder UseSQLiteRbkApiLogsModule(this IApplicationBuilder app)
         {
             var scopeFactory = app.ApplicationServices.GetService<IServiceScopeFactory>();
 
