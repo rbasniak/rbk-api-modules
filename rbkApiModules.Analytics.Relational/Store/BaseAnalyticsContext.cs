@@ -11,19 +11,13 @@ namespace rbkApiModules.Analytics.Relational
     [ExcludeFromCodeCoverage]
     public abstract class BaseAnalyticsContext : DbContext
     {
-        internal readonly string _connectionString;
-
         public BaseAnalyticsContext(DbContextOptions<BaseAnalyticsContext> options)
             : base(options)
         {
         }
 
-        public BaseAnalyticsContext(string connectionString)
-        {
-            _connectionString = connectionString;
-        }
-
-        public BaseAnalyticsContext()
+        protected BaseAnalyticsContext(DbContextOptions options)
+        : base(options)
         {
         }
 

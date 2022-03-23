@@ -16,14 +16,12 @@ namespace rbkApiModules.Diagnostics.Relational
         {
             services.AddTransient<DatabaseDiagnosticsInterceptor>();
 
-            services.AddDbContext<SqlServerDiagnosticsContext>((scope, options) => options
+            services.AddDbContext<BaseDiagnosticsContext, SqlServerDiagnosticsContext>((scope, options) => options
                 .UseSqlServer(connectionString)
                 .AddInterceptors(scope.GetRequiredService<DatabaseDiagnosticsInterceptor>())
                 //.EnableDetailedErrors()
                 //.EnableSensitiveDataLogging()
             );
-
-            services.AddTransient<BaseDiagnosticsContext, SqlServerDiagnosticsContext>();
 
             services.AddTransient<IDiagnosticsModuleStore, RelationalDiagnosticsStore>();
         }
@@ -79,11 +77,9 @@ namespace rbkApiModules.Diagnostics.Relational
         {
             services.AddTransient<DatabaseDiagnosticsInterceptor>();
 
-            services.AddDbContext<SQLiteDiagnosticsContext>((scope, options) => options
+            services.AddDbContext<BaseDiagnosticsContext, SQLiteDiagnosticsContext>((scope, options) => options
                 .UseSqlite(connectionString)
             );
-
-            services.AddTransient<BaseDiagnosticsContext, SQLiteDiagnosticsContext>();
 
             services.AddTransient<IDiagnosticsModuleStore, RelationalDiagnosticsStore>();
         }

@@ -15,6 +15,11 @@ namespace rbkApiModules.Diagnostics.Relational
         {
         }
 
+        protected BaseDiagnosticsContext(DbContextOptions options)
+        : base(options)
+        {
+        }
+
         public BaseDiagnosticsContext(string connectionString)
         {
             _connectionString = connectionString;

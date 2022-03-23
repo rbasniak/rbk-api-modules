@@ -9,26 +9,9 @@ namespace rbkApiModules.Analytics.Relational
     [ExcludeFromCodeCoverage]
     public class SqlServerAnalyticsContext : BaseAnalyticsContext
     {
-        public SqlServerAnalyticsContext(DbContextOptions<BaseAnalyticsContext> options)
+        public SqlServerAnalyticsContext(DbContextOptions<SqlServerAnalyticsContext> options)
             : base(options)
         {
-        }
-
-        public SqlServerAnalyticsContext(string connectionString)
-            : base(connectionString)
-        {
-        }
-
-        public SqlServerAnalyticsContext()
-        {
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!string.IsNullOrEmpty(_connectionString))
-            {
-                optionsBuilder.UseSqlServer(_connectionString);
-            }
         }
     }
 }

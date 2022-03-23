@@ -15,6 +15,11 @@ namespace rbkApiModules.Logs.Relational
         {
         }
 
+        protected BaseLogContext(DbContextOptions options)
+        : base(options)
+        {
+        }
+
         public BaseLogContext(string connectionString)
         {
             _connectionString = connectionString;

@@ -53,7 +53,7 @@ namespace rbkApiModules.Analytics.Relational
 
             using (var scope = scopeFactory.CreateScope())
             {
-                using (var context = scope.ServiceProvider.GetService<BaseAnalyticsContext>())
+                using (var context = scope.ServiceProvider.GetService<SqlServerAnalyticsContext>())
                 {
                     context.Database.EnsureCreated();
 
@@ -112,11 +112,9 @@ namespace rbkApiModules.Analytics.Relational
 
             services.Configure<RbkAnalyticsModuleOptions>(Configuration.GetSection(nameof(RbkAnalyticsModuleOptions)));
 
-            services.AddDbContext<SQLiteAnalyticsContext>((scope, options) => options
+            services.AddDbContext<BaseAnalyticsContext, SQLiteAnalyticsContext>((scope, options) => options
                 .UseSqlite(connectionString)
             );
-
-            services.AddTransient<BaseAnalyticsContext>(_ => new SQLiteAnalyticsContext(connectionString));
 
             services.AddTransient<IAnalyticModuleStore, RelationalAnalyticStore>();
         }
