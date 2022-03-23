@@ -83,7 +83,7 @@ namespace rbkApiModules.Demo
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DatabaseContext>((scope, options) => options
+            services.AddDbContext<DbContext, DatabaseContext>((scope, options) => options
                 .UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Database"))
                 .AddInterceptors(scope.GetRequiredService<DatabaseAnalyticsInterceptor>())
@@ -91,8 +91,6 @@ namespace rbkApiModules.Demo
                 .EnableDetailedErrors()
                 .EnableSensitiveDataLogging()
             );
-
-            services.AddTransient<DbContext, DatabaseContext>();
 
             var xmlPath = Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml");
             services.AddRbkApiInfrastructureModule(new RbkApiInfrastructureModuleOptions
@@ -182,7 +180,7 @@ namespace rbkApiModules.Demo
                     .ExcludePath(new[] { "/diagnostics" })
                     .ExcludeStatusCodes(new[] { 401 })
                     .UseSessionAnalytics(5)
-                    .UseDemoData()
+                    // .UseDemoData()
                 );
 
                 app.UseSqlServerRbkApiDiagnosticsModule();

@@ -1,32 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.CodeAnalysis;
 
 namespace rbkApiModules.Diagnostics.Relational
 {
     /// <summary>
     /// DBContext para a store de SQL Server
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class SqlServerDiagnosticsContext : BaseDiagnosticsContext
     {
-        public SqlServerDiagnosticsContext(DbContextOptions<BaseDiagnosticsContext> options)
+        public SqlServerDiagnosticsContext(DbContextOptions<SqlServerDiagnosticsContext> options)
             : base(options)
         {
-        }
-
-        public SqlServerDiagnosticsContext(string connectionString)
-            : base(connectionString)
-        {
-        }
-
-        public SqlServerDiagnosticsContext()
-        {
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!string.IsNullOrEmpty(_connectionString))
-            {
-                optionsBuilder.UseSqlServer(_connectionString);
-            }
         }
     }
 }

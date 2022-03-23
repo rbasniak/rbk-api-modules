@@ -7,26 +7,9 @@ namespace rbkApiModules.Logs.Relational
     /// </summary>
     public class SqlServerLogContext : BaseLogContext
     {
-        public SqlServerLogContext(DbContextOptions<BaseLogContext> options)
+        public SqlServerLogContext(DbContextOptions<SqlServerLogContext> options)
             : base(options)
         {
-        }
-
-        public SqlServerLogContext(string connectionString)
-            : base(connectionString)
-        {
-        }
-
-        public SqlServerLogContext()
-        {
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!string.IsNullOrEmpty(_connectionString))
-            {
-                optionsBuilder.UseSqlServer(_connectionString);
-            }
         }
     }
 }

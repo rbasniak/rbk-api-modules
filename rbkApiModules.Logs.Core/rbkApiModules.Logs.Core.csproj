@@ -9,6 +9,7 @@
     <ProjectReference Include="..\rbkApiModules.CodeGeneration.Commons\rbkApiModules.CodeGeneration.Commons.csproj" />
     <ProjectReference Include="..\rbkApiModules.Infrastructure.Api\rbkApiModules.Infrastructure.Api.csproj" />
     <ProjectReference Include="..\rbkApiModules.Infrastructure.Models\rbkApiModules.Infrastructure.Models.csproj" />
+    <ProjectReference Include="..\rbkApiModules.Utilities.EFCore\rbkApiModules.Utilities.EFCore.csproj" />
   </ItemGroup>
 
 </Project>

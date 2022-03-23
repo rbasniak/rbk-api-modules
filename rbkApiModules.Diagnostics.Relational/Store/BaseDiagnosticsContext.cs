@@ -1,15 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Diagnostics.Commons;
+using rbkApiModules.Utilities.EFCore;
+using System.Diagnostics.CodeAnalysis;
 
 namespace rbkApiModules.Diagnostics.Relational
 {
     /// <summary>
     /// DBContext base para a store de bancos relacionais
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public abstract class BaseDiagnosticsContext : DbContext
     {
-        internal readonly string _connectionString;
-
         public BaseDiagnosticsContext(DbContextOptions<BaseDiagnosticsContext> options)
             : base(options)
         {
@@ -20,19 +21,12 @@ namespace rbkApiModules.Diagnostics.Relational
         {
         }
 
-        public BaseDiagnosticsContext(string connectionString)
-        {
-            _connectionString = connectionString;
-        }
-
-        public BaseDiagnosticsContext()
-        {
-        }
-
         public DbSet<DiagnosticsEntry> Data { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<DiagnosticsEntry>().Property(x => x.Timestamp).HasConversion(DateTimeWithoutKindConverter.GetConverter());
+
             base.OnModelCreating(modelBuilder);
         }
     }

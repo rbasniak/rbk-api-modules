@@ -29,6 +29,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\rbkApiModules.Diagnostics.Core\rbkApiModules.Diagnostics.Core.csproj" />
+    <ProjectReference Include="..\rbkApiModules.Utilities.EFCore\rbkApiModules.Utilities.EFCore.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Logs.Core;
+using rbkApiModules.Utilities.EFCore;
 
 namespace rbkApiModules.Logs.Relational
 {
@@ -8,8 +9,6 @@ namespace rbkApiModules.Logs.Relational
     /// </summary>
     public abstract class BaseLogContext : DbContext
     {
-        internal readonly string _connectionString;
-
         public BaseLogContext(DbContextOptions<BaseLogContext> options)
             : base(options)
         {
@@ -20,19 +19,12 @@ namespace rbkApiModules.Logs.Relational
         {
         }
 
-        public BaseLogContext(string connectionString)
-        {
-            _connectionString = connectionString;
-        }
-
-        public BaseLogContext()
-        {
-        }
-
         public DbSet<LogEntry> Data { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<LogEntry>().Property(x => x.Timestamp).HasConversion(DateTimeWithoutKindConverter.GetConverter());
+
             base.OnModelCreating(modelBuilder);
         }
     }

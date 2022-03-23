@@ -11,22 +11,5 @@ namespace rbkApiModules.Diagnostics.Relational
             : base(options)
         {
         }
-
-        public SQLiteDiagnosticsContext(string connectionString)
-            : base(connectionString)
-        {
-        }
-
-        public SQLiteDiagnosticsContext()
-        {
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!string.IsNullOrEmpty(_connectionString))
-            {
-                optionsBuilder.UseSqlite(_connectionString);
-            }
-        }
     }
 }
