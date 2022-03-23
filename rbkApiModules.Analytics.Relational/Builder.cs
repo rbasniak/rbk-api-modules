@@ -25,14 +25,12 @@ namespace rbkApiModules.Analytics.Relational
 
             services.Configure<RbkAnalyticsModuleOptions>(Configuration.GetSection(nameof(RbkAnalyticsModuleOptions)));
 
-            services.AddDbContext<BaseAnalyticsContext, SqlServerAnalyticsContext>((scope, options) =>
-            {
-                options
-                    .UseSqlServer(connectionString)
-                    .AddInterceptors(scope.GetRequiredService<DatabaseDiagnosticsInterceptor>());
-            });
+            services.AddDbContext<BaseAnalyticsContext, SqlServerAnalyticsContext>((scope, options) => options
+                .UseSqlServer(connectionString)
+                .AddInterceptors(scope.GetRequiredService<DatabaseDiagnosticsInterceptor>())
             //.EnableDetailedErrors()
             //.EnableSensitiveDataLogging()
+            );
 
             services.AddTransient<IAnalyticModuleStore, RelationalAnalyticStore>();
         }
