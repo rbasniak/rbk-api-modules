@@ -1,1 +1,0 @@
-- Colocar command de criação de usuários como abstrato  

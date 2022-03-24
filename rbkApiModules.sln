@@ -9,7 +9,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 		nuget.config = nuget.config
 		README.md = README.md
-		todo.txt = todo.txt
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demo", "Demo", "{F4880E1B-B3C1-404F-B6C9-4D712A0DAA3F}"
@@ -168,7 +167,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{52B83F5D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ci", "ci", "{0677567A-489F-4B36-85DA-EA926A514AFA}"
 	ProjectSection(SolutionItems) = preProject
-		publish.txt = publish.txt
 		.github\workflows\publish.yml = .github\workflows\publish.yml
 		publish_pre-release.txt = publish_pre-release.txt
 	EndProjectSection
