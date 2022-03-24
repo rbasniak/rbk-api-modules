@@ -6,7 +6,7 @@
     <IconUrl>https://user-images.githubusercontent.com/10734059/160024118-706e92f1-40de-4cde-a183-ae20fee283a3.png</IconUrl>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <Version>3.0.0</Version>
+    <Version>2.13.26</Version>
     <Authors>rbasniak</Authors>
     <Product>rbkApiModules</Product>
     <Copyright>rbasniak</Copyright>
