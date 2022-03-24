@@ -13,9 +13,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="6.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="6.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.3" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
     <PackageReference Include="Moq" Version="4.16.1" />
     <PackageReference Include="xunit" Version="2.4.1" />
@@ -31,7 +31,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\rbkApiModules.Analytics.Relational.SqlServer\rbkApiModules.Analytics.Relational.SqlServer.csproj" />
-    <ProjectReference Include="..\rbkApiModules.Analytics.Relational\rbkApiModules.Analytics.Relational.csproj" />
     <ProjectReference Include="..\rbkApiModules.Utilities.Testing\rbkApiModules.Utilities.Testing.csproj" />
   </ItemGroup>
 
