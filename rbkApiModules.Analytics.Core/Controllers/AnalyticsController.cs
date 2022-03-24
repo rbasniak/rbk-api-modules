@@ -2,8 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using rbkApiModules.CodeGeneration.Commons;
 using rbkApiModules.Infrastructure.Api;
-using rbkApiModules.Infrastructure.Models;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 

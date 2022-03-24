@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using FluentValidation.Validators;
 using System;
 
 namespace rbkApiModules.Infrastructure.MediatR.Core

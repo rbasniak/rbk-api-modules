@@ -1,8 +1,5 @@
 ﻿using rbkApiModules.Infrastructure.Models;
-using rbkApiModules.UIAnnotations;
-using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace rbkApiModules.Demo.Models

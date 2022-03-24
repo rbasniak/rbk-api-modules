@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Payment.SqlServer;
-using rbkApiModules.Paypal.SqlServer;
 using System;
-using System.Threading.Tasks;
 
 namespace rbkApiModules.Demo.Services
 {

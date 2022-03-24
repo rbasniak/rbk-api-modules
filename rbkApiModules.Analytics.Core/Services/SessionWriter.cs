@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Data.Common;
 using System.Linq;
 using System.Threading;
 using Microsoft.Extensions.DependencyInjection;

@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using rbkApiModules.CodeGeneration.Commons;
 using rbkApiModules.Infrastructure.Api;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace rbkApiModules.UIAnnotations

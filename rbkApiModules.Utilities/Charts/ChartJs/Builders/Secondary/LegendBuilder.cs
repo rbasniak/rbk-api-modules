@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace rbkApiModules.Utilities.Charts.ChartJs
+﻿namespace rbkApiModules.Utilities.Charts.ChartJs
 {
     public class LegendBuilder<TFactory, TChart> where TChart : BaseChart where TFactory : BaseChartBuilder<TFactory, TChart>
     {

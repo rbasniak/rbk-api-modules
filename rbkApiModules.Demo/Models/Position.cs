@@ -1,9 +1,4 @@
-﻿using rbkApiModules.Infrastructure.Models;
-using rbkApiModules.Payment.SqlServer;
-using rbkApiModules.UIAnnotations;
-using System;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
 
 namespace rbkApiModules.Demo.Models
 {

@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using rbkApiModules.Diagnostics.Commons;
 using System.Threading.Tasks;

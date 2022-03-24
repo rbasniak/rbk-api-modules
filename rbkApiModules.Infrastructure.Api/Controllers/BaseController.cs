@@ -3,7 +3,6 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.DependencyInjection;
 using rbkApiModules.Diagnostics.Commons;
 using rbkApiModules.Infrastructure.MediatR.Core;
 using rbkApiModules.Infrastructure.Models;

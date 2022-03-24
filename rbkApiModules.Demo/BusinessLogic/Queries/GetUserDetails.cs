@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Infrastructure.MediatR.SqlServer;
 using rbkApiModules.Infrastructure.MediatR.Core;
 using System;
-using rbkApiModules.Demo.Models;
 using rbkApiModules.Infrastructure.Models;
 
 namespace rbkApiModules.Demo.BusinessLogic

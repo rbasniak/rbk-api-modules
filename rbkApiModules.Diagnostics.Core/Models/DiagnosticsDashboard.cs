@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace rbkApiModules.Diagnostics.Core
+﻿namespace rbkApiModules.Diagnostics.Core
 {
     public class DiagnosticsDashboard
     {

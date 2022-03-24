@@ -1,18 +1,9 @@
-﻿using FluentValidation;
-using MediatR;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
-using rbkApiModules.Infrastructure.Models;
-using rbkApiModules.Utilities.Passwords;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using rbkApiModules.Infrastructure.MediatR.Core;
 using System.Security.Claims;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 namespace rbkApiModules.SharedUI

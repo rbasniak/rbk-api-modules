@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using rbkApiModules.Utilities.Testing;
@@ -9,11 +8,8 @@ using Shouldly;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Security.Claims;
-using System.Security.Principal;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 

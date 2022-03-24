@@ -2,15 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using rbkApiModules.CodeGeneration.Commons;
 using rbkApiModules.Demo.BusinessLogic;
 using rbkApiModules.Demo.Models;
 using rbkApiModules.Infrastructure.Api;
-using rbkApiModules.Utilities;
-using rbkApiModules.Utilities.Extensions;
 using System;
-using System.IO;
 using System.Threading.Tasks;
 
 namespace rbkApiModules.Demo.Controllers

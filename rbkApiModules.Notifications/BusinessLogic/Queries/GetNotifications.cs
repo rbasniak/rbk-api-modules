@@ -3,7 +3,6 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Infrastructure.MediatR.SqlServer;
-using System;
 using System.Threading.Tasks;
 using rbkApiModules.Infrastructure.MediatR.Core;
 using rbkApiModules.Notifications.Models;

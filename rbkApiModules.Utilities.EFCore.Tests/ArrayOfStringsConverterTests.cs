@@ -1,10 +1,5 @@
-﻿using rbkApiModules.Utilities.EFCore.Converters;
-using Shouldly;
+﻿using Shouldly;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace rbkApiModules.Utilities.EFCore.Converters.Tests

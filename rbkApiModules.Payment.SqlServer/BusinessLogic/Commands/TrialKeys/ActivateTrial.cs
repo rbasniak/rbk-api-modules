@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Infrastructure.MediatR.Core;
 using rbkApiModules.Infrastructure.MediatR.SqlServer;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 

@@ -1,13 +1,11 @@
 ﻿using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using rbkApiModules.Infrastructure.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using rbkApiModules.Infrastructure.MediatR.Core;
-using rbkApiModules.Utilities;
 using rbkApiModules.Utilities.Charts.ChartJs;
 using rbkApiModules.Utilities.Charts;
 

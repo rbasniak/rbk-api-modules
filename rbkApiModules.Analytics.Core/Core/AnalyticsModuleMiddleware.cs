@@ -7,9 +7,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 using System.IO;
-using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.WebUtilities;
-using System.Diagnostics.CodeAnalysis;
 
 namespace rbkApiModules.Analytics.Core
 {

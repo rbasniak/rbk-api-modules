@@ -1,8 +1,6 @@
 ﻿using rbkApiModules.Infrastructure.Models;
 using rbkApiModules.Notifications.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace rbkApiModules.Notifications
 {

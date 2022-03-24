@@ -1,11 +1,8 @@
-﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using FluentValidation;
+﻿using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Infrastructure.MediatR.SqlServer;
-using rbkApiModules.Infrastructure.Models;
 using System.Linq;
 using System.Threading.Tasks;
 using rbkApiModules.Infrastructure.MediatR.Core;

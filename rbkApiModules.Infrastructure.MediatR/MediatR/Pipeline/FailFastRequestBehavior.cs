@@ -10,7 +10,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using System.IO;
 
 namespace rbkApiModules.Infrastructure.MediatR.Core
 {

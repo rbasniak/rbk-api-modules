@@ -1,15 +1,9 @@
-﻿using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using rbkApiModules.Infrastructure.Models.Charts.ChartJs;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Dynamic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace rbkApiModules.Utilities.Charts.ChartJs
 {

@@ -1,8 +1,4 @@
-﻿using rbkApiModules.Infrastructure.Models;
-using rbkApiModules.UIAnnotations;
-using rbkApiModules.Workflow;
-using System;
-using System.ComponentModel.DataAnnotations;
+﻿using rbkApiModules.Workflow;
 
 namespace rbkApiModules.Demo.Models.StateMachine
 {

@@ -6,10 +6,6 @@ using rbkApiModules.CodeGeneration.Commons;
 using rbkApiModules.Demo.BusinessLogic;
 using rbkApiModules.Demo.DataTransfer;
 using rbkApiModules.Infrastructure.Api;
-using rbkApiModules.Utilities;
-using rbkApiModules.Utilities.Extensions;
-using System;
-using System.IO;
 using System.Threading.Tasks;
 
 namespace rbkApiModules.Demo.Controllers

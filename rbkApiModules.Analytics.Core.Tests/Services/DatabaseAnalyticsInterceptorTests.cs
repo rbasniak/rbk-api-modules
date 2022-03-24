@@ -1,21 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using Moq;
-using Moq.AutoMock;
 using Shouldly;
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
-using Microsoft.EntityFrameworkCore.Sqlite;
 using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using rbkApiModules.Utilities.Testing;
 
 namespace rbkApiModules.Analytics.Core.Tests

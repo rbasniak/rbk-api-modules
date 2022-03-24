@@ -1,12 +1,5 @@
-﻿using Microsoft.AspNetCore.Routing;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs.Deprecated
-{ 
+﻿namespace rbkApiModules.Infrastructure.Models.Charts.ChartJs.Deprecated
+{
     public static class ChartCollorSelector
     {
         private static readonly string[] _pallete1 = new[] 

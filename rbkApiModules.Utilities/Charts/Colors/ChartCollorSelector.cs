@@ -1,13 +1,9 @@
-﻿using Microsoft.AspNetCore.Routing;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace rbkApiModules.Utilities.Charts
-{ 
+{
     public static class ChartCollorSelector
     {
         private static readonly string[] Bright1 = new[] { "#01A5E4", "#8DD7BF", "#FF96C5", "#FF5768", "#FFBF65" };

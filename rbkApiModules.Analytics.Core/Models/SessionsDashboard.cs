@@ -1,7 +1,3 @@
-using System.Collections.Generic;
-using rbkApiModules.Infrastructure.Models;
-using rbkApiModules.Utilities.Charts.ChartJs;
-
 namespace rbkApiModules.Analytics.Core
 {
     public class SessionsDashboard

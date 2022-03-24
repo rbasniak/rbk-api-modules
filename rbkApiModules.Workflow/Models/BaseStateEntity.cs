@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using rbkApiModules.Infrastructure.Models;
+﻿using rbkApiModules.Infrastructure.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

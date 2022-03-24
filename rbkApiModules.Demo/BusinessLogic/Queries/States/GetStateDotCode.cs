@@ -3,10 +3,6 @@ using Microsoft.AspNetCore.Http;
 using rbkApiModules.Demo.Database;
 using rbkApiModules.Demo.Models.StateMachine;
 using rbkApiModules.Workflow;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace rbkApiModules.Demo.BusinessLogic.StateMachine
 {

@@ -1,13 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Moq;
-using Newtonsoft.Json;
 using rbkApiModules.Utilities.Testing;
 using Shouldly;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace rbkApiModules.Analytics.Core.Tests
