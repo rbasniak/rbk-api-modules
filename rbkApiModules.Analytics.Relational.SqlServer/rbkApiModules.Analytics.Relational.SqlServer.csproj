@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <IsPackable>true</IsPackable>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <Version>2.13.25</Version>
+    <Authors>rbasniak</Authors>
+    <Product>rbkApiModules</Product>
+    <Copyright>rbasniak</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="SourceLink.Create.CommandLine" Version="2.8.3">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\rbkApiModules.Analytics.Core\rbkApiModules.Analytics.Core.csproj" />
+	  <ProjectReference Include="..\rbkApiModules.Analytics.Relational.Core\rbkApiModules.Analytics.Relational.Core.csproj" />
+	  <ProjectReference Include="..\rbkApiModules.Diagnostics.Core\rbkApiModules.Diagnostics.Core.csproj" />
+	  <ProjectReference Include="..\rbkApiModules.Utilities.EFCore\rbkApiModules.Utilities.EFCore.csproj" />
+	</ItemGroup>
+
+</Project>

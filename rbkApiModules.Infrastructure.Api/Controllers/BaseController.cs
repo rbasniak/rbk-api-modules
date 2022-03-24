@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
+using rbkApiModules.Diagnostics.Commons;
 using rbkApiModules.Infrastructure.MediatR.Core;
 using rbkApiModules.Infrastructure.Models;
 using System;
@@ -19,10 +20,12 @@ namespace rbkApiModules.Infrastructure.Api
         private IMapper _mapper;
         private IMemoryCache _cache;
         private IMediator _mediator;
+        private IDiagnosticsModuleStore _diagnosticsStore;
 
         protected IMediator Mediator => _mediator ??= HttpContext.RequestServices.GetService(typeof(IMediator)) as IMediator;
         protected IMapper Mapper => _mapper ??= HttpContext.RequestServices.GetService(typeof(IMapper)) as IMapper;
         protected IMemoryCache Cache => _cache ??= HttpContext.RequestServices.GetService(typeof(IMemoryCache)) as IMemoryCache;
+        protected IDiagnosticsModuleStore DiagnosticsStore => _diagnosticsStore ??= HttpContext.RequestServices.GetService(typeof(IDiagnosticsModuleStore)) as IDiagnosticsModuleStore;
 
         public BaseController()
         {
@@ -56,18 +59,32 @@ namespace rbkApiModules.Infrastructure.Api
                 {
                     if (ex.InnerException != null)
                     {
-                        if (ex.InnerException is SafeException safeException1)
+                        if (ex.InnerException is SafeException || ex.InnerException is KindaSafeException)
                         {
-                            response.AddHandledError(safeException1.Message);
+                            response.AddHandledError(ex.InnerException.Message);
+
+                            if (DiagnosticsStore != null && ex.InnerException is KindaSafeException)
+                            {
+                                var exceptionData = new DiagnosticsEntry(HttpContext, "BaseController HttpResponse", ex, null);
+                                DiagnosticsStore.StoreData(exceptionData);
+                            }
+
                             return HttpErrorResponse(response);
                         }
                         else
                         {
                             if (ex.InnerException.InnerException != null)
                             {
-                                if (ex.InnerException.InnerException is SafeException safeException2)
+                                if (ex.InnerException.InnerException is SafeException || ex.InnerException.InnerException is KindaSafeException)
                                 {
-                                    response.AddHandledError(safeException2.Message);
+                                    response.AddHandledError(ex.InnerException.InnerException.Message);
+
+                                    if (DiagnosticsStore != null && ex.InnerException.InnerException is KindaSafeException)
+                                    {
+                                        var exceptionData = new DiagnosticsEntry(HttpContext, "BaseController HttpResponse", ex, null);
+                                        DiagnosticsStore.StoreData(exceptionData);
+                                    }
+
                                     return HttpErrorResponse(response);
                                 }
                             }

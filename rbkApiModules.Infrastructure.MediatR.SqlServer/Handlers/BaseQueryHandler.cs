@@ -32,6 +32,11 @@ namespace rbkApiModules.Infrastructure.MediatR.SqlServer
 
                 response.Result = result;
             }
+            catch (KindaSafeException ex)
+            {
+                response.AddHandledError(ex.Message);
+                StoreDiagnosticsData(request, ex);
+            }
             catch (SafeException ex)
             {
                 response.AddHandledError(ex.Message);

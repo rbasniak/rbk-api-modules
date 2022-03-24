@@ -2,13 +2,16 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { SearchModule as AnalyticsSearchModule } from '@features/analytics/search/search.module';
 import { SearchModule as DiagnosticsSearchModule} from '@features/diagnostics/search/search.module';
+import { SearchModule as LogsSearchModule} from '@features/logs/search/search.module';
 import { MENU_STATE_NAME } from '@state/database/menu/menu.state';
 import { RbkAuthGuard, RbkDatabaseStateGuard } from 'ngx-smz-ui';
 import { HOME_PATH, LOGIN_PATH } from 'src/routes';
 import { DashboardModule as AnalyticsDashboardhModule } from './ui/features/analytics/dashboard/dashboard.module';
 import { DashboardModule as DiagnosticsDashboardModule } from './ui/features/diagnostics/dashboard/dashboard.module';
-import { AdminModule as DiagnosticsAdminModule } from './ui/features/diagnostics/admin/admin.module';
+import { DashboardModule as LogsDashboardModule } from './ui/features/logs/dashboard/dashboard.module';
 import { AdminModule as AnalyticsAdminModule } from './ui/features/analytics/admin/admin.module';
+import { AdminModule as DiagnosticsAdminModule } from './ui/features/diagnostics/admin/admin.module';
+import { AdminModule as LogsAdminModule } from './ui/features/logs/admin/admin.module';
 import { HomeModule } from './ui/features/home/home.module';
 import { PerformanceModule } from './ui/features/analytics/performance/performance.module';
 import { SessionsModule } from './ui/features/analytics/sessions/sessions.module';
@@ -48,6 +51,21 @@ const routes: Routes = [
       path: '',
       canActivate: [ RbkAuthGuard ],
       loadChildren: (): Promise<DiagnosticsDashboardModule> => import('./ui/features/diagnostics/dashboard/dashboard.module').then(m => m.DashboardModule)
+    },
+    {
+      path: '',
+      canActivate: [ RbkAuthGuard ],
+      loadChildren: (): Promise<LogsAdminModule> => import('./ui/features/logs/admin/admin.module').then(m => m.AdminModule)
+    },
+    {
+      path: '',
+      canActivate: [ RbkAuthGuard ],
+      loadChildren: (): Promise<LogsSearchModule> => import('./ui/features/logs/search/search.module').then(m => m.SearchModule)
+    },
+    {
+      path: '',
+      canActivate: [ RbkAuthGuard ],
+      loadChildren: (): Promise<LogsDashboardModule> => import('./ui/features/logs/dashboard/dashboard.module').then(m => m.DashboardModule)
     },
     {
       path: '',

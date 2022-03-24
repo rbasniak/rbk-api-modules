@@ -1,36 +1,40 @@
-using System;
-using System.IO;
-using System.Reflection;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using rbkApiModules.Comments;
-using rbkApiModules.Demo.Database;
-using rbkApiModules.Authentication;
-using rbkApiModules.Demo.Services;
-using rbkApiModules.Infrastructure.Api;
-using rbkApiModules.UIAnnotations;
 using Microsoft.Extensions.Hosting;
-using rbkApiModules.Demo.BusinessLogic;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc.Filters;
 using rbkApiModules.Analytics.Core;
-using rbkApiModules.Analytics.SqlServer;
-using rbkApiModules.Diagnostics.SqlServer;
-using rbkApiModules.Diagnostics.Core;
+using rbkApiModules.Analytics.Relational.SQLite;
+using rbkApiModules.Analytics.Relational.SqlServer;
+using rbkApiModules.Authentication;
+using rbkApiModules.CodeGeneration;
+using rbkApiModules.Comments;
+using rbkApiModules.Demo.BusinessLogic;
+using rbkApiModules.Demo.Database;
 using rbkApiModules.Demo.Models;
+using rbkApiModules.Demo.Models.StateMachine;
+using rbkApiModules.Demo.Services;
+using rbkApiModules.Diagnostics.Core;
+using rbkApiModules.Diagnostics.Relational.SQLite;
+using rbkApiModules.Diagnostics.Relational.SqlServer;
+using rbkApiModules.Infrastructure.Api;
 using rbkApiModules.Infrastructure.MediatR.Core;
 using rbkApiModules.Infrastructure.MediatR.SqlServer;
-using AutoMapper;
-using rbkApiModules.Workflow;
-using rbkApiModules.Demo.Models.StateMachine;
+using rbkApiModules.Logs.Relational.SQLite;
+using rbkApiModules.Logs.Relational.SqlServer;
+using rbkApiModules.Notifications;
 using rbkApiModules.Payment.SqlServer;
 using rbkApiModules.Paypal.SqlServer;
 using rbkApiModules.SharedUI;
-using rbkApiModules.Notifications;
-using rbkApiModules.CodeGeneration;
+using rbkApiModules.UIAnnotations;
+using rbkApiModules.Workflow;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 
 namespace rbkApiModules.Demo
 {
@@ -41,10 +45,12 @@ namespace rbkApiModules.Demo
             Configuration = configuration;
             Environment = environment;
         }
-
+        
         public IConfiguration Configuration { get; }
 
         public IWebHostEnvironment Environment { get; }
+
+        private readonly bool UseSQLite = false;
 
         private Assembly[] AssembliesForServices => new Assembly[]
         {
@@ -80,7 +86,7 @@ namespace rbkApiModules.Demo
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DatabaseContext>((scope, options) => options
+            services.AddDbContext<DbContext, DatabaseContext>((scope, options) => options
                 .UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Database"))
                 .AddInterceptors(scope.GetRequiredService<DatabaseAnalyticsInterceptor>())
@@ -88,8 +94,6 @@ namespace rbkApiModules.Demo
                 .EnableDetailedErrors()
                 .EnableSensitiveDataLogging()
             );
-
-            services.AddTransient<DbContext, DatabaseContext>();
 
             var xmlPath = Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml");
             services.AddRbkApiInfrastructureModule(new RbkApiInfrastructureModuleOptions
@@ -126,8 +130,18 @@ namespace rbkApiModules.Demo
             // services.AddSqlServerRbkApiAnalyticsModule(Configuration, "Data Source=50.31.134.17;Integrated Security=False;Initial Catalog=VarejoFacil.Production_Analytics;User ID=sa;Password=zemiko98sql;Connect Timeout=15;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
             // services.AddSqlServerRbkApiDiagnosticsModule("Data Source=50.31.134.17;Integrated Security=False;Initial Catalog=VarejoFacil.Production_Diagnostics;User ID=sa;Password=zemiko98sql;Connect Timeout=999;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
 
-            services.AddSqlServerRbkApiAnalyticsModule(Configuration, Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Analytics"));
-            services.AddSqlServerRbkApiDiagnosticsModule(Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Diagnostics"));
+            if (UseSQLite)
+            {
+                services.AddSQLiteRbkApiAnalyticsModule(Configuration, "Filename=analytics.db");
+                services.AddSQLiteRbkApiDiagnosticsModule("Filename=diagnostics.db");
+                services.AddSQLiteRbkApiLogsModule("Filename=logs.db");
+            }
+            else
+            {
+                services.AddSqlServerRbkApiAnalyticsModule(Configuration, Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Analytics"));
+                services.AddSqlServerRbkApiDiagnosticsModule(Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Diagnostics"));
+                services.AddSqlServerRbkApiLogsModule(Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Logs"));
+            }    
 
             services.AddRbkApiPaypalModule<PaypalActions>();
 
@@ -142,18 +156,42 @@ namespace rbkApiModules.Demo
             //    await next();
             //});
 
-            app.UseSqlServerRbkApiAnalyticsModule(options => options
-                .LimitToPath("/api")
-                .ExcludeMethods("OPTIONS")
-                .ExcludePath(new[] { "/api/test/download" })
-                .ExcludePath(new[] { "/analytics" })
-                .ExcludePath(new[] { "/diagnostics" })
-                .ExcludeStatusCodes(new[] { 401 })
-                .UseSessionAnalytics(5)
-                .UseDemoData()
-            );
+            if (UseSQLite)
+            {
+                app.UseSQLiteRbkApiAnalyticsModule(options => options
+                    .LimitToPath("/api")
+                    .ExcludeMethods("OPTIONS")
+                    .ExcludePath(new[] { "/api/test/download" })
+                    .ExcludePath(new[] { "/analytics" })
+                    .ExcludePath(new[] { "/diagnostics" })
+                    .ExcludeStatusCodes(new[] { 401 })
+                    .UseSessionAnalytics(5)
+                    .UseDemoData()
+                );
 
-            app.UseSqlServerRbkApiDiagnosticsModule();
+                app.UseSQLiteRbkApiDiagnosticsModule();
+
+                app.UseSQLiteRbkApiLogsModule();
+            }
+            else
+            {
+
+                app.UseSqlServerRbkApiAnalyticsModule(options => options
+                    .LimitToPath("/api")
+                    .ExcludeMethods("OPTIONS")
+                    .ExcludePath(new[] { "/api/test/download" })
+                    .ExcludePath(new[] { "/analytics" })
+                    .ExcludePath(new[] { "/diagnostics" })
+                    .ExcludeStatusCodes(new[] { 401 })
+                    .UseSessionAnalytics(5)
+                    // .UseDemoData()
+                );
+
+                app.UseSqlServerRbkApiDiagnosticsModule();
+
+                app.UseSqlServerRbkApiLogsModule();
+            }
+
 
             app.UseRbkApiDefaultSetup(options => options
                 .SetEnvironment(!Environment.IsDevelopment())

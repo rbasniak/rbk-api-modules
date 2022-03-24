@@ -58,7 +58,6 @@ namespace rbkApiModules.Diagnostics.Commons
         [MaxLength(64)]
         public string ApplicationLayer { get; set; }
 
-        [Column(TypeName = "varchar(MAX)")]
         public string ExceptionMessage { get; set; }
 
         [MaxLength(256)]
@@ -88,16 +87,12 @@ namespace rbkApiModules.Diagnostics.Commons
         [MaxLength(256)]
         public string ClientDevice { get; set; }
 
-        [Column(TypeName = "varchar(MAX)")]
         public string StackTrace { get; set; }
 
-        [Column(TypeName = "varchar(MAX)")]
         public string DatabaseExceptions { get; set; }
 
-        [Column(TypeName = "varchar(MAX)")]
         public string InputData { get; set; }
 
-        [Column(TypeName = "varchar(MAX)")]
         public string ExtraData { get; set; }
     }
 }

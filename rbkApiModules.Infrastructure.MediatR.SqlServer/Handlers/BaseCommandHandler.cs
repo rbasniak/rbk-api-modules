@@ -43,6 +43,11 @@ namespace rbkApiModules.Infrastructure.MediatR.SqlServer
                 response.EventData.EntityId = result.entityId;
                 response.Result = result.result;
             }
+            catch (KindaSafeException ex)
+            {
+                response.AddHandledError(ex.Message);
+                StoreDiagnosticsData(request, ex);
+            }
             catch (SafeException ex)
             {
                 response.AddHandledError(ex.Message);

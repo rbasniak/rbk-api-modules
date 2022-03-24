@@ -46,6 +46,11 @@ namespace rbkApiModules.Infrastructure.MediatR.MongoDB
                     response.EventData.EntityId = result.entityId;
                     response.Result = result.result;
                 }
+                catch (KindaSafeException ex)
+                {
+                    response.AddHandledError(ex.Message);
+                    StoreDiagnosticsData(request, ex);
+                }
                 catch (SafeException ex)
                 {
                     //await session.AbortTransactionAsync();

@@ -5,7 +5,8 @@ import { cloneDeep } from 'lodash-es';
 import { MenuItem } from 'primeng/api';
 import { ANALYTICS_DASHBOARD_PAGE_ROUTE, ANALYTICS_SEARCH_PAGE_ROUTE, DIAGNOSTICS_SEARCH_PAGE_ROUTE,
   DIAGNOSTICS_DASHBOARD_PAGE_ROUTE, ANALYTICS_PERFORMANCE_PAGE_ROUTE, ANALYTICS_ADMIN_PAGE_ROUTE,
-  DIAGNOSTICS_ADMIN_PAGE_ROUTE, ANALYTICS_SESSIONS_PAGE_ROUTE} from 'src/routes';
+  DIAGNOSTICS_ADMIN_PAGE_ROUTE, ANALYTICS_SESSIONS_PAGE_ROUTE, LOGS_SEARCH_PAGE_ROUTE,
+  LOGS_DASHBOARD_PAGE_ROUTE, LOGS_ADMIN_PAGE_ROUTE} from 'src/routes';
 import { MenuState, MenuStateModel } from './menu.state';
 
 export class MenuSelectors {
@@ -35,6 +36,18 @@ export class MenuSelectors {
           { label: 'Search', icon: 'fas fa-bug', routerLink: DIAGNOSTICS_SEARCH_PAGE_ROUTE },
           { label: 'Overview', icon: 'fas fa-chart-line', routerLink: DIAGNOSTICS_DASHBOARD_PAGE_ROUTE },
           { label: 'Admin', icon: 'fas fa-shield-alt', routerLink: DIAGNOSTICS_ADMIN_PAGE_ROUTE },
+        ]
+      });
+    }
+
+    if (state.data.useDiagnostics) {
+      menu.push({
+        label: 'Logs',
+        icon: 'far fa-list-alt',
+        items: [
+          { label: 'Search', icon: 'fas fa-bug', routerLink: LOGS_SEARCH_PAGE_ROUTE },
+          { label: 'Overview', icon: 'fas fa-chart-line', routerLink: LOGS_DASHBOARD_PAGE_ROUTE },
+          { label: 'Admin', icon: 'fas fa-shield-alt', routerLink: LOGS_ADMIN_PAGE_ROUTE },
         ]
       });
     }
