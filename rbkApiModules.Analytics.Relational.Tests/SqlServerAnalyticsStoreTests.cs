@@ -1,14 +1,15 @@
 ﻿using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Moq;
 using rbkApiModules.Analytics.Core;
+using rbkApiModules.Analytics.Relational.Core;
+using rbkApiModules.Analytics.Relational.SqlServer;
 using rbkApiModules.Utilities.Testing;
 using Shouldly;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Moq;
 
 namespace rbkApiModules.Analytics.Relational.Tests
 {
