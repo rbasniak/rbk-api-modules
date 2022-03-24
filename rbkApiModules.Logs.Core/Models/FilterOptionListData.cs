@@ -1,4 +1,6 @@
-﻿namespace rbkApiModules.Logs.Core
+﻿using System.Collections.Generic;
+
+namespace rbkApiModules.Logs.Core
 {
     public class FilterOptionListData
     {

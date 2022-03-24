@@ -1,4 +1,5 @@
 ﻿using rbkApiModules.Infrastructure.Models;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 

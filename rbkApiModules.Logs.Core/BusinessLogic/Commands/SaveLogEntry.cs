@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using rbkApiModules.Infrastructure.MediatR.Core;
+using System.Threading.Tasks;
 
 namespace rbkApiModules.Logs.Core
 {

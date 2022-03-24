@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Infrastructure.MediatR.SqlServer;
 using rbkApiModules.Infrastructure.MediatR.Core;
+using AutoMapper;
+using rbkApiModules.Infrastructure.Models;
 
 namespace rbkApiModules.Demo.BusinessLogic
 {
@@ -33,7 +35,9 @@ namespace rbkApiModules.Demo.BusinessLogic
 
             protected async override Task<object> ExecuteAsync(Command request)
             {
-                return await _context.Users.ToListAsync();
+                var users =  await _context.Users.ToListAsync();
+
+                return users;
             }
         }
     }

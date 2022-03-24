@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using rbkApiModules.Demo.Models.StateMachine;
 using rbkApiModules.Infrastructure.Models;
-using System.Reflection.Metadata;
 
 namespace rbkApiModules.Demo.DataTransfer
 {
@@ -13,7 +13,8 @@ namespace rbkApiModules.Demo.DataTransfer
     {
         public DocumentsMapings()
         {
-            CreateMap<Document, DocumentDetails>();
+            CreateMap<Document, DocumentDetails>()
+                .ForMember(dto => dto.Status, map => map.MapFrom(entity => new SimpleNamedEntity(entity.State.Id.ToString(), entity.State.Name)));
         }
     }
 }

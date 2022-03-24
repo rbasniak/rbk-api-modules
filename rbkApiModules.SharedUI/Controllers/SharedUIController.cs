@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using rbkApiModules.CodeGeneration.Commons;
+using rbkApiModules.Infrastructure.Api;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 

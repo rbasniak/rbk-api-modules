@@ -3,6 +3,10 @@ using Microsoft.AspNetCore.Http;
 using rbkApiModules.Infrastructure.MediatR.Core;
 using rbkApiModules.Utilities.Charts;
 using rbkApiModules.Utilities.Charts.ChartJs;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace rbkApiModules.Logs.Core
 {

@@ -19,7 +19,7 @@ namespace rbkApiModules.Infrastructure.MediatR.Core
     /// <typeparam name="TRequest">Tipo do request (uso automático do MediatR)</typeparam>
     /// <typeparam name="TResponse">Tipo da resposta (uso automático do MediatR)</typeparam>
     public class FailFastRequestBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-        where TRequest : IRequest<BaseResponse>
+        where TRequest : IRequest<TResponse>
         where TResponse : BaseResponse
     {
         private readonly IEnumerable<IValidator> _validators;

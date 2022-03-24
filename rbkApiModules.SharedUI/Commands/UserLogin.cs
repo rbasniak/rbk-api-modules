@@ -5,6 +5,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Security.Claims;
 using System.Text;
+using rbkApiModules.Infrastructure.Models;
+using rbkApiModules.Infrastructure.MediatR.Core;
+using FluentValidation;
+using MediatR;
+using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace rbkApiModules.SharedUI
 {
@@ -68,7 +75,7 @@ namespace rbkApiModules.SharedUI
             {
                 var claims = new List<Claim>
                 {
-                     new Claim(JwtRegisteredClaimNames.Sub, username),
+                     new Claim(Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Sub, username),
                      new Claim(ClaimTypes.Name, username),
                 };
 

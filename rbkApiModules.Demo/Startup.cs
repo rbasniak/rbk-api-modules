@@ -14,6 +14,7 @@ using rbkApiModules.CodeGeneration;
 using rbkApiModules.Comments;
 using rbkApiModules.Demo.BusinessLogic;
 using rbkApiModules.Demo.Database;
+using rbkApiModules.Demo.DataTransfer;
 using rbkApiModules.Demo.Models;
 using rbkApiModules.Demo.Models.StateMachine;
 using rbkApiModules.Demo.Services;
@@ -62,6 +63,7 @@ namespace rbkApiModules.Demo
             Assembly.GetAssembly(typeof(CommentsMappings)),
             Assembly.GetAssembly(typeof(RoleMappings)),
             Assembly.GetAssembly(typeof(PlanMappings)),
+            Assembly.GetAssembly(typeof(UsersMapings)),
         }; 
 
         private Assembly[] AssembliesForMediatR => new Assembly[]
