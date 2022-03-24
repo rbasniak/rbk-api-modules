@@ -18,20 +18,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR" Version="9.0.0" />
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
@@ -39,9 +25,6 @@
     <ProjectReference Include="..\rbkApiModules.Analytics.Core\rbkApiModules.Analytics.Core.csproj" />
     <ProjectReference Include="..\rbkApiModules.Analytics.Relational.SQLite\rbkApiModules.Analytics.Relational.SQLite.csproj" />
     <ProjectReference Include="..\rbkApiModules.Analytics.Relational.SqlServer\rbkApiModules.Analytics.Relational.SqlServer.csproj" />
-    <ProjectReference Include="..\rbkApiModules.Analytics.Relational\rbkApiModules.Analytics.Relational.csproj" />
-    <ProjectReference Include="..\rbkApiModules.Auditing.Core\rbkApiModules.Auditing.Core.csproj" />
-    <ProjectReference Include="..\rbkApiModules.Auditing.SqlServer\rbkApiModules.Auditing.SqlServer.csproj" />
     <ProjectReference Include="..\rbkApiModules.Authentication\rbkApiModules.Authentication.csproj" />
     <ProjectReference Include="..\rbkApiModules.CodeGeneration.Commons\rbkApiModules.CodeGeneration.Commons.csproj" />
     <ProjectReference Include="..\rbkApiModules.CodeGeneration\rbkApiModules.CodeGeneration.csproj" />
@@ -49,14 +32,12 @@
     <ProjectReference Include="..\rbkApiModules.Diagnostics.Core\rbkApiModules.Diagnostics.Core.csproj" />
     <ProjectReference Include="..\rbkApiModules.Diagnostics.Relational.SQLite\rbkApiModules.Diagnostics.Relational.SQLite.csproj" />
     <ProjectReference Include="..\rbkApiModules.Diagnostics.Relational.SqlServer\rbkApiModules.Diagnostics.Relational.SqlServer.csproj" />
-    <ProjectReference Include="..\rbkApiModules.Diagnostics.Relational\rbkApiModules.Diagnostics.Relational.csproj" />
     <ProjectReference Include="..\rbkApiModules.Infrastructure.Api\rbkApiModules.Infrastructure.Api.csproj" />
     <ProjectReference Include="..\rbkApiModules.Infrastructure.MediatR\rbkApiModules.Infrastructure.MediatR.Core.csproj" />
     <ProjectReference Include="..\rbkApiModules.Infrastructure.Models\rbkApiModules.Infrastructure.Models.csproj" />
     <ProjectReference Include="..\rbkApiModules.Logs.Core\rbkApiModules.Logs.Core.csproj" />
     <ProjectReference Include="..\rbkApiModules.Logs.Relational.SQLite\rbkApiModules.Logs.Relational.SQLite.csproj" />
     <ProjectReference Include="..\rbkApiModules.Logs.Relational.SqlServer\rbkApiModules.Logs.Relational.SqlServer.csproj" />
-    <ProjectReference Include="..\rbkApiModules.Logs.Relational\rbkApiModules.Logs.Relational.csproj" />
     <ProjectReference Include="..\rbkApiModules.Notifications\rbkApiModules.Notifications.csproj" />
     <ProjectReference Include="..\rbkApiModules.Utilities\rbkApiModules.Utilities.csproj" />
     <ProjectReference Include="..\rbkApiModules.SharedUI\rbkApiModules.SharedUI.csproj" />
