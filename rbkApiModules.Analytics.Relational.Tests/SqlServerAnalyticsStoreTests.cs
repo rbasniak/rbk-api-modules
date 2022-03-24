@@ -14,17 +14,17 @@ namespace rbkApiModules.Analytics.Relational.Tests
 {
     public class SqlServerAnalyticsStoreTests
     {
-        private DbContextOptions<BaseAnalyticsContext> SetupInMemoryDatabase(out SqliteConnection connection)
+        private DbContextOptions<SqlServerAnalyticsContext> SetupInMemoryDatabase(out SqliteConnection connection)
         {
             // In-memory database only exists while the connection is open
             connection = new SqliteConnection("DataSource=:memory:");
 
-            return new DbContextOptionsBuilder<BaseAnalyticsContext>()
+            return new DbContextOptionsBuilder<SqlServerAnalyticsContext>()
                     .UseSqlite(connection)
                     .Options;
         }
 
-        private void CreateInMemoryDatabase(DbContextOptions<BaseAnalyticsContext> databaseOptions)
+        private void CreateInMemoryDatabase(DbContextOptions<SqlServerAnalyticsContext> databaseOptions)
         {
             using (var context = new SqlServerAnalyticsContext(databaseOptions))
             {

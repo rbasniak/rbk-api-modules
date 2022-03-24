@@ -15,7 +15,6 @@ namespace rbkApiModules.Logs.Core
 
         public DateTime Timestamp { get; set; }
 
-        [Column(TypeName = "varchar(MAX)")]
         public string Message { get; set; }
 
         public LogLevel Level { get; set; }
@@ -32,7 +31,6 @@ namespace rbkApiModules.Logs.Core
         [MaxLength(255)]
         public string Source { get; set; }
 
-        [Column(TypeName = "varchar(MAX)")]
         public string InputData { get; set; }
 
         [MaxLength(255)]

@@ -7,7 +7,7 @@ namespace rbkApiModules.Diagnostics.Relational
     /// </summary>
     public class SQLiteDiagnosticsContext : BaseDiagnosticsContext
     {
-        public SQLiteDiagnosticsContext(DbContextOptions<BaseDiagnosticsContext> options)
+        public SQLiteDiagnosticsContext(DbContextOptions<SQLiteDiagnosticsContext> options)
             : base(options)
         {
         }

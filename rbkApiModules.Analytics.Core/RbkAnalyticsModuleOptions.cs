@@ -8,7 +8,7 @@ namespace rbkApiModules.Analytics.Core
 {
     public class RbkAnalyticsModuleOptions
     {
-        public double TimezoneOffsetHours { get; set; }
-        public double IdleInterval { get; set; }
+        public virtual double TimezoneOffsetHours { get; set; }
+        public virtual double IdleInterval { get; set; }
     }
 }

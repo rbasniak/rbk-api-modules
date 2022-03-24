@@ -7,7 +7,7 @@ namespace rbkApiModules.Logs.Relational
     /// </summary>
     public class SQLiteLogContext : BaseLogContext
     {
-        public SQLiteLogContext(DbContextOptions<BaseLogContext> options)
+        public SQLiteLogContext(DbContextOptions<SQLiteLogContext> options)
             : base(options)
         {
         }

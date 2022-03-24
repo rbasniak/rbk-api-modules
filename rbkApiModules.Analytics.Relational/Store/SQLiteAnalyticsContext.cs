@@ -9,7 +9,7 @@ namespace rbkApiModules.Analytics.Relational
     [ExcludeFromCodeCoverage]
     public class SQLiteAnalyticsContext : BaseAnalyticsContext
     {
-        public SQLiteAnalyticsContext(DbContextOptions<BaseAnalyticsContext> options)
+        public SQLiteAnalyticsContext(DbContextOptions<SQLiteAnalyticsContext> options)
             : base(options)
         {
         }

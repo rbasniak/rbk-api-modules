@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Data.SqlClient;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -143,11 +144,11 @@ namespace rbkApiModules.Analytics.Relational
                     }
 
                     int result = -1;
-                    using (var connection = context.Database.GetDbConnection() as SqlConnection)
+                    using (var connection = context.Database.GetDbConnection() as SqliteConnection)
                     {
                         connection.Open();
 
-                        using (SqlCommand command1 = connection.CreateCommand())
+                        using (SqliteCommand command1 = connection.CreateCommand())
                         {
                             command1.CommandText = "SELECT COUNT(*) FROM sqlite_master WHERE name = 'Sessions'";
 
@@ -160,15 +161,16 @@ namespace rbkApiModules.Analytics.Relational
 
                             if (!sessionTableExists)
                             {
-                                using (SqlCommand command2 = connection.CreateCommand())
+                                using (SqliteCommand command2 = connection.CreateCommand())
                                 {
-                                    command2.CommandText = @"CREATE TABLE Sessions (
-                                                    Id         CHAR(36)        NOT NULL,
-                                                    Start      DATETIME2(7)    NOT NULL,
-                                                    End        DATETIME2(7)    NOT NULL,
-                                                    Usename    VARCHAR(128)    NULL,
-                                                    Duration   Float(7)        NOT NULL,
-                                                )";
+                                    command2.CommandText = @"CREATE TABLE Sessions ( 
+                                                            Id       TEXT CONSTRAINT 'PK_Sessions' PRIMARY KEY
+                                                                          NOT NULL,
+                                                            Start    TEXT NOT NULL,
+                                                            [End]    TEXT NOT NULL,
+                                                            Username TEXT NULL,
+                                                            Duration REAL NOT NULL 
+                                                        );";
                                     command2.ExecuteNonQuery();
                                 }
                             }

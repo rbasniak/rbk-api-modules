@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using rbkApiModules.Logs.Core;
 
 namespace rbkApiModules.Logs.Relational
 {
@@ -10,6 +11,14 @@ namespace rbkApiModules.Logs.Relational
         public SqlServerLogContext(DbContextOptions<SqlServerLogContext> options)
             : base(options)
         {
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<LogEntry>().Property(x => x.Message).IsUnicode(false);
+            modelBuilder.Entity<LogEntry>().Property(x => x.InputData).IsUnicode(false);
+
+            base.OnModelCreating(modelBuilder);
         }
     }
 }
