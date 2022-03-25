@@ -18,6 +18,14 @@
 	<FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <None Include="..\logo.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
   <ItemGroup>
 	<PackageReference Include="SourceLink.Create.CommandLine" Version="2.8.3">
 	  <PrivateAssets>all</PrivateAssets>
