@@ -10,6 +10,7 @@
 		<Product>rbkApiModules</Product>
 		<Copyright>rbasniak</Copyright>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageIcon>logo.png</PackageIcon>
 	</PropertyGroup>
 
 	<ItemGroup>
