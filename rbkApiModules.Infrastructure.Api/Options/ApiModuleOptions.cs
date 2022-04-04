@@ -8,7 +8,7 @@ namespace rbkApiModules.Infrastructure.Api
     {
         private bool _isProduction = false;
         private bool _useSwagger = true;
-        private bool _useHttps = true;
+        private bool _useHttps = false;
         private string _defaultCorsPolicy = null;
 
         private readonly List<ApplicationRoute> _routes = new();
