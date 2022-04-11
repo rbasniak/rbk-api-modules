@@ -11,6 +11,10 @@ namespace rbkApiModules.Logs.Core
     {
         public class Command : IRequest<QueryResponse>
         {
+            public Command()
+            {
+
+            }
         }
 
         public class Validator : AbstractValidator<Command>

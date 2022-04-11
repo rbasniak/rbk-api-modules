@@ -10,7 +10,7 @@ namespace rbkApiModules.Logs.Core
     [AllowAnonymous]
     [ApplicationArea("logs")]
     [Route("api/[controller]")]
-    public class LogController : BaseController
+    public class LogsController : BaseController
     {
         [AllowAnonymous]
         [HttpPost]

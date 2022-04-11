@@ -67,13 +67,13 @@ export class SearchPageComponent implements OnInit {
     const message: SmzMultiSelectControl<string> = {
       propertyName: 'messages', type: SmzControlType.MULTI_SELECT, name: 'Messages', validatorsPreset: { isRequired: false }, defaultLabel: 'All messages',
       defaultValue: null, showFilter: true, options: this.store.selectSnapshot(FilteringOptionsSelectors.messages),
-      template: { extraLarge: { row: 'col-6' } }
+      template: { extraLarge: { row: 'col-8' } }
     };
 
     const level: SmzMultiSelectControl<LogLevel> = {
       propertyName: 'levels', type: SmzControlType.MULTI_SELECT, name: 'Levels', validatorsPreset: { isRequired: false }, defaultLabel: 'All levels',
       defaultValue: null, showFilter: true, options: this.store.selectSnapshot(FilteringOptionsSelectors.levels),
-      template: { extraLarge: { row: 'col-6' } }
+      template: { extraLarge: { row: 'col-2' } }
     };
 
     const layer: SmzMultiSelectControl<string> = {
@@ -97,7 +97,7 @@ export class SearchPageComponent implements OnInit {
     const source: SmzMultiSelectControl<string> = {
       propertyName: 'sources', type: SmzControlType.MULTI_SELECT, name: 'Sources', validatorsPreset: { isRequired: false }, defaultLabel: 'All sources',
       defaultValue: null, showFilter: true, options: this.store.selectSnapshot(FilteringOptionsSelectors.sources),
-      template: { extraLarge: { row: 'col-3' } }
+      template: { extraLarge: { row: 'col-2' } }
     };
 
     const enviroment: SmzMultiSelectControl<string> = {
@@ -127,7 +127,7 @@ export class SearchPageComponent implements OnInit {
     const machine: SmzMultiSelectControl<string> = {
       propertyName: 'machines', type: SmzControlType.MULTI_SELECT, name: 'Machines', validatorsPreset: { isRequired: false }, defaultLabel: 'All machines',
       defaultValue: null, showFilter: true, options: this.store.selectSnapshot(FilteringOptionsSelectors.machines),
-      template: { extraLarge: { row: 'col-3' } }
+      template: { extraLarge: { row: 'col-2' } }
     };
 
     this.formConfig = {

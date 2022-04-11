@@ -24,6 +24,7 @@ using rbkApiModules.Diagnostics.Relational.SqlServer;
 using rbkApiModules.Infrastructure.Api;
 using rbkApiModules.Infrastructure.MediatR.Core;
 using rbkApiModules.Infrastructure.MediatR.SqlServer;
+using rbkApiModules.Logs.Core;
 using rbkApiModules.Logs.Relational.SQLite;
 using rbkApiModules.Logs.Relational.SqlServer;
 using rbkApiModules.Notifications;
@@ -74,6 +75,7 @@ namespace rbkApiModules.Demo
             Assembly.GetAssembly(typeof(SharedUIController)),
             Assembly.GetAssembly(typeof(GetUiDefinitions.Command)),
             Assembly.GetAssembly(typeof(FilterAnalyticsEntries.Command)),
+            Assembly.GetAssembly(typeof(FilterLogsEntries.Command)),
             Assembly.GetAssembly(typeof(FilterDiagnosticsEntries.Command)),
             Assembly.GetAssembly(typeof(CreateWebhookEvent.Command)),
             Assembly.GetAssembly(typeof(CreatePlan.Command)),

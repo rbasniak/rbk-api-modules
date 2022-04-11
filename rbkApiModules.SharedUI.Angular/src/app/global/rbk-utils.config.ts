@@ -1,4 +1,5 @@
 import { environment } from '@environments/environment';
+import { FilteringOptionsActions as LogsFilteringOptionsActions } from '@state/database/logs/filtering-options/filtering-options.actions';
 import { FilteringOptionsActions as AnalyticsFilteringOptionsActions } from '@state/database/analytics/filtering-options/filtering-options.actions';
 import { FilteringOptionsState as AnalyticsFilteringOptionsState, ANALYTICS_FILTERING_OPTIONS_STATE_NAME } from '@state/database/analytics/filtering-options/filtering-options.state';
 import { DashboardFeatureState as AnalyticsDashboardFeatureState, ANALYTICS_DASHBOARD_FEATURE_STATE_NAME } from '@state/features/analytics/dashboard/dashboard.state';
@@ -9,13 +10,18 @@ import { NgxRbkUtilsConfig } from 'ngx-smz-ui';
 import { ERROR_PAGE_PATH, HOME_PATH, LOGIN_PATH } from 'src/routes';
 import { FilteringOptionsActions as DiagnosticsFilteringOptionsActions } from '@state/database/diagnostics/filtering-options/filtering-options.actions';
 import { FilteringOptionsState as DiagnosticsFilteringOptionsState, DIAGNOSTICS_FILTERING_OPTIONS_STATE_NAME } from '@state/database/diagnostics/filtering-options/filtering-options.state';
+import { FilteringOptionsState as LogsFilteringOptionsState, LOGS_FILTERING_OPTIONS_STATE_NAME } from '@state/database/logs/filtering-options/filtering-options.state';
 import { DashboardFeatureState as DiagnosticsDashboardFeatureState, DIAGNOSTICS_DASHBOARD_FEATURE_STATE_NAME } from '@state/features/diagnostics/dashboard/dashboard.state';
+import { DashboardFeatureState as LogsDashboardFeatureState, LOGS_DASHBOARD_FEATURE_STATE_NAME } from '@state/features/logs/dashboard/dashboard.state';
 import { SearchFeatureState as DiagnosticsSearchFeatureState, DIAGNOSTICS_SEARCH_FEATURE_STATE_NAME } from '@state/features/diagnostics/search/search.state';
+import { SearchFeatureState as LogsSearchFeatureState, LOGS_SEARCH_FEATURE_STATE_NAME } from '@state/features/logs/search/search.state';
 import { SessionsFeatureState as AnalyticsSessionFeatureState, ANALYTICS_SESSIONS_FEATURE_STATE_NAME } from '@state/features/analytics/sessions/sessions.state';
 import { AdminFeatureState as AnalyticsAdminFeatureState, ANALYTICS_ADMIN_FEATURE_STATE_NAME } from '@state/features/analytics/admin/admin.state';
 import { AdminFeatureState as DiagnosticsAdminFeatureState, DIAGNOSTICS_ADMIN_FEATURE_STATE_NAME } from '@state/features/diagnostics/admin/admin.state';
+import { AdminFeatureState as LogsAdminFeatureState, LOGS_ADMIN_FEATURE_STATE_NAME } from '@state/features/logs/admin/admin.state';
 import { PerformanceFeatureState as AnalyticsPerformanceFeatureState, ANALYTICS_PERFORMANCE_FEATURE_STATE_NAME } from '@state/features/analytics/performance/performance.state';
 import { getUrl } from '@services/utils';
+
 
 // Database
 
@@ -77,6 +83,12 @@ export const rbkConfig: NgxRbkUtilsConfig = {
         loadAction: DiagnosticsFilteringOptionsActions.LoadAll,
         clearFunction: (): any => ({ data: null, lastUpdated: null })
       },
+      [LOGS_FILTERING_OPTIONS_STATE_NAME]: {
+        state: LogsFilteringOptionsState,
+        cacheTimeout: 999,
+        loadAction: LogsFilteringOptionsActions.LoadAll,
+        clearFunction: (): any => ({ data: null, lastUpdated: null })
+      },
       [MENU_STATE_NAME]: {
         state: MenuState,
         cacheTimeout: 999,
@@ -91,6 +103,14 @@ export const rbkConfig: NgxRbkUtilsConfig = {
       },
       [ANALYTICS_DASHBOARD_FEATURE_STATE_NAME]: {
         state: AnalyticsDashboardFeatureState,
+        clearFunction: (): any => ({ results: [] })
+      },
+      [ANALYTICS_ADMIN_FEATURE_STATE_NAME]: {
+        state: AnalyticsAdminFeatureState,
+        clearFunction: (): any => ({ results: [] })
+      },
+      [ANALYTICS_PERFORMANCE_FEATURE_STATE_NAME]: {
+        state: AnalyticsPerformanceFeatureState,
         clearFunction: (): any => ({ results: [] })
       },
       [ANALYTICS_SESSIONS_FEATURE_STATE_NAME]: {
@@ -109,14 +129,19 @@ export const rbkConfig: NgxRbkUtilsConfig = {
         state: DiagnosticsAdminFeatureState,
         clearFunction: (): any => ({ results: [] })
       },
-      [ANALYTICS_ADMIN_FEATURE_STATE_NAME]: {
-        state: AnalyticsAdminFeatureState,
+      [LOGS_SEARCH_FEATURE_STATE_NAME]: {
+        state: LogsSearchFeatureState,
         clearFunction: (): any => ({ results: [] })
       },
-      [ANALYTICS_PERFORMANCE_FEATURE_STATE_NAME]: {
-        state: AnalyticsPerformanceFeatureState,
+      [LOGS_DASHBOARD_FEATURE_STATE_NAME]: {
+        state: LogsDashboardFeatureState,
         clearFunction: (): any => ({ results: [] })
-      }
+      },
+      [LOGS_ADMIN_FEATURE_STATE_NAME]: {
+        state: LogsAdminFeatureState,
+        clearFunction: (): any => ({ results: [] })
+      },
+
     }
   },
   httpBehaviors: {
