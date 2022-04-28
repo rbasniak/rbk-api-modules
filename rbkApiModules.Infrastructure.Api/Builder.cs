@@ -133,7 +133,7 @@ namespace rbkApiModules.Infrastructure.Api
 
                 config.IncludeXmlComments(options.SwaggerXmlPath);
 
-                config.CustomSchemaIds(x => x.FullName);
+                config.CustomSchemaIds(x => x.FullName.Replace("+", "."));
 
                 config.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
