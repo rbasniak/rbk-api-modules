@@ -19,6 +19,7 @@
         TextArea = 13,
         TextMask = 14,
         LinkedDropDown = 15,
-        List = 18
+        List = 18,
+        Decimal = 22,
     }
 }

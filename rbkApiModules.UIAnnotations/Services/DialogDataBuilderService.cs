@@ -224,7 +224,7 @@ namespace rbkApiModules.UIAnnotations
                      _type.FullName == typeof(Double).FullName || _type.FullName == typeof(Double?).FullName ||
                      _type.FullName == typeof(Decimal).FullName || _type.FullName == typeof(Decimal?).FullName)
             {
-                return DialogControlTypes.Number;
+                return DialogControlTypes.Decimal;
             }
             else if (_type.FullName == typeof(DateTime).FullName || _type.FullName == typeof(DateTime?).FullName)
             {
