@@ -13,7 +13,7 @@ namespace rbkApiModules.CodeGeneration
             Name = controller.Name;
             Controller = controller;
             ActionsFilepath = $"{CodeGenerationUtilities.ToTypeScriptFileCase(controller.Name)}.actions";
-            SelectorFilepath = $"{CodeGenerationUtilities.ToTypeScriptFileCase(controller.Name)}.selector";
+            SelectorFilepath = $"{CodeGenerationUtilities.ToTypeScriptFileCase(controller.Name)}.selectors";
             StateFilepath = $"{CodeGenerationUtilities.ToTypeScriptFileCase(controller.Name)}.state";
 
             GenerateActions();
