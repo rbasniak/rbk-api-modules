@@ -1,0 +1,102 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
+using rbkApiModules.CodeGeneration.Commons;
+using rbkApiModules.Infrastructure.Models;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace rbkApiModules.CodeGeneration
+{
+    public class EndpointInfo
+    {
+        public EndpointInfo(ControllerInfo controller, MethodInfo action)
+        {
+            Name = action.Name;
+
+            UrlParameters = new List<PropertyInfo>();
+
+            if (action.HasAttribute<HttpGetAttribute>())
+            {
+                Method = HttpMethod.Get;
+                Route = action.GetAttribute<HttpGetAttribute>().Template;
+            }
+
+            if (action.HasAttribute<HttpPostAttribute>())
+            {
+                Method = HttpMethod.Post;
+                Route = action.GetAttribute<HttpPostAttribute>().Template;
+            }
+
+            if (action.HasAttribute<HttpPutAttribute>())
+            {
+                Method = HttpMethod.Put;
+                Route = action.GetAttribute<HttpPutAttribute>().Template;
+            }
+
+            if (action.HasAttribute<HttpDeleteAttribute>())
+            {
+                Method = HttpMethod.Delete;
+                Route = action.GetAttribute<HttpDeleteAttribute>().Template;
+            }
+
+            if (action.HasAttribute<RouteAttribute>())
+            {
+                Route = action.GetAttribute<RouteAttribute>().Template;
+            }
+
+            var parameters = action.GetParameters();
+
+            foreach (var parameter in parameters)
+            {
+                if (parameter.ParameterType.FullName.EndsWith("+Command"))
+                {
+                    InputType = new TypeInfo(parameter.ParameterType);
+                }
+                else
+                {
+                    if (Route != null && Route.Contains("{" + parameter.Name + "}"))
+                    {
+                        UrlParameters.Add(new PropertyInfo(parameter.Name, parameter.ParameterType));
+                    }
+                    // TODO: Dar suporte a query parameters
+                }
+            }
+
+            if (action.ReturnType.Name == nameof(Task) + "`1" && action.ReturnType.GenericTypeArguments.Length > 0)
+            {
+                var asyncType = action.ReturnType.GenericTypeArguments[0];
+
+                if (asyncType.Name == nameof(ActionResult) + "`1" && asyncType.GenericTypeArguments.Length > 0)
+                {
+                    var returnType = asyncType.GenericTypeArguments[0];
+
+                    ReturnType = new TypeInfo(returnType);
+                }
+            }
+
+            //if (action.HasAttribute<NgxsDatabaseStoreAttribute>())
+            //{
+            //    var attribute = action.GetAttribute<NgxsDatabaseStoreAttribute>();
+
+            //    DatabaseStateType = attribute.Type;
+            //}
+        }
+
+        public HttpMethod Method { get; set; }
+        public string Name { get; set; }
+        public string Route { get; set; }
+        public List<PropertyInfo> UrlParameters { get; set; }
+        public TypeInfo InputType { get; set; }
+        public TypeInfo ReturnType { get; set; }
+        // public StoreType? DatabaseStateType { get; set; }
+        //public bool HasDatabaseState => DatabaseStateType != null;
+    }
+
+}
+ 

@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using System.Text;
 
-namespace rbkApiModules.CodeGeneration.Commons
+namespace rbkApiModules.CodeGeneration
 {
     public static class CodeGenerationUtilities
     {

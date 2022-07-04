@@ -37,7 +37,7 @@ namespace rbkApiModules.CodeGeneration.Commons
 
                     if (!Directory.Exists(codePath))
                     {
-                        return Ok("Não foi possivel localizar o repositório");
+                        return Ok($"Não foi possivel localizar a pasta auto-generated em '{codePath}'");
                     }
                 }
 
@@ -69,14 +69,14 @@ namespace rbkApiModules.CodeGeneration.Commons
             if (directUpdate)
             {
                 var codeGenerator = new AngularCodeGenerator(projectId, basePath);
-                var data = codeGenerator.GetData();
+                codeGenerator.Generate();
 
                 return Ok("Arquivos atualizados com sucesso :)");
             }
             else
             {
                 var codeGenerator = new AngularCodeGenerator(projectId, Path.Combine(basePath, "code"));
-                var data = codeGenerator.GetData();
+                codeGenerator.Generate();
 
                 var zipFile = Path.Combine(basePath, "code.zip");
                 ZipFile.CreateFromDirectory(Path.Combine(basePath, "code"), zipFile);
