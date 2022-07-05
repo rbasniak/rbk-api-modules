@@ -27,6 +27,34 @@ namespace rbkApiModules.CodeGeneration.Commons
             return type.GetAttribute<T>() != null;
         }
 
+        public static IgnoreMode GetCodeGenerationIgnoreMode(this Type type) 
+        {
+            var attribute = type.GetAttribute<IgnoreOnCodeGenerationAttribute>();
+
+            if (attribute != null)
+            {
+                return attribute.Type;
+            }
+            else
+            {
+                return IgnoreMode.None;
+            }
+        }
+
+        public static IgnoreMode GetCodeGenerationIgnoreMode(this MethodInfo method)
+        {
+            var attribute = method.GetAttribute<IgnoreOnCodeGenerationAttribute>();
+
+            if (attribute != null)
+            {
+                return attribute.Type;
+            }
+            else
+            {
+                return IgnoreMode.None;
+            }
+        }
+
         public static T GetAttribute<T>(this MethodInfo methodInfo) where T : Attribute
         {
             var attribute = methodInfo.GetCustomAttributes().FirstOrDefault(x => x.GetType() == typeof(T));

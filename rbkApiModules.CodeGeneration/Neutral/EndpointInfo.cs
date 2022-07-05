@@ -80,12 +80,7 @@ namespace rbkApiModules.CodeGeneration
                 }
             }
 
-            //if (action.HasAttribute<NgxsDatabaseStoreAttribute>())
-            //{
-            //    var attribute = action.GetAttribute<NgxsDatabaseStoreAttribute>();
-
-            //    DatabaseStateType = attribute.Type;
-            //}
+            IgnoreMode = action.GetCodeGenerationIgnoreMode();
         }
 
         public HttpMethod Method { get; set; }
@@ -94,8 +89,10 @@ namespace rbkApiModules.CodeGeneration
         public List<PropertyInfo> UrlParameters { get; set; }
         public TypeInfo InputType { get; set; }
         public TypeInfo ReturnType { get; set; }
-        // public StoreType? DatabaseStateType { get; set; }
-        //public bool HasDatabaseState => DatabaseStateType != null;
+        
+        public IgnoreMode IgnoreMode { get; set; }
+        public bool IgnoreOnStatesGeneration => IgnoreMode == IgnoreMode.All || IgnoreMode == IgnoreMode.StateOnly;
+        public bool IncludeInStatesGenertation => !IgnoreOnStatesGeneration;
     }
 
 }

@@ -157,12 +157,16 @@ namespace rbkApiModules.CodeGeneration
                     .Where(myType => myType.IsClass
                             && !myType.IsAbstract
                             && !myType.Name.StartsWith("Base")
-                            && myType.IsSubclassOf(typeof(ControllerBase))
-                            && !myType.HasAttribute<IgnoreOnCodeGenerationAttribute>())
+                            && myType.IsSubclassOf(typeof(ControllerBase)))
                     .Select(x => new ControllerInfo(x, projectId)));
 
                 foreach (var controller in assemblyControllers)
                 {
+                    if (controller.Type.GetCodeGenerationIgnoreMode() == IgnoreMode.All)
+                    {
+                        continue;
+                    }
+
                     if (!String.IsNullOrEmpty(_projectId))
                     {
                         if (controller.Scopes.Length > 0)

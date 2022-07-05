@@ -54,7 +54,9 @@ namespace rbkApiModules.CodeGeneration
         private List<EndpointInfo> GetEndpoints(Type controllerType, string projectId)
         {
             var methods = controllerType.GetMethods()
-                .Where(x => x.GetCustomAttributes().Any(x => x.GetType().IsSubclassOf(typeof(HttpMethodAttribute))) && !x.HasAttribute<IgnoreOnCodeGenerationAttribute>());
+                .Where(x => x.GetCustomAttributes()
+                    .Any(x => x.GetType().IsSubclassOf(typeof(HttpMethodAttribute))) && 
+                        (x.GetCodeGenerationIgnoreMode() == IgnoreMode.None || x.GetCodeGenerationIgnoreMode() == IgnoreMode.StateOnly));
 
             var results = new List<EndpointInfo>();
 

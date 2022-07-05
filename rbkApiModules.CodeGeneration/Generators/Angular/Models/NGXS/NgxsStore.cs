@@ -1,4 +1,5 @@
-﻿using System;
+﻿using rbkApiModules.CodeGeneration.Commons;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,28 +27,28 @@ namespace rbkApiModules.CodeGeneration
             NgxsAction clearAction = null;
 
             var listEndpoint = Controller.Endpoints.FirstOrDefault(x => String.IsNullOrEmpty(x.Route) && x.Method == HttpMethod.Get);
-            if (listEndpoint != null)
+            if (listEndpoint != null && listEndpoint.IncludeInStatesGenertation)
             {
                 Actions.Items.Add(new NgxsAction(Controller.Name, ActionType.LoadAll, listEndpoint.InputType, listEndpoint));
                 clearAction = new NgxsAction(Controller.Name, ActionType.Clear, null, null);
             }
 
             var createEndpoint = Controller.Endpoints.FirstOrDefault(x => String.IsNullOrEmpty(x.Route) && x.Method == HttpMethod.Post);
-            if (createEndpoint != null)
+            if (createEndpoint != null && createEndpoint.IncludeInStatesGenertation)
             {
                 Actions.ModelsToImport.Add(createEndpoint.InputType);
                 Actions.Items.Add(new NgxsAction(Controller.Name, ActionType.Create, createEndpoint.InputType, createEndpoint));
             }
 
             var updateEndpoint = Controller.Endpoints.FirstOrDefault(x => String.IsNullOrEmpty(x.Route) && x.Method == HttpMethod.Put);
-            if (updateEndpoint != null)
+            if (updateEndpoint != null && updateEndpoint.IncludeInStatesGenertation)
             {
                 Actions.ModelsToImport.Add(updateEndpoint.InputType);
                 Actions.Items.Add(new NgxsAction(Controller.Name, ActionType.Update, updateEndpoint.InputType, updateEndpoint));
             }
 
             var deleteEndpoint = Controller.Endpoints.FirstOrDefault(x => x.Route != null && x.Route == "{id}" && x.Method == HttpMethod.Delete);
-            if (deleteEndpoint != null)
+            if (deleteEndpoint != null && deleteEndpoint.IncludeInStatesGenertation)
             {
                 if (deleteEndpoint.InputType != null)
                 {
