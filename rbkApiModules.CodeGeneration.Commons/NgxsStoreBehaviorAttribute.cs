@@ -5,9 +5,14 @@ namespace rbkApiModules.CodeGeneration.Commons
     [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
     public class NgxsStoreBehaviorAttribute : Attribute
     {
-        public NgxsStoreBehaviorAttribute(StoreBehavior type)
+        public NgxsStoreBehaviorAttribute()
         {
+            Behavior = StoreBehavior.General;
+        }
 
+        public NgxsStoreBehaviorAttribute(StoreBehavior behavior)
+        {
+            Behavior = behavior;
         }
 
         public StoreBehavior Behavior { get; set; }
