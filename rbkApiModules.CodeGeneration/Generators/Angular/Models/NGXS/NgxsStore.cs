@@ -1,4 +1,5 @@
 ﻿using rbkApiModules.CodeGeneration.Commons;
+using rbkApiModules.Infrastructure.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -86,20 +87,32 @@ namespace rbkApiModules.CodeGeneration
             code.AppendLine($"import {{ Injectable }} from '@angular/core';");
             code.AppendLine($"import {{ {Name}Actions }} from './{CodeGenerationUtilities.ToTypeScriptFileCase(Name)}.actions';");
             code.AppendLine($"import {{ {Name}Service }} from '@services/api/{CodeGenerationUtilities.ToTypeScriptFileCase(Name)}.service';");
-            code.AppendLine($"import {{ {listAction.Endpoint.ReturnType.Name} }} from '@models/{CodeGenerationUtilities.ToTypeScriptFileCase(listAction.Endpoint.ReturnType.Name)}';");
 
-            var uniqueModels = new List<TypeInfo>();
+            if (listAction.Endpoint.ReturnType.Name == nameof(SimpleNamedEntity))
+            {
+                code.AppendLine($"import {{ SimpleNamedEntity }} from 'ngx-smz-ui';");
+            }
+            else if (listAction.Endpoint.ReturnType.Name == "TreeNode")
+            {
+                code.AppendLine($"import {{ TreeNode }} from 'primeng/api';");
+            }
+            else
+            {
+                code.AppendLine($"import {{ {listAction.Endpoint.ReturnType.Name} }} from '@models/{CodeGenerationUtilities.ToTypeScriptFileCase(listAction.Endpoint.ReturnType.Name)}';");
+            }
 
-            if (Actions.Items.Any(x => x.Type == ActionType.Update))
+            var uniqueModels = Actions.Items.Where(x => x.Endpoint != null && x.Endpoint.ReturnType != null).Select(x => x.Endpoint.ReturnType.Name).ToList();
+
+            if (Actions.Items.Any(x => x.Type == ActionType.Update && x.Endpoint.ReturnType.Name != nameof(TreeNode)))
             {
                 code.AppendLine("import { replaceItem } from 'ngx-smz-ui';");
             }
 
-            uniqueModels = uniqueModels.DistinctBy(x => x.Name).ToList();
+            uniqueModels = uniqueModels.DistinctBy(x => x).ToList();
 
             foreach (var model in uniqueModels)
             {
-                code.AppendLine($"import {{ {model.Name} }} from '@models/{CodeGenerationUtilities.ToTypeScriptFileCase(model.Name)}';");
+                code.AppendLine($"import {{ {model} }} from '@models/{CodeGenerationUtilities.ToTypeScriptFileCase(model)}';");
             }
 
             code.AppendLine($"");
@@ -176,7 +189,19 @@ namespace rbkApiModules.CodeGeneration
 
             code.AppendLine($"import {{ createSelector, Selector }} from '@ngxs/store';");
             code.AppendLine($"import {{ {Name}State, {Name}StateModel }} from './{CodeGenerationUtilities.ToTypeScriptFileCase(Name)}.state';");
-            code.AppendLine($"import {{ {listAction.Endpoint.ReturnType.Name} }} from '@models/{CodeGenerationUtilities.ToTypeScriptFileCase(listAction.Endpoint.ReturnType.Name)}';");
+            
+            if (listAction.Endpoint.ReturnType.Name == nameof(SimpleNamedEntity))
+            {
+                code.AppendLine($"import {{ SimpleNamedEntity }} from 'ngx-smz-ui';");
+            }
+            else if (listAction.Endpoint.ReturnType.Name == "TreeNode")
+            {
+                code.AppendLine($"import {{ TreeNode }} from 'primeng/api';");
+            }
+            else
+            {
+                code.AppendLine($"import {{ {listAction.Endpoint.ReturnType.Name} }} from '@models/{CodeGenerationUtilities.ToTypeScriptFileCase(listAction.Endpoint.ReturnType.Name)}';");
+            }
             code.AppendLine($"");
 
             code.AppendLine($"export class {Name}Selectors {{");
@@ -225,17 +250,53 @@ namespace rbkApiModules.CodeGeneration
 
             if (action.Type == ActionType.Create)
             {
-                code.AppendLine($"          items: [ result, ...ctx.getState().items ]");
+                if (action.Endpoint.StoreBehavior == StoreBehavior.General)
+                {
+                    code.AppendLine($"          items: [ result, ...ctx.getState().items ]");
+                }
+                else if (action.Endpoint.StoreBehavior == StoreBehavior.ReplaceAll)
+                {
+                    code.AppendLine($"          lastUpdated: new Date(),");
+                    code.AppendLine($"          items: result,");
+                }
+                else
+                {
+                    throw new NotSupportedException($"{action.Endpoint.StoreBehavior} not supported for {action.Endpoint.Route}");
+                }
             }
 
             if (action.Type == ActionType.Update)
             {
-                code.AppendLine($"          items: replaceItem(ctx.getState().items, result)");
+                if (action.Endpoint.StoreBehavior == StoreBehavior.General)
+                {
+                    code.AppendLine($"          items: replaceItem(ctx.getState().items, result)");
+                }
+                else if (action.Endpoint.StoreBehavior == StoreBehavior.ReplaceAll)
+                {
+                    code.AppendLine($"          lastUpdated: new Date(),");
+                    code.AppendLine($"          items: result,");
+                }
+                else
+                {
+                    throw new NotSupportedException($"{action.Endpoint.StoreBehavior} not supported for {action.Endpoint.Route}");
+                }
             }
 
             if (action.Type == ActionType.Delete)
             {
-                code.AppendLine($"          items: [ ...ctx.getState().items.filter(x => x.id !== action.id) ]");
+                if (action.Endpoint.StoreBehavior == StoreBehavior.General)
+                {
+                    code.AppendLine($"          items: [ ...ctx.getState().items.filter(x => x.id !== action.id) ]");
+                }
+                else if (action.Endpoint.StoreBehavior == StoreBehavior.ReplaceAll)
+                {
+                    code.AppendLine($"          lastUpdated: new Date(),");
+                    code.AppendLine($"          items: result,");
+                }
+                else
+                {
+                    throw new NotSupportedException($"{action.Endpoint.StoreBehavior} not supported for {action.Endpoint.Route}");
+                }
             }
 
             code.AppendLine($"        }});");

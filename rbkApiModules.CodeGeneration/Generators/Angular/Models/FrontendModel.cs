@@ -1,5 +1,7 @@
-﻿using System;
+﻿using rbkApiModules.CodeGeneration.Commons;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -31,7 +33,11 @@ namespace rbkApiModules.CodeGeneration
             {
                 var service = new TypescriptService(controller);
                 Services.Add(service);
-                Stores.Add(new NgxsStore(controller));
+
+                if (controller.Type.GetCodeGenerationIgnoreMode() == IgnoreMode.None)
+                {
+                    Stores.Add(new NgxsStore(controller));
+                } 
             }
         }
 

@@ -15,9 +15,13 @@ namespace rbkApiModules.CodeGeneration
 {
     public class EndpointInfo
     {
+        private MethodInfo _action;
+
         public EndpointInfo(ControllerInfo controller, MethodInfo action)
         {
             Name = action.Name;
+
+            _action = action;
 
             UrlParameters = new List<PropertyInfo>();
 
@@ -89,7 +93,9 @@ namespace rbkApiModules.CodeGeneration
         public List<PropertyInfo> UrlParameters { get; set; }
         public TypeInfo InputType { get; set; }
         public TypeInfo ReturnType { get; set; }
-        
+
+        public StoreBehavior StoreBehavior => _action.DeclaringType.GetNgxsStoreBehavior();
+
         public IgnoreMode IgnoreMode { get; set; }
         public bool IgnoreOnStatesGeneration => IgnoreMode == IgnoreMode.All || IgnoreMode == IgnoreMode.StateOnly;
         public bool IncludeInStatesGenertation => !IgnoreOnStatesGeneration;

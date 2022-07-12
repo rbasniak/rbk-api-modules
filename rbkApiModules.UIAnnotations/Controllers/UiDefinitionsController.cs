@@ -16,7 +16,6 @@ namespace rbkApiModules.UIAnnotations
         /// Retorna a lista de todas as definições de UI
         /// </summary>
         [AllowAnonymous]
-        [NgxsDatabaseStore(StoreType.Readonly)]
         [HttpGet]
         public async Task<ActionResult<object>> All()
         {

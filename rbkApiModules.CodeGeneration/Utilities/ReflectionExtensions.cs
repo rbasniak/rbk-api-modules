@@ -41,6 +41,20 @@ namespace rbkApiModules.CodeGeneration.Commons
             }
         }
 
+        public static StoreBehavior GetNgxsStoreBehavior(this Type type)
+        {
+            var attribute = type.GetAttribute<NgxsStoreBehaviorAttribute>();
+
+            if (attribute != null)
+            {
+                return attribute.Behavior;
+            }
+            else
+            {
+                return StoreBehavior.General;
+            }
+        }
+
         public static IgnoreMode GetCodeGenerationIgnoreMode(this MethodInfo method)
         {
             var attribute = method.GetAttribute<IgnoreOnCodeGenerationAttribute>();

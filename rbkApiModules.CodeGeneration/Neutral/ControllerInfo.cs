@@ -23,13 +23,6 @@ namespace rbkApiModules.CodeGeneration
             var routeAttribute = type.GetAttribute<RouteAttribute>();
             Route = routeAttribute != null ? routeAttribute.Template.Replace("[controller]", Name.ToLower()) : String.Empty;
 
-            if (type.HasAttribute<NgxsDatabaseStoreAttribute>())
-            {
-                var attribute = type.GetAttribute<NgxsDatabaseStoreAttribute>();
-
-                StoreType = attribute.Type;
-            }
-
             if (type.HasAttribute<CodeGenerationScopeAttribute>())
             {
                 var attribute = type.GetAttribute<CodeGenerationScopeAttribute>();
@@ -49,7 +42,6 @@ namespace rbkApiModules.CodeGeneration
         public string[] Scopes { get; private set; }
         public string Route { get; private set; }
         public List<EndpointInfo> Endpoints { get; private set; }
-        public StoreType? StoreType { get; private set; }
 
         private List<EndpointInfo> GetEndpoints(Type controllerType, string projectId)
         {
