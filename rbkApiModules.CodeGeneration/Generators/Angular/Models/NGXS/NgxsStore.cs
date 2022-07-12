@@ -80,6 +80,7 @@ namespace rbkApiModules.CodeGeneration
             var code = new StringBuilder();
 
             var listAction = Actions.Items.FirstOrDefault(x => x.Type == ActionType.LoadAll);
+ 
 
             code.AppendLine($"import {{ State,Action, StateContext }} from '@ngxs/store';");
             code.AppendLine($"import {{ Observable }} from 'rxjs';");
@@ -87,19 +88,6 @@ namespace rbkApiModules.CodeGeneration
             code.AppendLine($"import {{ Injectable }} from '@angular/core';");
             code.AppendLine($"import {{ {Name}Actions }} from './{CodeGenerationUtilities.ToTypeScriptFileCase(Name)}.actions';");
             code.AppendLine($"import {{ {Name}Service }} from '@services/api/{CodeGenerationUtilities.ToTypeScriptFileCase(Name)}.service';");
-
-            if (listAction.Endpoint.ReturnType.Name == nameof(SimpleNamedEntity))
-            {
-                code.AppendLine($"import {{ SimpleNamedEntity }} from 'ngx-smz-ui';");
-            }
-            else if (listAction.Endpoint.ReturnType.Name == "TreeNode")
-            {
-                code.AppendLine($"import {{ TreeNode }} from 'primeng/api';");
-            }
-            else
-            {
-                code.AppendLine($"import {{ {listAction.Endpoint.ReturnType.Name} }} from '@models/{CodeGenerationUtilities.ToTypeScriptFileCase(listAction.Endpoint.ReturnType.Name)}';");
-            }
 
             var uniqueModels = Actions.Items.Where(x => x.Endpoint != null && x.Endpoint.ReturnType != null).Select(x => x.Endpoint.ReturnType.Name).ToList();
 
@@ -112,7 +100,18 @@ namespace rbkApiModules.CodeGeneration
 
             foreach (var model in uniqueModels)
             {
-                code.AppendLine($"import {{ {model} }} from '@models/{CodeGenerationUtilities.ToTypeScriptFileCase(model)}';");
+                if (model == nameof(SimpleNamedEntity))
+                {
+                    code.AppendLine($"import {{ SimpleNamedEntity }} from 'ngx-smz-ui';");
+                }
+                else if (model == "TreeNode")
+                {
+                    code.AppendLine($"import {{ TreeNode }} from 'primeng/api';");
+                }
+                else
+                {
+                    code.AppendLine($"import {{ {model} }} from '@models/{CodeGenerationUtilities.ToTypeScriptFileCase(model)}';");
+                }
             }
 
             code.AppendLine($"");
