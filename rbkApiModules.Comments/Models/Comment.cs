@@ -50,13 +50,15 @@ namespace rbkApiModules.Comments
 
     public class BasicCommentInfo
     {
-        public BasicCommentInfo(string username, string avatar, DateTime timestamp)
+        public BasicCommentInfo(string username, string displayName, string avatar, DateTime timestamp)
         {
             Timestamp = timestamp;
             Username = username;
             Avatar = avatar;
+            DisplayName = displayName;
         }
 
+        public string DisplayName { get; set; }
         public string Username { get; set; }
         public string Avatar { get; set; }
         public DateTime Timestamp { get; set; }

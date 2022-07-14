@@ -19,10 +19,15 @@ namespace rbkApiModules.Comments
 
             foreach (var comment in comments)
             {
-                comment.SetUserdata(new BasicCommentInfo(comment.Username, LoadAvatar(comment.Username), comment.Date));
+                comment.SetUserdata(new BasicCommentInfo(comment.Username, LoadDisplayName(comment.Username), LoadAvatar(comment.Username), comment.Date));
             }
         }
 
         public abstract string LoadAvatar(string username);
+
+        public virtual string LoadDisplayName(string username)
+        {
+            return username;
+        }
     }
 }
