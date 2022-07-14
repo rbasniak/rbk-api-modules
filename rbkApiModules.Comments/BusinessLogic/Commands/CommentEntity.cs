@@ -41,17 +41,19 @@ namespace rbkApiModules.Comments
             }
         }
 
-        public class Handler : BaseCommandHandler<Command, DbContext>
+        public class Handler : BaseCommandHandler<Command>
         {
             private readonly ICommentsService _commentsService;
+            private readonly DbContext _context;
 
             public Handler(DbContext context, IHttpContextAccessor httpContextAccessor, ICommentsService commentsService)
-                : base(context, httpContextAccessor)
+                : base(httpContextAccessor)
             {
                 _commentsService = commentsService;
+                _context = context;
             }
 
-            protected override async Task<(Guid? entityId, object result)> ExecuteAsync(Command request)
+            protected override async Task<object> ExecuteAsync(Command request)
             {
                 Comment parent = null;
 
@@ -68,7 +70,7 @@ namespace rbkApiModules.Comments
 
                 var result = await _commentsService.GetComments(request.EntityId);
 
-                return (request.EntityId, result);
+                return result;
             }
         }
     }

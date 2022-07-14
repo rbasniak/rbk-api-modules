@@ -82,7 +82,7 @@ namespace rbkApiModules.CodeGeneration
             var listAction = Actions.Items.FirstOrDefault(x => x.Type == ActionType.LoadAll);
  
 
-            code.AppendLine($"import {{ State,Action, StateContext }} from '@ngxs/store';");
+            code.AppendLine($"import {{ State, Action, StateContext }} from '@ngxs/store';");
             code.AppendLine($"import {{ Observable }} from 'rxjs';");
             code.AppendLine($"import {{ tap }} from 'rxjs/operators';");
             code.AppendLine($"import {{ Injectable }} from '@angular/core';");
