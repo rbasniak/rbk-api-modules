@@ -39,6 +39,7 @@
     <ProjectReference Include="..\rbkApiModules.Logs.Relational.SQLite\rbkApiModules.Logs.Relational.SQLite.csproj" />
     <ProjectReference Include="..\rbkApiModules.Logs.Relational.SqlServer\rbkApiModules.Logs.Relational.SqlServer.csproj" />
     <ProjectReference Include="..\rbkApiModules.Notifications\rbkApiModules.Notifications.csproj" />
+    <ProjectReference Include="..\rbkApiModules.Utilities.Excel\rbkApiModules.Utilities.Excel.csproj" />
     <ProjectReference Include="..\rbkApiModules.Utilities\rbkApiModules.Utilities.csproj" />
     <ProjectReference Include="..\rbkApiModules.SharedUI\rbkApiModules.SharedUI.csproj" />
     <ProjectReference Include="..\rbkApiModules.UIAnnotations\rbkApiModules.UIAnnotations.csproj" />
