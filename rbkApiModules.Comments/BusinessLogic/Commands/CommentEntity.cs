@@ -21,23 +21,16 @@ namespace rbkApiModules.Comments
 
         public class Validator: AbstractValidator<Command>  
         {
-            private readonly DbContext _context;
-            private readonly IHttpContextAccessor _httpContextAccessor;
-
             public Validator(DbContext context, IHttpContextAccessor httpContextAccessor)
             {
                 CascadeMode = CascadeMode.Stop;
 
-                _httpContextAccessor = httpContextAccessor;
-                _context = context;
+                RuleFor(x => x.ParentId)
+                    .MustExistInDatabase<Command, Comment>(context).WithMessage("Não foi possível localizar o comentário");
 
-                //RuleFor(x => x.ParentId)
-                //    .MustBeValidId()
-                //    .MustExistInDatabase<Command, Comment>(context).WithMessage("Não foi possível localizar o comentário");
-
-                //RuleFor(x => x.Comment)
-                //    .IsRequired()
-                //    .MinimumLength(5).WithMessage("O comentário precisa ter ao menos 5 caracteres.");
+                RuleFor(x => x.Comment)
+                    .IsRequired()
+                    .WithName("Mensagem");
             }
         }
 

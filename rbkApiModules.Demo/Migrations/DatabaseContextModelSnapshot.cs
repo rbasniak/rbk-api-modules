@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using rbkApiModules.Demo.Database;
 
+#nullable disable
+
 namespace rbkApiModules.Demo.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
@@ -15,9 +17,10 @@ namespace rbkApiModules.Demo.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.9")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "6.0.7")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
             modelBuilder.Entity("rbkApiModules.Authentication.BaseUser", b =>
                 {
@@ -102,7 +105,7 @@ namespace rbkApiModules.Demo.Migrations
                     b.HasIndex("Name", "AuthenticationGroup")
                         .IsUnique();
 
-                    b.ToTable("Claims");
+                    b.ToTable("Claims", (string)null);
                 });
 
             modelBuilder.Entity("rbkApiModules.Authentication.Role", b =>
@@ -126,7 +129,7 @@ namespace rbkApiModules.Demo.Migrations
                     b.HasIndex("Name", "AuthenticationGroup")
                         .IsUnique();
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
                 });
 
             modelBuilder.Entity("rbkApiModules.Authentication.RoleToClaim", b =>
@@ -141,7 +144,7 @@ namespace rbkApiModules.Demo.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("RolesToClaims");
+                    b.ToTable("RolesToClaims", (string)null);
                 });
 
             modelBuilder.Entity("rbkApiModules.Authentication.UserToClaim", b =>
@@ -159,7 +162,7 @@ namespace rbkApiModules.Demo.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UsersToClaims");
+                    b.ToTable("UsersToClaims", (string)null);
                 });
 
             modelBuilder.Entity("rbkApiModules.Authentication.UserToRole", b =>
@@ -174,7 +177,7 @@ namespace rbkApiModules.Demo.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UsersToRoles");
+                    b.ToTable("UsersToRoles", (string)null);
                 });
 
             modelBuilder.Entity("rbkApiModules.Comments.Comment", b =>
@@ -202,7 +205,7 @@ namespace rbkApiModules.Demo.Migrations
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("Comment");
+                    b.ToTable("Comments", (string)null);
                 });
 
             modelBuilder.Entity("rbkApiModules.Demo.Models.Blog", b =>
@@ -536,7 +539,7 @@ namespace rbkApiModules.Demo.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Notifications");
+                    b.ToTable("Notifications", (string)null);
                 });
 
             modelBuilder.Entity("rbkApiModules.Payment.SqlServer.BaseClient", b =>
@@ -592,7 +595,7 @@ namespace rbkApiModules.Demo.Migrations
 
                     b.HasIndex("SubscriptionId");
 
-                    b.ToTable("Payments");
+                    b.ToTable("Payments", (string)null);
                 });
 
             modelBuilder.Entity("rbkApiModules.Payment.SqlServer.Plan", b =>
@@ -624,7 +627,7 @@ namespace rbkApiModules.Demo.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Plans");
+                    b.ToTable("Plans", (string)null);
                 });
 
             modelBuilder.Entity("rbkApiModules.Payment.SqlServer.Subscription", b =>
@@ -663,7 +666,7 @@ namespace rbkApiModules.Demo.Migrations
 
                     b.HasIndex("PlanId");
 
-                    b.ToTable("Subscriptions");
+                    b.ToTable("Subscriptions", (string)null);
                 });
 
             modelBuilder.Entity("rbkApiModules.Payment.SqlServer.TrialKey", b =>
@@ -688,31 +691,20 @@ namespace rbkApiModules.Demo.Migrations
 
                     b.HasIndex("PlanId");
 
-                    b.ToTable("TrialKeys");
+                    b.ToTable("TrialKeys", (string)null);
                 });
 
-            modelBuilder.Entity("rbkApiModules.Demo.Models.ClientUser", b =>
+            modelBuilder.Entity("rbkApiModules.Utilities.EFCore.SeedHistory", b =>
                 {
-                    b.HasBaseType("rbkApiModules.Authentication.BaseUser");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("IsBlocked")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("DateApplied")
+                        .HasColumnType("datetime2");
 
-                    b.HasIndex("Username", "AuthenticationGroup")
-                        .IsUnique()
-                        .HasFilter("[AuthenticationGroup] IS NOT NULL");
+                    b.HasKey("Id");
 
-                    b.HasDiscriminator().HasValue("ClientUser");
-                });
-
-            modelBuilder.Entity("rbkApiModules.Demo.Models.ManagerUser", b =>
-                {
-                    b.HasBaseType("rbkApiModules.Authentication.BaseUser");
-
-                    b.Property<bool>("IsAdmin")
-                        .HasColumnType("bit");
-
-                    b.HasDiscriminator().HasValue("ManagerUser");
+                    b.ToTable("__SeedHistory", (string)null);
                 });
 
             modelBuilder.Entity("rbkApiModules.Demo.Models.Client", b =>
@@ -732,6 +724,20 @@ namespace rbkApiModules.Demo.Migrations
                     b.HasDiscriminator().HasValue("Client");
                 });
 
+            modelBuilder.Entity("rbkApiModules.Demo.Models.ClientUser", b =>
+                {
+                    b.HasBaseType("rbkApiModules.Authentication.BaseUser");
+
+                    b.Property<string>("IsBlocked")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasIndex("Username", "AuthenticationGroup")
+                        .IsUnique()
+                        .HasFilter("[AuthenticationGroup] IS NOT NULL");
+
+                    b.HasDiscriminator().HasValue("ClientUser");
+                });
+
             modelBuilder.Entity("rbkApiModules.Demo.Models.Manager", b =>
                 {
                     b.HasBaseType("rbkApiModules.Payment.SqlServer.BaseClient");
@@ -746,28 +752,18 @@ namespace rbkApiModules.Demo.Migrations
                     b.HasDiscriminator().HasValue("Manager");
                 });
 
-            modelBuilder.Entity("rbkApiModules.Authentication.BaseUser", b =>
+            modelBuilder.Entity("rbkApiModules.Demo.Models.ManagerUser", b =>
                 {
-                    b.OwnsOne("rbkApiModules.Authentication.PasswordRedefineCode", "PasswordRedefineCode", b1 =>
-                        {
-                            b1.Property<Guid>("BaseUserId")
-                                .HasColumnType("uniqueidentifier");
+                    b.HasBaseType("rbkApiModules.Authentication.BaseUser");
 
-                            b1.Property<DateTime?>("CreationDate")
-                                .HasColumnType("datetime2");
+                    b.Property<bool>("IsAdmin")
+                        .HasColumnType("bit");
 
-                            b1.Property<string>("Hash")
-                                .HasColumnType("nvarchar(max)");
+                    b.HasIndex("Username", "AuthenticationGroup")
+                        .IsUnique()
+                        .HasFilter("[AuthenticationGroup] IS NOT NULL");
 
-                            b1.HasKey("BaseUserId");
-
-                            b1.ToTable("Users");
-
-                            b1.WithOwner()
-                                .HasForeignKey("BaseUserId");
-                        });
-
-                    b.Navigation("PasswordRedefineCode");
+                    b.HasDiscriminator().HasValue("ManagerUser");
                 });
 
             modelBuilder.Entity("rbkApiModules.Authentication.RoleToClaim", b =>
@@ -1026,6 +1022,32 @@ namespace rbkApiModules.Demo.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("rbkApiModules.Demo.Models.ClientUser", b =>
+                {
+                    b.OwnsOne("rbkApiModules.Authentication.PasswordRedefineCode", "PasswordRedefineCode", b1 =>
+                        {
+                            b1.Property<Guid>("ClientUserId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<DateTime?>("CreationDate")
+                                .ValueGeneratedOnUpdateSometimes()
+                                .HasColumnType("datetime2");
+
+                            b1.Property<string>("Hash")
+                                .ValueGeneratedOnUpdateSometimes()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("ClientUserId");
+
+                            b1.ToTable("Users");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ClientUserId");
+                        });
+
+                    b.Navigation("PasswordRedefineCode");
+                });
+
             modelBuilder.Entity("rbkApiModules.Demo.Models.Manager", b =>
                 {
                     b.HasOne("rbkApiModules.Demo.Models.ManagerUser", "User")
@@ -1035,6 +1057,32 @@ namespace rbkApiModules.Demo.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("rbkApiModules.Demo.Models.ManagerUser", b =>
+                {
+                    b.OwnsOne("rbkApiModules.Authentication.PasswordRedefineCode", "PasswordRedefineCode", b1 =>
+                        {
+                            b1.Property<Guid>("ManagerUserId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<DateTime?>("CreationDate")
+                                .ValueGeneratedOnUpdateSometimes()
+                                .HasColumnType("datetime2");
+
+                            b1.Property<string>("Hash")
+                                .ValueGeneratedOnUpdateSometimes()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("ManagerUserId");
+
+                            b1.ToTable("Users");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ManagerUserId");
+                        });
+
+                    b.Navigation("PasswordRedefineCode");
                 });
 
             modelBuilder.Entity("rbkApiModules.Authentication.BaseUser", b =>

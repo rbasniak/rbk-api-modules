@@ -3,14 +3,11 @@ using System.Collections.Generic;
 
 namespace rbkApiModules.Demo.Services
 {
-    public class UserdataCommentService : IUserdataCommentService
+    public class UserdataCommentService : BaseUserdataCommentService, IUserdataCommentService
     {
-        public void SetUserdata(List<Comment> comments)
+        public override string LoadAvatar(string username)
         {
-            foreach (var comment in comments)
-            {
-                comment.SetUserdata(new { Name = "Fulano" });
-            }
+            return "XXXXX BASE64 XXXXX";
         }
     }
 }

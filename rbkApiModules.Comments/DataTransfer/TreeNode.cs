@@ -14,7 +14,7 @@ namespace rbkApiModules.Comments
         }
 
         public string Label { get; set; }
-        public CommentDetails Data { get; set; }
+        public object Data { get; set; }
         public string Icon { get; set; }
         public string ExpandedIcon { get; set; }
         public string CollapsedIcon { get; set; }

@@ -7,7 +7,7 @@ namespace rbkApiModules.Comments
 {
     public class Comment : BaseEntity
     {
-        private object _userdata;
+        private BasicCommentInfo _userdata;
         private HashSet<Comment> _children;
 
         protected Comment()
@@ -38,13 +38,27 @@ namespace rbkApiModules.Comments
 
         public virtual DateTime Date { get; private set; }
 
-        public virtual object Userdata => _userdata;
+        public virtual BasicCommentInfo Userdata => _userdata;
 
         public virtual IEnumerable<Comment> Children => _children?.ToList();
 
-        public virtual void SetUserdata(object value)
+        public virtual void SetUserdata(BasicCommentInfo value)
         {
             _userdata = value;
         }
+    }
+
+    public class BasicCommentInfo
+    {
+        public BasicCommentInfo(string username, string avatar, DateTime timestamp)
+        {
+            Timestamp = timestamp;
+            Username = username;
+            Avatar = avatar;
+        }
+
+        public string Username { get; set; }
+        public string Avatar { get; set; }
+        public DateTime Timestamp { get; set; }
     }
 }

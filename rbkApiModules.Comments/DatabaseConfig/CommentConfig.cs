@@ -8,6 +8,8 @@ namespace rbkApiModules.Comments
     {
         public void Configure(EntityTypeBuilder<Comment> entity)
         {
+            entity.ToTable("Comments");
+
             entity.HasOne(x => x.Parent)
                .WithMany(x => x.Children)
                .HasForeignKey(x => x.ParentId)
