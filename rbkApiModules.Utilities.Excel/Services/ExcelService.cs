@@ -17,21 +17,21 @@ public class ExcelService : IExcelService
     {
         MemoryStream stream = null;
 
-        DataModel model = ParseJson(Json);
-
+        ExcelWorkbookModel WorkbookModel = ParseJson(Json);
+        ExcelSheetModel model = new ExcelSheetModel();
 
         using (var workbook = new XLWorkbook())
         {
             var ws = workbook.Worksheets.Add("teste");
 
-            var headersCount = model.Headers.Count;
-            var linesCount = model.Results.Count;
+            var headersCount = model.Header.Data.Count;
+            var linesCount = model.Columns[0].Data.Count;
 
             ws.ShowGridLines = false;
 
             var headerRange = "A1:" + GetExcelColumnName(headersCount) + "1";
 
-            ws.Cells(headerRange).Value = model.Headers;
+            ws.Cells(headerRange).Value = model.Header.Data;
 
             var fullRange = "A1:" + GetExcelColumnName(headersCount) + (linesCount + 1).ToString();
 
@@ -39,8 +39,8 @@ public class ExcelService : IExcelService
             {
                 for (int j = 0; j < headersCount; j++)
                 {
-                    var result = model.Results[i];
-                    var property = Regex.Replace(model.Headers[j], "^[a-z]", m => m.Value.ToUpper());
+                    var result = model.Header.Data[i];
+                    var property = Regex.Replace(model.Header.Data[j], "^[a-z]", m => m.Value.ToUpper());
                     var value = result.GetType().GetProperty(property).GetValue(result, null)?.ToString();
 
                     if (!String.IsNullOrEmpty(value) && value.Contains("<a href="))
@@ -62,6 +62,12 @@ public class ExcelService : IExcelService
                 ws.Cells(rowRange).Style.Fill.SetBackgroundColor(XLColor.LightGray);
             }
 
+            //var range = ws.Range(1, 1, 5, 5);
+            // create the actual table
+            //var table = range.CreateTable();
+            // apply style
+            //namesTable.Theme = XLTableTheme.TableStyleLight12;
+
             ws.Cells(headerRange).Style.Font.Bold = true;
             ws.Cells(headerRange).Style.Font.SetFontColor(XLColor.White);
             ws.Cells(headerRange).Style.Fill.SetPatternType(XLFillPatternValues.Solid);
@@ -74,12 +80,17 @@ public class ExcelService : IExcelService
             var fullFormatingRange = "A1:" + GetExcelColumnName(headersCount - 1) + (linesCount + 1).ToString();
             ws.Cells(fullFormatingRange).Style.Border.SetRightBorder(XLBorderStyleValues.Thin);
 
-            ws.SetAutoFilter(true);
-
-            ws.SheetView.Freeze(2, 1);
+            ws.RangeUsed().SetAutoFilter(true);
+            
+            ws.SheetView.FreezeRows(1);
+            ws.SheetView.FreezeColumns(1);
 
             ws.ColumnsUsed().AdjustToContents();
-            
+
+            ws.Cell(1, 1).Style.NumberFormat.Format = "$0.00";
+            ws.Cell(1, 1).Style.DateFormat.Format = "DD/MM/YYYY";
+            ws.Cell(1, 2).DataType = XLDataType.Number; // Use XLDataType.Number in 2018 and after    
+
             workbook.SaveAs(stream);
         }
 
@@ -93,9 +104,10 @@ public class ExcelService : IExcelService
         return file;
     }
 
-    private DataModel ParseJson(string Json)
+    
+    private ExcelWorkbookModel ParseJson(string Json)
     {
-        return new DataModel();
+        return new ExcelWorkbookModel();
     }
 
     private string GetExcelColumnName(int columnNumber)
@@ -128,11 +140,136 @@ public class ExcelService : IExcelService
         return value;
     }
 
-    private class DataModel
+    /// <summary>
+    /// Classe que conterá os dados de uma ou mais planilhas a serem geradas. Incluindo os dados de formatação para cabeçalhos e Dados 
+    /// </summary>
+    internal class ExcelWorkbookModel
     {
-        public List<string> Headers { get; set; }
-        public List<string> Results { get; set; }
+        /// <summary>
+        /// Lista com todos os dados para todas as planilhas dentro do arquivo excel
+        /// </summary>
+        public List<ExcelSheetModel> Sheets { get; set; }
+        public ExcelStyleClasses Style { get; set; }
     }
+
+    /// <summary>
+    /// Classe que guarda os dados de uma única planilha
+    /// </summary>
+    internal class ExcelSheetModel
+    {
+        /// <summary>
+        /// Nome da planilha
+        /// </summary>
+        public string Name { get; set; }
+        /// <summary>
+        /// Dados de ordenação, se deve ser ordenada, coluna de ordenação e tipo de ordenação
+        /// </summary>
+        public SortModel Sort { get; set; }
+        /// <summary>
+        /// Dados de ordenação, se deve ser ordenada, coluna de ordenação e tipo de ordenação
+        /// </summary>
+        public FilterModel Filter { get; set; }
+        /// <summary>
+        /// Lista de dados de cabeçalho da planilha 
+        /// </summary>
+        public HeaderModel Header { get; set; }
+        /// <summary>
+        /// Lista de dados da planilha
+        /// </summary>
+        public List<ColumnModel> Columns { get; set; }
+        /// <summary>
+        /// Define se a tabela deve exibir linhas rajadas
+        /// </summary>
+        public bool ShowRowStripes { get; set; } = true;
+        /// <summary>
+        /// Define se a tabela deve exibir colunas rajadas
+        /// </summary>
+        public bool ShowColumnStripes { get; set; } = false;
+        /// <summary>
+        /// Define se a tabela deve realçar a row do cabeçalho
+        /// </summary>
+        public bool ShowHeaderRow { get; set; } = false;
+        /// <summary>
+        /// Define se a tabela deve mostrar o grid de linhas e colunas
+        /// </summary>
+        public bool ShowGridLines { get; set; } = false;
+        /// <summary>
+        /// Caso diferente de "None" esta opção vincula o tema da tabela a um preset do excel
+        /// </summary>
+        public XLTableTheme TableTheme { get; set; } = XLTableTheme.None;
+    }
+
+    internal class HeaderModel
+    {
+        public List<string> Data { get; set; }
+        public ExcelStyleClasses Style { get; set; }
+    }
+
+    internal class ColumnModel
+    {
+        public List<string> Data { get; set; }
+        public ExcelStyleClasses Style { get; set; }
+        
+    }
+
+
+    /// <summary>
+    /// Classe com estilos para aplica as colunas
+    /// </summary>
+    internal class ExcelStyleClasses
+    {
+        public string FontName { get; set; } = "Calibri";
+        public int FontSize { get; set; } = 11;
+        public XLColor FontColor { get; set; } = XLColor.Black;
+        public XLColor FillColor { get; set; } = XLColor.White;
+        public bool WrapText { get; set; } = false;
+        public XLDataType ExcelDataType { get; set; } = XLDataType.Text;
+        public string DataFormat { get; set; }
+        public bool AdjustToContent { get; set; } = false;
+        public int ColumnWidth { get; set; } = 0;
+        public int RowHeight { get; set; } = 0;
+        public bool OutsideBorder { get; set; } = false;
+        public XLBorderStyleValues OutsideBorderStyle { get; set; } = XLBorderStyleValues.Medium;
+        public bool InsideBorder { get; set; } = false;
+        public XLBorderStyleValues InsideBorderStyle { get; set; } = XLBorderStyleValues.Thin;
+    }
+
+    /// <summary>
+    /// Classe que representa os parametros de ordenação da planilha
+    /// </summary>
+    internal class SortModel
+    {
+        /// <summary>
+        /// Se a planilha será ordenada
+        /// </summary>
+        public bool ShouldSort { get; set; } = false;
+        /// <summary>
+        /// Se a ordenação deve diferenicar maiúsculas de minúsculas
+        /// </summary>
+        public bool MatchCase { get; set; } = false;
+        /// <summary>
+        /// Se a ordenação deve ignorar espaços em branco
+        /// </summary>
+        public bool IgnoreBlanks { get; set; } = true;
+        /// <summary>
+        /// A coluna que irá guiar a ordenação
+        /// </summary>
+        public int SortColumn { get; set; } = 1;
+        /// <summary>
+        /// Se a ordenação será ascendente ou descendente
+        /// </summary>
+        public XLSortOrder SortOrder { get; set; } = XLSortOrder.Ascending;
+    }
+
+    /// <summary>
+    /// Classe para definir filtros para colunas
+    /// </summary>
+    internal class FilterModel
+    {
+        public bool HasFilter { get; set; } = false;
+        public List<int> Columns { get; set; }
+    }
+
 }
 
 
