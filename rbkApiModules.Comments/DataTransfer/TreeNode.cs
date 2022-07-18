@@ -48,7 +48,7 @@ namespace rbkApiModules.Comments
                 .ForMember(dto => dto.Expanded, map => map.MapFrom(entity => true))
                 .ForMember(dto => dto.Label, map => map.MapFrom(entity => entity.Message))
                 .ForMember(dto => dto.Parent, map => map.Ignore())
-                .ForMember(dto => dto.Leaf, map => map.MapFrom(entity => entity.Children != null && entity.Children.Count() > 0))
+                .ForMember(dto => dto.Leaf, map => map.MapFrom(entity => entity.Children == null || entity.Children.Count() == 0))
                 .ForMember(dto => dto.Data, map => map.MapFrom(entity => entity.Userdata))
                 .ForMember(dto => dto.Selectable, map => map.MapFrom(entity => false))
                 .ForMember(dto => dto.Icon, map => map.Ignore())
