@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace rbkApiModules.Faqs
 {
-    public class CommentConfig : IEntityTypeConfiguration<Faq>
+    public class FaqConfig : IEntityTypeConfiguration<Faq>
     {
         public void Configure(EntityTypeBuilder<Faq> entity)
         {

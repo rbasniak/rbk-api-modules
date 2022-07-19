@@ -7,7 +7,7 @@ namespace rbkApiModules.Faqs
 {
     public static class Builder
     {
-        public static void AddRbkApiCommentsModule(this IServiceCollection services)
+        public static void AddRbkApiFaqsModule(this IServiceCollection services)
         {
             AssemblyScanner
                 .FindValidatorsInAssembly(Assembly.GetAssembly(typeof(CreateFaq.Command)))
