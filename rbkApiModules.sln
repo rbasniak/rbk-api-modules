@@ -206,6 +206,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Logs.Relation
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Logs.Relational.SqlServer", "rbkApiModules.Logs.Relational.SqlServer\rbkApiModules.Logs.Relational.SqlServer.csproj", "{46DB0B8F-DE77-4618-BAA1-3FB81F3E3DE2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.Faqs", "rbkApiModules.Faqs\rbkApiModules.Faqs.csproj", "{FDB482D6-2921-4072-A275-4FF618DC7FA1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -448,6 +450,10 @@ Global
 		{46DB0B8F-DE77-4618-BAA1-3FB81F3E3DE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46DB0B8F-DE77-4618-BAA1-3FB81F3E3DE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{46DB0B8F-DE77-4618-BAA1-3FB81F3E3DE2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDB482D6-2921-4072-A275-4FF618DC7FA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDB482D6-2921-4072-A275-4FF618DC7FA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDB482D6-2921-4072-A275-4FF618DC7FA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDB482D6-2921-4072-A275-4FF618DC7FA1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -543,6 +549,7 @@ Global
 		{9620D30F-6F5C-46E4-82B7-138732696D3C} = {44499586-81A6-40C6-8B7D-CADBC265DF3E}
 		{0EF70B90-97DB-4359-8F0A-2A564DE88551} = {44499586-81A6-40C6-8B7D-CADBC265DF3E}
 		{46DB0B8F-DE77-4618-BAA1-3FB81F3E3DE2} = {44499586-81A6-40C6-8B7D-CADBC265DF3E}
+		{FDB482D6-2921-4072-A275-4FF618DC7FA1} = {A1A68EE5-8E91-449C-96A8-CCC5BF135D48}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9AAC09BF-43DC-408B-8F24-24DAA39DA1E8}
