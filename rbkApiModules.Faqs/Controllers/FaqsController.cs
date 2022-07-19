@@ -29,10 +29,10 @@ namespace rbkApiModules.Faqs
             return HttpResponse<FaqDetails>(await Mediator.Send(data));
         }
 
-        [HttpDelete]
-        public async Task<ActionResult> Delete(DeleteFaq.Command data)
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(Guid id)
         {
-            return HttpResponse(await Mediator.Send(data));
+            return HttpResponse(await Mediator.Send(new DeleteFaq.Command { Id = id }));
         }
     }
 }
