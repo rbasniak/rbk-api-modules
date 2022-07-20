@@ -1,21 +1,16 @@
-﻿using rbkApiModules.Infrastructure.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace rbkApiModules.Utilities.Excel;
+﻿namespace rbkApiModules.Utilities.Excel;
 
 /// <summary>
-/// Classe para definir filtros para colunas
+/// Class for modeling an excel filter in case auto-filtering should be pre-define to a value
 /// </summary>
 public class FilterModel
 {
     /// <summary>
-    /// Tipos de filtros: Contains, Before, After, etc.
+    /// Filter type: Contains, Before, After, etc.
     /// </summary>
-    public string FilterTypes { get; set; } = "";
+    public string FilterType { get; set; } = string.Empty;
     /// <summary>
-    /// Query de filtro
+    /// Query string for filtering
     /// </summary>
-    public string FilterData { get; set; } = "";
+    public string Query { get; set; } = string.Empty;
 }

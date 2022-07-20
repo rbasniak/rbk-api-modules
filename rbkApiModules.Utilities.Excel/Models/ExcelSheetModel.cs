@@ -1,67 +1,42 @@
-﻿using rbkApiModules.Infrastructure.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using static rbkApiModules.Utilities.Excel.ClosedXMLDefs;
 
 namespace rbkApiModules.Utilities.Excel;
 
 /// <summary>
-/// Classe que guarda os dados de uma única planilha
+/// Class representing a single spreadsheet inside an excel workbook.
 /// </summary>
 public class ExcelSheetModel
 {
-    private HashSet<ExcelColumnModel> _columns;
-
-    protected ExcelSheetModel()
-    {
-    }
-
-    public ExcelSheetModel(
-        string name,
-        bool shouldSort = false,
-        int sortColumn = 1,
-        bool matchCase = false,
-        bool ignoreBlanks = false,
-        ClosedXMLDefs.ExcelSort.SortOrder sortOrder = ClosedXMLDefs.ExcelSort.SortOrder.Ascending)
-    {
-        _columns = new HashSet<ExcelColumnModel>();
-        Name = name;
-        ShouldSort = shouldSort;
-        SortColumn = sortColumn;
-        MatchCase = matchCase;
-        IgnoreBlanks = ignoreBlanks;
-    }
-
     /// <summary>
-    /// Nome da planilha
+    /// Spreasheet tab name
     /// </summary>
-    public virtual string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
     /// <summary>
-    /// Se a planilha será ordenada
+    /// If the spreasheet should be sorted
     /// </summary>
-    public bool ShouldSort { get; set; }
+    public bool ShouldSort { get; set; } = false;
     /// <summary>
-    /// Caso seja ordenada, se a ordenação deve diferenicar maiúsculas de minúsculas
+    /// In case of sorting, if the sort should be case sensitive
     /// </summary>
-    public bool MatchCase { get; set; }
+    public bool MatchCase { get; set; } = false;
     /// <summary>
-    /// Caso seja ordenada, se a ordenação deve ignorar espaços em branco
+    /// In case of sorting, if the sorting should skip blanks, if false, will throw all blank entries at the top
     /// </summary>
-    public bool IgnoreBlanks { get; set; }
+    public bool IgnoreBlanks { get; set; } = true;
     /// <summary>
-    /// Caso seja ordenada, a coluna que irá guiar a ordenação
+    /// In case of sorting, which column should the sorting be applied to
     /// </summary>
-    public int SortColumn { get; set; }
+    public int SortColumn { get; set; } = 1;
     /// <summary>
-    /// Caso seja ordenada, se a ordenação será ascendente ou descendente
+    /// In case of sorting, if the sorting should be ascending or descending
     /// </summary>
-    public ClosedXMLDefs.ExcelSort.SortOrder SortOrder { get; set; }
+    public ExcelSort.SortOrder SortOrder { get; set; } = ExcelSort.SortOrder.Ascending;
     /// <summary>
-    /// Lista de dados de cabeçalho da planilha 
+    /// The header data and styling container 
     /// </summary>
-    public virtual ExcelHeaderModel Header { get; set; }
+    public ExcelHeaderModel? Header { get; set; }
     /// <summary>
-    /// Lista de dados da planilha
+    /// A list of all columns and their data/styling
     /// </summary>
-    public virtual IEnumerable<ExcelColumnModel> Columns => _columns?.ToList();
+    public ExcelColumnModel[]? Columns { get; set; }
 }

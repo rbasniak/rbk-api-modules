@@ -1,52 +1,50 @@
-﻿using ClosedXML.Excel;
-using rbkApiModules.Infrastructure.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using static rbkApiModules.Utilities.Excel.ClosedXMLDefs;
 
 namespace rbkApiModules.Utilities.Excel;
 
+/// <summary>
+/// The Main Workbook Model container. Holds all data and metadata.
+/// </summary>
 public class ExcelWorkbookModel
 {
-    private HashSet<ExcelSheetModel> _sheets;
-
-    public ExcelWorkbookModel(
-        ClosedXMLDefs.ExcelThemes.Theme theme = ClosedXMLDefs.ExcelThemes.Theme.None,
-        string author = "",
-        string company = "",
-        string dateCreated = "",
-        string comments = ""
-        )
-    {
-        _sheets = new HashSet<ExcelSheetModel>();
-        Author = author;
-        Company = company;
-        DateCreated = dateCreated;
-        Comments = comments;
-    }
-
     /// <summary>
-    /// Caso diferente de "None" esta opção vincula o tema da tabela a um preset do excel
+    /// Name of the excel file containing all the spreadsheets to be outputed
     /// </summary>
-    public virtual ClosedXMLDefs.ExcelThemes.Theme TableTheme { get; set; }
+    public string FileName { get; set; } = "ExcelFile.xlsx";
     /// <summary>
-    /// Metadado de autoria,nome do autor da planilha
+    /// If diferent from "None", applies a theme from excel's standard theme list
     /// </summary>
-    public virtual string Author { get; set; }
+    public ExcelThemes.Theme Theme { get; set; } = ExcelThemes.Theme.None;
     /// <summary>
-    /// Metadado de autoria, nome da companhia responsável
+    /// Authoring Metadata, Title
     /// </summary>
-    public virtual string Company {get; set;}
+    public string Title { get; set; } = string.Empty;
     /// <summary>
-    /// Metadado de autoria, data da criação da planilha
+    /// Authoring Metadata, Author name
     /// </summary>
-    public virtual string DateCreated {get; set;}
+    public string Author { get; set; } = string.Empty;
     /// <summary>
-    /// Metadado de autoria, comentários sobre a planilha
+    /// Authoring Metadata, Company name
     /// </summary>
-    public virtual string Comments { get; set; } 
+    public string Company { get; set; } = string.Empty;
     /// <summary>
-    /// Lista com todas as planilhas dentro do workbook excel
+    /// Authoring Metadata, creation date
     /// </summary>
-    public virtual IEnumerable<ExcelSheetModel> Sheets => _sheets?.ToList();
+    public string DateCreated { get; set; } = string.Empty;
+    /// <summary>
+    /// Authoring Metadata, Comments
+    /// </summary>
+    public string Comments { get; set; } = string.Empty;
+    /// <summary>
+    /// If the workbook is a Draft or a Release
+    /// </summary>
+    public bool IsDraft { get; set; } = false;
+    /// <summary>
+    /// The data to generate a watermark image
+    /// </summary>
+    public Watermark? Watermark { get; set; }
+    /// <summary>
+    /// List of all spreadsheets for this workbook, with their data and styling.
+    /// </summary>
+    public ExcelSheetModel[]? Sheets { get; set; }
 }

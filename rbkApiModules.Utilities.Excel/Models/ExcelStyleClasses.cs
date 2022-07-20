@@ -1,67 +1,40 @@
-﻿using ClosedXML.Excel;
-using rbkApiModules.Infrastructure.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using static rbkApiModules.Utilities.Excel.ClosedXMLDefs;
 
 namespace rbkApiModules.Utilities.Excel;
 
 /// <summary>
-/// Classe com estilos para aplicar as colunas
+/// Class representing a style sheet for the excel headers and column data
 /// </summary>
 public class ExcelStyleClasses
 {
-    protected ExcelStyleClasses()
-    {
-    }
-
-    public ExcelStyleClasses(
-        ClosedXMLDefs.ExcelFonts.FontName fontName = ClosedXMLDefs.ExcelFonts.FontName.Calibri,
-        int fontSize = 11,
-        bool bold = false,
-        bool italic = false,
-        int maxWidth = -1,
-        ClosedXMLDefs.ExcelDataTypes.DataType excelDataType = ClosedXMLDefs.ExcelDataTypes.DataType.Text,
-        string dataFormat = ""
-        )
-    {
-        FontName = fontName;
-        FontSize = fontSize;
-        MaxWidth = maxWidth;
-        ExcelDataType = excelDataType;
-        DataFormat = dataFormat;
-        Bold = bold;
-        Italic = italic;
-    }
-
     /// <summary>
-    /// Nome da fonte para ser usada com o grupo de dados. Ex: "Calibri", "Georgia", etc
+    /// Font that should be applied on the data set. Ex:"0" for Arial; "3" for Calibri, "8" for Georgia Pro, etc
     /// </summary>
-    public virtual ClosedXMLDefs.ExcelFonts.FontName FontName { get; set; }
+    public ExcelFonts.FontName FontName { get; set; } = ExcelFonts.FontName.Calibri;
     /// <summary>
-    /// Tamanho da fonte tal como no app do excel
+    /// Font size following the excel app standard integer size
     /// </summary>
-    public virtual int FontSize { get; set; }
+    public int FontSize { get; set; } = 11;
     /// <summary>
-    /// Tamanho da fonte tal como no app do excel
+    /// If bold property should be applied
     /// </summary>
-    public virtual bool Bold { get; set; }
+    public bool Bold { get; set; } = false;
     /// <summary>
-    /// Tamanho da fonte tal como no app do excel
+    /// If Italic property should be applied
     /// </summary>
-    public virtual bool Italic { get; set; }
-
+    public bool Italic { get; set; } = false;
     /// <summary>
-    /// O tipo de dado da coluna. Ex: Number, Text, Date, TimeSpan, etc.
+    /// The data sets Data Type. Ex: "0" for Number, "1" for Text, "2" for DateTime, etc.
     /// </summary>
-    public ClosedXMLDefs.ExcelDataTypes.DataType ExcelDataType { get; set; }
+    public ExcelDataTypes.DataType DataType { get; set; } = ExcelDataTypes.DataType.Text;
     /// <summary>
-    /// Formatação para um tipo específico. Ex: Para o tipo Number: DataFormat = "R$ 0,00" irá formatar a celula segundo o padrão de currency.
-    /// Para o tipo Date: DataFormat = "DD/MM/YYYY" irá formatar a data para o padrão utilizado no Brasil
+    /// Data formating for a specific type. Ex: For Number Type: DataFormat = "0.00" Will format the number with 2 decimal precision.
+    /// For the DateTime type: DataFormat = "dd/MM/yyyy" will format dates for the brazilian standard.
     /// </summary>
-    public virtual string DataFormat { get; set; }
+    public string DataFormat { get; set; } = string.Empty;
     /// <summary>
-    /// Se após o ajuste ao conteúdo da celula a largura deve obedecer um valor máximo. Útil para evitar que textos grandes ocupem espaços superiores ao do monitor.
+    /// Excell Max Column Width. If this property is set to a positive value, it will limit the Column to the MaxWidth.
+    /// Useful for large texts that often ocupy large portions the monitor's width.
     /// </summary>
-    public virtual int MaxWidth { get; set; }
+    public int MaxWidth { get; set; } = -1;
 }

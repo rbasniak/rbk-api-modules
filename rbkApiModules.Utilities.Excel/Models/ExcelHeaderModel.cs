@@ -1,21 +1,16 @@
-﻿using rbkApiModules.Infrastructure.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace rbkApiModules.Utilities.Excel;
+﻿namespace rbkApiModules.Utilities.Excel;
 
 /// <summary>
-/// Classe que representa uma linha de cabeçalho, seus dados e seus estilos.
+/// Class representing a full header row, data and styling.
 /// </summary>
 public class ExcelHeaderModel
 {
     /// <summary>
-    /// Lista de dados a serem apresentados na linha de cabeçalho
+    /// The data list to be displayed at the header row
     /// </summary>
-    public List<string> Data { get; set; }
+    public string[]? Data { get; set; }
     /// <summary>
-    /// Estilos a serem aplicados a esse cabeçalho
+    /// Styles to be applied to the header row
     /// </summary>
-    public ExcelStyleClasses Style { get; set; }
+    public ExcelStyleClasses Style { get; set; } = new ExcelStyleClasses();
 }

@@ -32,6 +32,7 @@ using rbkApiModules.Payment.SqlServer;
 using rbkApiModules.Paypal.SqlServer;
 using rbkApiModules.SharedUI;
 using rbkApiModules.UIAnnotations;
+using rbkApiModules.Utilities.Excel;
 using rbkApiModules.Workflow;
 using System;
 using System.Collections.Generic;

@@ -14,7 +14,7 @@ public class ExcelController : BaseController
     /// Recebe dados e classes de formatação em JSON e devolve uma planilha em Excel
     /// </summary>
     [HttpPost]
-    public async Task<ActionResult<FileDto>> GenerateExcel([FromBody] GenerateExcelFromJson.Command data)
+    public async Task<ActionResult<FileDto>> GenerateExcel(GenerateExcelFromJson.Command data)
     {
         var response = await Mediator.Send(data);
 

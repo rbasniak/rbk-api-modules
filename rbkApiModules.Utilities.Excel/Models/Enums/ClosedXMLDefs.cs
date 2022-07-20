@@ -1,9 +1,4 @@
 ﻿using ClosedXML.Excel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace rbkApiModules.Utilities.Excel;
 
@@ -69,9 +64,9 @@ public static class ClosedXMLDefs
             TableStyleDark11 = 53
         }
 
-        public static XLTableTheme GetTheme(int theme)
+        public static XLTableTheme GetTheme(Theme theme)
         {
-            switch (theme)
+            switch ((int)theme)
             {
                 case 1: return XLTableTheme.TableStyleLight1;
                 case 2: return XLTableTheme.TableStyleLight2;
@@ -147,9 +142,9 @@ public static class ClosedXMLDefs
             Georgia = 7
         }
 
-        public static string GetFontName(int font)
+        public static string GetFontName(FontName font)
         {
-            switch(font)
+            switch((int)font)
             {
                 case 0: return "Arial";
                 case 1: return "Arial Bold";
@@ -157,6 +152,8 @@ public static class ClosedXMLDefs
                 case 4: return "Calibri Light";
                 case 5: return "Courrier New";
                 case 6: return "Times New Roman";
+                case 7: return "Georgia";
+                case 8: return "Georgia Pro";
                 case 3:
                 default:
                     return "Calibri";
@@ -175,9 +172,9 @@ public static class ClosedXMLDefs
             TimeSpan = 4
         }
 
-        public static XLDataType GetDataType(int type)
+        public static XLDataType GetDataType(DataType type)
         {
-            switch(type)
+            switch((int)type)
             {
                 case 1: return XLDataType.Number;
                 case 2: return XLDataType.DateTime;
@@ -200,7 +197,7 @@ public static class ClosedXMLDefs
 
         public static XLSortOrder GetSortOrder(SortOrder order)
         {
-            switch (order)
+            switch ((int)order)
             {
                 case 1: return XLSortOrder.Descending;
                 case 0:

@@ -10,7 +10,7 @@ public class GenerateExcelFromJson
 {
     public class Command : IRequest<CommandResponse>
     {
-        public string ExcelJson { get; set; }
+        public ExcelWorkbookModel WorkbookModel { get; set; }
     }
 
     public class Validator: AbstractValidator<Command>  
@@ -35,7 +35,7 @@ public class GenerateExcelFromJson
 
         protected override async Task<object> ExecuteAsync(Command request)
         {
-            var result = _excelService.GenerateExcel(request.ExcelJson);
+            var result = _excelService.GenerateExcel(request.WorkbookModel);
 
             return result;
         }

@@ -1,25 +1,16 @@
-﻿using rbkApiModules.Infrastructure.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace rbkApiModules.Utilities.Excel;
+﻿namespace rbkApiModules.Utilities.Excel;
 
 /// <summary>
-/// Lista de dados a serem apresentados numa coluna, abaixo dos cabeçalhos
+/// Class with the data models and styling for a column data, to be displayed under a header title.
 /// </summary>
 public class ExcelColumnModel
 {
-
     /// <summary>
-    /// Lista de dados a serem apresentados na coluna
+    /// List of all data to be displayed on one column
     /// </summary>
-    public List<string> Data { get; set; }
+    public string[]? Data { get; set; }
     /// <summary>
-    /// Estilos a serem aplicados a essa coluna
+    /// Styles to be applied to this column's data
     /// </summary>
-    public ExcelStyleClasses Style { get; set; }
-    /// <summary>
-    /// Se deve aplicar o autofilter ou não
-    /// </summary>
+    public ExcelStyleClasses Style { get; set; } = new ExcelStyleClasses();
 }

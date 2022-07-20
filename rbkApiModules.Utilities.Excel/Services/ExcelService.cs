@@ -1,99 +1,130 @@
 ﻿
 using ClosedXML.Excel;
+using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
+using static rbkApiModules.Utilities.Excel.ClosedXMLDefs;
 
 namespace rbkApiModules.Utilities.Excel;
 public interface IExcelService
 {
-    FileDto GenerateExcel(string Json);
+    FileDto GenerateExcel(ExcelWorkbookModel workbookModel);
 }
 
 public class ExcelService : IExcelService
 {
-    public FileDto GenerateExcel(string Json)
+    public FileDto GenerateExcel(ExcelWorkbookModel workbookModel)
     {
-        MemoryStream stream = null;
-
-        ExcelWorkbookModel WorkbookModel = ParseJson(Json);
-        ExcelSheetModel model = new ExcelSheetModel();
+        var stream = new MemoryStream();
 
         using (var workbook = new XLWorkbook())
         {
-            var ws = workbook.Worksheets.Add("teste");
+            //Setup Workbook Metadata properties
+            SetWorkbookMetadata(workbookModel, workbook);
 
-            var headersCount = model.Header.Data.Count;
-            var linesCount = model.Columns[0].Data.Count;
-
-            ws.ShowGridLines = false;
-
-            var headerRange = "A1:" + GetExcelColumnName(headersCount) + "1";
-
-            ws.Cells(headerRange).Value = model.Header.Data;
-
-            var fullRange = "A1:" + GetExcelColumnName(headersCount) + (linesCount + 1).ToString();
-
-            for (int i = 0; i < linesCount; i++)
+            //Begin adding the sheets with it's data
+            if (workbookModel.Sheets != null)
             {
-                for (int j = 0; j < headersCount; j++)
+                foreach (var model in workbookModel.Sheets)
                 {
-                    var result = model.Header.Data[i];
-                    var property = Regex.Replace(model.Header.Data[j], "^[a-z]", m => m.Value.ToUpper());
-                    var value = result.GetType().GetProperty(property).GetValue(result, null)?.ToString();
+                    // Add the worksheet 
+                    var worksheet = AddWorksheet(workbook, model.Name);
+                   
+                    //Validate basic data before adding any content to the worksheet
+                    if (model != null && model.Header != null && model.Header.Data != null && model.Columns != null)
+                    {
+                        // Determine table size (Max column based on header data count;
+                        var maxColumnCount = model.Header.Data.Length;
+                        
+                        // Helper range variable for quick access to the headers
+                        var headerRange = worksheet.Range(1, 1, 1, maxColumnCount);
+                        foreach (var (cell, i) in headerRange.Cells().Select((value, i) => (value, i)))
+                        {
+                            cell.Value = model.Header.Data[i];
+                        }
 
-                    if (!String.IsNullOrEmpty(value) && value.Contains("<a href="))
-                    {
-                        result.GetType().GetProperty(property).SetValue(result, value.Replace("<a href=", "<a target=\"_blank\" href="));
-                        ws.Cell(i + 2, j + 1).Value = ExtractRefFromLink(value);
-                    }
-                    else
-                    {
-                        ws.Cell(i + 2, j + 1).Value = value;
+                        //Apply header styles
+                        SetHeaderStyles(model.Header.Style, headerRange);
+                        worksheet.Row(1).AdjustToContents();
+                        // Place the column data for each column
+                        foreach (var (column, i) in model.Columns.Select((value, i) => (value, i)))
+                        {
+                            // i starts at zero and columns at one so it needs to be incremented
+                            // Rows have to jump the headers rows so it is also incremented by one
+                            if (column.Data != null)
+                            {
+                                var columnRange = worksheet.Range(2, i + 1, column.Data.Length + 1, i + 1);
+                                foreach (var (cell, j) in columnRange.Cells().Select((value, j) => (value, j)))
+                                {
+                                    cell.Value = column.Data[j];
+                                }
+                                // Apply data typing and styling
+                                var ixlColumn = worksheet.Column(i + 1);
+                                SetConfigurationAndStyling(column.Style, columnRange);
+                                SetCellSizeAndWrapText(column.Style, ixlColumn);
+                            }
+                        }
+
+                        // Freeze the header row
+                        worksheet.SheetView.FreezeRows(1);
+
+                        // fetch the range with the used cells
+                        var rangeUsed = worksheet.RangeUsed();
+                        
+                        // fetch the inner range for data only
+                        var columnCount = rangeUsed.ColumnCount();
+                        var rowCount = rangeUsed.RowCount();
+                        if (columnCount > 1)
+                        {
+                            var innerRange = worksheet.Range(2, 1, rowCount, columnCount);
+
+                            if (model.ShouldSort)
+                            {
+                                if (rangeUsed.Columns().Count() >= model.SortColumn)
+                                {
+                                    innerRange.Sort(model.SortColumn, ExcelSort.GetSortOrder(model.SortOrder), model.MatchCase, model.IgnoreBlanks);
+                                }
+                            }
+
+                            // Setup a possible theme.
+                            // Important!!!! Themes come with autofiltering enabled.
+                            // For that reason, auto-filtering should only be enabled manualy if no theme was applied;
+                            if (workbookModel.Theme != ExcelThemes.Theme.None)
+                            {
+
+                                rangeUsed.CreateTable().Theme = ExcelThemes.GetTheme(workbookModel.Theme);
+                                SetVerticalDataSeparator(worksheet, columnCount, rowCount);
+                                worksheet.ShowGridLines = false;
+                            }
+                            else
+                            {
+                                rangeUsed.SetAutoFilter(true);
+                                worksheet.ShowGridLines = true;
+                            }
+
+                            if (workbookModel.IsDraft == true)
+                            {
+                                var watermarkModel = workbookModel.Watermark;
+                                if (watermarkModel != null)
+                                {
+                                    CreateWatermarkInWorksheet(watermarkModel, rangeUsed, worksheet);
+                                }
+
+                            }
+                        }
                     }
                 }
-            }
-
-            for (int i = 3; i <= linesCount + 1; i = i + 2)
-            {
-                var rowRange = "A" + i + ":" + GetExcelColumnName(headersCount) + i;
-                ws.Cells(rowRange).Style.Fill.SetPatternType(XLFillPatternValues.Solid);
-                ws.Cells(rowRange).Style.Fill.SetBackgroundColor(XLColor.LightGray);
-            }
-
-            //var range = ws.Range(1, 1, 5, 5);
-            // create the actual table
-            //var table = range.CreateTable();
-            // apply style
-            //namesTable.Theme = XLTableTheme.TableStyleLight12;
-
-            ws.Cells(headerRange).Style.Font.Bold = true;
-            ws.Cells(headerRange).Style.Font.SetFontColor(XLColor.White);
-            ws.Cells(headerRange).Style.Fill.SetPatternType(XLFillPatternValues.Solid);
-            ws.Cells(headerRange).Style.Fill.SetBackgroundColor(XLColor.FromArgb(0, 48, 48, 48));
-
-            ws.Cells(fullRange).Style.Border.SetOutsideBorder(XLBorderStyleValues.Medium);
-
-            ws.Cells(headerRange).Style.Border.SetOutsideBorder(XLBorderStyleValues.Medium);
-
-            var fullFormatingRange = "A1:" + GetExcelColumnName(headersCount - 1) + (linesCount + 1).ToString();
-            ws.Cells(fullFormatingRange).Style.Border.SetRightBorder(XLBorderStyleValues.Thin);
-
-            ws.RangeUsed().SetAutoFilter(true);
+            }        
             
-            ws.SheetView.FreezeRows(1);
-            ws.SheetView.FreezeColumns(1);
-
-            ws.ColumnsUsed().AdjustToContents();
-
-            ws.Cell(1, 1).Style.NumberFormat.Format = "$0.00";
-            ws.Cell(1, 1).Style.DateFormat.Format = "DD/MM/YYYY";
-            ws.Cell(1, 2).DataType = XLDataType.Number; // Use XLDataType.Number in 2018 and after    
-
+            //Save the excel workbook to a memory stream
             workbook.SaveAs(stream);
         }
-
+        // Create the FileDto to be returned as stream to the client
         var file = new FileDto()
         {
             ContentType = "application/vnd.ms-excel",
@@ -104,30 +135,210 @@ public class ExcelService : IExcelService
         return file;
     }
 
-    
-    private ExcelWorkbookModel ParseJson(string Json)
+    private IXLWorksheet AddWorksheet(IXLWorkbook workbook, string worksheetName)
     {
-        return new ExcelWorkbookModel();
+        var worksheet = workbook.Worksheets.Add(worksheetName);
+        worksheet.PageSetup.PageOrientation = XLPageOrientation.Landscape;
+        worksheet.PageSetup.PaperSize = XLPaperSize.A4Paper;
+        worksheet.PageSetup.FitToPages(1, 1);
+
+        return worksheet;
     }
 
-    private string GetExcelColumnName(int columnNumber)
+    private ExcelWorkbookModel ParseJson(string json)
     {
-        string columnName = "";
-
-        while (columnNumber > 0)
+        var workbook = JsonConvert.DeserializeObject<ExcelWorkbookModel>(json);
+        if (workbook == null)
         {
-            int modulo = (columnNumber - 1) % 26;
-            columnName = Convert.ToChar('A' + modulo) + columnName;
-            columnNumber = (columnNumber - modulo) / 26;
+            return new ExcelWorkbookModel();
+            //throw new SafeException("JSON inválido");
         }
+        return workbook;
+    }
 
-        return columnName;
+    private void SetVerticalDataSeparator(IXLWorksheet worksheet, int columnCount, int rowCount)
+    {
+        var innerRange = worksheet.Range(2, 1, rowCount, columnCount - 1);
+        innerRange.Style.Border.RightBorderColor = (XLColor.FromTheme(XLThemeColor.Background1));
+        innerRange.Style.Border.RightBorder = XLBorderStyleValues.Hair;
+    }
+
+    private void SetWorkbookMetadata(ExcelWorkbookModel workbookModel, XLWorkbook workbook)
+    {
+        workbook.Properties.Title = workbookModel.Title;
+        workbook.Properties.Author = workbookModel.Author;
+        try
+        {
+            workbook.Properties.Created = DateTime.ParseExact(workbookModel.DateCreated, "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture);
+        }
+        catch
+        {
+            workbook.Properties.Created = DateTime.Now;
+        }
+        workbook.Properties.Company = workbookModel.Company;
+        workbook.Properties.Comments = workbookModel.Comments;
+    }
+
+    private void SetConfigurationAndStyling(ExcelStyleClasses styles, IXLRange ixlRange)
+    {
+        // Set standard alignment
+        ixlRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+        ixlRange.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+        // Setup fonts
+        ixlRange.Style.Font.FontName = ExcelFonts.GetFontName(styles.FontName);
+        ixlRange.Style.Font.FontSize = styles.FontSize;
+        ixlRange.Style.Font.Bold = styles.Bold;
+        ixlRange.Style.Font.Italic = styles.Italic;
+
+        // Setup the DataType
+        ixlRange.DataType = ExcelDataTypes.GetDataType(styles.DataType);
+        if (!string.IsNullOrEmpty(styles.DataFormat))
+        {
+            if (styles.DataType == ExcelDataTypes.DataType.Number)
+            {
+                ixlRange.Style.NumberFormat.Format = styles.DataFormat;
+            }
+            else if (styles.DataType == ExcelDataTypes.DataType.DateTime)
+            {
+                ixlRange.Style.DateFormat.Format = styles.DataFormat;
+            }
+        }
+    }
+
+    private void SetCellSizeAndWrapText(ExcelStyleClasses styles, IXLColumn ixlColumn)
+    {
+        // Adjust width and height to content
+        ixlColumn.AdjustToContents();
+        if (styles.MaxWidth != -1 && ixlColumn.Width > styles.MaxWidth)
+        {
+            ixlColumn.Width = styles.MaxWidth;
+        }
+        else
+        {
+            //Give some room for the autofilter dropdowns that will overlap the text
+            ixlColumn.Width += 4;
+        }
+        // If column data type is text then extend wraptext to the whole column
+        if (styles.DataType == ExcelDataTypes.DataType.Text)
+        {
+            ixlColumn.Style.Alignment.WrapText = true;
+        }
+    }
+
+    private void SetHeaderStyles(ExcelStyleClasses styles, IXLRange ixlRange)
+    {
+        // Set standard alignment
+        ixlRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+        ixlRange.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+        // Setup fonts
+        ixlRange.Style.Font.FontName = ExcelFonts.GetFontName(styles.FontName);
+        ixlRange.Style.Font.FontSize = styles.FontSize;
+        ixlRange.Style.Font.Bold = styles.Bold;
+        ixlRange.Style.Font.Italic = styles.Italic;
+    }
+
+    private void CreateWatermarkInWorksheet(Watermark watermarkModel, IXLRange rangeUsed, IXLWorksheet worksheet)
+    {
+
+
+        if (watermarkModel != null)
+        {
+            // call drawtext() to create an image
+            var imageWatermark = DrawText(
+                watermarkModel.Text,
+                watermarkModel.FontName,
+                watermarkModel.FontSize,
+                watermarkModel.TextColor,
+                watermarkModel.Alpha,
+                30,
+                1024,
+                1024);
+
+
+            double totalColumnsWidth = 0;
+            double totalRowsHeight = 0;
+            foreach (var column in worksheet.ColumnsUsed())
+            {
+                totalColumnsWidth += column.Width;
+            }
+            foreach (var row in worksheet.RowsUsed())
+            {
+                totalRowsHeight += row.Height;
+            }
+            var pictureSize = totalColumnsWidth >= totalRowsHeight ? totalRowsHeight : totalColumnsWidth;
+            // To convert column width in pixel unit.
+            double pictureSizeInPixels = (pictureSize * 7) + 12;
+
+            var ixlPicture = worksheet.AddPicture(imageWatermark, "waterMark").MoveTo(worksheet.Cell("A2"));
+            double scale = pictureSizeInPixels / (double)ixlPicture.Width;
+            ixlPicture.Scale(scale);
+        }
+    }
+
+    /// <summary>
+    /// Creates an image that can be inserted as a watermark
+    /// </summary>
+    /// <returns>A text image</returns>
+    private Stream DrawText(string text, ExcelFonts.FontName fontName, int fontSize, string textColor, float alpha, int rotationAngle, int height, int width)
+    {
+        var stream = new MemoryStream();
+
+        //create a bitmap image with specified width and height
+        var img = new Bitmap(width, height);
+
+        var drawing = Graphics.FromImage(img);
+
+        //get the size of text
+        var font = new Font(ExcelFonts.GetFontName(fontName), fontSize);
+        var textSize = drawing.MeasureString(text, font);
+
+        //set rotation point
+        drawing.TranslateTransform((width - textSize.Width) / 2, (height - textSize.Height) / 2);
+
+        //rotate text
+        drawing.RotateTransform(-rotationAngle);
+
+        //reset translate transform
+        drawing.TranslateTransform(-(width - textSize.Width) / 2, -(height - textSize.Height) / 2);
+
+        //paint the background
+        drawing.Clear(Color.Transparent);
+
+        //create a brush for the text
+        int alphaValue = ((int)(alpha * 255)) << 24;
+        int color = Color.FromName(textColor).ToArgb();
+        var textBrush = new SolidBrush(Color.FromArgb(color + alphaValue));
+
+
+        //draw text on the image at center position
+        drawing.DrawString(text, font, textBrush, (width - textSize.Width) / 2, (height - textSize.Height) / 2);
+        //Save the drawing
+        drawing.Save();
+        //Save to Stream in .png Format for transparency
+        img.Save(stream, ImageFormat.Png);
+
+        return stream;
+    }
+
+    private ImageCodecInfo? GetEncoderInfo(string mimeType)
+    {
+        int j;
+        ImageCodecInfo[] encoders;
+        encoders = ImageCodecInfo.GetImageEncoders();
+        for (j = 0; j < encoders.Length; ++j)
+        {
+            if (encoders[j].MimeType == mimeType)
+                return encoders[j];
+        }
+        return null;
     }
 
     private string ExtractRefFromLink(string link)
     {
 
-        if (String.IsNullOrEmpty(link))
+        if (string.IsNullOrEmpty(link))
         {
             return "";
         }
@@ -139,7 +350,6 @@ public class ExcelService : IExcelService
 
         return value;
     }
-   
 }
 
 
