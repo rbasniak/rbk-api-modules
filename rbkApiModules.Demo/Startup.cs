@@ -72,6 +72,7 @@ namespace rbkApiModules.Demo
         {
             Assembly.GetAssembly(typeof(CreateUser.Command)),
             Assembly.GetAssembly(typeof(CommentEntity.Command)),
+            Assembly.GetAssembly(typeof(GenerateExcelFromJson.Command)),
             Assembly.GetAssembly(typeof(RenewAccessToken.Command)),
             Assembly.GetAssembly(typeof(SharedUIController)),
             Assembly.GetAssembly(typeof(GetUiDefinitions.Command)),
@@ -127,6 +128,8 @@ namespace rbkApiModules.Demo
             services.AddRbkApiCommentsModule();
 
             services.AddRbkApiNotificationsModule();
+
+            services.AddRbkApiExcelModule();
 
             services.AddScoped<IUserdataCommentService, UserdataCommentService>();
 

@@ -34,13 +34,13 @@ public class ExcelService : IExcelService
                 {
                     // Add the worksheet 
                     var worksheet = AddWorksheet(workbook, model.Name);
-                   
+
                     //Validate basic data before adding any content to the worksheet
                     if (model != null && model.Header != null && model.Header.Data != null && model.Columns != null)
                     {
                         // Determine table size (Max column based on header data count;
                         var maxColumnCount = model.Header.Data.Length;
-                        
+
                         // Helper range variable for quick access to the headers
                         var headerRange = worksheet.Range(1, 1, 1, maxColumnCount);
                         foreach (var (cell, i) in headerRange.Cells().Select((value, i) => (value, i)))
@@ -75,7 +75,7 @@ public class ExcelService : IExcelService
 
                         // fetch the range with the used cells
                         var rangeUsed = worksheet.RangeUsed();
-                        
+
                         // fetch the inner range for data only
                         var columnCount = rangeUsed.ColumnCount();
                         var rowCount = rangeUsed.RowCount();
@@ -119,20 +119,21 @@ public class ExcelService : IExcelService
                         }
                     }
                 }
-            }        
-            
+            }
+
             //Save the excel workbook to a memory stream
             workbook.SaveAs(stream);
-        }
-        // Create the FileDto to be returned as stream to the client
-        var file = new FileDto()
-        {
-            ContentType = "application/vnd.ms-excel",
-            FileName = "teste.xlsx",
-            FileStream = stream
-        };
+            stream.Seek(0, SeekOrigin.Begin);
+            // Create the FileDto to be returned as stream to the client
+            var file = new FileDto()
+            {
+                ContentType = "application/vnd.ms-excel",
+                FileName = workbookModel.FileName,
+                FileStream = stream
+            };
 
-        return file;
+            return file;
+        }
     }
 
     private IXLWorksheet AddWorksheet(IXLWorkbook workbook, string worksheetName)
@@ -186,7 +187,7 @@ public class ExcelService : IExcelService
         ixlRange.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
 
         // Setup fonts
-        ixlRange.Style.Font.FontName = ExcelFonts.GetFontName(styles.FontName);
+        ixlRange.Style.Font.FontName = ExcelFonts.GetFontName(styles.Font);
         ixlRange.Style.Font.FontSize = styles.FontSize;
         ixlRange.Style.Font.Bold = styles.Bold;
         ixlRange.Style.Font.Italic = styles.Italic;
@@ -233,7 +234,7 @@ public class ExcelService : IExcelService
         ixlRange.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
 
         // Setup fonts
-        ixlRange.Style.Font.FontName = ExcelFonts.GetFontName(styles.FontName);
+        ixlRange.Style.Font.FontName = ExcelFonts.GetFontName(styles.Font);
         ixlRange.Style.Font.FontSize = styles.FontSize;
         ixlRange.Style.Font.Bold = styles.Bold;
         ixlRange.Style.Font.Italic = styles.Italic;
@@ -241,14 +242,12 @@ public class ExcelService : IExcelService
 
     private void CreateWatermarkInWorksheet(Watermark watermarkModel, IXLRange rangeUsed, IXLWorksheet worksheet)
     {
-
-
         if (watermarkModel != null)
         {
             // call drawtext() to create an image
             var imageWatermark = DrawText(
                 watermarkModel.Text,
-                watermarkModel.FontName,
+                watermarkModel.Font,
                 watermarkModel.FontSize,
                 watermarkModel.TextColor,
                 watermarkModel.Alpha,
@@ -281,7 +280,7 @@ public class ExcelService : IExcelService
     /// Creates an image that can be inserted as a watermark
     /// </summary>
     /// <returns>A text image</returns>
-    private Stream DrawText(string text, ExcelFonts.FontName fontName, int fontSize, string textColor, float alpha, int rotationAngle, int height, int width)
+    private Stream DrawText(string text, ExcelFonts.FontName font, int fontSize, string textColor, float alpha, int rotationAngle, int height, int width)
     {
         var stream = new MemoryStream();
 
@@ -291,8 +290,8 @@ public class ExcelService : IExcelService
         var drawing = Graphics.FromImage(img);
 
         //get the size of text
-        var font = new Font(ExcelFonts.GetFontName(fontName), fontSize);
-        var textSize = drawing.MeasureString(text, font);
+        var systemFont = new Font(ExcelFonts.GetFontName(font), fontSize);
+        var textSize = drawing.MeasureString(text, systemFont);
 
         //set rotation point
         drawing.TranslateTransform((width - textSize.Width) / 2, (height - textSize.Height) / 2);
@@ -313,26 +312,13 @@ public class ExcelService : IExcelService
 
 
         //draw text on the image at center position
-        drawing.DrawString(text, font, textBrush, (width - textSize.Width) / 2, (height - textSize.Height) / 2);
+        drawing.DrawString(text, systemFont, textBrush, (width - textSize.Width) / 2, (height - textSize.Height) / 2);
         //Save the drawing
         drawing.Save();
         //Save to Stream in .png Format for transparency
         img.Save(stream, ImageFormat.Png);
 
         return stream;
-    }
-
-    private ImageCodecInfo? GetEncoderInfo(string mimeType)
-    {
-        int j;
-        ImageCodecInfo[] encoders;
-        encoders = ImageCodecInfo.GetImageEncoders();
-        for (j = 0; j < encoders.Length; ++j)
-        {
-            if (encoders[j].MimeType == mimeType)
-                return encoders[j];
-        }
-        return null;
     }
 
     private string ExtractRefFromLink(string link)

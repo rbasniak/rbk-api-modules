@@ -10,7 +10,7 @@ public class ExcelStyleClasses
     /// <summary>
     /// Font that should be applied on the data set. Ex:"0" for Arial; "3" for Calibri, "8" for Georgia Pro, etc
     /// </summary>
-    public ExcelFonts.FontName FontName { get; set; } = ExcelFonts.FontName.Calibri;
+    public ExcelFonts.FontName Font { get; set; } = ExcelFonts.FontName.Calibri;
     /// <summary>
     /// Font size following the excel app standard integer size
     /// </summary>

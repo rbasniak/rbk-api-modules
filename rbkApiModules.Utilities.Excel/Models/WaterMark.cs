@@ -23,7 +23,7 @@ public class Watermark
     /// <summary>
     /// The Font that will be used to write watermark
     /// </summary>
-    public ClosedXMLDefs.ExcelFonts.FontName FontName { get; set; } = ClosedXMLDefs.ExcelFonts.FontName.Calibri;
+    public ClosedXMLDefs.ExcelFonts.FontName Font { get; set; } = ClosedXMLDefs.ExcelFonts.FontName.Calibri;
     /// <summary>
     /// The angle for which the watermark should be rotated
     /// </summary>

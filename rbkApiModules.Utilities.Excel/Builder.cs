@@ -11,8 +11,8 @@ public static class Builder
     {
         services.RegisterApplicationServices(Assembly.GetAssembly(typeof(IExcelService)));
 
-        AssemblyScanner
-            .FindValidatorsInAssembly(Assembly.GetAssembly(typeof(GenerateExcelFromJson.Command)))
-                .ForEach(result => services.AddScoped(result.InterfaceType, result.ValidatorType));
+        //AssemblyScanner
+        //    .FindValidatorsInAssembly(Assembly.GetAssembly(typeof(GenerateExcelFromJson.Command)))
+        //        .ForEach(result => services.AddScoped(result.InterfaceType, result.ValidatorType));
     }
 }

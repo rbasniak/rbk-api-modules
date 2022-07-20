@@ -42,9 +42,9 @@ public class ExcelWorkbookModel
     /// <summary>
     /// The data to generate a watermark image
     /// </summary>
-    public Watermark? Watermark { get; set; }
+    public Watermark Watermark { get; set; }
     /// <summary>
     /// List of all spreadsheets for this workbook, with their data and styling.
     /// </summary>
-    public ExcelSheetModel[]? Sheets { get; set; }
+    public ExcelSheetModel[] Sheets { get; set; }
 }

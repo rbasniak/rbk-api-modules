@@ -8,9 +8,9 @@ public class ExcelHeaderModel
     /// <summary>
     /// The data list to be displayed at the header row
     /// </summary>
-    public string[]? Data { get; set; }
+    public string[] Data { get; set; }
     /// <summary>
     /// Styles to be applied to the header row
     /// </summary>
-    public ExcelStyleClasses Style { get; set; } = new ExcelStyleClasses();
+    public ExcelStyleClasses Style { get; set; }
 }

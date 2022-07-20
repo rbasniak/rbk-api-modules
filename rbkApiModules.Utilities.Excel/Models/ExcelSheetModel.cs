@@ -34,9 +34,9 @@ public class ExcelSheetModel
     /// <summary>
     /// The header data and styling container 
     /// </summary>
-    public ExcelHeaderModel? Header { get; set; }
+    public ExcelHeaderModel Header { get; set; }
     /// <summary>
     /// A list of all columns and their data/styling
     /// </summary>
-    public ExcelColumnModel[]? Columns { get; set; }
+    public ExcelColumnModel[] Columns { get; set; }
 }

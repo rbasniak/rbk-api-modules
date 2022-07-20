@@ -1,8 +1,8 @@
-﻿using FluentValidation;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 using rbkApiModules.Infrastructure.MediatR.Core;
+using Microsoft.EntityFrameworkCore;
 
 namespace rbkApiModules.Utilities.Excel;
 
@@ -11,16 +11,6 @@ public class GenerateExcelFromJson
     public class Command : IRequest<CommandResponse>
     {
         public ExcelWorkbookModel WorkbookModel { get; set; }
-    }
-
-    public class Validator: AbstractValidator<Command>  
-    {
-        private readonly IHttpContextAccessor _httpContextAccessor;
-
-        public Validator(IHttpContextAccessor httpContextAccessor)
-        {
-            _httpContextAccessor = httpContextAccessor;
-        }
     }
 
     public class Handler : BaseCommandHandler<Command>

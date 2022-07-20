@@ -8,9 +8,9 @@ public class ExcelColumnModel
     /// <summary>
     /// List of all data to be displayed on one column
     /// </summary>
-    public string[]? Data { get; set; }
+    public string[] Data { get; set; }
     /// <summary>
     /// Styles to be applied to this column's data
     /// </summary>
-    public ExcelStyleClasses Style { get; set; } = new ExcelStyleClasses();
+    public ExcelStyleClasses Style { get; set; }
 }
