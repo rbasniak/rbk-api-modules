@@ -298,7 +298,7 @@ public class ExcelService : IExcelService
         // Create a canvas size object
         var canvasSize = new SizeF(width, height);
         // Scale to applied to the drawn text size before fitting, this will be used in practice to make soome margin space 
-        var scale = 1.01;
+        var scale = 1.02;
         // Helper variable for decreasing font size if needed
         var fittedFontSize = fontSize;
         // get the size of text
