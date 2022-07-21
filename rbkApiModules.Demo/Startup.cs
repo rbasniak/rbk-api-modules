@@ -92,9 +92,11 @@ namespace rbkApiModules.Demo
 
         public void ConfigureServices(IServiceCollection services)
         {
+            var connection = System.Environment.OSVersion.Platform == PlatformID.Unix ? "DockerConnection" : "DefaultConnection";
+
             services.AddDbContext<DbContext, DatabaseContext>((scope, options) => options
                 .UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Database"))
+                    Configuration.GetConnectionString(connection).Replace("**CONTEXT**", "Database"))
                 .AddInterceptors(scope.GetRequiredService<DatabaseAnalyticsInterceptor>())
                 .AddInterceptors(scope.GetRequiredService<DatabaseDiagnosticsInterceptor>())
                 .EnableDetailedErrors()
@@ -146,9 +148,9 @@ namespace rbkApiModules.Demo
             }
             else
             {
-                services.AddSqlServerRbkApiAnalyticsModule(Configuration, Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Analytics"));
-                services.AddSqlServerRbkApiDiagnosticsModule(Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Diagnostics"));
-                services.AddSqlServerRbkApiLogsModule(Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Logs"));
+                services.AddSqlServerRbkApiAnalyticsModule(Configuration, Configuration.GetConnectionString(connection).Replace("**CONTEXT**", "Analytics"));
+                services.AddSqlServerRbkApiDiagnosticsModule(Configuration.GetConnectionString(connection).Replace("**CONTEXT**", "Diagnostics"));
+                services.AddSqlServerRbkApiLogsModule(Configuration.GetConnectionString(connection).Replace("**CONTEXT**", "Logs"));
             }    
 
             services.AddRbkApiPaypalModule<PaypalActions>();
