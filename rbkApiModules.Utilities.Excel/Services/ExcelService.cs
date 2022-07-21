@@ -107,17 +107,32 @@ public class ExcelService : IExcelService
                                 rangeUsed.SetAutoFilter(true);
                                 worksheet.ShowGridLines = true;
                             }
-
-                            if (workbookModel.IsDraft == true)
-                            {
-                                var watermarkModel = workbookModel.Watermark;
-                                if (watermarkModel != null)
-                                {
-                                    CreateWatermarkInWorksheet(watermarkModel, rangeUsed, worksheet);
-                                }
-
-                            }
                         }
+                    }
+                }
+            }
+
+            if (workbookModel.IsDraft == true)
+            {
+                var watermarkModel = workbookModel.Watermark;
+                if (watermarkModel != null)
+                {
+                    // call drawtext() to create an image
+                    var imageWatermark = DrawText(
+                    watermarkModel.Text,
+                    watermarkModel.Font,
+                    watermarkModel.FontSize,
+                    watermarkModel.TextColor,
+                    watermarkModel.Alpha,
+                    30,
+                    1024,
+                    1024);
+                    // Add the watermark to each worksheet
+                    foreach (var worksheet in workbook.Worksheets)
+                    {
+                        var rangeUsed = worksheet.RangeUsed();
+                        CreateWatermarkInWorksheet(imageWatermark, rangeUsed, worksheet);
+
                     }
                 }
             }
@@ -241,40 +256,26 @@ public class ExcelService : IExcelService
         ixlRange.Style.Font.Italic = styles.Italic;
     }
 
-    private void CreateWatermarkInWorksheet(Watermark watermarkModel, IXLRange rangeUsed, IXLWorksheet worksheet)
+    private void CreateWatermarkInWorksheet(Stream imageWatermark, IXLRange rangeUsed, IXLWorksheet worksheet)
     {
-        if (watermarkModel != null)
+        double totalColumnsWidth = 0;
+        double totalRowsHeight = 0;
+        foreach (var column in worksheet.ColumnsUsed())
         {
-            // call drawtext() to create an image
-            var imageWatermark = DrawText(
-                watermarkModel.Text,
-                watermarkModel.Font,
-                watermarkModel.FontSize,
-                watermarkModel.TextColor,
-                watermarkModel.Alpha,
-                30,
-                1024,
-                1024);
-
-
-            double totalColumnsWidth = 0;
-            double totalRowsHeight = 0;
-            foreach (var column in worksheet.ColumnsUsed())
-            {
-                totalColumnsWidth += column.Width;
-            }
-            foreach (var row in worksheet.RowsUsed())
-            {
-                totalRowsHeight += row.Height;
-            }
-            var pictureSize = totalColumnsWidth >= totalRowsHeight ? totalRowsHeight : totalColumnsWidth;
-            // To convert column width in pixel unit.
-            double pictureSizeInPixels = (pictureSize * 7) + 12;
-
-            var ixlPicture = worksheet.AddPicture(imageWatermark, "waterMark").MoveTo(worksheet.Cell("A2"));
-            double scale = pictureSizeInPixels / (double)ixlPicture.Width;
-            ixlPicture.Scale(scale);
+            totalColumnsWidth += column.Width;
         }
+        foreach (var row in worksheet.RowsUsed())
+        {
+            totalRowsHeight += row.Height;
+        }
+        var pictureSize = totalColumnsWidth >= totalRowsHeight ? totalRowsHeight : totalColumnsWidth;
+        // To convert column width in pixel unit.
+        double pictureSizeInPixels = (pictureSize * 7) + 12;
+
+        var ixlPicture = worksheet.AddPicture(imageWatermark, "waterMark").MoveTo(worksheet.Cell("A2"));
+        double scale = pictureSizeInPixels / (double)ixlPicture.Width;
+        ixlPicture.Scale(scale);
+
     }
 
     /// <summary>
@@ -287,21 +288,53 @@ public class ExcelService : IExcelService
 
         //create a bitmap image with specified width and height
         var img = new Bitmap(width, height);
-
         var drawing = Graphics.FromImage(img);
 
-        //get the size of text
-        var systemFont = new Font(ExcelFonts.GetFontName(font), fontSize);
-        var textSize = drawing.MeasureString(text, systemFont);
+        // Prepare string alignments
+        var stringFormat = new StringFormat();
+        stringFormat.Alignment = StringAlignment.Center;
+        stringFormat.LineAlignment = StringAlignment.Center;
+
+        // Create a canvas size object
+        var canvasSize = new SizeF(width, height);
+        // Scale to applied to the drawn text size before fitting, this will be used in practice to make soome margin space 
+        var scale = 1.01;
+        // Helper variable for decreasing font size if needed
+        var fittedFontSize = fontSize;
+        // get the size of text
+        var systemFont = new Font(ExcelFonts.GetFontName(font), fittedFontSize);
+        var textSize = drawing.MeasureString(text, systemFont, canvasSize, stringFormat);
+        var rectWidth = (textSize.Width * scale) / 2;
+        var rectHeight = (textSize.Height * scale) / 2;
+        var diagonal = Math.Sqrt(Math.Pow(rectWidth, 2) + Math.Pow(rectHeight, 2));
+        var diagonalAngle = Math.Atan(rectHeight / rectWidth);
+        var rotationAngleRadians = rotationAngle * Math.PI / 180.0;
+        var newHeight = diagonal * Math.Sin(diagonalAngle + rotationAngleRadians);
+        var newWidth = diagonal * Math.Cos(diagonalAngle - rotationAngleRadians);
+        
+        // Adjust the canvas to make room for rotation by Reducing the font Size to fit the content inside the canvas
+        // Will stop trying at the font size of one point
+        while ((newHeight > height / 2.0 || newWidth / 2.0 > width) && fittedFontSize > 1)
+        {
+            fittedFontSize = fittedFontSize - 1;
+            systemFont = new Font(ExcelFonts.GetFontName(font), fittedFontSize);
+            textSize = drawing.MeasureString(text, systemFont, canvasSize, stringFormat);
+            rectWidth = (textSize.Width * scale) / 2;
+            rectHeight = (textSize.Height * scale) / 2;
+            diagonal = Math.Sqrt(Math.Pow(rectWidth, 2) + Math.Pow(rectHeight, 2));
+            diagonalAngle = Math.Atan(rectHeight / rectWidth);
+            newHeight = diagonal * Math.Sin(diagonalAngle + rotationAngleRadians);
+            newWidth = diagonal * Math.Cos(diagonalAngle - rotationAngleRadians);
+        }
 
         //set rotation point
-        drawing.TranslateTransform((width - textSize.Width) / 2, (height - textSize.Height) / 2);
+        drawing.TranslateTransform(width/2, height/2);
 
-        //rotate text
+        //rotate the canvas
         drawing.RotateTransform(-rotationAngle);
 
         //reset translate transform
-        drawing.TranslateTransform(-(width - textSize.Width) / 2, -(height - textSize.Height) / 2);
+        drawing.TranslateTransform(-width/2, -height/2);
 
         //paint the background
         drawing.Clear(Color.Transparent);
@@ -311,9 +344,9 @@ public class ExcelService : IExcelService
         int color = Color.FromName(textColor).ToArgb();
         var textBrush = new SolidBrush(Color.FromArgb(color + alphaValue));
 
-
         //draw text on the image at center position
-        drawing.DrawString(text, systemFont, textBrush, (width - textSize.Width) / 2, (height - textSize.Height) / 2);
+        drawing.DrawString(text, systemFont, textBrush, width/2, height/2, stringFormat);
+        
         //Save the drawing
         drawing.Save();
         //Save to Stream in .png Format for transparency
