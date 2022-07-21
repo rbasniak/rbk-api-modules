@@ -11,14 +11,15 @@ using System.Text.RegularExpressions;
 using static rbkApiModules.Utilities.Excel.ClosedXMLDefs;
 
 namespace rbkApiModules.Utilities.Excel;
+
 public interface IExcelService
 {
-    FileDto GenerateExcel(ExcelWorkbookModel workbookModel);
+    FileDto GenerateSpreadsheetTablesFromWorkbookModel(ExcelWorkbookModel workbookModel);
 }
 
 public class ExcelService : IExcelService
 {
-    public FileDto GenerateExcel(ExcelWorkbookModel workbookModel)
+    public FileDto GenerateSpreadsheetTablesFromWorkbookModel(ExcelWorkbookModel workbookModel)
     {
         var stream = new MemoryStream();
 

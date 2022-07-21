@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace rbkApiModules.Utilities.Excel;
 
-public class GenerateExcelFromJson
+public class GenerateSpreadsheetTablesFromJson
 {
     public class Command : IRequest<CommandResponse>
     {
@@ -25,7 +25,7 @@ public class GenerateExcelFromJson
 
         protected override async Task<object> ExecuteAsync(Command request)
         {
-            var result = _excelService.GenerateExcel(request.WorkbookModel);
+            var result = _excelService.GenerateSpreadsheetTablesFromWorkbookModel(request.WorkbookModel);
 
             return result;
         }
