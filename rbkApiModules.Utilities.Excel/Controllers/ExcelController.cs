@@ -17,16 +17,8 @@ public class ExcelController : BaseController
     /// </summary>
     [HttpPost("generate-tables")]
     [AllowAnonymous]
-    public async Task<ActionResult<FileDto>> GenerateSpreadsheetTables(GenerateSpreadsheetTablesFromJson.Command data)
+    public async Task<ActionResult<ExcelsDetails>> GenerateSpreadsheetTables(GenerateSpreadsheetTablesFromJson.Command data)
     {
-        var response = await Mediator.Send(data);
-
-        if (response.IsValid)
-        {
-            var file = response.Result as FileDto;
-            return File(file.FileStream, file.ContentType, file.FileName);
-        }
-
-        return HttpResponse(response);
+        return HttpResponse(await Mediator.Send(data));
     }
 }

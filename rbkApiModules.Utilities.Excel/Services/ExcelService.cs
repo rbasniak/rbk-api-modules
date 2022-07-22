@@ -14,12 +14,12 @@ namespace rbkApiModules.Utilities.Excel;
 
 public interface IExcelService
 {
-    FileDto GenerateSpreadsheetTablesFromWorkbookModel(ExcelWorkbookModel workbookModel);
+    ExcelsDetails GenerateSpreadsheetTablesFromWorkbookModel(ExcelWorkbookModel workbookModel);
 }
 
 public class ExcelService : IExcelService
 {
-    public FileDto GenerateSpreadsheetTablesFromWorkbookModel(ExcelWorkbookModel workbookModel)
+    public ExcelsDetails GenerateSpreadsheetTablesFromWorkbookModel(ExcelWorkbookModel workbookModel)
     {
         var stream = new MemoryStream();
 
@@ -62,12 +62,12 @@ public class ExcelService : IExcelService
                                 var columnRange = worksheet.Range(2, i + 1, column.Data.Length + 1, i + 1);
                                 foreach (var (cell, j) in columnRange.Cells().Select((value, j) => (value, j)))
                                 {
-                                    cell.Value = column.Data[j];
+                                    AddValue(cell, column.Data[j], column.DataType, column.DataFormat);
                                 }
                                 // Apply data typing and styling
                                 var ixlColumn = worksheet.Column(i + 1);
                                 SetConfigurationAndStyling(column.Style, columnRange);
-                                SetCellSizeAndWrapText(column.Style, ixlColumn);
+                                SetCellSizeAndWrapText(column, ixlColumn);
                             }
                         }
 
@@ -95,10 +95,10 @@ public class ExcelService : IExcelService
                             // Setup a possible theme.
                             // Important!!!! Themes come with autofiltering enabled.
                             // For that reason, auto-filtering should only be enabled manualy if no theme was applied;
-                            if (workbookModel.Theme != ExcelThemes.Theme.None)
+                            if (model.Theme != ExcelThemes.Theme.None)
                             {
 
-                                rangeUsed.CreateTable().Theme = ExcelThemes.GetTheme(workbookModel.Theme);
+                                rangeUsed.CreateTable().Theme = ExcelThemes.GetTheme(model.Theme);
                                 SetVerticalDataSeparator(worksheet, columnCount, rowCount);
                                 worksheet.ShowGridLines = false;
                             }
@@ -141,12 +141,12 @@ public class ExcelService : IExcelService
             workbook.SaveAs(stream);
             stream.Seek(0, SeekOrigin.Begin);
             // Create the FileDto to be returned as stream to the client
-            var file = new FileDto()
+            var file = new ExcelsDetails()
             {
-                ContentType = "application/vnd.ms-excel",
                 FileName = workbookModel.FileName,
-                FileStream = stream
-            };
+                FileExtension = "xlsx",
+                File = Convert.ToBase64String(stream.ToArray())
+        };
 
             return file;
         }
@@ -157,41 +157,69 @@ public class ExcelService : IExcelService
         var worksheet = workbook.Worksheets.Add(worksheetName);
         worksheet.PageSetup.PageOrientation = XLPageOrientation.Landscape;
         worksheet.PageSetup.PaperSize = XLPaperSize.A4Paper;
-        worksheet.PageSetup.FitToPages(1, 1);
+        // worksheet.PageSetup.FitToPages(1, 1);
 
         return worksheet;
     }
 
-    private ExcelWorkbookModel ParseJson(string json)
+    private void AddValue(IXLCell cell, string value, ExcelDataTypes.DataType dataType, string dataFormat)
     {
-        var workbook = JsonConvert.DeserializeObject<ExcelWorkbookModel>(json);
-        if (workbook == null)
+        if (dataType == ExcelDataTypes.DataType.DateTime)
         {
-            return new ExcelWorkbookModel();
-            //throw new SafeException("JSON inválido");
+            bool parsed;
+            DateTime date;
+            if (dataFormat != null)
+            {
+                parsed = DateTime.TryParseExact(value, dataFormat, CultureInfo.InvariantCulture, DateTimeStyles.AllowWhiteSpaces, out date);
+
+            }
+            else
+            {
+                parsed = DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out date);
+            }
+            if (parsed == true)
+            {
+                cell.Value = date;
+                cell.DataType = ExcelDataTypes.GetDataType(dataType);
+                if (dataFormat != null)
+                {
+                    cell.Style.DateFormat.Format = dataFormat;
+                }
+            }
+            else
+            {
+                cell.Value = value;
+            }
         }
-        return workbook;
+        else
+        {
+            cell.DataType = ExcelDataTypes.GetDataType(dataType);
+            if (dataType == ExcelDataTypes.DataType.Number)
+            {
+                if (dataFormat != null)
+                {
+                    cell.Style.NumberFormat.Format = dataFormat;
+                }
+            }
+            cell.Value = value;
+        }
+
     }
 
     private void SetVerticalDataSeparator(IXLWorksheet worksheet, int columnCount, int rowCount)
     {
         var innerRange = worksheet.Range(2, 1, rowCount, columnCount - 1);
-        innerRange.Style.Border.RightBorderColor = (XLColor.FromTheme(XLThemeColor.Background1));
         innerRange.Style.Border.RightBorder = XLBorderStyleValues.Hair;
+        innerRange.Style.Border.RightBorderColor = (XLColor.FromTheme(XLThemeColor.Accent3));
     }
 
     private void SetWorkbookMetadata(ExcelWorkbookModel workbookModel, XLWorkbook workbook)
     {
         workbook.Properties.Title = workbookModel.Title;
         workbook.Properties.Author = workbookModel.Author;
-        try
-        {
-            workbook.Properties.Created = DateTime.ParseExact(workbookModel.DateCreated, "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture);
-        }
-        catch
-        {
-            workbook.Properties.Created = DateTime.Now;
-        }
+        
+        workbook.Properties.Created = DateTime.UtcNow;
+                
         workbook.Properties.Company = workbookModel.Company;
         workbook.Properties.Comments = workbookModel.Comments;
     }
@@ -207,29 +235,15 @@ public class ExcelService : IExcelService
         ixlRange.Style.Font.FontSize = styles.FontSize;
         ixlRange.Style.Font.Bold = styles.Bold;
         ixlRange.Style.Font.Italic = styles.Italic;
-
-        // Setup the DataType
-        ixlRange.DataType = ExcelDataTypes.GetDataType(styles.DataType);
-        if (!string.IsNullOrEmpty(styles.DataFormat))
-        {
-            if (styles.DataType == ExcelDataTypes.DataType.Number)
-            {
-                ixlRange.Style.NumberFormat.Format = styles.DataFormat;
-            }
-            else if (styles.DataType == ExcelDataTypes.DataType.DateTime)
-            {
-                ixlRange.Style.DateFormat.Format = styles.DataFormat;
-            }
-        }
     }
 
-    private void SetCellSizeAndWrapText(ExcelStyleClasses styles, IXLColumn ixlColumn)
+    private void SetCellSizeAndWrapText(ExcelColumnModel model, IXLColumn ixlColumn)
     {
         // Adjust width and height to content
         ixlColumn.AdjustToContents();
-        if (styles.MaxWidth != -1 && ixlColumn.Width > styles.MaxWidth)
+        if (model.MaxWidth != -1 && ixlColumn.Width > model.MaxWidth)
         {
-            ixlColumn.Width = styles.MaxWidth;
+            ixlColumn.Width = model.MaxWidth;
         }
         else
         {
@@ -237,7 +251,7 @@ public class ExcelService : IExcelService
             ixlColumn.Width += 4;
         }
         // If column data type is text then extend wraptext to the whole column
-        if (styles.DataType == ExcelDataTypes.DataType.Text)
+        if (model.DataType == ExcelDataTypes.DataType.Text)
         {
             ixlColumn.Style.Alignment.WrapText = true;
         }

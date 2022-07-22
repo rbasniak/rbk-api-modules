@@ -12,10 +12,6 @@ public class ExcelWorkbookModel
     /// </summary>
     public string FileName { get; set; } = "ExcelFile.xlsx";
     /// <summary>
-    /// If diferent from "None", applies a theme from excel's standard theme list
-    /// </summary>
-    public ExcelThemes.Theme Theme { get; set; } = ExcelThemes.Theme.None;
-    /// <summary>
     /// Authoring Metadata, Title
     /// </summary>
     public string Title { get; set; } = string.Empty;
@@ -27,10 +23,6 @@ public class ExcelWorkbookModel
     /// Authoring Metadata, Company name
     /// </summary>
     public string Company { get; set; } = string.Empty;
-    /// <summary>
-    /// Authoring Metadata, creation date
-    /// </summary>
-    public string DateCreated { get; set; } = string.Empty;
     /// <summary>
     /// Authoring Metadata, Comments
     /// </summary>

@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 using rbkApiModules.Infrastructure.MediatR.Core;
-using Microsoft.EntityFrameworkCore;
 
 namespace rbkApiModules.Utilities.Excel;
 

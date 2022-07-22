@@ -39,4 +39,13 @@ public class ExcelSheetModel
     /// A list of all columns and their data/styling
     /// </summary>
     public ExcelColumnModel[] Columns { get; set; }
+    /// <summary>
+    /// If diferent from "None", applies a theme from excel's standard theme list to this spreadsheet
+    /// </summary>
+    public ExcelThemes.Theme Theme { get; set; } = ExcelThemes.Theme.None;
+    /// <summary>
+    /// Sets the spreadsheet's tab background color. By default, it will not set a background color.
+    /// If the Tabcolor is set to "ByTheme", It will set the tab color to match the spreadsheet theme.
+    /// </summary>
+    public string TabColor { get; set; } = string.Empty;
 }

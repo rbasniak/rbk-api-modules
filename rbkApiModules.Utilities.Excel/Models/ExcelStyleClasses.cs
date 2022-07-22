@@ -23,18 +23,4 @@ public class ExcelStyleClasses
     /// If Italic property should be applied
     /// </summary>
     public bool Italic { get; set; } = false;
-    /// <summary>
-    /// The data sets Data Type. Ex: "0" for Number, "1" for Text, "2" for DateTime, etc.
-    /// </summary>
-    public ExcelDataTypes.DataType DataType { get; set; } = ExcelDataTypes.DataType.Text;
-    /// <summary>
-    /// Data formating for a specific type. Ex: For Number Type: DataFormat = "0.00" Will format the number with 2 decimal precision.
-    /// For the DateTime type: DataFormat = "dd/MM/yyyy" will format dates for the brazilian standard.
-    /// </summary>
-    public string DataFormat { get; set; } = string.Empty;
-    /// <summary>
-    /// Excell Max Column Width. If this property is set to a positive value, it will limit the Column to the MaxWidth.
-    /// Useful for large texts that often ocupy large portions the monitor's width.
-    /// </summary>
-    public int MaxWidth { get; set; } = -1;
 }
