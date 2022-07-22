@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using static rbkApiModules.Utilities.Excel.ClosedXMLDefs;
 
 namespace rbkApiModules.Utilities.Excel;
 
@@ -17,13 +18,13 @@ public class Watermark
     /// </summary>
     public float Alpha { get; set; } = 0;
     /// <summary>
-    /// String representing the color name. Ex: "Black", "Red", "Gray", etc.
+    /// Sets the text color using an Enum based on System.Drawing Color names. Ex: "Black", "Red", "Gray", etc.
     /// </summary>
-    public string TextColor { get; set; } = "Black";
+    public ExcelColors.Color TextColor { get; set; } = ExcelColors.Color.Black;
     /// <summary>
     /// The Font that will be used to write watermark
     /// </summary>
-    public ClosedXMLDefs.ExcelFonts.FontName Font { get; set; } = ClosedXMLDefs.ExcelFonts.FontName.Calibri;
+    public ExcelFonts.FontName Font { get; set; } = ExcelFonts.FontName.Calibri;
     /// <summary>
     /// The angle for which the watermark should be rotated
     /// </summary>

@@ -5,7 +5,7 @@ using rbkApiModules.Infrastructure.MediatR.Core;
 
 namespace rbkApiModules.Utilities.Excel;
 
-public class GenerateSpreadsheetTablesFromJson
+public class GenerateSpreadsheetTablesFromJsonAsBase64
 {
     public class Command : IRequest<CommandResponse>
     {

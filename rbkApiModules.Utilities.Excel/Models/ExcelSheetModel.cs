@@ -45,7 +45,7 @@ public class ExcelSheetModel
     public ExcelThemes.Theme Theme { get; set; } = ExcelThemes.Theme.None;
     /// <summary>
     /// Sets the spreadsheet's tab background color. By default, it will not set a background color.
-    /// If the Tabcolor is set to "ByTheme", It will set the tab color to match the spreadsheet theme.
+    /// Sets the text color using an Enum based on System.Drawing Color names. Ex: "Black", "Red", "Gray", etc.
     /// </summary>
-    public string TabColor { get; set; } = string.Empty;
+    public ExcelColors.Color TabColor { get; set; } = ExcelColors.Color.NoColor;
 }

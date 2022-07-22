@@ -1,6 +1,5 @@
 ﻿
 using ClosedXML.Excel;
-using Newtonsoft.Json;
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -15,11 +14,41 @@ namespace rbkApiModules.Utilities.Excel;
 public interface IExcelService
 {
     ExcelsDetails GenerateSpreadsheetTablesFromWorkbookModel(ExcelWorkbookModel workbookModel);
+    FileDto GenerateSpreadsheetTablesFromWorkbookModelAsFile(ExcelWorkbookModel workbookModel);
+    public MemoryStream GenerateSpreadsheetTablesFromWorkbookModelAsStream(ExcelWorkbookModel workbookModel);
 }
 
 public class ExcelService : IExcelService
 {
+    public FileDto GenerateSpreadsheetTablesFromWorkbookModelAsFile(ExcelWorkbookModel workbookModel)
+    {
+        var stream = GenerateSpreadsheetTablesFromWorkbookModelAsStream(workbookModel);
+        // Create the FileDto to be returned as stream to the client
+        var file = new FileDto()
+        {
+            FileName = workbookModel.FileName + ".xlsx",
+            ContentType = "application/vnd.ms-excel",
+            FileStream = stream
+        };
+    
+        return file;
+    }
     public ExcelsDetails GenerateSpreadsheetTablesFromWorkbookModel(ExcelWorkbookModel workbookModel)
+    {
+        var stream = GenerateSpreadsheetTablesFromWorkbookModelAsStream(workbookModel);
+
+        // Create the FileDto to be returned as stream to the client
+        var file = new ExcelsDetails()
+        {
+            FileName = workbookModel.FileName,
+            FileExtension = "xlsx",
+            File = Convert.ToBase64String(stream.ToArray())
+        };
+        
+        return file;
+    }
+
+    public MemoryStream GenerateSpreadsheetTablesFromWorkbookModelAsStream(ExcelWorkbookModel workbookModel)
     {
         var stream = new MemoryStream();
 
@@ -92,21 +121,8 @@ public class ExcelService : IExcelService
                                 }
                             }
 
-                            // Setup a possible theme.
-                            // Important!!!! Themes come with autofiltering enabled.
-                            // For that reason, auto-filtering should only be enabled manualy if no theme was applied;
-                            if (model.Theme != ExcelThemes.Theme.None)
-                            {
-
-                                rangeUsed.CreateTable().Theme = ExcelThemes.GetTheme(model.Theme);
-                                SetVerticalDataSeparator(worksheet, columnCount, rowCount);
-                                worksheet.ShowGridLines = false;
-                            }
-                            else
-                            {
-                                rangeUsed.SetAutoFilter(true);
-                                worksheet.ShowGridLines = true;
-                            }
+                            // Setup a theme.
+                            SetThemeForSpreadsheet(model, worksheet, columnCount, rowCount);
                         }
                     }
                 }
@@ -140,15 +156,7 @@ public class ExcelService : IExcelService
             //Save the excel workbook to a memory stream
             workbook.SaveAs(stream);
             stream.Seek(0, SeekOrigin.Begin);
-            // Create the FileDto to be returned as stream to the client
-            var file = new ExcelsDetails()
-            {
-                FileName = workbookModel.FileName,
-                FileExtension = "xlsx",
-                File = Convert.ToBase64String(stream.ToArray())
-        };
-
-            return file;
+            return stream;
         }
     }
 
@@ -162,7 +170,31 @@ public class ExcelService : IExcelService
         return worksheet;
     }
 
-    private void AddValue(IXLCell cell, string value, ExcelDataTypes.DataType dataType, string dataFormat)
+    private void SetThemeForSpreadsheet(ExcelSheetModel model, IXLWorksheet worksheet, int columnCount, int rowCount)
+    {
+        // Important!!!! Themes come with autofiltering enabled.
+        // For that reason, auto-filtering should only be enabled manualy if no theme was applied;
+        var rangeUsed = worksheet.RangeUsed();
+        if (model.Theme != ExcelThemes.Theme.None)
+        {
+            var table = rangeUsed.CreateTable();
+            table.Theme = ExcelThemes.GetTheme(model.Theme);
+            //Set tab colors
+            if (model.TabColor != ExcelColors.Color.NoColor)
+            { 
+                worksheet.SetTabColor(ExcelColors.GetColor(model.TabColor));
+            }
+            SetVerticalDataSeparator(worksheet, columnCount, rowCount);
+            worksheet.ShowGridLines = false;
+        }
+        else
+        {
+            rangeUsed.SetAutoFilter(true);
+            worksheet.ShowGridLines = true;
+        }
+    }
+
+private void AddValue(IXLCell cell, string value, ExcelDataTypes.DataType dataType, string dataFormat)
     {
         if (dataType == ExcelDataTypes.DataType.DateTime)
         {
@@ -210,7 +242,7 @@ public class ExcelService : IExcelService
     {
         var innerRange = worksheet.Range(2, 1, rowCount, columnCount - 1);
         innerRange.Style.Border.RightBorder = XLBorderStyleValues.Hair;
-        innerRange.Style.Border.RightBorderColor = (XLColor.FromTheme(XLThemeColor.Accent3));
+        //innerRange.Style.Border.RightBorderColor = (XLColor.FromTheme(XLThemeColor.Accent3));
     }
 
     private void SetWorkbookMetadata(ExcelWorkbookModel workbookModel, XLWorkbook workbook)
@@ -296,7 +328,7 @@ public class ExcelService : IExcelService
     /// Creates an image that can be inserted as a watermark
     /// </summary>
     /// <returns>A text image</returns>
-    private Stream DrawText(string text, ExcelFonts.FontName font, int fontSize, string textColor, float alpha, int rotationAngle, int height, int width)
+    private Stream DrawText(string text, ExcelFonts.FontName font, int fontSize, ExcelColors.Color textColor, float alpha, int rotationAngle, int height, int width)
     {
         var stream = new MemoryStream();
 
@@ -355,7 +387,7 @@ public class ExcelService : IExcelService
 
         //create a brush for the text
         int alphaValue = ((int)(alpha * 255)) << 24;
-        int color = Color.FromName(textColor).ToArgb();
+        int color = ExcelColors.GetColor(textColor).Color.ToArgb();
         var textBrush = new SolidBrush(Color.FromArgb(color + alphaValue));
 
         //draw text on the image at center position
@@ -367,22 +399,6 @@ public class ExcelService : IExcelService
         img.Save(stream, ImageFormat.Png);
 
         return stream;
-    }
-
-    private string ExtractRefFromLink(string link)
-    {
-
-        if (string.IsNullOrEmpty(link))
-        {
-            return "";
-        }
-
-        var beginTag = "<";
-        var endTag = ">";
-
-        var value = Regex.Replace(link, $@"{beginTag}(.+?){endTag}", "");
-
-        return value;
     }
 }
 

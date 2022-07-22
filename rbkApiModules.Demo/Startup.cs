@@ -72,7 +72,7 @@ namespace rbkApiModules.Demo
         {
             Assembly.GetAssembly(typeof(CreateUser.Command)),
             Assembly.GetAssembly(typeof(CommentEntity.Command)),
-            Assembly.GetAssembly(typeof(GenerateSpreadsheetTablesFromJson.Command)),
+            Assembly.GetAssembly(typeof(GenerateSpreadsheetTablesFromJsonAsBase64.Command)),
             Assembly.GetAssembly(typeof(RenewAccessToken.Command)),
             Assembly.GetAssembly(typeof(SharedUIController)),
             Assembly.GetAssembly(typeof(GetUiDefinitions.Command)),
