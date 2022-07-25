@@ -93,7 +93,7 @@ public class ExcelWorkbookModelJSonValidator : AbstractValidator<IExcelWorkbookM
         {
             if (sheet.SheetType == ClosedXMLDefs.ExcelSheetTypes.Type.Table)
             {
-                var tableSheet = sheet as ExcelSheetTableModel;
+                var tableSheet = sheet as ExcelTableSheetModel;
                 if (tableSheet.Columns == null || tableSheet.Header == null)
                 {
                     return false;

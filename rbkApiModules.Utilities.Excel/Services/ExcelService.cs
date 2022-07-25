@@ -65,66 +65,16 @@ public class ExcelService : IExcelService
                     // Add the worksheet 
                     var worksheet = AddWorksheet(workbook, model.Name);
 
-                    //Validate basic data before adding any content to the worksheet
-                    if (model != null && model.Header != null && model.Header.Data != null && model.Columns != null)
+                    if (model.SheetType == ExcelSheetTypes.Type.Table)
                     {
-                        // Determine table size (Max column based on header data count;
-                        var maxColumnCount = model.Header.Data.Length;
-
-                        // Helper range variable for quick access to the headers
-                        var headerRange = worksheet.Range(1, 1, 1, maxColumnCount);
-                        foreach (var (cell, i) in headerRange.Cells().Select((value, i) => (value, i)))
-                        {
-                            cell.Value = model.Header.Data[i];
-                        }
-
-                        //Apply header styles
-                        SetHeaderStyles(model.Header.Style, headerRange);
-                        worksheet.Row(1).AdjustToContents();
-                        // Place the column data for each column
-                        foreach (var (column, i) in model.Columns.Select((value, i) => (value, i)))
-                        {
-                            // i starts at zero and columns at one so it needs to be incremented
-                            // Rows have to jump the headers rows so it is also incremented by one
-                            if (column.Data != null)
-                            {
-                                var columnRange = worksheet.Range(2, i + 1, column.Data.Length + 1, i + 1);
-                                foreach (var (cell, j) in columnRange.Cells().Select((value, j) => (value, j)))
-                                {
-                                    AddValue(cell, column.Data[j], column.DataType, column.DataFormat);
-                                }
-                                // Apply data typing and styling
-                                var ixlColumn = worksheet.Column(i + 1);
-                                SetConfigurationAndStyling(column.Style, columnRange);
-                                SetCellSizeAndWrapText(column, ixlColumn);
-                            }
-                        }
-
-                        // Freeze the header row
-                        worksheet.SheetView.FreezeRows(1);
-
-                        // fetch the range with the used cells
-                        var rangeUsed = worksheet.RangeUsed();
-
-                        // fetch the inner range for data only
-                        var columnCount = rangeUsed.ColumnCount();
-                        var rowCount = rangeUsed.RowCount();
-                        if (columnCount > 1)
-                        {
-                            var innerRange = worksheet.Range(2, 1, rowCount, columnCount);
-
-                            if (model.ShouldSort)
-                            {
-                                if (rangeUsed.Columns().Count() >= model.SortColumn)
-                                {
-                                    innerRange.Sort(model.SortColumn, ExcelSort.GetSortOrder(model.SortOrder), model.MatchCase, model.IgnoreBlanks);
-                                }
-                            }
-
-                            // Setup a theme.
-                            SetThemeForSpreadsheet(model, worksheet, columnCount, rowCount);
-                        }
+                        AddTableDataToSheet(model, worksheet);
                     }
+                    else if (model.SheetType == ExcelSheetTypes.Type.Plot)
+                    {
+                        // TODO: Add plot handling methods
+                        continue;
+                    }
+                    
                 }
             }
 
@@ -162,15 +112,6 @@ public class ExcelService : IExcelService
 
     private IXLWorksheet AddWorksheet(IXLWorkbook workbook, string worksheetName)
     {
-        if (worksheetName.Count() == 0)
-        {
-            worksheetName = DateTime.UtcNow.ToShortTimeString();
-        } 
-        else if (worksheetName.Count() >= 31)
-        {
-            worksheetName = worksheetName.Substring(0, 31);
-        }
-        
         var worksheet = workbook.Worksheets.Add(worksheetName);
         worksheet.PageSetup.PageOrientation = XLPageOrientation.Landscape;
         worksheet.PageSetup.PaperSize = XLPaperSize.A4Paper;
@@ -179,7 +120,71 @@ public class ExcelService : IExcelService
         return worksheet;
     }
 
-    private void SetThemeForSpreadsheet(ExcelSheetTableModel model, IXLWorksheet worksheet, int columnCount, int rowCount)
+    private void AddTableDataToSheet(ExcelTableSheetModel model, IXLWorksheet worksheet)
+    {
+        //Validate basic data before adding any content to the worksheet
+        if (model != null && model.Header != null && model.Header.Data != null && model.Columns != null)
+        {
+            // Determine table size (Max column based on header data count;
+            var maxColumnCount = model.Header.Data.Length;
+
+            // Helper range variable for quick access to the headers
+            var headerRange = worksheet.Range(1, 1, 1, maxColumnCount);
+            foreach (var (cell, i) in headerRange.Cells().Select((value, i) => (value, i)))
+            {
+                cell.Value = model.Header.Data[i];
+            }
+
+            //Apply header styles
+            SetConfigurationAndStyling(model.Header.Style, headerRange);
+            worksheet.Row(1).AdjustToContents();
+            // Place the column data for each column
+            foreach (var (column, i) in model.Columns.Select((value, i) => (value, i)))
+            {
+                // i starts at zero and columns at one so it needs to be incremented
+                // Rows have to jump the headers rows so it is also incremented by one
+                if (column.Data != null)
+                {
+                    var columnRange = worksheet.Range(2, i + 1, column.Data.Length + 1, i + 1);
+                    foreach (var (cell, j) in columnRange.Cells().Select((value, j) => (value, j)))
+                    {
+                        AddValue(cell, column.Data[j], column.DataType, column.DataFormat);
+                    }
+                    // Apply data typing and styling
+                    var ixlColumn = worksheet.Column(i + 1);
+                    SetConfigurationAndStyling(column.Style, columnRange);
+                    SetCellSizeAndWrapText(column, ixlColumn);
+                }
+            }
+
+            // Freeze the header row
+            worksheet.SheetView.FreezeRows(1);
+
+            // fetch the range with the used cells
+            var rangeUsed = worksheet.RangeUsed();
+
+            // fetch the inner range for data only
+            var columnCount = rangeUsed.ColumnCount();
+            var rowCount = rangeUsed.RowCount();
+            if (columnCount > 1)
+            {
+                var innerRange = worksheet.Range(2, 1, rowCount, columnCount);
+
+                if (model.ShouldSort)
+                {
+                    if (rangeUsed.Columns().Count() >= model.SortColumn)
+                    {
+                        innerRange.Sort(model.SortColumn, ExcelSort.GetSortOrder(model.SortOrder), model.MatchCase, model.IgnoreBlanks);
+                    }
+                }
+
+                // Setup a theme.
+                SetThemeForSpreadsheet(model, worksheet, columnCount, rowCount);
+            }
+        }
+    }
+
+    private void SetThemeForSpreadsheet(ExcelTableSheetModel model, IXLWorksheet worksheet, int columnCount, int rowCount)
     {
         // Important!!!! Themes come with autofiltering enabled.
         // For that reason, auto-filtering should only be enabled manualy if no theme was applied;
@@ -298,38 +303,26 @@ private void AddValue(IXLCell cell, string value, ExcelDataTypes.DataType dataTy
         }
     }
 
-    private void SetHeaderStyles(ExcelStyleClasses styles, IXLRange ixlRange)
-    {
-        // Set standard alignment
-        ixlRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
-        ixlRange.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-
-        // Setup fonts
-        ixlRange.Style.Font.FontName = ExcelFonts.GetFontName(styles.Font);
-        ixlRange.Style.Font.FontSize = styles.FontSize;
-        ixlRange.Style.Font.Bold = styles.Bold;
-        ixlRange.Style.Font.Italic = styles.Italic;
-    }
-
     private void CreateWatermarkInWorksheet(Stream imageWatermark, IXLRange rangeUsed, IXLWorksheet worksheet)
     {
-        double totalColumnsWidth = 0;
-        double totalRowsHeight = 0;
-        foreach (var column in worksheet.ColumnsUsed())
-        {
-            totalColumnsWidth += column.Width;
-        }
-        foreach (var row in worksheet.RowsUsed())
-        {
-            totalRowsHeight += row.Height;
-        }
-        var pictureSize = totalColumnsWidth >= totalRowsHeight ? totalRowsHeight : totalColumnsWidth;
+        //double totalColumnsWidth = 0;
+        //double totalRowsHeight = 0;
+        //foreach (var column in worksheet.ColumnsUsed())
+        //{
+        //    totalColumnsWidth += column.Width;
+        //}
+        //foreach (var row in worksheet.RowsUsed())
+        //{
+        //    totalRowsHeight += row.Height;
+        //}
+        //var pictureSize = totalColumnsWidth >= totalRowsHeight ? totalRowsHeight : totalColumnsWidth;
         // To convert column width in pixel unit.
-        double pictureSizeInPixels = (pictureSize * 7) + 12;
+        //double pictureSizeInPixels = (pictureSize * 7) + 12;
 
-        var ixlPicture = worksheet.AddPicture(imageWatermark, "waterMark").MoveTo(worksheet.Cell("A2"));
-        double scale = pictureSizeInPixels / (double)ixlPicture.Width;
-        ixlPicture.Scale(scale);
+        var ixlPicture = worksheet.AddPicture(imageWatermark, "waterMark").MoveTo(worksheet.Cell("A2"), worksheet.Cell(rangeUsed.RowCount()+1, rangeUsed.ColumnCount()+1));
+        
+        //double scale = pictureSizeInPixels / (double)ixlPicture.Width;
+        //ixlPicture.Scale(scale);
 
     }
 

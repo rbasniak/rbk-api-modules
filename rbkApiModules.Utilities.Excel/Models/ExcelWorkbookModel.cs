@@ -38,5 +38,5 @@ public class ExcelWorkbookModel
     /// <summary>
     /// List of all spreadsheets for this workbook, with their data and styling.
     /// </summary>
-    public ExcelSheetTableModel[] Sheets { get; set; }
+    public ExcelTableSheetModel[] Sheets { get; set; }
 }

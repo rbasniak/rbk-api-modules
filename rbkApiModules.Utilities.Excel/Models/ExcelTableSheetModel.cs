@@ -5,7 +5,7 @@ namespace rbkApiModules.Utilities.Excel;
 /// <summary>
 /// Class representing a single spreadsheet inside an excel workbook.
 /// </summary>
-public class ExcelSheetTableModel: ExcelBaseSheetModel
+public class ExcelTableSheetModel: ExcelBaseSheetModel
 {
     /// <summary>
     /// If the spreasheet should be sorted
