@@ -5,12 +5,8 @@ namespace rbkApiModules.Utilities.Excel;
 /// <summary>
 /// Class representing a single spreadsheet inside an excel workbook.
 /// </summary>
-public class ExcelSheetModel
+public class ExcelSheetTableModel: ExcelBaseSheetModel
 {
-    /// <summary>
-    /// Spreasheet tab name
-    /// </summary>
-    public string Name { get; set; } = string.Empty;
     /// <summary>
     /// If the spreasheet should be sorted
     /// </summary>
@@ -43,9 +39,5 @@ public class ExcelSheetModel
     /// If diferent from "None", applies a theme from excel's standard theme list to this spreadsheet
     /// </summary>
     public ExcelThemes.Theme Theme { get; set; } = ExcelThemes.Theme.None;
-    /// <summary>
-    /// Sets the spreadsheet's tab background color. By default, it will not set a background color.
-    /// Sets the text color using an Enum based on System.Drawing Color names. Ex: "Black", "Red", "Gray", etc.
-    /// </summary>
-    public ExcelColors.Color TabColor { get; set; } = ExcelColors.Color.NoColor;
+    
 }

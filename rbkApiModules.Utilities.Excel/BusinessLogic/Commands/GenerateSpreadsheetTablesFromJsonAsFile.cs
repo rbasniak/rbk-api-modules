@@ -2,12 +2,13 @@
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 using rbkApiModules.Infrastructure.MediatR.Core;
+using FluentValidation;
 
 namespace rbkApiModules.Utilities.Excel;
 
 public class GenerateSpreadsheetTablesFromJsonAsFile
 {
-    public class Command : IRequest<CommandResponse>
+    public class Command : IRequest<CommandResponse>, IExcelWorkbookModelJSonValidator
     {
         public ExcelWorkbookModel WorkbookModel { get; set; }
     }

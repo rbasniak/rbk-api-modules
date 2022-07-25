@@ -4,6 +4,15 @@ namespace rbkApiModules.Utilities.Excel;
 
 public static class ClosedXMLDefs
 {
+    public static class ExcelSheetTypes
+    {
+        public enum Type
+        {
+            Table = 0,
+            Plot = 1
+        }
+    }
+
     public static class ExcelThemes
     {
         public enum Theme

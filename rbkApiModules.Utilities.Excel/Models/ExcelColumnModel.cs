@@ -25,7 +25,7 @@ public class ExcelColumnModel
     /// </summary>
     public string DataFormat { get; set; } = string.Empty;
     /// <summary>
-    /// Excell Max Column Width. If this property is set to a positive value, it will limit the Column to the MaxWidth.
+    /// Excel Max Column Width in POINT units (Not Pixels). If this property is set to a positive value, it will limit the Column to the MaxWidth.
     /// Useful for large texts that often ocupy large portions the monitor's width.
     /// </summary>
     public int MaxWidth { get; set; } = -1;

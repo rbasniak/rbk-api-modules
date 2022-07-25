@@ -14,7 +14,7 @@ public class ExcelWorkbookModel
     /// <summary>
     /// Authoring Metadata, Title
     /// </summary>
-    public string Title { get; set; } = string.Empty;
+    public string Info { get; set; } = string.Empty;
     /// <summary>
     /// Authoring Metadata, Author name
     /// </summary>
@@ -38,5 +38,5 @@ public class ExcelWorkbookModel
     /// <summary>
     /// List of all spreadsheets for this workbook, with their data and styling.
     /// </summary>
-    public ExcelSheetModel[] Sheets { get; set; }
+    public ExcelSheetTableModel[] Sheets { get; set; }
 }

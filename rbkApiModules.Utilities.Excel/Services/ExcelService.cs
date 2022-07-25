@@ -162,6 +162,15 @@ public class ExcelService : IExcelService
 
     private IXLWorksheet AddWorksheet(IXLWorkbook workbook, string worksheetName)
     {
+        if (worksheetName.Count() == 0)
+        {
+            worksheetName = DateTime.UtcNow.ToShortTimeString();
+        } 
+        else if (worksheetName.Count() >= 31)
+        {
+            worksheetName = worksheetName.Substring(0, 31);
+        }
+        
         var worksheet = workbook.Worksheets.Add(worksheetName);
         worksheet.PageSetup.PageOrientation = XLPageOrientation.Landscape;
         worksheet.PageSetup.PaperSize = XLPaperSize.A4Paper;
@@ -170,7 +179,7 @@ public class ExcelService : IExcelService
         return worksheet;
     }
 
-    private void SetThemeForSpreadsheet(ExcelSheetModel model, IXLWorksheet worksheet, int columnCount, int rowCount)
+    private void SetThemeForSpreadsheet(ExcelSheetTableModel model, IXLWorksheet worksheet, int columnCount, int rowCount)
     {
         // Important!!!! Themes come with autofiltering enabled.
         // For that reason, auto-filtering should only be enabled manualy if no theme was applied;
@@ -247,7 +256,7 @@ private void AddValue(IXLCell cell, string value, ExcelDataTypes.DataType dataTy
 
     private void SetWorkbookMetadata(ExcelWorkbookModel workbookModel, XLWorkbook workbook)
     {
-        workbook.Properties.Title = workbookModel.Title;
+        workbook.Properties.Title = workbookModel.Info;
         workbook.Properties.Author = workbookModel.Author;
         
         workbook.Properties.Created = DateTime.UtcNow;
