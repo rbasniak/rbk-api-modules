@@ -178,7 +178,8 @@ public static class ClosedXMLDefs
             Number = 1,
             DateTime = 2,
             Boolean = 3,
-            TimeSpan = 4
+            TimeSpan = 4,
+            HyperLink = 5,
         }
 
         public static XLDataType GetDataType(DataType type)

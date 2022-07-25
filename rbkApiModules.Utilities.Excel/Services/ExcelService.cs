@@ -58,25 +58,22 @@ public class ExcelService : IExcelService
             SetWorkbookMetadata(workbookModel, workbook);
 
             //Begin adding the sheets with it's data
-            if (workbookModel.Sheets != null)
+            foreach (var model in workbookModel.AllSheets)
             {
-                foreach (var model in workbookModel.Sheets)
-                {
-                    // Add the worksheet 
-                    var worksheet = AddWorksheet(workbook, model.Name);
+            // Add the worksheet 
+                var worksheet = AddWorksheet(workbook, model.Name);
 
-                    if (model.SheetType == ExcelSheetTypes.Type.Table)
-                    {
-                        AddTableDataToSheet(model, worksheet);
-                    }
-                    else if (model.SheetType == ExcelSheetTypes.Type.Plot)
-                    {
-                        // TODO: Add plot handling methods
-                        continue;
-                    }
-                    
+                if (model.SheetType == ExcelSheetTypes.Type.Table)
+                {
+                    AddTableDataToSheet(model as ExcelTableSheetModel, worksheet);
                 }
+                else if (model.SheetType == ExcelSheetTypes.Type.Plot)
+                {
+                    // TODO: Add plot handling methods
+                    continue;
+                }        
             }
+            
 
             if (workbookModel.IsDraft == true)
             {
@@ -90,9 +87,9 @@ public class ExcelService : IExcelService
                     watermarkModel.FontSize,
                     watermarkModel.TextColor,
                     watermarkModel.Alpha,
-                    30,
-                    1024,
-                    1024);
+                    45,
+                    800,
+                    800);
                     // Add the watermark to each worksheet
                     foreach (var worksheet in workbook.Worksheets)
                     {
@@ -210,6 +207,7 @@ public class ExcelService : IExcelService
 
 private void AddValue(IXLCell cell, string value, ExcelDataTypes.DataType dataType, string dataFormat)
     {
+        // Try to parse and add data as date type
         if (dataType == ExcelDataTypes.DataType.DateTime)
         {
             bool parsed;
@@ -237,6 +235,13 @@ private void AddValue(IXLCell cell, string value, ExcelDataTypes.DataType dataTy
                 cell.Value = value;
             }
         }
+        // Create Hyperlinks
+        else if (dataType == ExcelDataTypes.DataType.HyperLink)
+        {
+            cell.Value = value; 
+            cell.SetHyperlink(new XLHyperlink(cell));
+        }
+        // Create any other data type and try to add possible format string
         else
         {
             cell.DataType = ExcelDataTypes.GetDataType(dataType);
@@ -305,24 +310,29 @@ private void AddValue(IXLCell cell, string value, ExcelDataTypes.DataType dataTy
 
     private void CreateWatermarkInWorksheet(Stream imageWatermark, IXLRange rangeUsed, IXLWorksheet worksheet)
     {
-        //double totalColumnsWidth = 0;
-        //double totalRowsHeight = 0;
-        //foreach (var column in worksheet.ColumnsUsed())
-        //{
-        //    totalColumnsWidth += column.Width;
-        //}
-        //foreach (var row in worksheet.RowsUsed())
-        //{
-        //    totalRowsHeight += row.Height;
-        //}
-        //var pictureSize = totalColumnsWidth >= totalRowsHeight ? totalRowsHeight : totalColumnsWidth;
-        // To convert column width in pixel unit.
-        //double pictureSizeInPixels = (pictureSize * 7) + 12;
-
-        var ixlPicture = worksheet.AddPicture(imageWatermark, "waterMark").MoveTo(worksheet.Cell("A2"), worksheet.Cell(rangeUsed.RowCount()+1, rangeUsed.ColumnCount()+1));
+        double totalColumnsWidth = 0;
+        double totalRowsHeight = 0;
+        foreach (var column in worksheet.ColumnsUsed())
+        {
+            totalColumnsWidth += column.Width;
+        }
+        foreach (var row in worksheet.RowsUsed())
+        {
+            totalRowsHeight += row.Height;
+        }
+        var scaledPictureSize = totalColumnsWidth >= totalRowsHeight ? totalRowsHeight : totalColumnsWidth;
         
-        //double scale = pictureSizeInPixels / (double)ixlPicture.Width;
-        //ixlPicture.Scale(scale);
+        // To convert column width in pixel unit.
+        double scaledPictureSizeInPixels = (scaledPictureSize * 7) + 12;
+        if (scaledPictureSizeInPixels > 800)
+            scaledPictureSizeInPixels = 800;
+
+        // Place the picture with Top-Left at Cell A2
+        var ixlPicture = worksheet.AddPicture(imageWatermark, "waterMark").MoveTo(worksheet.Cell("A2"));
+
+        //Scale the image
+        double scale = scaledPictureSizeInPixels / (double)ixlPicture.Width;
+        ixlPicture.Scale(scale);
 
     }
 

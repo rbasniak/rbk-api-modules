@@ -25,4 +25,8 @@ public class ExcelBaseSheetModel
     /// Data type to be exhibited on the sheet tab. Ex: Table Data, Plots, etc.
     /// </summary>
     public ExcelSheetTypes.Type SheetType { get; set; } = ExcelSheetTypes.Type.Table;
+    /// <summary>
+    /// Tab order in which this sheet should be created 
+    /// </summary>
+    public int TabIndex { get; set; }
 }

@@ -1,4 +1,6 @@
-﻿using static rbkApiModules.Utilities.Excel.ClosedXMLDefs;
+﻿using System.Collections.Generic;
+using System.Linq;
+using static rbkApiModules.Utilities.Excel.ClosedXMLDefs;
 
 namespace rbkApiModules.Utilities.Excel;
 
@@ -36,7 +38,27 @@ public class ExcelWorkbookModel
     /// </summary>
     public Watermark Watermark { get; set; }
     /// <summary>
-    /// List of all spreadsheets for this workbook, with their data and styling.
+    /// List of all spreadsheets for this workbook, with tabular data and styling.
     /// </summary>
-    public ExcelTableSheetModel[] Sheets { get; set; }
+    public ExcelTableSheetModel[] Tables { get; set; }
+    /// <summary>
+    /// List of all plot sheets for this workbook, with plot, their data and styling.
+    /// </summary>
+    public ExcelPlotSheetModel[] Plots { get; set; }
+    public IEnumerable<ExcelBaseSheetModel> AllSheets
+    {
+        get
+        {
+            var allSheets = new List<ExcelBaseSheetModel>();
+            if (Tables != null)
+            {
+                allSheets.AddRange(Tables);
+            }
+            if (Plots != null)
+            {
+                allSheets.AddRange(Plots);
+            }
+            return allSheets.OrderBy(x => x.TabIndex);
+        }
+    }
 }

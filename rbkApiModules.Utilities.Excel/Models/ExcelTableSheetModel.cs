@@ -3,7 +3,7 @@
 namespace rbkApiModules.Utilities.Excel;
 
 /// <summary>
-/// Class representing a single spreadsheet inside an excel workbook.
+/// Class representing a single spreadsheet, holding table data, inside an excel workbook.
 /// </summary>
 public class ExcelTableSheetModel: ExcelBaseSheetModel
 {

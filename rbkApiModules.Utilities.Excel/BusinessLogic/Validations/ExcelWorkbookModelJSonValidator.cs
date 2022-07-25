@@ -23,6 +23,7 @@ public class ExcelWorkbookModelJSonValidator : AbstractValidator<IExcelWorkbookM
         .Must(NotHaveEmptySheetName).WithMessage("Sheet Name cannot be empty")
         .Must(NotHaveSheetNameGreaterThenThirtyOneChars).WithMessage("Sheet Name cannot have more than 31 characters")
         .Must(NotHaveRepeatedSheetNames).WithMessage("Workbook models containing more than one sheet must have unique sheet names for the tabs")
+        .Must(HaveContinuousTabIndexCount).WithMessage("Tab Index must be continuous, cannot have skip numbers")
         // Table Type validations
         .Must(ForTableTypeHaveAtLeastOndeHeaderAndOneColumn).WithMessage("The workbook model have at least one column with one header")
         .Must(ForTableTypeNotHaveRepeatedHeaderName).WithMessage("Headers inside the same spreadsheet must have unique names");
@@ -38,12 +39,12 @@ public class ExcelWorkbookModelJSonValidator : AbstractValidator<IExcelWorkbookM
 
     private bool ContainAtLeastOneSheet(ExcelWorkbookModel workbookModel)
     {
-        return workbookModel.Sheets != null;
+        return (workbookModel.Tables != null && workbookModel.Plots != null);
     }
 
     private bool NotHaveEmptySheetName(ExcelWorkbookModel workbookModel)
     {
-        foreach (var sheet in workbookModel.Sheets)
+        foreach (var sheet in workbookModel.AllSheets)
         {
             if (string.IsNullOrEmpty(sheet.Name))
             {
@@ -55,7 +56,7 @@ public class ExcelWorkbookModelJSonValidator : AbstractValidator<IExcelWorkbookM
 
     private bool NotHaveSheetNameGreaterThenThirtyOneChars(ExcelWorkbookModel workbookModel)
     {
-        foreach (var sheet in workbookModel.Sheets)
+        foreach (var sheet in workbookModel.AllSheets)
         {
             if (sheet.Name.Length > 31)
             {
@@ -68,7 +69,7 @@ public class ExcelWorkbookModelJSonValidator : AbstractValidator<IExcelWorkbookM
     private bool NotHaveRepeatedSheetNames(ExcelWorkbookModel workbookModel)
     {
         var names = new List<string>();
-        foreach (var sheet in workbookModel.Sheets)
+        foreach (var sheet in workbookModel.AllSheets)
         {
             if (names.Contains(sheet.Name.ToLower()))
             {
@@ -82,6 +83,23 @@ public class ExcelWorkbookModelJSonValidator : AbstractValidator<IExcelWorkbookM
         return true;
     }
 
+    private bool HaveContinuousTabIndexCount(ExcelWorkbookModel workbookModel)
+    {
+        var count = 1;
+        foreach (var sheet in workbookModel.AllSheets)
+        {
+            if (sheet.TabIndex != count)
+            {
+                return false;
+            }
+            else
+            {
+                count++;
+            }
+        }
+        return true;
+    }
+
     #endregion
 
     #region Table Validations
@@ -89,20 +107,19 @@ public class ExcelWorkbookModelJSonValidator : AbstractValidator<IExcelWorkbookM
     // Table Type validations
     private bool ForTableTypeHaveAtLeastOndeHeaderAndOneColumn(ExcelWorkbookModel workbookModel)
     {
-        foreach (var sheet in workbookModel.Sheets)
+        foreach (var sheet in workbookModel.Tables)
         {
             if (sheet.SheetType == ClosedXMLDefs.ExcelSheetTypes.Type.Table)
             {
-                var tableSheet = sheet as ExcelTableSheetModel;
-                if (tableSheet.Columns == null || tableSheet.Header == null)
+                if (sheet.Columns == null || sheet.Header == null)
                 {
                     return false;
                 }
-                if (tableSheet.Header.Data == null)
+                if (sheet.Header.Data == null)
                 {
                     return false;
                 }
-                if (tableSheet.Columns.Length == 0 || tableSheet.Header.Data.Length == 0)
+                if (sheet.Columns.Length == 0 || sheet.Header.Data.Length == 0)
                 {
                     return false;
                 }
@@ -113,7 +130,7 @@ public class ExcelWorkbookModelJSonValidator : AbstractValidator<IExcelWorkbookM
 
     private bool ForTableTypeNotHaveRepeatedHeaderName(ExcelWorkbookModel workbookModel)
     {
-        foreach (var sheet in workbookModel.Sheets)
+        foreach (var sheet in workbookModel.Tables)
         {
             var names = new List<string>();
             if (sheet.SheetType == ClosedXMLDefs.ExcelSheetTypes.Type.Table)
