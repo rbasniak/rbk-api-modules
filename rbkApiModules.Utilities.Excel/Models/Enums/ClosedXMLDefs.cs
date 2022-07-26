@@ -148,7 +148,8 @@ public static class ClosedXMLDefs
             CalibriLight = 4,
             CourierNew = 5,
             TimesNewRoman = 6,
-            Georgia = 7
+            Georgia = 7,
+            GerogiaPro = 8,
         }
 
         public static string GetFontName(FontName font)

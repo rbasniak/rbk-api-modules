@@ -44,7 +44,7 @@ public class ExcelWorkbookModel
     /// <summary>
     /// List of all plot sheets for this workbook, with plot, their data and styling.
     /// </summary>
-    public ExcelPlotSheetModel[] Plots { get; set; }
+    public ExcelChartSheetModel[] Charts { get; set; }
     public IEnumerable<ExcelBaseSheetModel> AllSheets
     {
         get
@@ -54,9 +54,9 @@ public class ExcelWorkbookModel
             {
                 allSheets.AddRange(Tables);
             }
-            if (Plots != null)
+            if (Charts != null)
             {
-                allSheets.AddRange(Plots);
+                allSheets.AddRange(Charts);
             }
             return allSheets.OrderBy(x => x.TabIndex);
         }

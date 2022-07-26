@@ -82,14 +82,14 @@ public class ExcelService : IExcelService
                 {
                     // call drawtext() to create an image
                     var imageWatermark = DrawText(
-                    watermarkModel.Text,
-                    watermarkModel.Font,
-                    watermarkModel.FontSize,
-                    watermarkModel.TextColor,
-                    watermarkModel.Alpha,
-                    45,
-                    800,
-                    800);
+                        watermarkModel.Text,
+                        watermarkModel.Font,
+                        watermarkModel.FontSize,
+                        watermarkModel.TextColor,
+                        watermarkModel.Alpha,
+                        watermarkModel.RotationAngle,
+                        800,
+                        800);
                     // Add the watermark to each worksheet
                     foreach (var worksheet in workbook.Worksheets)
                     {

@@ -23,7 +23,7 @@ public class ExcelWorkbookModelJSonValidator : AbstractValidator<IExcelWorkbookM
         .Must(NotHaveEmptySheetName).WithMessage("Sheet Name cannot be empty")
         .Must(NotHaveSheetNameGreaterThenThirtyOneChars).WithMessage("Sheet Name cannot have more than 31 characters")
         .Must(NotHaveRepeatedSheetNames).WithMessage("Workbook models containing more than one sheet must have unique sheet names for the tabs")
-        .Must(HaveContinuousTabIndexCount).WithMessage("Tab Index must be continuous, cannot have skip numbers")
+        .Must(HaveContinuousTabIndexCount).WithMessage("Tab Index must be continuous and start from ZERO. It cannot have skip numbers")
         // Table Type validations
         .Must(ForTableTypeHaveAtLeastOndeHeaderAndOneColumn).WithMessage("The workbook model have at least one column with one header")
         .Must(ForTableTypeNotHaveRepeatedHeaderName).WithMessage("Headers inside the same spreadsheet must have unique names");
@@ -39,7 +39,7 @@ public class ExcelWorkbookModelJSonValidator : AbstractValidator<IExcelWorkbookM
 
     private bool ContainAtLeastOneSheet(ExcelWorkbookModel workbookModel)
     {
-        return (workbookModel.Tables != null && workbookModel.Plots != null);
+        return (workbookModel.Tables != null && workbookModel.Charts != null);
     }
 
     private bool NotHaveEmptySheetName(ExcelWorkbookModel workbookModel)
@@ -85,7 +85,7 @@ public class ExcelWorkbookModelJSonValidator : AbstractValidator<IExcelWorkbookM
 
     private bool HaveContinuousTabIndexCount(ExcelWorkbookModel workbookModel)
     {
-        var count = 1;
+        var count = 0;
         foreach (var sheet in workbookModel.AllSheets)
         {
             if (sheet.TabIndex != count)
