@@ -153,9 +153,9 @@ public class ExcelWorkbookModelJSonValidator : AbstractValidator<IExcelWorkbookM
 
     #endregion
 
-    #region Plot Validations
+    #region Chart Validations
 
-    // Future Plot Type Validations
+    // Future Chart Type Validations
 
     #endregion
 }

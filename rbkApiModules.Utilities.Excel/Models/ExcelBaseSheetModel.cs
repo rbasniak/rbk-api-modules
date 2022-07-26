@@ -8,7 +8,7 @@ using static rbkApiModules.Utilities.Excel.ClosedXMLDefs;
 namespace rbkApiModules.Utilities.Excel;
 
 /// <summary>
-/// Base sheet definition with tab name and color and the type of data to be displayed. Ex: Table Data, Plots, etc.
+/// Base sheet definition with tab name and color and the type of data to be displayed. Ex: Table Data, Charts, etc.
 /// </summary>
 public class ExcelBaseSheetModel
 {

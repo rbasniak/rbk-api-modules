@@ -9,7 +9,7 @@ public static class ClosedXMLDefs
         public enum Type
         {
             Table = 0,
-            Plot = 1
+            Chart = 1
         }
     }
 

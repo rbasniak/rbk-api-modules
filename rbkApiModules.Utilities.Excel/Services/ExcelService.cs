@@ -67,7 +67,7 @@ public class ExcelService : IExcelService
                 {
                     AddTableDataToSheet(model as ExcelTableSheetModel, worksheet);
                 }
-                else if (model.SheetType == ExcelSheetTypes.Type.Plot)
+                else if (model.SheetType == ExcelSheetTypes.Type.Chart)
                 {
                     // TODO: Add plot handling methods
                     continue;
