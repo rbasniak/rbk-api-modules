@@ -21,6 +21,7 @@ using rbkApiModules.Demo.Services;
 using rbkApiModules.Diagnostics.Core;
 using rbkApiModules.Diagnostics.Relational.SQLite;
 using rbkApiModules.Diagnostics.Relational.SqlServer;
+using rbkApiModules.Faqs;
 using rbkApiModules.Infrastructure.Api;
 using rbkApiModules.Infrastructure.MediatR.Core;
 using rbkApiModules.Infrastructure.MediatR.SqlServer;
@@ -65,12 +66,14 @@ namespace rbkApiModules.Demo
             Assembly.GetAssembly(typeof(RoleMappings)),
             Assembly.GetAssembly(typeof(PlanMappings)),
             Assembly.GetAssembly(typeof(UsersMapings)),
+            Assembly.GetAssembly(typeof(FaqMappings)),
         }; 
 
         private Assembly[] AssembliesForMediatR => new Assembly[]
         {
             Assembly.GetAssembly(typeof(CreateUser.Command)),
             Assembly.GetAssembly(typeof(CommentEntity.Command)),
+            Assembly.GetAssembly(typeof(CreateFaq.Command)),
             Assembly.GetAssembly(typeof(RenewAccessToken.Command)),
             Assembly.GetAssembly(typeof(SharedUIController)),
             Assembly.GetAssembly(typeof(GetUiDefinitions.Command)),
@@ -124,6 +127,8 @@ namespace rbkApiModules.Demo
             services.AddRbkSharedUIModule(Configuration);
 
             services.AddRbkApiCommentsModule();
+            
+            services.AddRbkApiFaqsModule();
 
             services.AddRbkApiNotificationsModule();
 
