@@ -6,7 +6,7 @@
     <PackageIcon>logo.png</PackageIcon>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <Version>3.1.7</Version>
+    <Version>3.2.1</Version>
     <Authors>rbasniak</Authors>
     <Product>rbkApiModules</Product>
     <Copyright>rbasniak</Copyright>
@@ -21,6 +21,7 @@
 	</ItemGroup>	
 	
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.7" />
     <PackageReference Include="SourceLink.Create.CommandLine" Version="2.8.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

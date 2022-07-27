@@ -18,6 +18,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.7">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1" />
   </ItemGroup>
 
@@ -32,6 +36,7 @@
     <ProjectReference Include="..\rbkApiModules.Diagnostics.Core\rbkApiModules.Diagnostics.Core.csproj" />
     <ProjectReference Include="..\rbkApiModules.Diagnostics.Relational.SQLite\rbkApiModules.Diagnostics.Relational.SQLite.csproj" />
     <ProjectReference Include="..\rbkApiModules.Diagnostics.Relational.SqlServer\rbkApiModules.Diagnostics.Relational.SqlServer.csproj" />
+    <ProjectReference Include="..\rbkApiModules.Faqs\rbkApiModules.Faqs.csproj" />
     <ProjectReference Include="..\rbkApiModules.Infrastructure.Api\rbkApiModules.Infrastructure.Api.csproj" />
     <ProjectReference Include="..\rbkApiModules.Infrastructure.MediatR\rbkApiModules.Infrastructure.MediatR.Core.csproj" />
     <ProjectReference Include="..\rbkApiModules.Infrastructure.Models\rbkApiModules.Infrastructure.Models.csproj" />

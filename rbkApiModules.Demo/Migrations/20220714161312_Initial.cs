@@ -1,12 +1,26 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
+#nullable disable
+
 namespace rbkApiModules.Demo.Migrations
 {
     public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "__SeedHistory",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    DateApplied = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK___SeedHistory", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Blog",
                 columns: table => new
@@ -34,7 +48,7 @@ namespace rbkApiModules.Demo.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Comment",
+                name: "Comments",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -46,11 +60,11 @@ namespace rbkApiModules.Demo.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Comment", x => x.Id);
+                    table.PrimaryKey("PK_Comments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Comment_Comment_ParentId",
+                        name: "FK_Comments_Comments_ParentId",
                         column: x => x.ParentId,
-                        principalTable: "Comment",
+                        principalTable: "Comments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -175,11 +189,11 @@ namespace rbkApiModules.Demo.Migrations
                     Avatar = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: true),
                     IsConfirmed = table.Column<bool>(type: "bit", nullable: false),
                     ActivationCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PasswordRedefineCode_CreationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    PasswordRedefineCode_Hash = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RefreshTokenValidity = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsBlocked = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PasswordRedefineCode_CreationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    PasswordRedefineCode_Hash = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsAdmin = table.Column<bool>(type: "bit", nullable: true)
                 },
                 constraints: table =>
@@ -559,8 +573,8 @@ namespace rbkApiModules.Demo.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comment_ParentId",
-                table: "Comment",
+                name: "IX_Comments_ParentId",
+                table: "Comments",
                 column: "ParentId");
 
             migrationBuilder.CreateIndex(
@@ -677,7 +691,10 @@ namespace rbkApiModules.Demo.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Comment");
+                name: "__SeedHistory");
+
+            migrationBuilder.DropTable(
+                name: "Comments");
 
             migrationBuilder.DropTable(
                 name: "Editor");

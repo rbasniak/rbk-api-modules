@@ -3,6 +3,7 @@ using rbkApiModules.Authentication;
 using rbkApiModules.Comments;
 using rbkApiModules.Demo.Models;
 using rbkApiModules.Demo.Models.StateMachine;
+using rbkApiModules.Faqs;
 using rbkApiModules.Payment.SqlServer;
 using rbkApiModules.Utilities.EFCore;
 
@@ -43,6 +44,7 @@ namespace rbkApiModules.Demo.Database
                 typeof(UserLogin.Command).Assembly,
                 typeof(CreatePlan.Command).Assembly,
                 typeof(SeedHistoryConfig).Assembly,
+                typeof(CreateFaq.Command).Assembly,
             });
         } 
     }
