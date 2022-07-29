@@ -16,7 +16,7 @@ public class ExcelColumnModel
     /// </summary>
     public ExcelStyleClasses Style { get; set; }
     /// <summary>
-    /// The data sets Data Type. Ex: "0" for Number, "1" for Text, "2" for DateTime, etc.
+    /// The data sets Data Type. Ex: "0" for Text, "1" for Number, "2" for DateTime, etc.
     /// </summary>
     public ExcelDataTypes.DataType DataType { get; set; } = ExcelDataTypes.DataType.Text;
     /// <summary>

@@ -1,11 +1,9 @@
-﻿
-using ClosedXML.Excel;
+﻿using ClosedXML.Excel;
 using System;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using static rbkApiModules.Utilities.Excel.ClosedXMLDefs;
 
@@ -75,30 +73,30 @@ public class ExcelService : IExcelService
             }
             
 
-            if (workbookModel.IsDraft == true)
-            {
-                var watermarkModel = workbookModel.Watermark;
-                if (watermarkModel != null)
-                {
-                    // call drawtext() to create an image
-                    var imageWatermark = DrawText(
-                        watermarkModel.Text,
-                        watermarkModel.Font,
-                        watermarkModel.FontSize,
-                        watermarkModel.TextColor,
-                        watermarkModel.Alpha,
-                        watermarkModel.RotationAngle,
-                        800,
-                        800);
-                    // Add the watermark to each worksheet
-                    foreach (var worksheet in workbook.Worksheets)
-                    {
-                        var rangeUsed = worksheet.RangeUsed();
-                        CreateWatermarkInWorksheet(imageWatermark, rangeUsed, worksheet);
+            //if (workbookModel.IsDraft == true)
+            //{
+            //    var watermarkModel = workbookModel.Watermark;
+            //    if (watermarkModel != null)
+            //    {
+            //        // call drawtext() to create an image
+            //        var imageWatermark = DrawText(
+            //            watermarkModel.Text,
+            //            watermarkModel.Font,
+            //            watermarkModel.FontSize,
+            //            watermarkModel.TextColor,
+            //            watermarkModel.Alpha,
+            //            watermarkModel.RotationAngle,
+            //            800,
+            //            800);
+            //        // Add the watermark to each worksheet
+            //        foreach (var worksheet in workbook.Worksheets)
+            //        {
+            //            var rangeUsed = worksheet.RangeUsed();
+            //            CreateWatermarkInWorksheet(imageWatermark, rangeUsed, worksheet);
 
-                    }
-                }
-            }
+            //        }
+            //    }
+            //}
 
             //Save the excel workbook to a memory stream
             workbook.SaveAs(stream);
@@ -134,7 +132,10 @@ public class ExcelService : IExcelService
 
             //Apply header styles
             SetConfigurationAndStyling(model.Header.Style, headerRange);
-            worksheet.Row(1).AdjustToContents();
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                worksheet.Row(1).AdjustToContents();
+            }
             // Place the column data for each column
             foreach (var (column, i) in model.Columns.Select((value, i) => (value, i)))
             {
@@ -205,56 +206,125 @@ public class ExcelService : IExcelService
         }
     }
 
-private void AddValue(IXLCell cell, string value, ExcelDataTypes.DataType dataType, string dataFormat)
+    private void AddValue(IXLCell cell, string value, ExcelDataTypes.DataType dataType, string dataFormat)
     {
-        // Try to parse and add data as date type
-        if (dataType == ExcelDataTypes.DataType.DateTime)
+        //Check if it is auto-detect
+        if (dataType == ExcelDataTypes.DataType.AutoDetect)
         {
-            bool parsed;
-            DateTime date;
-            if (dataFormat != null)
+            if (!string.IsNullOrEmpty(value) && value.Contains("<a href="))
             {
-                parsed = DateTime.TryParseExact(value, dataFormat, CultureInfo.InvariantCulture, DateTimeStyles.AllowWhiteSpaces, out date);
-
+                InsertHyperLink(cell, value);
             }
             else
             {
-                parsed = DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out date);
-            }
-            if (parsed == true)
-            {
-                cell.Value = date;
-                cell.DataType = ExcelDataTypes.GetDataType(dataType);
-                if (dataFormat != null)
-                {
-                    cell.Style.DateFormat.Format = dataFormat;
-                }
-            }
-            else
-            {
-                cell.Value = value;
+                InsertOtherDataTypes(cell, value, dataType, dataFormat);
             }
         }
-        // Create Hyperlinks
-        else if (dataType == ExcelDataTypes.DataType.HyperLink)
-        {
-            cell.Value = value; 
-            cell.SetHyperlink(new XLHyperlink(cell));
-        }
-        // Create any other data type and try to add possible format string
         else
         {
-            cell.DataType = ExcelDataTypes.GetDataType(dataType);
-            if (dataType == ExcelDataTypes.DataType.Number)
+            // Try to parse and add data as date type
+            if (dataType == ExcelDataTypes.DataType.DateTime)
             {
-                if (dataFormat != null)
+                InsertDateTime(cell, value, dataType, dataFormat);
+            }
+            // Create Hyperlinks
+            else if (dataType == ExcelDataTypes.DataType.HyperLink)
+            {
+                if (!string.IsNullOrEmpty(value) && value.Contains("<a href="))
                 {
-                    cell.Style.NumberFormat.Format = dataFormat;
+                    InsertHyperLink(cell, value);
+                }
+                else
+                {
+                    cell.Value = value;
+                    cell.SetHyperlink(new XLHyperlink(value));
                 }
             }
-            cell.Value = value;
+            // Create any other data type and try to add possible format string
+            else
+            {
+                InsertOtherDataTypes(cell, value, dataType, dataFormat);
+            }
         }
 
+    }
+
+    private void InsertDateTime(IXLCell cell, string value, ExcelDataTypes.DataType dataType, string dataFormat)
+    {
+        bool parsed;
+        DateTime date;
+        if (dataFormat != null)
+        {
+            parsed = DateTime.TryParseExact(value, dataFormat, CultureInfo.InvariantCulture, DateTimeStyles.AllowWhiteSpaces, out date);
+
+        }
+        else
+        {
+            parsed = DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out date);
+        }
+        if (parsed == true)
+        {
+            cell.Value = date;
+            cell.DataType = ExcelDataTypes.GetDataType(dataType);
+            if (dataFormat != null)
+            {
+                cell.Style.DateFormat.Format = dataFormat;
+            }
+        }
+        else
+        {
+            cell.Value = value;
+        }
+    }
+        
+    private void InsertHyperLink(IXLCell cell, string value)
+    {
+        string text = value.Replace("<a href=", "<a target=\"_blank\" href=");
+        cell.Value = ExtractValue(text);
+        string link = ExtractLink(text);
+        cell.SetHyperlink(new XLHyperlink(link));
+    }
+
+    private void InsertOtherDataTypes(IXLCell cell, string value, ExcelDataTypes.DataType dataType, string dataFormat)
+    {
+        cell.DataType = ExcelDataTypes.GetDataType(dataType);
+        if (dataType == ExcelDataTypes.DataType.Number)
+        {
+            if (dataFormat != null)
+            {
+                cell.Style.NumberFormat.Format = dataFormat;
+            }
+        }
+        cell.Value = value;
+    }
+
+
+    private string ExtractValue(string link)
+    {
+        if (String.IsNullOrEmpty(link))
+        {
+            return "";
+        }
+
+        var beginTag = "<";
+        var endTag = ">";
+
+        var value = Regex.Replace(link, $@"{beginTag}(.+?){endTag}", "");
+
+        return value;
+    }
+
+    private string ExtractLink(string link)
+    {
+
+        if (String.IsNullOrEmpty(link))
+        {
+            return "";
+        }
+
+        var url = Regex.Match(link, "href\\s*=\\s*\"(?<url>.*?)\"").Groups["url"].Value;
+
+        return url;
     }
 
     private void SetVerticalDataSeparator(IXLWorksheet worksheet, int columnCount, int rowCount)
@@ -291,7 +361,10 @@ private void AddValue(IXLCell cell, string value, ExcelDataTypes.DataType dataTy
     private void SetCellSizeAndWrapText(ExcelColumnModel model, IXLColumn ixlColumn)
     {
         // Adjust width and height to content
-        ixlColumn.AdjustToContents();
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            ixlColumn.AdjustToContents();
+        }
         if (model.MaxWidth != -1 && ixlColumn.Width > model.MaxWidth)
         {
             ixlColumn.Width = model.MaxWidth;
@@ -302,116 +375,116 @@ private void AddValue(IXLCell cell, string value, ExcelDataTypes.DataType dataTy
             ixlColumn.Width += 4;
         }
         // If column data type is text then extend wraptext to the whole column
-        if (model.DataType == ExcelDataTypes.DataType.Text)
+        if (model.DataType == ExcelDataTypes.DataType.Text || model.DataType == ExcelDataTypes.DataType.AutoDetect)
         {
             ixlColumn.Style.Alignment.WrapText = true;
         }
     }
 
-    private void CreateWatermarkInWorksheet(Stream imageWatermark, IXLRange rangeUsed, IXLWorksheet worksheet)
-    {
-        double totalColumnsWidth = 0;
-        double totalRowsHeight = 0;
-        foreach (var column in worksheet.ColumnsUsed())
-        {
-            totalColumnsWidth += column.Width;
-        }
-        foreach (var row in worksheet.RowsUsed())
-        {
-            totalRowsHeight += row.Height;
-        }
-        var scaledPictureSize = totalColumnsWidth >= totalRowsHeight ? totalRowsHeight : totalColumnsWidth;
+    //private void CreateWatermarkInWorksheet(Stream imageWatermark, IXLRange rangeUsed, IXLWorksheet worksheet)
+    //{
+    //    double totalColumnsWidth = 0;
+    //    double totalRowsHeight = 0;
+    //    foreach (var column in worksheet.ColumnsUsed())
+    //    {
+    //        totalColumnsWidth += column.Width;
+    //    }
+    //    foreach (var row in worksheet.RowsUsed())
+    //    {
+    //        totalRowsHeight += row.Height;
+    //    }
+    //    var scaledPictureSize = totalColumnsWidth >= totalRowsHeight ? totalRowsHeight : totalColumnsWidth;
         
-        // To convert column width in pixel unit.
-        double scaledPictureSizeInPixels = (scaledPictureSize * 7) + 12;
-        if (scaledPictureSizeInPixels > 800)
-            scaledPictureSizeInPixels = 800;
+    //    // To convert column width in pixel unit.
+    //    double scaledPictureSizeInPixels = (scaledPictureSize * 7) + 12;
+    //    if (scaledPictureSizeInPixels > 800)
+    //        scaledPictureSizeInPixels = 800;
 
-        // Place the picture with Top-Left at Cell A2
-        var ixlPicture = worksheet.AddPicture(imageWatermark, "waterMark").MoveTo(worksheet.Cell("A2"));
+    //    // Place the picture with Top-Left at Cell A2
+    //    var ixlPicture = worksheet.AddPicture(imageWatermark, "waterMark").MoveTo(worksheet.Cell("A2"));
 
-        //Scale the image
-        double scale = scaledPictureSizeInPixels / (double)ixlPicture.Width;
-        ixlPicture.Scale(scale);
+    //    //Scale the image
+    //    double scale = scaledPictureSizeInPixels / (double)ixlPicture.Width;
+    //    ixlPicture.Scale(scale);
 
-    }
+    //}
 
-    /// <summary>
-    /// Creates an image that can be inserted as a watermark
-    /// </summary>
-    /// <returns>A text image</returns>
-    private Stream DrawText(string text, ExcelFonts.FontName font, int fontSize, ExcelColors.Color textColor, float alpha, int rotationAngle, int height, int width)
-    {
-        var stream = new MemoryStream();
+    ///// <summary>
+    ///// Creates an image that can be inserted as a watermark
+    ///// </summary>
+    ///// <returns>A text image</returns>
+    //private Stream DrawText(string text, ExcelFonts.FontName font, int fontSize, ExcelColors.Color textColor, float alpha, int rotationAngle, int height, int width)
+    //{
+    //    var stream = new MemoryStream();
 
-        //create a bitmap image with specified width and height
-        var img = new Bitmap(width, height);
-        var drawing = Graphics.FromImage(img);
+    //    //create a bitmap image with specified width and height
+    //    var img = new Bitmap(width, height);
+    //    var drawing = Graphics.FromImage(img);
 
-        // Prepare string alignments
-        var stringFormat = new StringFormat();
-        stringFormat.Alignment = StringAlignment.Center;
-        stringFormat.LineAlignment = StringAlignment.Center;
+    //    // Prepare string alignments
+    //    var stringFormat = new StringFormat();
+    //    stringFormat.Alignment = StringAlignment.Center;
+    //    stringFormat.LineAlignment = StringAlignment.Center;
 
-        // Create a canvas size object
-        var canvasSize = new SizeF(width, height);
-        // Scale to applied to the drawn text size before fitting, this will be used in practice to make soome margin space 
-        var scale = 1.02;
-        // Helper variable for decreasing font size if needed
-        var fittedFontSize = fontSize;
-        // get the size of text
-        var systemFont = new Font(ExcelFonts.GetFontName(font), fittedFontSize);
-        var textSize = drawing.MeasureString(text, systemFont, canvasSize, stringFormat);
-        var rectWidth = (textSize.Width * scale) / 2;
-        var rectHeight = (textSize.Height * scale) / 2;
-        var diagonal = Math.Sqrt(Math.Pow(rectWidth, 2) + Math.Pow(rectHeight, 2));
-        var diagonalAngle = Math.Atan(rectHeight / rectWidth);
-        var rotationAngleRadians = rotationAngle * Math.PI / 180.0;
-        var newHeight = diagonal * Math.Sin(diagonalAngle + rotationAngleRadians);
-        var newWidth = diagonal * Math.Cos(diagonalAngle - rotationAngleRadians);
+    //    // Create a canvas size object
+    //    var canvasSize = new SizeF(width, height);
+    //    // Scale to applied to the drawn text size before fitting, this will be used in practice to make soome margin space 
+    //    var scale = 1.02;
+    //    // Helper variable for decreasing font size if needed
+    //    var fittedFontSize = fontSize;
+    //    // get the size of text
+    //    var systemFont = new Font(ExcelFonts.GetFontName(font), fittedFontSize);
+    //    var textSize = drawing.MeasureString(text, systemFont, canvasSize, stringFormat);
+    //    var rectWidth = (textSize.Width * scale) / 2;
+    //    var rectHeight = (textSize.Height * scale) / 2;
+    //    var diagonal = Math.Sqrt(Math.Pow(rectWidth, 2) + Math.Pow(rectHeight, 2));
+    //    var diagonalAngle = Math.Atan(rectHeight / rectWidth);
+    //    var rotationAngleRadians = rotationAngle * Math.PI / 180.0;
+    //    var newHeight = diagonal * Math.Sin(diagonalAngle + rotationAngleRadians);
+    //    var newWidth = diagonal * Math.Cos(diagonalAngle - rotationAngleRadians);
         
-        // Adjust the canvas to make room for rotation by Reducing the font Size to fit the content inside the canvas
-        // Will stop trying at the font size of one point
-        while ((newHeight > height / 2.0 || newWidth / 2.0 > width) && fittedFontSize > 1)
-        {
-            fittedFontSize = fittedFontSize - 1;
-            systemFont = new Font(ExcelFonts.GetFontName(font), fittedFontSize);
-            textSize = drawing.MeasureString(text, systemFont, canvasSize, stringFormat);
-            rectWidth = (textSize.Width * scale) / 2;
-            rectHeight = (textSize.Height * scale) / 2;
-            diagonal = Math.Sqrt(Math.Pow(rectWidth, 2) + Math.Pow(rectHeight, 2));
-            diagonalAngle = Math.Atan(rectHeight / rectWidth);
-            newHeight = diagonal * Math.Sin(diagonalAngle + rotationAngleRadians);
-            newWidth = diagonal * Math.Cos(diagonalAngle - rotationAngleRadians);
-        }
+    //    // Adjust the canvas to make room for rotation by Reducing the font Size to fit the content inside the canvas
+    //    // Will stop trying at the font size of one point
+    //    while ((newHeight > height / 2.0 || newWidth / 2.0 > width) && fittedFontSize > 1)
+    //    {
+    //        fittedFontSize = fittedFontSize - 1;
+    //        systemFont = new Font(ExcelFonts.GetFontName(font), fittedFontSize);
+    //        textSize = drawing.MeasureString(text, systemFont, canvasSize, stringFormat);
+    //        rectWidth = (textSize.Width * scale) / 2;
+    //        rectHeight = (textSize.Height * scale) / 2;
+    //        diagonal = Math.Sqrt(Math.Pow(rectWidth, 2) + Math.Pow(rectHeight, 2));
+    //        diagonalAngle = Math.Atan(rectHeight / rectWidth);
+    //        newHeight = diagonal * Math.Sin(diagonalAngle + rotationAngleRadians);
+    //        newWidth = diagonal * Math.Cos(diagonalAngle - rotationAngleRadians);
+    //    }
 
-        //set rotation point
-        drawing.TranslateTransform(width/2, height/2);
+    //    //set rotation point
+    //    drawing.TranslateTransform(width/2, height/2);
 
-        //rotate the canvas
-        drawing.RotateTransform(-rotationAngle);
+    //    //rotate the canvas
+    //    drawing.RotateTransform(-rotationAngle);
 
-        //reset translate transform
-        drawing.TranslateTransform(-width/2, -height/2);
+    //    //reset translate transform
+    //    drawing.TranslateTransform(-width/2, -height/2);
 
-        //paint the background
-        drawing.Clear(Color.Transparent);
+    //    //paint the background
+    //    drawing.Clear(Color.Transparent);
 
-        //create a brush for the text
-        int alphaValue = ((int)(alpha * 255)) << 24;
-        int color = ExcelColors.GetColor(textColor).Color.ToArgb();
-        var textBrush = new SolidBrush(Color.FromArgb(color + alphaValue));
+    //    //create a brush for the text
+    //    int alphaValue = ((int)(alpha * 255)) << 24;
+    //    int color = ExcelColors.GetColor(textColor).Color.ToArgb();
+    //    var textBrush = new SolidBrush(Color.FromArgb(color + alphaValue));
 
-        //draw text on the image at center position
-        drawing.DrawString(text, systemFont, textBrush, width/2, height/2, stringFormat);
+    //    //draw text on the image at center position
+    //    drawing.DrawString(text, systemFont, textBrush, width/2, height/2, stringFormat);
         
-        //Save the drawing
-        drawing.Save();
-        //Save to Stream in .png Format for transparency
-        img.Save(stream, ImageFormat.Png);
+    //    //Save the drawing
+    //    drawing.Save();
+    //    //Save to Stream in .png Format for transparency
+    //    img.Save(stream, ImageFormat.Png);
 
-        return stream;
-    }
+    //    return stream;
+    //}
 }
 
 

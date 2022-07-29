@@ -181,6 +181,7 @@ public static class ClosedXMLDefs
             Boolean = 3,
             TimeSpan = 4,
             HyperLink = 5,
+            AutoDetect = 6
         }
 
         public static XLDataType GetDataType(DataType type)

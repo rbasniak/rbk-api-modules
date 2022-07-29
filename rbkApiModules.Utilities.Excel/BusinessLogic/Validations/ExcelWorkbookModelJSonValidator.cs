@@ -17,17 +17,18 @@ public class ExcelWorkbookModelJSonValidator : AbstractValidator<IExcelWorkbookM
     {
 
         RuleFor(x => x.WorkbookModel)
-        .NotNull().WithMessage("JSON File can't be null.")
-        .Must(HaveAFilename).WithMessage("The workbook model must have a filename")
-        .Must(ContainAtLeastOneSheet).WithMessage("The workbook model must contain at least one spreadsheet")
-        .Must(NotHaveEmptySheetName).WithMessage("Sheet Name cannot be empty")
-        .Must(NotHaveSheetNameGreaterThenThirtyOneChars).WithMessage("Sheet Name cannot have more than 31 characters")
-        .Must(NotHaveRepeatedSheetNames).WithMessage("Workbook models containing more than one sheet must have unique sheet names for the tabs")
-        .Must(HaveContinuousTabIndexCount).WithMessage("Tab Index must be continuous and start from ZERO. It cannot have skip numbers")
-        // Table Type validations
-        .Must(ForTableTypeHaveAtLeastOndeHeaderAndOneColumn).WithMessage("The workbook model have at least one column with one header")
-        .Must(ForTableTypeNotHaveRepeatedHeaderName).WithMessage("Headers inside the same spreadsheet must have unique names");
-        // Future Plot Type Validations
+            .NotNull().WithMessage("JSON File can't be null.")
+            .Must(HaveAFilename).WithMessage("The workbook model must have a filename")
+            .Must(ContainAtLeastOneSheet).WithMessage("The workbook model must contain at least one spreadsheet")
+            .Must(NotHaveEmptySheetName).WithMessage("Sheet Name cannot be empty")
+            .Must(NotHaveSheetNameGreaterThenThirtyOneChars).WithMessage("Sheet Name cannot have more than 31 characters")
+            .Must(NotHaveRepeatedSheetNames).WithMessage("Workbook models containing more than one sheet must have unique sheet names for the tabs")
+            .Must(HaveContinuousTabIndexCount).WithMessage("Tab Index must be continuous and start from ZERO. It cannot have skip numbers")
+            // Table Type validations
+            .Must(ForTableTypeHaveAtLeastOndeHeaderAndOneColumn).WithMessage("The workbook model have at least one column with one header")
+            .Must(ForTableTypeNotHaveRepeatedHeaderName).WithMessage("Headers inside the same spreadsheet must have unique names")
+            .Must(ForTableTypeHaveCorrectDataTypes).WithMessage("DataTypes must be between 0 and 6");
+            // Future Plot Type Validations
     }
 
     #region Base Validations
@@ -144,6 +145,24 @@ public class ExcelWorkbookModelJSonValidator : AbstractValidator<IExcelWorkbookM
                     else
                     {
                         names.Add(headerName.ToLower());
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    private bool ForTableTypeHaveCorrectDataTypes(ExcelWorkbookModel workbookModel)
+    {
+        foreach (var sheet in workbookModel.Tables)
+        {
+            if (sheet.SheetType == ClosedXMLDefs.ExcelSheetTypes.Type.Table)
+            {
+                foreach (var column in sheet.Columns)
+                {
+                    if (!ClosedXMLDefs.ExcelDataTypes.DataType.IsDefined(column.DataType))
+                    {
+                        return false;
                     }
                 }
             }
