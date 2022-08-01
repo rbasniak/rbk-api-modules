@@ -124,35 +124,50 @@ public class ExcelService : IExcelService
             var maxColumnCount = model.Header.Data.Length;
 
             // Helper range variable for quick access to the headers
-            var headerRange = worksheet.Range(1, 1, 1, maxColumnCount);
-            foreach (var (cell, i) in headerRange.Cells().Select((value, i) => (value, i)))
+            var headerRow = worksheet.Row(1);
+
+            var columnIndex = 1;
+
+            foreach (var column in model.Columns)
             {
-                cell.Value = model.Header.Data[i];
+                if (column.Data != null)
+                {
+                    var isHyperlink = false;
+
+                    if (column.DataType == ExcelDataTypes.DataType.AutoDetect)
+                    {
+                        var firstSample = column.Data.FirstOrDefault(x => !string.IsNullOrEmpty(x.Trim()) && x.Contains("href"));
+                        if (firstSample != null)
+                        {
+                            isHyperlink = true;
+                        }
+
+                    }
+
+                    var rowIndex = 2;
+
+                    foreach (var value in column.Data)
+                    {
+                        AddValue(worksheet.Cell(rowIndex++, columnIndex), value, column.DataType, column.DataFormat, isHyperlink);
+                    }
+
+                    // Apply data typing and styling
+                    SetConfigurationAndStyling(column.Style, worksheet.Column(columnIndex));
+                    SetCellSizeAndWrapText(column, worksheet.Column(columnIndex), isHyperlink);
+                }
+
+                headerRow.Cell(columnIndex).Value = model.Header.Data[columnIndex - 1];
+
+                columnIndex++;
             }
 
             //Apply header styles
-            SetConfigurationAndStyling(model.Header.Style, headerRange);
+            SetConfigurationAndStyling(model.Header.Style, headerRow);
+
+            // Adjust width and height to content
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                worksheet.Row(1).AdjustToContents();
-            }
-            // Place the column data for each column
-            foreach (var (column, i) in model.Columns.Select((value, i) => (value, i)))
-            {
-                // i starts at zero and columns at one so it needs to be incremented
-                // Rows have to jump the headers rows so it is also incremented by one
-                if (column.Data != null)
-                {
-                    var columnRange = worksheet.Range(2, i + 1, column.Data.Length + 1, i + 1);
-                    foreach (var (cell, j) in columnRange.Cells().Select((value, j) => (value, j)))
-                    {
-                        AddValue(cell, column.Data[j], column.DataType, column.DataFormat);
-                    }
-                    // Apply data typing and styling
-                    var ixlColumn = worksheet.Column(i + 1);
-                    SetConfigurationAndStyling(column.Style, columnRange);
-                    SetCellSizeAndWrapText(column, ixlColumn);
-                }
+                worksheet.Columns().AdjustToContents();
             }
 
             // Freeze the header row
@@ -206,19 +221,20 @@ public class ExcelService : IExcelService
         }
     }
 
-    private void AddValue(IXLCell cell, string value, ExcelDataTypes.DataType dataType, string dataFormat)
+    private void AddValue(IXLCell cell, string value, ExcelDataTypes.DataType dataType, string dataFormat, bool isHyperlink)
     {
         //Check if it is auto-detect
-        if (dataType == ExcelDataTypes.DataType.AutoDetect)
+        
+        if(string.IsNullOrEmpty(value.Trim()))
         {
-            if (!string.IsNullOrEmpty(value) && value.Contains("<a href="))
-            {
-                InsertHyperLink(cell, value);
-            }
-            else
-            {
-                InsertOtherDataTypes(cell, value, dataType, dataFormat);
-            }
+            return;
+        }
+
+        value = Regex.Replace(value, "<br>", Environment.NewLine, RegexOptions.IgnoreCase);
+        
+        if (isHyperlink == true)
+        {
+            InsertHyperLink(cell, value);
         }
         else
         {
@@ -230,15 +246,8 @@ public class ExcelService : IExcelService
             // Create Hyperlinks
             else if (dataType == ExcelDataTypes.DataType.HyperLink)
             {
-                if (!string.IsNullOrEmpty(value) && value.Contains("<a href="))
-                {
-                    InsertHyperLink(cell, value);
-                }
-                else
-                {
-                    cell.Value = value;
-                    cell.SetHyperlink(new XLHyperlink(value));
-                }
+                cell.Value = value;
+                cell.SetHyperlink(new XLHyperlink(value));
             }
             // Create any other data type and try to add possible format string
             else
@@ -279,10 +288,17 @@ public class ExcelService : IExcelService
         
     private void InsertHyperLink(IXLCell cell, string value)
     {
-        string text = value.Replace("<a href=", "<a target=\"_blank\" href=");
-        cell.Value = ExtractValue(text);
-        string link = ExtractLink(text);
-        cell.SetHyperlink(new XLHyperlink(link));
+        //cell.Value = ExtractValue(value);
+        //string link = ExtractLink(value);
+
+        var matches = Regex.Matches(value, @"<a.*?href=[\'""]?([^\'"" >]+).*?<\/a>", RegexOptions.IgnoreCase);
+
+        foreach (Match match in matches)
+        {
+            value = value.Replace(match.Value, match.Groups[1].Value);
+        }
+        cell.Value = value;
+        
     }
 
     private void InsertOtherDataTypes(IXLCell cell, string value, ExcelDataTypes.DataType dataType, string dataFormat)
@@ -345,26 +361,38 @@ public class ExcelService : IExcelService
         workbook.Properties.Comments = workbookModel.Comments;
     }
 
-    private void SetConfigurationAndStyling(ExcelStyleClasses styles, IXLRange ixlRange)
+    private void SetConfigurationAndStyling(ExcelStyleClasses styles, IXLRow xLRow)
     {
         // Set standard alignment
-        ixlRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
-        ixlRange.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+        var newAlignment = xLRow.Style.Alignment;
+        newAlignment.Horizontal = XLAlignmentHorizontalValues.Left;
+        newAlignment.Vertical = XLAlignmentVerticalValues.Center;
 
         // Setup fonts
-        ixlRange.Style.Font.FontName = ExcelFonts.GetFontName(styles.Font);
-        ixlRange.Style.Font.FontSize = styles.FontSize;
-        ixlRange.Style.Font.Bold = styles.Bold;
-        ixlRange.Style.Font.Italic = styles.Italic;
+        var newFont = xLRow.Style.Font;
+        newFont.FontName = ExcelFonts.GetFontName(styles.Font);
+        newFont.FontSize = styles.FontSize;
+        newFont.Bold = styles.Bold;
+        newFont.Italic = styles.Italic;
     }
 
-    private void SetCellSizeAndWrapText(ExcelColumnModel model, IXLColumn ixlColumn)
+    private void SetConfigurationAndStyling(ExcelStyleClasses styles, IXLColumn xLColumn)
     {
-        // Adjust width and height to content
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-        {
-            ixlColumn.AdjustToContents();
-        }
+        // Set standard alignment
+        var newAlignment = xLColumn.Style.Alignment;
+        newAlignment.Horizontal = XLAlignmentHorizontalValues.Left;
+        newAlignment.Vertical = XLAlignmentVerticalValues.Center;
+
+        // Setup fonts
+        var newFont = xLColumn.Style.Font;
+        newFont.FontName = ExcelFonts.GetFontName(styles.Font);
+        newFont.FontSize = styles.FontSize;
+        newFont.Bold = styles.Bold;
+        newFont.Italic = styles.Italic;
+    }
+
+    private void SetCellSizeAndWrapText(ExcelColumnModel model, IXLColumn ixlColumn, bool isHyperlink)
+    {
         if (model.MaxWidth != -1 && ixlColumn.Width > model.MaxWidth)
         {
             ixlColumn.Width = model.MaxWidth;
@@ -375,7 +403,7 @@ public class ExcelService : IExcelService
             ixlColumn.Width += 4;
         }
         // If column data type is text then extend wraptext to the whole column
-        if (model.DataType == ExcelDataTypes.DataType.Text || model.DataType == ExcelDataTypes.DataType.AutoDetect)
+        if (model.DataType == ExcelDataTypes.DataType.Text || (model.DataType == ExcelDataTypes.DataType.AutoDetect && !isHyperlink))
         {
             ixlColumn.Style.Alignment.WrapText = true;
         }

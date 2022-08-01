@@ -25,7 +25,6 @@ public class ExcelController : BaseController
     /// Receives Data and formatting classes in JSON and returns an excel workbook in file format
     /// </summary>
     [HttpPost("generate-tables-file-output")]
-    [AllowAnonymous]
     public async Task<ActionResult<ExcelsDetails>> GenerateSpreadsheetTablesAsFile(GenerateSpreadsheetTablesFromJsonAsFile.Command data)
     {
         var response = await Mediator.Send(data);
