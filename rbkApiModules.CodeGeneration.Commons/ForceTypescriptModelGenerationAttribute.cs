@@ -2,7 +2,7 @@
 
 namespace rbkApiModules.CodeGeneration.Commons
 {
-    [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Enum | AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
     public class ForceTypescriptModelGenerationAttribute : Attribute
     {
         public ForceTypescriptModelGenerationAttribute(params string[] scopes)
