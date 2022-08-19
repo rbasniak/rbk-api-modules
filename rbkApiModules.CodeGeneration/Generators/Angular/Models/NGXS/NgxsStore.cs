@@ -310,15 +310,15 @@ namespace rbkApiModules.CodeGeneration
 
         private string GenerateClearHandlerCode(NgxsAction action)
         {
-            var code = new StringBuilder();
+            if (action == null) return String.Empty;
 
-            var returnType = "void";
+            var code = new StringBuilder();
 
             code.AppendLine($"");
             code.AppendLine($"  @Action({Name}Actions.{action.Type.ToString()})");
             code.AppendLine($"  public {CodeGenerationUtilities.ToCamelCase(action.Type.ToString())}$(ctx: StateContext<{Name}StateModel>): void {{");
             code.AppendLine($"    ctx.patchState({{");
-            code.AppendLine($"      items: []");
+            code.AppendLine($"      items: [],");
             code.AppendLine($"      lastUpdated: null");
             code.AppendLine($"    }});");
             code.AppendLine($"  }}");
