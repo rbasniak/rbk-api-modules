@@ -144,6 +144,8 @@ namespace rbkApiModules.CodeGeneration
             code.Append(GenerateHandlerCode(Actions.Items.FirstOrDefault(x => x.Type == ActionType.Update)));
             code.Append(GenerateHandlerCode(Actions.Items.FirstOrDefault(x => x.Type == ActionType.Delete)));
 
+            code.Append(GenerateClearHandlerCode(Actions.Items.FirstOrDefault(x => x.Type == ActionType.Clear)));
+
             code.AppendLine($"}}");
 
             return code.ToString();
@@ -301,6 +303,24 @@ namespace rbkApiModules.CodeGeneration
             code.AppendLine($"        }});");
             code.AppendLine($"      }})");
             code.AppendLine($"    );");
+            code.AppendLine($"  }}");
+
+            return code.ToString();
+        }
+
+        private string GenerateClearHandlerCode(NgxsAction action)
+        {
+            var code = new StringBuilder();
+
+            var returnType = "void";
+
+            code.AppendLine($"");
+            code.AppendLine($"  @Action({Name}Actions.{action.Type.ToString()})");
+            code.AppendLine($"  public {CodeGenerationUtilities.ToCamelCase(action.Type.ToString())}$(ctx: StateContext<{Name}StateModel>): void {{");
+            code.AppendLine($"    ctx.patchState({{");
+            code.AppendLine($"      items: []");
+            code.AppendLine($"      lastUpdated: null");
+            code.AppendLine($"    }});");
             code.AppendLine($"  }}");
 
             return code.ToString();

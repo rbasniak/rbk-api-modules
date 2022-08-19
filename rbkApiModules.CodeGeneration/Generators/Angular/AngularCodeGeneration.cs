@@ -99,10 +99,9 @@ namespace rbkApiModules.CodeGeneration
             foreach (var assembly in loadedAssemblies)
             {
                 var modelTypes = (assembly.GetTypes()
-                    .Where(myType => myType.IsClass
-                            && !myType.IsAbstract
+                    .Where(myType => ((myType.IsClass && !myType.IsAbstract) || myType.IsEnum)
                             && myType.HasAttribute<ForceTypescriptModelGenerationAttribute>()))
-                    .ToArray();
+                    .ToArray(); 
 
                 foreach (var modelType in modelTypes)
                 {
