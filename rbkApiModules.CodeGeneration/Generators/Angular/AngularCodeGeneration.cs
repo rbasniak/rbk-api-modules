@@ -181,7 +181,7 @@ namespace rbkApiModules.CodeGeneration
 
                     var actionsToIgnore = new List<EndpointInfo>();
 
-                    if (!String.IsNullOrEmpty(projectId))
+                    if (projectId != null)
                     {
                         foreach (var action in controller.Endpoints)
                         {
