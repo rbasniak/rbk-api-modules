@@ -181,7 +181,7 @@ namespace rbkApiModules.CodeGeneration
 
                     var actionsToIgnore = new List<EndpointInfo>();
 
-                    if (projectId != null)
+                    if (!String.IsNullOrEmpty(projectId))
                     {
                         foreach (var action in controller.Endpoints)
                         {
@@ -193,7 +193,9 @@ namespace rbkApiModules.CodeGeneration
                                     var completeRoute1 = $"{action.Method.ToString().ToUpper()} {controller.Route}{action.Route}";
                                     var completeRoute2 = $"* {controller.Route}{action.Route}";
 
-                                    if (completeRoute1.ToLower().StartsWith(pattern.ToLower()) || completeRoute2.ToLower().StartsWith(pattern.ToLower()))
+                                    if (completeRoute1.ToLower().StartsWith(pattern.ToLower()) || 
+                                        completeRoute2.ToLower().StartsWith(pattern.ToLower()) ||
+                                        pattern == "*")
                                     {
                                         actionsToIgnore.Add(action);
                                     }
