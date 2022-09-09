@@ -181,24 +181,31 @@ namespace rbkApiModules.CodeGeneration
 
                     var actionsToIgnore = new List<EndpointInfo>();
 
-                    if (!String.IsNullOrEmpty(projectId))
+                    if (!String.IsNullOrEmpty(projectId) || CodeGenerationModuleOptions.Instance.IgnoreOptions.ContainsKey("*"))
                     {
                         foreach (var action in controller.Endpoints)
                         {
-                            if (CodeGenerationModuleOptions.Instance.IgnoreOptions.TryGetValue(projectId, out var patterns))
-                            {
-                                foreach (var pattern in patterns)
-                                {
-                                    var actionRoute = String.IsNullOrEmpty(action.Route) ? "" : ("/" + action.Route);
-                                    var completeRoute1 = $"{action.Method.ToString().ToUpper()} {controller.Route}{action.Route}";
-                                    var completeRoute2 = $"* {controller.Route}{action.Route}";
+                            var patterns = new List<string>();
 
-                                    if (completeRoute1.ToLower().StartsWith(pattern.ToLower()) || 
-                                        completeRoute2.ToLower().StartsWith(pattern.ToLower()) ||
-                                        pattern == "*")
-                                    {
-                                        actionsToIgnore.Add(action);
-                                    }
+                            if (!String.IsNullOrEmpty(projectId))
+                            {
+                                CodeGenerationModuleOptions.Instance.IgnoreOptions.TryGetValue(projectId, out patterns);
+                            }
+
+                            CodeGenerationModuleOptions.Instance.IgnoreOptions.TryGetValue("*", out var patterns2);
+
+                            patterns.AddRange(patterns2);
+
+                            foreach (var pattern in patterns)
+                            {
+                                var actionRoute = String.IsNullOrEmpty(action.Route) ? "" : ("/" + action.Route);
+                                var completeRoute1 = $"{action.Method.ToString().ToUpper()} {controller.Route}{action.Route}";
+                                var completeRoute2 = $"* {controller.Route}{action.Route}";
+
+                                if (completeRoute1.ToLower().StartsWith(pattern.ToLower()) ||
+                                    completeRoute2.ToLower().StartsWith(pattern.ToLower()))
+                                {
+                                    actionsToIgnore.Add(action);
                                 }
                             }
                         }
