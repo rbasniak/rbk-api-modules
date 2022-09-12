@@ -99,6 +99,11 @@ namespace rbkApiModules.CodeGeneration
         public IgnoreMode IgnoreMode { get; set; }
         public bool IgnoreOnStatesGeneration => IgnoreMode == IgnoreMode.All || IgnoreMode == IgnoreMode.StateOnly;
         public bool IncludeInStatesGenertation => !IgnoreOnStatesGeneration;
+
+        public override string ToString()
+        {
+            return $"{Method.ToString().ToUpper()} {Route}";
+        }
     }
 
 }

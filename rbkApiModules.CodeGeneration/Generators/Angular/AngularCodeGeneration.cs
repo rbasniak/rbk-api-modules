@@ -181,10 +181,15 @@ namespace rbkApiModules.CodeGeneration
 
                     var actionsToIgnore = new List<EndpointInfo>();
 
+                    var test1 = !String.IsNullOrEmpty(projectId);
+                    var test2 = CodeGenerationModuleOptions.Instance.IgnoreOptions.ContainsKey("*");
+
                     if (!String.IsNullOrEmpty(projectId) || CodeGenerationModuleOptions.Instance.IgnoreOptions.ContainsKey("*"))
                     {
                         foreach (var action in controller.Endpoints)
                         {
+                            File.WriteAllText("log.txt", $"\r\n\r\n\r\nChecking action {action}");
+
                             var patterns = new List<string>();
 
                             if (!String.IsNullOrEmpty(projectId))
@@ -194,6 +199,8 @@ namespace rbkApiModules.CodeGeneration
 
                             CodeGenerationModuleOptions.Instance.IgnoreOptions.TryGetValue("*", out var patterns2);
 
+                            if (patterns2.Count > 0) File.WriteAllText("log.txt", $"Found {patterns.Count} for *");
+
                             patterns.AddRange(patterns2);
 
                             foreach (var pattern in patterns)
@@ -202,9 +209,15 @@ namespace rbkApiModules.CodeGeneration
                                 var completeRoute1 = $"{action.Method.ToString().ToUpper()} {controller.Route}{action.Route}";
                                 var completeRoute2 = $"* {controller.Route}{action.Route}";
 
+                                File.WriteAllText("log.txt", $"  ACTION ROUTE: " + actionRoute);
+                                File.WriteAllText("log.txt", $"  ROUTE 1: " + completeRoute1);
+                                File.WriteAllText("log.txt", $"  ROUTE 2: " + completeRoute2);
+
                                 if (completeRoute1.ToLower().StartsWith(pattern.ToLower()) ||
                                     completeRoute2.ToLower().StartsWith(pattern.ToLower()))
                                 {
+                                    File.WriteAllText("log.txt", $"  *** Ignored route: " + action.ToString());
+
                                     actionsToIgnore.Add(action);
                                 }
                             }
