@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using rbkApiModules.CodeGeneration.Commons;
 using rbkApiModules.Infrastructure.Api;
 using rbkApiModules.Infrastructure.MediatR.Core;
 using System;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace rbkApiModules.Utilities.Excel;
 
+[IgnoreOnCodeGeneration]
 [Route("api/[controller]")]
 [ApiController]
 public class ExcelController : BaseController
