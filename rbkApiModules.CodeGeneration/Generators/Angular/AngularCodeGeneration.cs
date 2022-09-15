@@ -195,7 +195,7 @@ namespace rbkApiModules.CodeGeneration
                                 CodeGenerationModuleOptions.Instance.IgnoreOptions.TryGetValue(projectId, out patterns);
                             }
 
-                            if (patterns != null)
+                            if (patterns == null)
                             {
                                 patterns = new List<string>();
                             }
