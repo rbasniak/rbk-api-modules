@@ -125,7 +125,7 @@ namespace rbkApiModules.Authentication
 
             foreach (var overridedClaim in Claims)
             {
-                if (overridedClaim.Access == ClaimAcessType.Allow)
+                if (overridedClaim.Access == ClaimAccessType.Allow)
                 {
                     claims.Add(overridedClaim.Claim.Name);
                 }
@@ -198,7 +198,7 @@ namespace rbkApiModules.Authentication
         /// <param name="claim">Claim sendo adicionada</param>
         /// <param name="access">Tipo de acesso (permitir ou bloquear)</param>
         /// <returns>Retorna a entidade n-n necessária para modelar o relacionamento no EFCore</returns>
-        public virtual UserToClaim AddClaim(Claim claim, ClaimAcessType access)
+        public virtual UserToClaim AddClaim(Claim claim, ClaimAccessType access)
         {
             if (_claims == null) throw new Exception("Não é possível manipular listas que não foram carregadas completamente do banco de dados");
 

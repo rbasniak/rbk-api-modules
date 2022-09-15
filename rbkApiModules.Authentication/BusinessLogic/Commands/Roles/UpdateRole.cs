@@ -12,6 +12,9 @@ namespace rbkApiModules.Authentication
 {
     public class UpdateRole
     {
+        /// <summary>
+        /// Comando para atualizar uma regra de acesso 
+        /// </summary>
         public class Command : IRequest<CommandResponse>
         {
             public Guid Id { get; set; }
@@ -64,9 +67,11 @@ namespace rbkApiModules.Authentication
 
             protected override async Task<(Guid? entityId, object result)> ExecuteAsync(Command request)
             {
-                var role = new Role(request.Name, _httpContextAccessor.GetAuthenticationGroup());
+                var role = await _context.Set<Role>()
+                    .Include(x => x.Claims).ThenInclude(x => x.Claim)
+                    .SingleAsync(x =>x.Id == request.Id);
 
-                await _context.AddAsync(role);
+                role.SetName(request.Name);
 
                 await _context.SaveChangesAsync();
 

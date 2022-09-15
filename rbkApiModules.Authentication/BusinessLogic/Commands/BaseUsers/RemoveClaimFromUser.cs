@@ -81,7 +81,10 @@ namespace rbkApiModules.Authentication
 
             protected override async Task<(Guid? entityId, object result)> ExecuteAsync(Command request)
             {
-                var user = await _context.Set<BaseUser>().SingleAsync(x => EF.Functions.Like(x.Username, request.Username));
+                var user = await _context.Set<BaseUser>()
+                    .Include(x => x.Claims).ThenInclude(x => x.Claim)
+                    .Include(x => x.Roles).ThenInclude(x => x.Role).ThenInclude(x => x.Claims).ThenInclude(x => x.Claim)
+                    .SingleAsync(x => EF.Functions.Like(x.Username, request.Username));
 
                 var entity = await _context.Set<UserToClaim>()
                     .SingleAsync(x => x.UserId == user.Id && x.ClaimId == request.ClaimId);
@@ -90,7 +93,7 @@ namespace rbkApiModules.Authentication
 
                 await _context.SaveChangesAsync();
 
-                return (null, null);
+                return (null, user.Claims);
             }
         }
     }

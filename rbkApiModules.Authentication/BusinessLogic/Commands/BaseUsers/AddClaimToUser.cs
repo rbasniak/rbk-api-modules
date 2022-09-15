@@ -19,7 +19,7 @@ namespace rbkApiModules.Authentication
         {
             public string Username { get; set; }
             public Guid ClaimId { get; set; }
-            public ClaimAcessType AccessType { get; set; }
+            public ClaimAccessType AccessType { get; set; }
         }
 
         public class Validator : AbstractValidator<Command>
@@ -40,7 +40,7 @@ namespace rbkApiModules.Authentication
 
                 RuleFor(a => a.ClaimId)
                     .MustExistInDatabase<Command, Claim>(context)
-                    .MustAsync(ClaimIsNotAssociatedWithUser).WithMessage("O controle de acesso já está associado a esse usuário.")
+                    .MustAsync(ClaimIsAssociatedWithUser).WithMessage("O controle de acesso já está associado a esse usuário.")
                     .WithName("Controle de Acesso");
             }
 
@@ -55,7 +55,7 @@ namespace rbkApiModules.Authentication
             /// <summary>
             /// Validador que verifica se o controle de acesso já não está associado à regra de acesso
             /// </summary>
-            public async Task<bool> ClaimIsNotAssociatedWithUser(Command command, Guid id, CancellationToken cancelation)
+            public async Task<bool> ClaimIsAssociatedWithUser(Command command, Guid id, CancellationToken cancelation)
             {
                 var user = await _context.Set<BaseUser>().SingleAsync(x => EF.Functions.Like(x.Username, command.Username));
 
@@ -76,6 +76,8 @@ namespace rbkApiModules.Authentication
             protected override async Task<(Guid? entityId, object result)> ExecuteAsync(Command request)
             {
                 var user = await _context.Set<BaseUser>().Include(x => x.Claims)
+                    .Include(x => x.Claims).ThenInclude(x => x.Claim)
+                    .Include(x => x.Roles).ThenInclude(x => x.Role).ThenInclude(x => x.Claims).ThenInclude(x => x.Claim)
                     .SingleAsync(x => EF.Functions.Like(x.Username, request.Username));
 
                 var claim = await _context.Set<Claim>()
@@ -85,7 +87,7 @@ namespace rbkApiModules.Authentication
 
                 await _context.SaveChangesAsync();
 
-                return (null, null);
+                return (null, user.Claims);
             }
         }
     }

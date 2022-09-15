@@ -23,6 +23,11 @@ namespace rbkApiModules.Authentication
             CreateMap<RoleToClaim, SimpleNamedEntity>()
                 .ForMember(dto => dto.Id, map => map.MapFrom(entity => entity.Claim.Id))
                 .ForMember(dto => dto.Name, map => map.MapFrom(entity => entity.Claim.Description));
+
+            CreateMap<UserToRole, SimpleNamedEntity>()
+                .ForMember(dto => dto.Id, map => map.MapFrom(entity => entity.RoleId))
+                .ForMember(dto => dto.Name, map => map.MapFrom(entity => entity.Role.Name));
+
         }
     }
 }

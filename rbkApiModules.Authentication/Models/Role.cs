@@ -52,6 +52,11 @@ namespace rbkApiModules.Authentication
             _claims.Add(roleToClaim);
 
             return roleToClaim;
-        } 
+        }
+
+        public void SetName(string name)
+        {
+            Name = name;
+        }
     }
 }

@@ -101,7 +101,7 @@ namespace rbkApiModules.CodeGeneration
                 var modelTypes = (assembly.GetTypes()
                     .Where(myType => ((myType.IsClass && !myType.IsAbstract) || myType.IsEnum)
                             && myType.HasAttribute<ForceTypescriptModelGenerationAttribute>()))
-                    .ToArray(); 
+                    .ToArray();
 
                 foreach (var modelType in modelTypes)
                 {
@@ -195,9 +195,17 @@ namespace rbkApiModules.CodeGeneration
                                 CodeGenerationModuleOptions.Instance.IgnoreOptions.TryGetValue(projectId, out patterns);
                             }
 
+                            if (patterns != null)
+                            {
+                                patterns = new List<string>();
+                            }
+
                             CodeGenerationModuleOptions.Instance.IgnoreOptions.TryGetValue("*", out var patterns2);
 
-                            patterns.AddRange(patterns2);
+                            if (patterns2 != null)
+                            {
+                                patterns.AddRange(patterns2);
+                            }
 
                             foreach (var pattern in patterns)
                             {

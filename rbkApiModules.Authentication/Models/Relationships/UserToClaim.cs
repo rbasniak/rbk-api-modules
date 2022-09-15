@@ -13,7 +13,7 @@ namespace rbkApiModules.Authentication
 
         }
 
-        public UserToClaim(BaseUser user, Claim claim, ClaimAcessType access)
+        public UserToClaim(BaseUser user, Claim claim, ClaimAccessType access)
         {
             if (user.AuthenticationGroup != claim.AuthenticationGroup)
             {
@@ -31,6 +31,6 @@ namespace rbkApiModules.Authentication
         public virtual Guid ClaimId { get; private set; }
         public virtual Claim Claim { get; private set; }
 
-        public virtual ClaimAcessType Access { get; private set; } 
+        public virtual ClaimAccessType Access { get; private set; } 
     }
 }

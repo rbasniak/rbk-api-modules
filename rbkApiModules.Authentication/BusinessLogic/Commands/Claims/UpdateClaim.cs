@@ -4,20 +4,21 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Infrastructure.MediatR.SqlServer;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using rbkApiModules.Infrastructure.MediatR.Core;
-using System.Threading;
 
 namespace rbkApiModules.Authentication
 {
     /// <summary>
-    /// Comando para apagar uma regra de acesso 
+    /// Comando para atualizar uma permissão de acesso 
     /// </summary>
-    public class DeleteRole
+    public class UpdateClaim
     {
         public class Command : IRequest<CommandResponse>
         {
-            public Guid RoleId { get; set; }
+            public Guid Id { get; set; }
+            public string Description { get; set; }
         }
 
         public class Validator : AbstractValidator<Command>
@@ -27,25 +28,24 @@ namespace rbkApiModules.Authentication
 
             public Validator(DbContext context, IHttpContextAccessor httpContextAccessor)
             {
-                _context = context;
                 _httpContextAccessor = httpContextAccessor;
+                _context = context;
 
                 CascadeMode = CascadeMode.Stop;
 
-                RuleFor(a => a.RoleId)
-                    .MustExistInDatabase<Command, Role>(context)
-                    .MustAsync(MustBeFromSameAuthenticationGroup).WithMessage("Security breach, role from another authentication group")
-                    .WithName("Regra de Acesso");
+                RuleFor(a => a.Id)
+                    .MustExistInDatabase<Command, Claim>(context)
+                    .MustAsync(HaveSameUserAuthGroup).WithMessage("Acesso negado.")
+                    .WithName("Permissão de Acesso"); 
             }
 
-            private async Task<bool> MustBeFromSameAuthenticationGroup(Command command, Guid id, CancellationToken cancellation)
+            private async Task<bool> HaveSameUserAuthGroup(Command command, Guid id, CancellationToken cancelation)
             {
-                var role = await _context.Set<Role>().FindAsync(id);
-                var group = _httpContextAccessor.GetAuthenticationGroup();
-                var userAuthenticationGroup = _httpContextAccessor.GetAuthenticationGroup();
-
-                return role.AuthenticationGroup == group && userAuthenticationGroup == group;
+                var authenticationGroup = _httpContextAccessor.GetAuthenticationGroup();
+                var claim = await _context.Set<Claim>().FindAsync(id);
+                return claim.AuthenticationGroup == authenticationGroup;
             }
+
         }
 
         public class Handler : BaseCommandHandler<Command, DbContext>
@@ -56,14 +56,14 @@ namespace rbkApiModules.Authentication
 
             protected override async Task<(Guid? entityId, object result)> ExecuteAsync(Command request)
             {
-                var role = await _context.Set<Role>()
-                    .SingleAsync(x => x.Id == request.RoleId);
+                var claim = await _context.Set<Claim>()
+                    .FindAsync(request.Id);
 
-                _context.Set<Role>().Remove(role);
+                claim.SetDescription(request.Description);
 
                 await _context.SaveChangesAsync();
 
-                return (role.Id, role);
+                return (claim.Id, claim);
             }
         }
     }

@@ -35,7 +35,7 @@ namespace rbkApiModules.Authentication.AuthenticationGroups
 
             var roles = user.Claims.Where(x => x.Type == JwtClaimIdentifiers.Roles).Select(x => x.Value).ToList();
 
-            if ((!String.IsNullOrEmpty(Claim) && !roles.Contains(Claim)) || Group != authGroup)
+            if ((!String.IsNullOrEmpty(Claim) && !roles.Contains(Claim)) || (!String.IsNullOrEmpty(Group) && Group != authGroup))
             {
                 context.Result = new ForbidResult();
                 return;
