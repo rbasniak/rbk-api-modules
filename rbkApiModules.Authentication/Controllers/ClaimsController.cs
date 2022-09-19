@@ -52,7 +52,7 @@ namespace rbkApiModules.Authentication
         /// Protege um acesso
         /// </summary>
         [RbkAuthorize(Claim = AuthenticationClaims.CAN_OVERRIDE_CLAIM_PROTECTION)]
-        [HttpPut]
+        [HttpPost("protect")]
         public async Task<ActionResult<ClaimDetails>> Protect(ProtectClaim.Command data)
         {
             return HttpResponse<ClaimDetails>(await Mediator.Send(data));
@@ -62,7 +62,7 @@ namespace rbkApiModules.Authentication
         /// Desprotege um acesso
         /// </summary>
         [RbkAuthorize(Claim = AuthenticationClaims.CAN_OVERRIDE_CLAIM_PROTECTION)]
-        [HttpPut]
+        [HttpPost("unprotect")]
         public async Task<ActionResult<ClaimDetails>> Unprotect(UnprotectClaim.Command data)
         {
             return HttpResponse<ClaimDetails>(await Mediator.Send(data));
