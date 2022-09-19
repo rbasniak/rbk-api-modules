@@ -8,6 +8,7 @@ namespace rbkApiModules.Authentication
     {
         public string Description { get; set; }
         public string Name { get; set; }
+        public bool IsProtected { get; set; }
     }
 
     public class ClaimOverride
@@ -15,6 +16,7 @@ namespace rbkApiModules.Authentication
         public SimpleNamedEntity Claim { get; set; }
         public string Name { get; set; }
         public SimpleNamedEntity<int> Access { get; set; }
+        public bool IsProtected { get; set; }
     }
 
     public class ClaimMappings : Profile
@@ -30,7 +32,8 @@ namespace rbkApiModules.Authentication
             CreateMap<UserToClaim, ClaimOverride>()
                 .ForMember(dto => dto.Name, map => map.MapFrom(entity => entity.Claim.Name))
                 .ForMember(dto => dto.Claim, map => map.MapFrom(entity => new SimpleNamedEntity { Id = entity.Claim.Id.ToString(), Name = entity.Claim.Description }))
-                .ForMember(dto => dto.Access, map => map.MapFrom(entity => new SimpleNamedEntity<int> { Id = (int)entity.Access, Name = entity.Access.GetDescription() }));
+                .ForMember(dto => dto.Access, map => map.MapFrom(entity => new SimpleNamedEntity<int> { Id = (int)entity.Access, Name = entity.Access.GetDescription() }))
+                .ForMember(dto => dto.IsProtected, map => map.MapFrom(entity => entity.Claim.IsProtected));
         }
     }
 }
