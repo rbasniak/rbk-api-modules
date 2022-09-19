@@ -49,6 +49,26 @@ namespace rbkApiModules.Authentication
         }
 
         /// <summary>
+        /// Protege um acesso
+        /// </summary>
+        [RbkAuthorize(Claim = AuthenticationClaims.CAN_OVERRIDE_CLAIM_PROTECTION)]
+        [HttpPut]
+        public async Task<ActionResult<ClaimDetails>> Protect(ProtectClaim.Command data)
+        {
+            return HttpResponse<ClaimDetails>(await Mediator.Send(data));
+        }
+
+        /// <summary>
+        /// Desprotege um acesso
+        /// </summary>
+        [RbkAuthorize(Claim = AuthenticationClaims.CAN_OVERRIDE_CLAIM_PROTECTION)]
+        [HttpPut]
+        public async Task<ActionResult<ClaimDetails>> Unprotect(UnprotectClaim.Command data)
+        {
+            return HttpResponse<ClaimDetails>(await Mediator.Send(data));
+        }
+
+        /// <summary>
         /// Apaga uma permissão de acesso
         /// </summary>
         [RbkAuthorize(Claim = AuthenticationClaims.MANAGE_CLAIMS)]

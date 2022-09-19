@@ -91,8 +91,13 @@ namespace rbkApiModules.Authentication
 
     public class SeedClaimDescriptions
     {
-        public string ManageRoles { get; set; }
-        public string ManageUserRoles { get; set; }
         public string OverrideUserClaims { get; set; }
+        public string ManageUserRoles { get; set; }
+        public string ManageUserClaims { get; set; }
+        public string ManageRoles { get; set; }
+        public string ManageClaims { get; set; }
+        public string CanOverrideClaimProtection { get; set; }
+
+
     }
 }
