@@ -38,7 +38,7 @@ namespace rbkApiModules.Authentication
                     .WithName("Usuário");
 
                 RuleForEach(a => a.RolesIds)
-                    .MustAsync(RoleExistInDatabase).WithMessage("Não foi possível localizar o role no servidor")
+                    .MustAsync(RoleExistInDatabase).WithMessage("Não foi possível localizar a regra de acesso no servidor")
                     .WithName("Controle de Acesso");
 ;
             }

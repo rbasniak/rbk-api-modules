@@ -12,7 +12,6 @@ namespace rbkApiModules.Authentication
     /// <summary>
     /// Controller para acesso das funcionalidades de autorização e controle de acesso
     /// </summary>
-    [IgnoreOnCodeGeneration]
     [ApiController]
     [Route("api/[controller]")]
     public class RolesController : BaseController

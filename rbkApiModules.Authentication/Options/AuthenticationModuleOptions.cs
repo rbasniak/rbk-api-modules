@@ -32,6 +32,9 @@ namespace rbkApiModules.Authentication
             _claimDescriptions.ManageRoles = "Gerenciar regras de acesso";
             _claimDescriptions.ManageUserRoles = "Atribuir regras de acesso a usuários";
             _claimDescriptions.OverrideUserClaims = "Permitir/bloquear acessos individuais a usuários";
+            _claimDescriptions.ManageClaims = "Gerenciar permissões de acesso";
+            _claimDescriptions.ManageUserClaims = "Gerenciar permissões individuais de usuário";
+            _claimDescriptions.CanOverrideClaimProtection = "Proteger/desproteger permissões de acesso";
 
             return this;
         }
