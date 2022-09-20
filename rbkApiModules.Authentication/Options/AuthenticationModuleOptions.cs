@@ -29,12 +29,12 @@ namespace rbkApiModules.Authentication
 
         public AuthenticationModuleOptions UseDefaultClaimDescriptions()
         {
-            _claimDescriptions.ManageRoles = "Gerenciar regras de acesso";
-            _claimDescriptions.ManageUserRoles = "Atribuir regras de acesso a usuários";
-            _claimDescriptions.OverrideUserClaims = "Permitir/bloquear acessos individuais a usuários";
-            _claimDescriptions.ManageClaims = "Gerenciar permissões de acesso";
-            _claimDescriptions.ManageUserClaims = "Gerenciar permissões individuais de usuário";
-            _claimDescriptions.CanOverrideClaimProtection = "Proteger/desproteger permissões de acesso";
+            _claimDescriptions.ManageRoles = AuthenticationClaimDefinitions.MANAGE_ROLES.Description;
+            _claimDescriptions.ManageUserRoles = AuthenticationClaimDefinitions.MANAGE_USER_ROLES.Description;
+            _claimDescriptions.OverrideUserClaims = AuthenticationClaimDefinitions.OVERRIDE_USER_CLAIMS.Description;
+            _claimDescriptions.ManageClaims = AuthenticationClaimDefinitions.MANAGE_CLAIMS.Description;
+            _claimDescriptions.ManageUserClaims = AuthenticationClaimDefinitions.MANAGE_USER_CLAIMS.Description;
+            _claimDescriptions.CanOverrideClaimProtection = AuthenticationClaimDefinitions.CAN_OVERRIDE_CLAIM_PROTECTION.Description;
 
             return this;
         }
