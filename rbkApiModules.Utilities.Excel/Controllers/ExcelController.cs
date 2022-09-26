@@ -18,6 +18,7 @@ public class ExcelController : BaseController
     /// Receives Data and formatting classes in JSON and returns an excel workbook in base64 format
     /// </summary>
     [HttpPost("generate-tables")]
+    [AllowAnonymous]
     public async Task<ActionResult<ExcelsDetails>> GenerateSpreadsheetTables(GenerateSpreadsheetTablesFromJsonAsBase64.Command data)
     {
         return HttpResponse(await Mediator.Send(data));
@@ -27,6 +28,7 @@ public class ExcelController : BaseController
     /// Receives Data and formatting classes in JSON and returns an excel workbook in file format
     /// </summary>
     [HttpPost("generate-tables-file-output")]
+    [AllowAnonymous]
     public async Task<ActionResult<ExcelsDetails>> GenerateSpreadsheetTablesAsFile(GenerateSpreadsheetTablesFromJsonAsFile.Command data)
     {
         var response = await Mediator.Send(data);

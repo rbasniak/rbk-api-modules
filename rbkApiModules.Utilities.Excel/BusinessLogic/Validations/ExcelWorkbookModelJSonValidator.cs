@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -25,8 +24,9 @@ public class ExcelWorkbookModelJSonValidator : AbstractValidator<IExcelWorkbookM
             .Must(NotHaveRepeatedSheetNames).WithMessage("Workbook models containing more than one sheet must have unique sheet names for the tabs")
             .Must(HaveContinuousTabIndexCount).WithMessage("Tab Index must be continuous and start from ZERO. It cannot have skip numbers")
             // Table Type validations
-            .Must(ForTableTypeHaveAtLeastOndeHeaderAndOneColumn).WithMessage("The workbook model have at least one column with one header")
+            .Must(ForTableTypeHaveAtLeastOneHeaderAndOneColumn).WithMessage("The workbook model have at least one column with one header")
             .Must(ForTableTypeNotHaveRepeatedHeaderName).WithMessage("Headers inside the same spreadsheet must have unique names")
+            .Must(ForTableTypeHaveNumHeadersMustEqualNumColumns).WithMessage("The number of headers must match the number of columns for each individual table")
             .Must(ForTableTypeHaveCorrectDataTypes).WithMessage("DataTypes must be between 0 and 6");
             // Future Plot Type Validations
     }
@@ -106,11 +106,11 @@ public class ExcelWorkbookModelJSonValidator : AbstractValidator<IExcelWorkbookM
     #region Table Validations
 
     // Table Type validations
-    private bool ForTableTypeHaveAtLeastOndeHeaderAndOneColumn(ExcelWorkbookModel workbookModel)
+    private bool ForTableTypeHaveAtLeastOneHeaderAndOneColumn(ExcelWorkbookModel workbookModel)
     {
         foreach (var sheet in workbookModel.Tables)
         {
-            if (sheet.SheetType == ClosedXMLDefs.ExcelSheetTypes.Type.Table)
+            if (sheet.SheetType == ExcelModelDefs.ExcelSheetTypes.Type.Table)
             {
                 if (sheet.Columns == null || sheet.Header == null)
                 {
@@ -134,7 +134,7 @@ public class ExcelWorkbookModelJSonValidator : AbstractValidator<IExcelWorkbookM
         foreach (var sheet in workbookModel.Tables)
         {
             var names = new List<string>();
-            if (sheet.SheetType == ClosedXMLDefs.ExcelSheetTypes.Type.Table)
+            if (sheet.SheetType == ExcelModelDefs.ExcelSheetTypes.Type.Table)
             {
                 foreach (var headerName in sheet.Header.Data)
                 {
@@ -156,15 +156,27 @@ public class ExcelWorkbookModelJSonValidator : AbstractValidator<IExcelWorkbookM
     {
         foreach (var sheet in workbookModel.Tables)
         {
-            if (sheet.SheetType == ClosedXMLDefs.ExcelSheetTypes.Type.Table)
+            if (sheet.SheetType == ExcelModelDefs.ExcelSheetTypes.Type.Table)
             {
                 foreach (var column in sheet.Columns)
                 {
-                    if (!ClosedXMLDefs.ExcelDataTypes.DataType.IsDefined(column.DataType))
+                    if (!ExcelModelDefs.ExcelDataTypes.DataType.IsDefined(column.DataType))
                     {
                         return false;
                     }
                 }
+            }
+        }
+        return true;
+    }
+
+    private bool ForTableTypeHaveNumHeadersMustEqualNumColumns(ExcelWorkbookModel workbookModel)
+    {
+        foreach (var sheet in workbookModel.Tables)
+        {
+            if (sheet.Header.Data.Length != sheet.Columns.Length)
+            {
+                return false;
             }
         }
         return true;

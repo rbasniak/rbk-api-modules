@@ -1,6 +1,4 @@
-﻿using System;
-using System.Drawing;
-using static rbkApiModules.Utilities.Excel.ClosedXMLDefs;
+﻿using static rbkApiModules.Utilities.Excel.ExcelModelDefs;
 
 namespace rbkApiModules.Utilities.Excel;
 
@@ -24,7 +22,7 @@ public class Watermark
     /// <summary>
     /// The Font that will be used to write watermark
     /// </summary>
-    public ExcelFonts.FontName Font { get; set; } = ExcelFonts.FontName.Calibri;
+    public ExcelFonts.FontType Font { get; set; } = ExcelFonts.FontType.Calibri;
     /// <summary>
     /// The angle for which the watermark should be rotated
     /// </summary>
@@ -33,4 +31,13 @@ public class Watermark
     /// Font size for writing the watermark
     /// </summary>
     public int FontSize { get; set; } = 40;
+    /// <summary>
+    /// Reserved Quick access Key Built from font, fontSize, data type and format
+    /// </summary>
+    public string StyleKey { get; private set; } = "";
+
+    public void AddStyleKey(string key)
+    {
+        StyleKey = key;
+    }
 }
