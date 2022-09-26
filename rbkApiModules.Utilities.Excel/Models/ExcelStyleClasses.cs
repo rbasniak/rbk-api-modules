@@ -31,4 +31,11 @@ public class ExcelStyleClasses
     /// If the font should display an underline
     /// </summary>
     public bool Underline { get; set; } = false;
+
+    /// <summary>
+    /// If a hex value is set, then the font will preferably use the Hex color value. If none is set, it will use the theme color
+    /// Expects an 8 characters Hexadecimal ARGB string pattern without the # e.g. "FFFF0000" for solid Red.
+    /// "FF00FF00" for solid green and "FF0000FF" for solid blue.
+    /// </summary>
+    public string FontColor { get; set; } = string.Empty;
 }

@@ -11,10 +11,13 @@ public class ExcelHeaderModel
     /// The data list to be displayed at the header row
     /// </summary>
     public string[] Data { get; set; }
+
     /// <summary>
     /// Styles to be applied to the header row
     /// </summary>
     public ExcelStyleClasses Style { get; set; }
+
+    #region Helper fields and methods
 
     /// <summary>
     /// Reserved Quick access Key Built from font, fontSize, data type and format
@@ -25,4 +28,6 @@ public class ExcelHeaderModel
     {
         StyleKey = key;
     }
+
+    #endregion
 }

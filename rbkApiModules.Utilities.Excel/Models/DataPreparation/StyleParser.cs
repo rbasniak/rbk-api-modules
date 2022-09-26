@@ -1,7 +1,9 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.Office2010.Word;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using static rbkApiModules.Utilities.Excel.ExcelModelDefs;
 
 namespace rbkApiModules.Utilities.Excel;
@@ -31,88 +33,134 @@ internal class StyleParser
 
     internal void ParseStyles(ExcelWorkbookModel workbookModel)
     {
-        string styleKey;
-        string key;
-
         //Run all tables looking for styles
         foreach (var table in workbookModel.Tables)
         {
-            key = AddFontToDictionary(_fonts, table.Header.Style, 1);
-
-            styleKey = key + ExcelDataTypes.DataType.Text.ToString();
-
-            AddStyleFormatToDictionary(_styleFormats, styleKey, (UInt32)_fonts[key].FontIndex, 0U, 0U, 0U, 0U, false, true);
-
-            table.Header.AddStyleKey(styleKey);
+            CreateHeaderStyle(table.Header);
 
             foreach (var column in table.Columns)
             {
-                key = column.DataType == ExcelDataTypes.DataType.HyperLink ?
-                    AddFontToDictionary(_fonts, column.Style, 10) :
-                    AddFontToDictionary(_fonts, column.Style, 1);
-                // Columns can have diferent types, formats and fonts
-                styleKey = key + ExcelDataTypes.DataType.Text.ToString();
-                if (column.DataType == ExcelDataTypes.DataType.Text)
-                {
-                    AddStyleFormatToDictionary(_styleFormats, styleKey, _fonts[key].FontIndex, 0U, 0U, 0U, 0U, false, true);
-                    column.AddStyleKey(styleKey);
-                }
-                else
-                {
-                    // Add numFormat or CellStyle to xml and get index to add to the style class
-                    styleKey = key + column.DataType.ToString();
-
-                    if (column.DataType == ExcelDataTypes.DataType.Number)
-                    {
-                        if (!string.IsNullOrEmpty(column.DataFormat))
-                        {
-                            var numFormatId = AddNumFormatToDictionary(_numFormats, column.DataFormat);
-                            styleKey = styleKey + numFormatId.ToString();
-                            AddStyleFormatToDictionary(_styleFormats, styleKey, _fonts[key].FontIndex, numFormatId, 0U, 0U, 0U, true, true);
-                        }
-                        else
-                        {
-                            AddStyleFormatToDictionary(_styleFormats, styleKey, _fonts[key].FontIndex, 0U, 0U, 0U, 0U, true, true);
-                        }
-                        column.AddStyleKey(styleKey);
-                    }
-                    else if (column.DataType == ExcelDataTypes.DataType.HyperLink)
-                    {
-                        styleKey = key + column.DataType.ToString();
-                        _hyperlinkFormats.TryAdd(key, _fonts[key].FontIndex);
-                        AddStyleFormatToDictionary(_styleFormats, styleKey, _fonts[key].FontIndex, 0U, 1U, 0U, 0U, false, false);
-                        column.AddStyleKey(styleKey);
-                    }
-                    else if (column.DataType == ExcelDataTypes.DataType.DateTime)
-                    {
-                        var sysDateFormat = string.IsNullOrEmpty(column.DataFormat) ? CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern.ToString() : column.DataFormat;
-                        var numFormatId = AddNumFormatToDictionary(_numFormats, sysDateFormat);
-                        styleKey = styleKey + numFormatId.ToString();
-                        AddStyleFormatToDictionary(_styleFormats, styleKey, _fonts[key].FontIndex, numFormatId, 0U, 0U, 0U, true, true);
-                        column.AddStyleKey(styleKey);
-                    }
-                }
+                CreateStylesForeachType(column.DataType, column);
             }
         }
         //TODO Add Chart Fonts;
 
-        // Future Watermark Details
         if (workbookModel.Watermark != null)
         {
-            var styles = new ExcelStyleClasses()
-            {
-                Font = workbookModel.Watermark.Font,
-                FontSize = workbookModel.Watermark.FontSize
-            };
-
-            key = AddFontToDictionary(_fonts, styles, 1);
-
-            styleKey = key + ExcelDataTypes.DataType.Text.ToString();
-
-            AddStyleFormatToDictionary(_styleFormats, key, (UInt32)_fonts[key].FontIndex, 0U, 0U, 0U, 0U, false, true);
-
-            workbookModel.Watermark.AddStyleKey(styleKey);
+            CreateWatermarkStyle(workbookModel.Watermark);
         }
+    }
+
+    private void CreateStylesForeachType(ExcelDataTypes.DataType type, ExcelColumnModel column)
+    {
+        switch (type)
+        {
+            case ExcelDataTypes.DataType.HyperLink:
+                CreateHyperlinkStyle(column);
+                break;
+            
+            case ExcelDataTypes.DataType.DateTime:
+                CreateDatetimeStyle(column);
+                break;
+
+            case ExcelDataTypes.DataType.Number:
+                CreateNumberStyle(column);
+                break;
+
+            case ExcelDataTypes.DataType.Text:
+            default:
+                CreateTextStyle(column);
+                break;
+        }
+    }
+
+    private void CreateHeaderStyle(ExcelHeaderModel header)
+    {
+        var key = AddFontToDictionary(_fonts, header.Style, 1);
+
+        var styleKey = key + ExcelDataTypes.DataType.Text.ToString();
+
+        AddStyleFormatToDictionary(_styleFormats, styleKey, (UInt32)_fonts[key].FontIndex, 0U, 0U, 0U, 0U, false, true);
+
+        header.AddStyleKey(styleKey);
+    }
+
+    private void CreateHyperlinkStyle(ExcelColumnModel column)
+    {
+        //Always sets this font color to standard link color
+        column.Style.FontColor = string.Empty;
+        
+        var key = AddFontToDictionary(_fonts, column.Style, 10);
+
+        var styleKey = key + column.DataType.ToString();
+        
+        _hyperlinkFormats.TryAdd(key, _fonts[key].FontIndex);
+        AddStyleFormatToDictionary(_styleFormats, styleKey, _fonts[key].FontIndex, 0U, 1U, 0U, 0U, false, false);
+        
+        column.AddStyleKey(styleKey);
+    }
+
+    private void CreateNumberStyle(ExcelColumnModel column)
+    {
+        var key = AddFontToDictionary(_fonts, column.Style, 1);
+
+        var styleKey = key + column.DataType.ToString();
+
+        if (!string.IsNullOrEmpty(column.DataFormat))
+        {
+            var numFormatId = AddNumFormatToDictionary(_numFormats, column.DataFormat);
+            styleKey = styleKey + numFormatId.ToString();
+            AddStyleFormatToDictionary(_styleFormats, styleKey, _fonts[key].FontIndex, numFormatId, 0U, 0U, 0U, true, true);
+        }
+        else
+        {
+            AddStyleFormatToDictionary(_styleFormats, styleKey, _fonts[key].FontIndex, 0U, 0U, 0U, 0U, true, true);
+        }
+        column.AddStyleKey(styleKey);
+    }
+
+    private void CreateDatetimeStyle(ExcelColumnModel column)
+    {
+        var key = AddFontToDictionary(_fonts, column.Style, 1);
+
+        var styleKey = key + column.DataType.ToString();
+
+        var numFormatId = AddNumFormatToDictionary(_numFormats, column.DataFormat);
+        
+        styleKey = styleKey + numFormatId.ToString();
+        
+        AddStyleFormatToDictionary(_styleFormats, styleKey, _fonts[key].FontIndex, numFormatId, 0U, 0U, 0U, true, true);
+
+        column.AddStyleKey(styleKey);
+    }
+
+    private void CreateTextStyle(ExcelColumnModel column)
+    {
+        var key = AddFontToDictionary(_fonts, column.Style, 1);
+
+        var styleKey = key + ExcelDataTypes.DataType.Text.ToString();
+        
+        AddStyleFormatToDictionary(_styleFormats, styleKey, _fonts[key].FontIndex, 0U, 0U, 0U, 0U, false, true);
+        
+        column.AddStyleKey(styleKey); 
+    }
+
+    private void CreateWatermarkStyle(Watermark watermark)
+    {
+        var styles = new ExcelStyleClasses()
+        {
+            Font = watermark.Font,
+            FontSize = watermark.FontSize,
+            FontColor = watermark.FontColor
+        };
+
+        var key = AddFontToDictionary(_fonts, styles, 1);
+
+        var styleKey = key + ExcelDataTypes.DataType.Text.ToString();
+
+        AddStyleFormatToDictionary(_styleFormats, key, (UInt32)_fonts[key].FontIndex, 0U, 0U, 0U, 0U, false, true);
+
+        watermark.AddStyleKey(styleKey);
     }
 
     private string AddFontToDictionary(
@@ -122,11 +170,22 @@ internal class StyleParser
     {
         string key;
         ExcelFontDetail fontDetail;
+        
+        var regex = new Regex(@"^([A-Fa-f0-9]{8})$");
+        
+        if (!string.IsNullOrEmpty(styles.FontColor) && regex.IsMatch(styles.FontColor))
+        {
+            key = styles.Font.ToString() + styles.FontSize.ToString() + styles.FontColor + styles.Bold.ToString() + styles.Italic.ToString() + styles.Underline.ToString();
+        }
+        else 
+        { 
+            key = styles.Font.ToString() + styles.FontSize.ToString() + colorTheme.ToString() + styles.Bold.ToString() + styles.Italic.ToString() + styles.Underline.ToString();
+        }
 
-        key = styles.Font.ToString() + styles.FontSize.ToString() + colorTheme.ToString() + styles.Bold.ToString() + styles.Italic.ToString() + styles.Underline.ToString();
+
         if (!fonts.ContainsKey(key))
         {
-            fontDetail = ExcelFontDetail.GetFontStyles(styles.Font, styles.Bold, styles.Italic, styles.Underline, (UInt32)fonts.Count, styles.FontSize, colorTheme);
+            fontDetail = ExcelFontDetail.GetFontStyles(styles.Font, styles.Bold, styles.Italic, styles.Underline, (UInt32)fonts.Count, styles.FontSize, colorTheme, styles.FontColor);
             fonts.Add(key, fontDetail);
         }
 

@@ -1,33 +1,28 @@
-﻿using DocumentFormat.OpenXml.Packaging;
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Collections.Generic;
+using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 using x14 = DocumentFormat.OpenXml.Office2010.Excel;
 using x15 = DocumentFormat.OpenXml.Office2013.Excel;
 using DocumentFormat.OpenXml.ExtendedProperties;
-using System.IO;
 using rbkApiModules.Infrastructure.Models;
-using System.Collections.Generic;
-using System.Linq;
 using static rbkApiModules.Utilities.Excel.ExcelModelDefs;
-using System;
+using System.Text.RegularExpressions;
 
 namespace rbkApiModules.Utilities.Excel;
 
 public class SaxLib
 {
-    private readonly DataParser _parser;
-    private readonly StyleParser _styleParser;
-    
     private readonly int _numLengthSamples = 50;
-    
-    public SaxLib()
-    {
-        _parser = new DataParser();
-        _styleParser = new StyleParser();
-    }
     
     public MemoryStream CreatePackage(ExcelWorkbookModel workbookModel)
     {
+        DataParser parser = new DataParser();
+        StyleParser styleParser = new StyleParser(); ;
+
         var stream = new MemoryStream();
 
         using (SpreadsheetDocument document = SpreadsheetDocument.Create(stream, SpreadsheetDocumentType.Workbook))
@@ -40,7 +35,7 @@ public class SaxLib
             }
 
             // Generate all Shared Strings that will be used in all the sheets
-            _parser.PrepareData(workbookModel);
+            parser.PrepareData(workbookModel);
 
             // Generate all Styles needed on every sheet in this workbook
             var stylesPartId = "sPrId1";
@@ -48,8 +43,8 @@ public class SaxLib
 
             WorkbookStylesPart workbookStylesPart = document.WorkbookPart.AddNewPart<WorkbookStylesPart>(stylesPartId);
             SharedStringTablePart sharedStringTablePart = document.WorkbookPart.AddNewPart<SharedStringTablePart>(sharedTableId);
-            GenerateStylePart(workbookStylesPart, workbookModel);
-            GenerateSharedStringsTable(sharedStringTablePart);
+            GenerateStylePart(workbookStylesPart, workbookModel, parser, styleParser);
+            GenerateSharedStringsTable(sharedStringTablePart, parser);
 
             var partId = 1;
             var linksId = 1;
@@ -81,7 +76,7 @@ public class SaxLib
 
                 int numRows = allColumns.Select(x => x.Data.Length).Max() + sheetModel.StartRow;
 
-                GenerateWorkSheetData(workSheetPart, sheetModel, allColumns, numRows, sheetPartId);
+                GenerateWorkSheetData(workSheetPart, sheetModel, allColumns, numRows, sheetPartId, parser, styleParser);
                 GenerateTableParts(sheetTablesPart, (UInt32)sheetNum, sheetModel.Header, sheetModel.Theme, sheetModel.StartRow, numRows);
             }
 
@@ -164,14 +159,14 @@ public class SaxLib
         return partIdSequencer;
     }
 
-    private void GenerateSharedStringsTable(SharedStringTablePart sharedStringTablePart)
+    private void GenerateSharedStringsTable(SharedStringTablePart sharedStringTablePart, DataParser parser)
     {
         using (var writer = OpenXmlWriter.Create(sharedStringTablePart))
         {
-            var stringCount = _parser.GetSharedStringCount();
+            var stringCount = parser.GetSharedStringCount();
             writer.WriteStartElement(new SharedStringTable() { Count = stringCount.TotalCount, UniqueCount = stringCount.UniqueCount });
 
-            foreach (var key in _parser.GetSharedStrings())
+            foreach (var key in parser.GetSharedStrings())
             {
                 writer.WriteStartElement(new SharedStringItem());
                 writer.WriteElement(new Text(key));
@@ -184,7 +179,7 @@ public class SaxLib
         }
     }
 
-    private void GenerateWorkSheetData(WorksheetPart workSheetPart, ExcelTableSheetModel sheetModel, ExcelColumnModel[] allColumns, int numRows, string sheetPartId)
+    private void GenerateWorkSheetData(WorksheetPart workSheetPart, ExcelTableSheetModel sheetModel, ExcelColumnModel[] allColumns, int numRows, string sheetPartId, DataParser parser, StyleParser styleParser)
     {
         using (var writer = OpenXmlWriter.Create(workSheetPart))
         {
@@ -194,18 +189,31 @@ public class SaxLib
                         
             writer.WriteStartElement(new Worksheet());
 
-            WriteSheetDataColumnSection(writer, numColumns, headers, allColumns, sheetModel);
+            if (!string.IsNullOrEmpty(sheetModel.TabColor))
+            {
+                var regex = new Regex(@"^([A-Fa-f0-9]{8})$");
+                if (regex.IsMatch(sheetModel.TabColor))
+                {
+                    WriteSheetTabColorSection(writer, sheetModel);
+                }
+                else
+                {
+                    throw new SafeException("Invalid Color String. String should be a 8 characters ARGB string without the #. e.g. \"FF00FF00\" for solid green");
+                }
+            }
+
+            WriteSheetDataColumnSection(writer, numColumns, headers, allColumns);
 
             writer.WriteStartElement(new SheetData());
 
             if(sheetModel.StartRow > 1)
             {
-                WriteSheetDataSubtotalRow(writer, startRow, numColumns, numRows, allColumns);
+                WriteSheetDataSubtotalRow(writer, startRow, numColumns, numRows, allColumns, styleParser);
             }
 
-            WriteSheetDataHeaderRow(writer, startRow, numColumns, headers);
+            WriteSheetDataHeaderRow(writer, startRow, numColumns, headers, parser, styleParser);
 
-            WriteSheetDataColumns(writer, startRow, numColumns, numRows, allColumns);
+            WriteSheetDataColumns(writer, startRow, numColumns, numRows, allColumns, parser, styleParser);
 
             // write the end SheetData element
             writer.WriteEndElement();
@@ -225,7 +233,16 @@ public class SaxLib
         }
     }
 
-    private void WriteSheetDataColumnSection(OpenXmlWriter writer, int numColumns, ExcelHeaderModel headers, ExcelColumnModel[] allColumns, ExcelTableSheetModel sheetModel)
+    private void WriteSheetTabColorSection(OpenXmlWriter writer, ExcelTableSheetModel sheetModel)
+    {
+        writer.WriteStartElement(new SheetProperties());
+
+        writer.WriteElement(new TabColor() { Rgb = HexBinaryValue.FromString(sheetModel.TabColor) });
+
+        writer.WriteEndElement();
+    }
+
+    private void WriteSheetDataColumnSection(OpenXmlWriter writer, int numColumns, ExcelHeaderModel headers, ExcelColumnModel[] allColumns)
     {
         writer.WriteStartElement(new Columns());
 
@@ -241,7 +258,7 @@ public class SaxLib
         writer.WriteEndElement();
     }
 
-    private void WriteSheetDataSubtotalRow(OpenXmlWriter writer, int startRow, int numColumns, int numRows, ExcelColumnModel[] allColumns)
+    private void WriteSheetDataSubtotalRow(OpenXmlWriter writer, int startRow, int numColumns, int numRows, ExcelColumnModel[] allColumns, StyleParser styleParser)
     {
         Cell cell = new Cell();
         CellFormula cellFormula = new CellFormula();
@@ -254,7 +271,7 @@ public class SaxLib
             {
                 cell.CellReference = string.Format("{0}{1}", GetColumnName(columnNum), 1U);
                 cell.DataType = CellValues.SharedString;
-                cell.StyleIndex = _styleParser.StyleIndexes[allColumns[columnNum - 1].StyleKey];
+                cell.StyleIndex = styleParser.StyleIndexes[allColumns[columnNum - 1].StyleKey];
                 writer.WriteStartElement(cell);
 
                 var columnName = GetColumnName(columnNum);
@@ -268,7 +285,7 @@ public class SaxLib
         writer.WriteEndElement();
     }
 
-    private void WriteSheetDataHeaderRow(OpenXmlWriter writer, int startRow, int numColumns, ExcelHeaderModel headers)
+    private void WriteSheetDataHeaderRow(OpenXmlWriter writer, int startRow, int numColumns, ExcelHeaderModel headers, DataParser parser, StyleParser styleParser)
     {
         Cell cell = new Cell();
         CellValue cellValue = new CellValue();
@@ -281,9 +298,9 @@ public class SaxLib
             cell.CellReference = string.Format("{0}{1}", GetColumnName(columnNum), firstRow);
 
             cell.DataType = CellValues.SharedString;
-            cell.StyleIndex = _styleParser.StyleIndexes[headers.StyleKey];
+            cell.StyleIndex = styleParser.StyleIndexes[headers.StyleKey];
             writer.WriteStartElement(cell);
-            cellValue.Text = _parser.GetValue(ExcelDataTypes.DataType.Text, headers.Data[columnNum - 1]);
+            cellValue.Text = parser.GetValue(ExcelDataTypes.DataType.Text, headers.Data[columnNum - 1]);
             writer.WriteElement(cellValue);
 
             writer.WriteEndElement();
@@ -292,7 +309,7 @@ public class SaxLib
         writer.WriteEndElement();
     }
 
-    private void WriteSheetDataColumns(OpenXmlWriter writer, int startRow, int numColumns, int numRows, ExcelColumnModel[] allColumns)
+    private void WriteSheetDataColumns(OpenXmlWriter writer, int startRow, int numColumns, int numRows, ExcelColumnModel[] allColumns, DataParser parser, StyleParser styleParser)
     {
         Row row = new Row();
         Cell cell = new Cell();
@@ -314,9 +331,9 @@ public class SaxLib
                 if (allColumns.Length > (columnIndex) && allColumns[columnIndex].Data.Length > (rowIndex))
                 {
                     cell.CellReference = string.Format("{0}{1}", GetColumnName(columnNum), rowNum);
-                    cell.StyleIndex = _styleParser.StyleIndexes[currentColumn.StyleKey];
+                    cell.StyleIndex = styleParser.StyleIndexes[currentColumn.StyleKey];
 
-                    SetCellValue(currentColumn, cell, cellValue, allColumns, rowIndex, columnIndex);
+                    SetCellValue(currentColumn, cell, cellValue, allColumns, rowIndex, columnIndex, parser, styleParser);
 
                     writer.WriteStartElement(cell);
                     writer.WriteElement(cellValue);
@@ -327,9 +344,9 @@ public class SaxLib
         }
     }
 
-    private void SetCellValue(ExcelColumnModel currentColumn, Cell cell, CellValue cellValue, ExcelColumnModel[] allColumns, int rowIndex, int columnIndex)
+    private void SetCellValue(ExcelColumnModel currentColumn, Cell cell, CellValue cellValue, ExcelColumnModel[] allColumns, int rowIndex, int columnIndex, DataParser parser, StyleParser styleParser)
     {
-        cellValue.Text = _parser.GetValue(currentColumn.DataType, allColumns[columnIndex].Data[rowIndex]);
+        cellValue.Text = parser.GetValue(currentColumn.DataType, allColumns[columnIndex].Data[rowIndex]);
         switch (currentColumn.DataType)
         {
             case ExcelDataTypes.DataType.Number:
@@ -430,9 +447,9 @@ public class SaxLib
     // Everything is linked by a string id that is in fact the index of the array of style element. Ex the font with id "2"
     // will be the third font added in fonts section, while the font with id "0" will be the first you added.
     // Same goes for borders, fills, etc.
-    private void GenerateStylePart(WorkbookStylesPart workbookStylesPart, ExcelWorkbookModel workbookModel)
+    private void GenerateStylePart(WorkbookStylesPart workbookStylesPart, ExcelWorkbookModel workbookModel, DataParser parser, StyleParser styleParser)
     {
-        _styleParser.ParseStyles(workbookModel);
+        styleParser.ParseStyles(workbookModel);
 
         using (var writer = OpenXmlWriter.Create(workbookStylesPart))
         {
@@ -440,9 +457,9 @@ public class SaxLib
 
             #region NumFormats
 
-            writer.WriteStartElement(new NumberingFormats() { Count = (UInt32)_styleParser.NumFormats.Count });
+            writer.WriteStartElement(new NumberingFormats() { Count = (UInt32)styleParser.NumFormats.Count });
             
-            foreach (var format in _styleParser.NumFormats.Values)
+            foreach (var format in styleParser.NumFormats.Values)
             {
                 writer.WriteElement(new NumberingFormat() { NumberFormatId = format.FormatId, FormatCode = format.FormatCode });  
             }
@@ -458,9 +475,9 @@ public class SaxLib
                 //  <Font>...props...</Font>
                 //</Fonts>
                 //writer.WriteStartElement(new Fonts() { Count = (UInt32)hardCodedFonts.Length });
-                writer.WriteStartElement(new Fonts() { Count = (UInt32)_styleParser.Fonts.Count });
+                writer.WriteStartElement(new Fonts() { Count = (UInt32)styleParser.Fonts.Count });
 
-            foreach (var font in _styleParser.Fonts.Values)
+            foreach (var font in styleParser.Fonts.Values)
             {
                 writer.WriteStartElement(new Font());
                 if (font.Bold)
@@ -476,7 +493,14 @@ public class SaxLib
                     writer.WriteElement(new Underline());
                 }
                 writer.WriteElement(new FontSize() { Val = font.FontSize });
-                writer.WriteElement(new Color() { Theme = font.Theme });
+                if (string.IsNullOrEmpty(font.FontColor))
+                {
+                    writer.WriteElement(new Color() { Theme = font.Theme });
+                }
+                else
+                {
+                    writer.WriteElement(new Color() { Rgb = HexBinaryValue.FromString(font.FontColor) });
+                }
                 writer.WriteElement(new FontName() { Val = font.FontName });
                 writer.WriteElement(new FontFamily() { Val = font.FontFamily });
 
@@ -537,13 +561,13 @@ public class SaxLib
 
             // Creates a shared style table to apply to cells using an Id. 
 
-            var cellStyleXfsCount = _styleParser.HyperlinkFormats.Count + 1;
+            var cellStyleXfsCount = styleParser.HyperlinkFormats.Count + 1;
             //Start CellStyleXfs element
             writer.WriteStartElement(new CellStyleFormats() { Count = (UInt32)cellStyleXfsCount });
             //Hardcoded base CellFormat
             writer.WriteElement(new CellFormat() { NumberFormatId = (UInt32)0, FontId = (UInt32)0, FillId = (UInt32)0, BorderId = (UInt32)0 });
 
-            foreach(var fontIndex in _styleParser.HyperlinkFormats.Values)
+            foreach(var fontIndex in styleParser.HyperlinkFormats.Values)
             {
                 writer.WriteElement(new CellFormat()
                 {
@@ -568,14 +592,14 @@ public class SaxLib
             
             // Add all alignment and apply numberformat features
             
-            var cellXfsCount = _styleParser.StyleFormats.Count() + 1;
+            var cellXfsCount = styleParser.StyleFormats.Count() + 1;
 
             //Start CellStyleFormats section
             writer.WriteStartElement(new CellFormats() { Count = (UInt32)cellXfsCount });
 
             writer.WriteElement(new CellFormat() { NumberFormatId = (UInt32)0, FontId = (UInt32)0, FillId = (UInt32)0, BorderId = (UInt32)0 });
 
-            foreach (var styleFormat in _styleParser.StyleFormats.Values)
+            foreach (var styleFormat in styleParser.StyleFormats.Values)
             {
                 writer.WriteStartElement(new CellFormat() 
                 { 
@@ -604,13 +628,13 @@ public class SaxLib
 
             #region CellStyles
 
-            var cellStylesCount = _styleParser.HyperlinkFormats.Count() + 1;
+            var cellStylesCount = styleParser.HyperlinkFormats.Count() + 1;
 
             //Start CellStyleFormats element
             writer.WriteStartElement(new CellStyles() { Count = (UInt32)cellStylesCount });
 
             writer.WriteElement(new CellStyle() { Name = "Normal", FormatId = (UInt32)0, BuiltinId = (UInt32)0 });
-            if (_styleParser.HyperlinkFormats.Count() > 0)
+            if (styleParser.HyperlinkFormats.Count() > 0)
             {
                 writer.WriteElement(new CellStyle() { Name = "Hyperlink", FormatId = (UInt32)1, BuiltinId = (UInt32)8 });
             }
