@@ -29,9 +29,12 @@ namespace rbkApiModules.Authentication
 
         public AuthenticationModuleOptions UseDefaultClaimDescriptions()
         {
-            _claimDescriptions.ManageRoles = "Gerenciar regras de acesso";
-            _claimDescriptions.ManageUserRoles = "Atribuir regras de acesso a usuários";
-            _claimDescriptions.OverrideUserClaims = "Permitir/bloquear acessos individuais a usuários";
+            _claimDescriptions.ManageRoles = AuthenticationClaimDefinitions.MANAGE_ROLES.Description;
+            _claimDescriptions.ManageUserRoles = AuthenticationClaimDefinitions.MANAGE_USER_ROLES.Description;
+            _claimDescriptions.OverrideUserClaims = AuthenticationClaimDefinitions.OVERRIDE_USER_CLAIMS.Description;
+            _claimDescriptions.ManageClaims = AuthenticationClaimDefinitions.MANAGE_CLAIMS.Description;
+            _claimDescriptions.ManageUserClaims = AuthenticationClaimDefinitions.MANAGE_USER_CLAIMS.Description;
+            _claimDescriptions.CanOverrideClaimProtection = AuthenticationClaimDefinitions.CAN_OVERRIDE_CLAIM_PROTECTION.Description;
 
             return this;
         }
@@ -91,8 +94,13 @@ namespace rbkApiModules.Authentication
 
     public class SeedClaimDescriptions
     {
-        public string ManageRoles { get; set; }
-        public string ManageUserRoles { get; set; }
         public string OverrideUserClaims { get; set; }
+        public string ManageUserRoles { get; set; }
+        public string ManageUserClaims { get; set; }
+        public string ManageRoles { get; set; }
+        public string ManageClaims { get; set; }
+        public string CanOverrideClaimProtection { get; set; }
+
+
     }
 }

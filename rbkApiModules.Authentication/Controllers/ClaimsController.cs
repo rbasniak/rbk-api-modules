@@ -12,7 +12,6 @@ namespace rbkApiModules.Authentication
     /// <summary>
     /// Controller para acesso das funcionalidades de autorização e controle de acesso
     /// </summary>
-    [IgnoreOnCodeGeneration]
     [ApiController]
     [Route("api/[controller]")]
     public class ClaimsController : BaseController
@@ -44,6 +43,26 @@ namespace rbkApiModules.Authentication
         [RbkAuthorize(Claim = AuthenticationClaims.MANAGE_CLAIMS)]
         [HttpPut]
         public async Task<ActionResult<ClaimDetails>> Update(UpdateClaim.Command data)
+        {
+            return HttpResponse<ClaimDetails>(await Mediator.Send(data));
+        }
+
+        /// <summary>
+        /// Protege um acesso
+        /// </summary>
+        [RbkAuthorize(Claim = AuthenticationClaims.CAN_OVERRIDE_CLAIM_PROTECTION)]
+        [HttpPost("protect")]
+        public async Task<ActionResult<ClaimDetails>> Protect(ProtectClaim.Command data)
+        {
+            return HttpResponse<ClaimDetails>(await Mediator.Send(data));
+        }
+
+        /// <summary>
+        /// Desprotege um acesso
+        /// </summary>
+        [RbkAuthorize(Claim = AuthenticationClaims.CAN_OVERRIDE_CLAIM_PROTECTION)]
+        [HttpPost("unprotect")]
+        public async Task<ActionResult<ClaimDetails>> Unprotect(UnprotectClaim.Command data)
         {
             return HttpResponse<ClaimDetails>(await Mediator.Send(data));
         }

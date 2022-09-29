@@ -40,7 +40,7 @@ namespace rbkApiModules.Authentication
 
                 RuleFor(a => a.ClaimId)
                     .MustExistInDatabase<Command, Claim>(context)
-                    .MustAsync(ClaimIsAssociatedWithUser).WithMessage("O controle de acesso já está associado a esse usuário.")
+                    .MustAsync(ClaimIsAssociatedWithUser).WithMessage("A permissão de acesso já está associada a esse usuário.")
                     .WithName("Controle de Acesso");
             }
 

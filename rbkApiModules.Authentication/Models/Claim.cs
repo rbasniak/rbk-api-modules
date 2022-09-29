@@ -24,6 +24,7 @@ namespace rbkApiModules.Authentication
             AuthenticationGroup = authenticationGroup;
             Description = description;
             Name = name;
+            IsProtected = false;
 
             _users = new HashSet<UserToClaim>();
             _roles = new HashSet<RoleToClaim>();
@@ -40,6 +41,8 @@ namespace rbkApiModules.Authentication
         [Required, MinLength(1), MaxLength(32)]
         public virtual string AuthenticationGroup { get; private set; }
 
+        public virtual bool IsProtected { get; private set; }
+
         public virtual IEnumerable<UserToClaim> Users => _users?.ToList();
 
         public virtual IEnumerable<RoleToClaim> Roles => _roles?.ToList();
@@ -47,6 +50,15 @@ namespace rbkApiModules.Authentication
         public void SetDescription(string description)
         {
             Description = description;
+        }
+
+        public void Protect()
+        {
+            IsProtected = true;
+        }
+        public void Unprotect()
+        {
+            IsProtected = false;
         }
     }
 }

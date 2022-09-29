@@ -36,7 +36,7 @@ namespace rbkApiModules.Authentication
                 RuleFor(a => a.RoleId)
                     .MustExistInDatabase<Command, Role>(context)
                     .MustAsync(MustBeFromSameAuthenticationGroup).WithMessage("Security breach, role from another authentication group")
-                    .MustAsync(MustNotBeUsedInAnyUser).WithMessage("Permissão está sendo utilizada em um ou mais usuários")
+                    .MustAsync(MustNotBeUsedInAnyUser).WithMessage("Regra de acesso está sendo utilizada em um ou mais usuários")
                     .WithName("Regra de Acesso");
             }
 

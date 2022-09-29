@@ -97,7 +97,10 @@ namespace rbkApiModules.Authentication
                                         ? options.ClaimDescriptions.ManageRoles
                                         : AuthenticationClaims.MANAGE_ROLES;
 
-                                    context.Set<Claim>().Add(new Claim(AuthenticationClaims.MANAGE_ROLES, description, group));
+                                    var newClaim = new Claim(AuthenticationClaims.MANAGE_ROLES, description, group);
+                                    newClaim.Protect();
+
+                                    context.Set<Claim>().Add(newClaim);
                                 }
 
                                 if (!claims.Any(x => x.Name == AuthenticationClaims.MANAGE_USER_ROLES && x.AuthenticationGroup == group))
@@ -106,7 +109,10 @@ namespace rbkApiModules.Authentication
                                         ? options.ClaimDescriptions.ManageUserRoles
                                         : AuthenticationClaims.MANAGE_USER_ROLES;
 
-                                    context.Set<Claim>().Add(new Claim(AuthenticationClaims.MANAGE_USER_ROLES, description, group));
+                                    var newClaim = new Claim(AuthenticationClaims.MANAGE_USER_ROLES, description, group);
+                                    newClaim.Protect();
+
+                                    context.Set<Claim>().Add(newClaim);
                                 }
 
                                 if (!claims.Any(x => x.Name == AuthenticationClaims.OVERRIDE_USER_CLAIMS && x.AuthenticationGroup == group))
@@ -115,8 +121,48 @@ namespace rbkApiModules.Authentication
                                         ? options.ClaimDescriptions.OverrideUserClaims
                                         : AuthenticationClaims.OVERRIDE_USER_CLAIMS;
 
-                                    context.Set<Claim>().Add(new Claim(AuthenticationClaims.OVERRIDE_USER_CLAIMS, description, group));
+                                    var newClaim = new Claim(AuthenticationClaims.OVERRIDE_USER_CLAIMS, description, group);
+                                    newClaim.Protect();
+
+                                    context.Set<Claim>().Add(newClaim);
                                 }
+
+                                if (!claims.Any(x => x.Name == AuthenticationClaims.MANAGE_CLAIMS && x.AuthenticationGroup == group))
+                                {
+                                    var description = options.ClaimDescriptions != null && !String.IsNullOrEmpty(options.ClaimDescriptions.ManageClaims)
+                                        ? options.ClaimDescriptions.ManageClaims
+                                        : AuthenticationClaims.MANAGE_CLAIMS;
+
+                                    var newClaim = new Claim(AuthenticationClaims.MANAGE_CLAIMS, description, group);
+                                    newClaim.Protect();
+
+                                    context.Set<Claim>().Add(newClaim);
+                                }
+
+                                if (!claims.Any(x => x.Name == AuthenticationClaims.MANAGE_USER_CLAIMS && x.AuthenticationGroup == group))
+                                {
+                                    var description = options.ClaimDescriptions != null && !String.IsNullOrEmpty(options.ClaimDescriptions.ManageUserClaims)
+                                        ? options.ClaimDescriptions.ManageUserClaims
+                                        : AuthenticationClaims.MANAGE_USER_CLAIMS;
+
+                                    var newClaim = new Claim(AuthenticationClaims.MANAGE_USER_CLAIMS, description, group);
+                                    newClaim.Protect();
+
+                                    context.Set<Claim>().Add(newClaim);
+                                }
+
+                                if (!claims.Any(x => x.Name == AuthenticationClaims.CAN_OVERRIDE_CLAIM_PROTECTION && x.AuthenticationGroup == group))
+                                {
+                                    var description = options.ClaimDescriptions != null && !String.IsNullOrEmpty(options.ClaimDescriptions.CanOverrideClaimProtection)
+                                        ? options.ClaimDescriptions.CanOverrideClaimProtection
+                                        : AuthenticationClaims.CAN_OVERRIDE_CLAIM_PROTECTION;
+
+                                    var newClaim = new Claim(AuthenticationClaims.CAN_OVERRIDE_CLAIM_PROTECTION, description, group);
+                                    newClaim.Protect();
+
+                                    context.Set<Claim>().Add(newClaim);
+                                }
+
                             }
 
                             context.SaveChanges();
