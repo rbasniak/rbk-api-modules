@@ -86,6 +86,7 @@ namespace rbkApiModules.CodeGeneration
             code.AppendLine($"import {{ Observable }} from 'rxjs';");
             code.AppendLine($"import {{ tap }} from 'rxjs/operators';");
             code.AppendLine($"import {{ Injectable }} from '@angular/core';");
+            code.AppendLine($"import {{ToastActions}} from 'ngx-smz-ui';");
             code.AppendLine($"import {{ {Name}Actions }} from './{CodeGenerationUtilities.ToTypeScriptFileCase(Name)}.actions';");
             code.AppendLine($"import {{ {Name}Service }} from '@services/api/{CodeGenerationUtilities.ToTypeScriptFileCase(Name)}.service';");
 
