@@ -1,10 +1,10 @@
 ﻿using DocumentFormat.OpenXml.Office2010.Word;
+using DocumentFormat.OpenXml.Spreadsheet;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
-using static rbkApiModules.Utilities.Excel.ExcelModelDefs;
 
 namespace rbkApiModules.Utilities.Excel;
 
@@ -36,117 +36,136 @@ internal class StyleParser
         //Run all tables looking for styles
         foreach (var table in workbookModel.Tables)
         {
-            CreateHeaderStyle(table.Header);
+            table.Header = CreateHeaderStyle(table.Header);
 
-            foreach (var column in table.Columns)
+            for (int columnNumber = 0; columnNumber < table.Columns.Length; columnNumber++)
             {
-                CreateStylesForeachType(column.DataType, column);
+                var column = table.Columns[columnNumber];
+                table.Columns[columnNumber] = CreateStylesForeachType(column.DataType, column);
             }
         }
         //TODO Add Chart Fonts;
 
         if (workbookModel.Watermark != null)
         {
-            CreateWatermarkStyle(workbookModel.Watermark);
+            workbookModel.Watermark = CreateWatermarkStyle(workbookModel.Watermark);
         }
     }
 
-    private void CreateStylesForeachType(ExcelDataTypes.DataType type, ExcelColumnModel column)
+    private ExcelColumnModel CreateStylesForeachType(ExcelModelDefs.ExcelDataTypes.DataType type, ExcelColumnModel column)
     {
         switch (type)
         {
-            case ExcelDataTypes.DataType.HyperLink:
-                CreateHyperlinkStyle(column);
-                break;
+            case ExcelModelDefs.ExcelDataTypes.DataType.HyperLink:
+                return CreateHyperlinkStyle(column);
+                
+            case ExcelModelDefs.ExcelDataTypes.DataType.DateTime:
+                return CreateDatetimeStyle(column);
             
-            case ExcelDataTypes.DataType.DateTime:
-                CreateDatetimeStyle(column);
-                break;
+            case ExcelModelDefs.ExcelDataTypes.DataType.Number:
+                return CreateNumberStyle(column);
 
-            case ExcelDataTypes.DataType.Number:
-                CreateNumberStyle(column);
-                break;
-
-            case ExcelDataTypes.DataType.Text:
+            case ExcelModelDefs.ExcelDataTypes.DataType.Text:
             default:
-                CreateTextStyle(column);
-                break;
+                return CreateTextStyle(column);
         }
     }
 
-    private void CreateHeaderStyle(ExcelHeaderModel header)
+    private ExcelHeaderModel CreateHeaderStyle(ExcelHeaderModel header)
     {
-        var key = AddFontToDictionary(_fonts, header.Style, 1);
+        var styledHeader = header;
 
-        var styleKey = key + ExcelDataTypes.DataType.Text.ToString();
+        var key = AddFontToDictionary(header.Style, 1);
 
-        AddStyleFormatToDictionary(_styleFormats, styleKey, (UInt32)_fonts[key].FontIndex, 0U, 0U, 0U, 0U, false, true);
+        var styleKey = key + ExcelModelDefs.ExcelDataTypes.DataType.Text.ToString();
 
-        header.AddStyleKey(styleKey);
+        AddStyleFormatToDictionary(styleKey, (UInt32)_fonts[key].FontIndex, 0U, 0U, 0U, 0U, false, true);
+
+        styledHeader.AddStyleKey(styleKey);
+
+        return header;
     }
 
-    private void CreateHyperlinkStyle(ExcelColumnModel column)
+    private ExcelColumnModel CreateHyperlinkStyle(ExcelColumnModel column)
     {
+        var styledColumn = column;
+
         //Always sets this font color to standard link color
         column.Style.FontColor = string.Empty;
         
-        var key = AddFontToDictionary(_fonts, column.Style, 10);
+        var key = AddFontToDictionary(column.Style, 10);
 
         var styleKey = key + column.DataType.ToString();
         
         _hyperlinkFormats.TryAdd(key, _fonts[key].FontIndex);
-        AddStyleFormatToDictionary(_styleFormats, styleKey, _fonts[key].FontIndex, 0U, 1U, 0U, 0U, false, false);
-        
-        column.AddStyleKey(styleKey);
+        AddStyleFormatToDictionary(styleKey, _fonts[key].FontIndex, 0U, 1U, 0U, 0U, false, false);
+
+        styledColumn.AddStyleKey(styleKey);
+
+        return styledColumn;
     }
 
-    private void CreateNumberStyle(ExcelColumnModel column)
+    private ExcelColumnModel CreateNumberStyle(ExcelColumnModel column)
     {
-        var key = AddFontToDictionary(_fonts, column.Style, 1);
+        var styledColumn = column;
+
+        var key = AddFontToDictionary(column.Style, 1);
 
         var styleKey = key + column.DataType.ToString();
 
         if (!string.IsNullOrEmpty(column.DataFormat))
         {
-            var numFormatId = AddNumFormatToDictionary(_numFormats, column.DataFormat);
+            var numFormatId = AddNumFormatToDictionary(column.DataFormat);
             styleKey = styleKey + numFormatId.ToString();
-            AddStyleFormatToDictionary(_styleFormats, styleKey, _fonts[key].FontIndex, numFormatId, 0U, 0U, 0U, true, true);
+            AddStyleFormatToDictionary(styleKey, _fonts[key].FontIndex, numFormatId, 0U, 0U, 0U, true, true);
         }
         else
         {
-            AddStyleFormatToDictionary(_styleFormats, styleKey, _fonts[key].FontIndex, 0U, 0U, 0U, 0U, true, true);
+            AddStyleFormatToDictionary(styleKey, _fonts[key].FontIndex, 0U, 0U, 0U, 0U, true, true);
         }
-        column.AddStyleKey(styleKey);
+        styledColumn.AddStyleKey(styleKey);
+
+        return styledColumn;
     }
 
-    private void CreateDatetimeStyle(ExcelColumnModel column)
+    private ExcelColumnModel CreateDatetimeStyle(ExcelColumnModel column)
     {
-        var key = AddFontToDictionary(_fonts, column.Style, 1);
+        var styledColumn = column;
+
+        var key = AddFontToDictionary(column.Style, 1);
 
         var styleKey = key + column.DataType.ToString();
 
-        var numFormatId = AddNumFormatToDictionary(_numFormats, column.DataFormat);
+        var numFormatId = AddNumFormatToDictionary(column.DataFormat);
         
         styleKey = styleKey + numFormatId.ToString();
         
-        AddStyleFormatToDictionary(_styleFormats, styleKey, _fonts[key].FontIndex, numFormatId, 0U, 0U, 0U, true, true);
+        AddStyleFormatToDictionary(styleKey, _fonts[key].FontIndex, numFormatId, 0U, 0U, 0U, true, true);
 
-        column.AddStyleKey(styleKey);
+        styledColumn.AddStyleKey(styleKey);
+
+        return styledColumn;
     }
 
-    private void CreateTextStyle(ExcelColumnModel column)
+    private ExcelColumnModel CreateTextStyle(ExcelColumnModel column)
     {
-        var key = AddFontToDictionary(_fonts, column.Style, 1);
+        var styledColumn = column;
 
-        var styleKey = key + ExcelDataTypes.DataType.Text.ToString();
+        var key = AddFontToDictionary(column.Style, 1);
+
+        var styleKey = key + ExcelModelDefs.ExcelDataTypes.DataType.Text.ToString();
         
-        AddStyleFormatToDictionary(_styleFormats, styleKey, _fonts[key].FontIndex, 0U, 0U, 0U, 0U, false, true);
-        
-        column.AddStyleKey(styleKey); 
+        AddStyleFormatToDictionary(styleKey, _fonts[key].FontIndex, 0U, 0U, 0U, 0U, false, true);
+
+        styledColumn.AddStyleKey(styleKey);
+
+        return styledColumn;
     }
 
-    private void CreateWatermarkStyle(Watermark watermark)
+    private Watermark CreateWatermarkStyle(Watermark watermark)
     {
+        var styledWatermark = watermark;
+
         var styles = new ExcelStyleClasses()
         {
             Font = watermark.Font,
@@ -154,24 +173,23 @@ internal class StyleParser
             FontColor = watermark.FontColor
         };
 
-        var key = AddFontToDictionary(_fonts, styles, 1);
+        var key = AddFontToDictionary(styles, 1);
 
-        var styleKey = key + ExcelDataTypes.DataType.Text.ToString();
+        var styleKey = key + ExcelModelDefs.ExcelDataTypes.DataType.Text.ToString();
 
-        AddStyleFormatToDictionary(_styleFormats, key, (UInt32)_fonts[key].FontIndex, 0U, 0U, 0U, 0U, false, true);
+        AddStyleFormatToDictionary(key, (UInt32)_fonts[key].FontIndex, 0U, 0U, 0U, 0U, false, true);
 
-        watermark.AddStyleKey(styleKey);
+        styledWatermark.AddStyleKey(styleKey);
+
+        return styledWatermark;
     }
 
-    private string AddFontToDictionary(
-        Dictionary<string, ExcelFontDetail> fonts,
-        ExcelStyleClasses styles,
-        int colorTheme)
+    private string AddFontToDictionary(ExcelStyleClasses styles, int colorTheme)
     {
         string key;
         ExcelFontDetail fontDetail;
         
-        var regex = new Regex(@"^([A-Fa-f0-9]{8})$");
+        var regex = new Regex(ExcelModelDefs.Configuration.ColorPattern);
         
         if (!string.IsNullOrEmpty(styles.FontColor) && regex.IsMatch(styles.FontColor))
         {
@@ -183,35 +201,34 @@ internal class StyleParser
         }
 
 
-        if (!fonts.ContainsKey(key))
+        if (!_fonts.ContainsKey(key))
         {
-            fontDetail = ExcelFontDetail.GetFontStyles(styles.Font, styles.Bold, styles.Italic, styles.Underline, (UInt32)fonts.Count, styles.FontSize, colorTheme, styles.FontColor);
-            fonts.Add(key, fontDetail);
+            fontDetail = ExcelFontDetail.GetFontStyles(styles.Font, styles.Bold, styles.Italic, styles.Underline, (UInt32)_fonts.Count, styles.FontSize, colorTheme, styles.FontColor);
+            _fonts.Add(key, fontDetail);
         }
 
         return key;
     }
 
-    private UInt32 AddNumFormatToDictionary(Dictionary<string, ExcelNumFormat> numFormats, string dataFormat)
+    private UInt32 AddNumFormatToDictionary(string dataFormat)
     {
         UInt32 numFormatId;
 
-        if (numFormats.ContainsKey(dataFormat))
+        if (_numFormats.ContainsKey(dataFormat))
         {
-            numFormatId = numFormats[dataFormat].FormatId;
+            numFormatId = _numFormats[dataFormat].FormatId;
         }
         else
         {
-            numFormatId = StyleContants.StartIndex + (UInt32)numFormats.Count;
+            numFormatId = ExcelModelDefs.StyleContants.StartIndex + (UInt32)_numFormats.Count;
             ExcelNumFormat numFormat = new ExcelNumFormat(dataFormat, numFormatId);
-            numFormats.Add(dataFormat, numFormat);
+            _numFormats.Add(dataFormat, numFormat);
         }
 
         return numFormatId;
     }
 
     private void AddStyleFormatToDictionary(
-        Dictionary<string, ExcelStyleFormat> styleFormats,
         string styleKey,
         UInt32 fontIdx,
         UInt32 numFormatIdx,
@@ -221,14 +238,12 @@ internal class StyleParser
         bool applyNumFormat,
         bool applyFont)
     {
-        ExcelStyleFormat styleFormat;
-
-        if (!styleFormats.ContainsKey(styleKey))
+        if (!_styleFormats.ContainsKey(styleKey))
         {
-            styleFormat = new ExcelStyleFormat(fontIdx, numFormatIdx, cellStyleIdx, fillIdx, borderIdx, (UInt32)styleFormats.Count() + 1);
+            var styleFormat = new ExcelStyleFormat(fontIdx, numFormatIdx, cellStyleIdx, fillIdx, borderIdx, (UInt32)_styleFormats.Count() + 1);
             styleFormat.ApplyFont = applyFont;
             styleFormat.ApplyNumFormat = applyNumFormat;
-            styleFormats.Add(styleKey, styleFormat);
+            _styleFormats.Add(styleKey, styleFormat);
             _styleIndexes.Add(styleKey, styleFormat.StyleIndex);
         }
     }

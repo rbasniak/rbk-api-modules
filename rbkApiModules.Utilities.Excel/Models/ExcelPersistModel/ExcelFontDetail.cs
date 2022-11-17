@@ -1,5 +1,4 @@
 ﻿using System;
-using static rbkApiModules.Utilities.Excel.ExcelModelDefs;
 
 namespace rbkApiModules.Utilities.Excel;
 
@@ -79,7 +78,7 @@ public class ExcelFontDetail
     /// </summary>
     public UInt32 FontIndex { get; set; }
 
-    public static ExcelFontDetail GetFontStyles(ExcelFonts.FontType font, bool bold, bool italic, bool underline, UInt32 fontIndex, int fontSize, int theme, string fontColor = "")
+    public static ExcelFontDetail GetFontStyles(ExcelModelDefs.ExcelFonts.FontType font, bool bold, bool italic, bool underline, UInt32 fontIndex, int fontSize, int theme, string fontColor = "")
     {
         if (string.IsNullOrEmpty(fontColor))
         {

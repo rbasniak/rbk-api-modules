@@ -5,9 +5,9 @@ namespace rbkApiModules.Utilities.Excel;
 
 public interface IExcelService
 {
-    ExcelsDetails GenerateSpreadsheetTablesFromWorkbookModel(ExcelWorkbookModel workbookModel);
-    FileDto GenerateSpreadsheetTablesFromWorkbookModelAsFile(ExcelWorkbookModel workbookModel);
-    public MemoryStream GenerateSpreadsheetTablesFromWorkbookModelAsStream(ExcelWorkbookModel workbookModel);
+    SpreadsheetDetails GenerateSpreadsheetAsBase64(ExcelWorkbookModel workbookModel);
+    FileData GenerateSpreadsheetAsStream(ExcelWorkbookModel workbookModel);
+    MemoryStream GenerateSpreadsheet(ExcelWorkbookModel workbookModel);
 }
 
 public class ExcelService : IExcelService
@@ -19,11 +19,11 @@ public class ExcelService : IExcelService
         _saxLib = new SaxLib();
     }
 
-    public FileDto GenerateSpreadsheetTablesFromWorkbookModelAsFile(ExcelWorkbookModel workbookModel)
+    public FileData GenerateSpreadsheetAsStream(ExcelWorkbookModel workbookModel)
     {
-        var stream = GenerateSpreadsheetTablesFromWorkbookModelAsStream(workbookModel);
+        var stream = GenerateSpreadsheet(workbookModel);
         // Create the FileDto to be returned as stream to the client
-        var file = new FileDto()
+        var file = new FileData()
         {
             FileName = workbookModel.FileName + ".xlsx",
             ContentType = "application/vnd.ms-excel",
@@ -32,12 +32,12 @@ public class ExcelService : IExcelService
     
         return file;
     }
-    public ExcelsDetails GenerateSpreadsheetTablesFromWorkbookModel(ExcelWorkbookModel workbookModel)
+    public SpreadsheetDetails GenerateSpreadsheetAsBase64(ExcelWorkbookModel workbookModel)
     {
-        var stream = GenerateSpreadsheetTablesFromWorkbookModelAsStream(workbookModel);
+        var stream = GenerateSpreadsheet(workbookModel);
 
         // Create the FileDto to be returned as stream to the client
-        var file = new ExcelsDetails()
+        var file = new SpreadsheetDetails()
         {
             FileName = workbookModel.FileName,
             FileExtension = "xlsx",
@@ -47,7 +47,7 @@ public class ExcelService : IExcelService
         return file;
     }
 
-    public MemoryStream GenerateSpreadsheetTablesFromWorkbookModelAsStream(ExcelWorkbookModel workbookModel)
+    public MemoryStream GenerateSpreadsheet(ExcelWorkbookModel workbookModel)
     {
         var stream = _saxLib.CreatePackage(workbookModel);
         

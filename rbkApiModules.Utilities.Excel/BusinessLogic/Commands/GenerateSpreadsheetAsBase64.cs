@@ -6,7 +6,7 @@ using FluentValidation;
 
 namespace rbkApiModules.Utilities.Excel;
 
-public class GenerateSpreadsheetTablesFromJsonAsBase64
+public class GenerateSpreadsheetAsBase64
 {
     public class Command : IRequest<CommandResponse>, IExcelWorkbookModelJSonValidator
     {
@@ -17,14 +17,15 @@ public class GenerateSpreadsheetTablesFromJsonAsBase64
     {
         private readonly IExcelService _excelService;
         
-        public Handler(IHttpContextAccessor httpContextAccessor, IExcelService excelService): base(httpContextAccessor)
+        public Handler(IHttpContextAccessor httpContextAccessor, IExcelService excelService)
+            : base(httpContextAccessor)
         {
             _excelService = excelService;
         }
 
         protected override async Task<object> ExecuteAsync(Command request)
         {
-            var result = _excelService.GenerateSpreadsheetTablesFromWorkbookModel(request.WorkbookModel);
+            var result = _excelService.GenerateSpreadsheetAsBase64(request.WorkbookModel);
 
             return result;
         }

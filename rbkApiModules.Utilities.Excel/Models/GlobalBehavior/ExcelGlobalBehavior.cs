@@ -20,5 +20,11 @@ public class ExcelGlobalBehavior
     public ExcelDateGlobal Date { get; set; }
     
     public ExcelHyperlinkGlobal Hyperlink { get; set; }
+
+    /// <summary>
+    /// If a cell has multiple lines, then NewLineString must define the string which separates the lines: "\n", <br>, etc.
+    /// If this is empty, then the cell doesn't have multiple lines
+    /// </summary>
+    public string NewLineSeparator { get; set; } = "";
 }
 

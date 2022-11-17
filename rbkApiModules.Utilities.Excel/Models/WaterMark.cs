@@ -1,5 +1,4 @@
-﻿using static rbkApiModules.Utilities.Excel.ExcelModelDefs;
-
+﻿
 namespace rbkApiModules.Utilities.Excel;
 
 /// <summary>
@@ -22,7 +21,7 @@ public class Watermark
     /// <summary>
     /// The Font that will be used to write watermark
     /// </summary>
-    public ExcelFonts.FontType Font { get; set; } = ExcelFonts.FontType.Calibri;
+    public ExcelModelDefs.ExcelFonts.FontType Font { get; set; } = ExcelModelDefs.ExcelFonts.FontType.Calibri;
 
     /// <summary>
     /// Font size for writing the watermark

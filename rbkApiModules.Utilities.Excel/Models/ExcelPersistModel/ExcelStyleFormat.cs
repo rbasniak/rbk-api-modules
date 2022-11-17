@@ -1,5 +1,4 @@
 ﻿using System;
-using static rbkApiModules.Utilities.Excel.ExcelModelDefs;
 
 namespace rbkApiModules.Utilities.Excel;
 

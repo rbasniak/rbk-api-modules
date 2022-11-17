@@ -1,5 +1,4 @@
-﻿using static rbkApiModules.Utilities.Excel.ExcelModelDefs;
-
+﻿
 namespace rbkApiModules.Utilities.Excel;
 
 /// <summary>
@@ -10,7 +9,7 @@ public class ExcelStyleClasses
     /// <summary>
     /// Font that should be applied on the data set. Ex:"0" for Arial; "3" for Calibri, "8" for Georgia Pro, etc
     /// </summary>
-    public ExcelFonts.FontType Font { get; set; } = ExcelFonts.FontType.Calibri;
+    public ExcelModelDefs.ExcelFonts.FontType Font { get; set; } = ExcelModelDefs.ExcelFonts.FontType.Calibri;
 
     /// <summary>
     /// Font size following the excel app standard integer size

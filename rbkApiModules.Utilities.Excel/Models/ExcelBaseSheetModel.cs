@@ -1,5 +1,4 @@
-﻿using static rbkApiModules.Utilities.Excel.ExcelModelDefs;
-
+﻿
 namespace rbkApiModules.Utilities.Excel;
 
 /// <summary>
@@ -20,7 +19,7 @@ public class ExcelBaseSheetModel
     /// <summary>
     /// Data type to be exhibited on the sheet tab. Ex: Table Data, Plots, etc.
     /// </summary>
-    public ExcelSheetTypes.Type SheetType { get; set; } = ExcelSheetTypes.Type.Table;
+    public ExcelModelDefs.ExcelSheetTypes.Type SheetType { get; set; } = ExcelModelDefs.ExcelSheetTypes.Type.Table;
     /// <summary>
     /// Tab order in which this sheet should be created 
     /// </summary>

@@ -1,5 +1,4 @@
-﻿using static rbkApiModules.Utilities.Excel.ExcelModelDefs;
-
+﻿
 namespace rbkApiModules.Utilities.Excel;
 
 /// <summary>
@@ -11,6 +10,11 @@ public class ExcelHeaderModel
     /// The data list to be displayed at the header row
     /// </summary>
     public string[] Data { get; set; }
+
+    /// <summary>
+    /// Sets the row height for the whole header row
+    /// </summary>
+    public int RowHeight { get; set; } = 0;
 
     /// <summary>
     /// Styles to be applied to the header row

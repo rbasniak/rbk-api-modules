@@ -44,12 +44,12 @@ public class ExcelWorkbookModel
     /// <summary>
     /// List of all spreadsheets for this workbook, with tabular data and styling.
     /// </summary>
-    public ExcelTableSheetModel[] Tables { get; set; }
+    public ExcelTableSheetModel[] Tables { get; set; } = new ExcelTableSheetModel[0]; 
     
     /// <summary>
     /// List of all plot sheets for this workbook, with plot, their data and styling.
     /// </summary>
-    public ExcelChartSheetModel[] Charts { get; set; }
+    public ExcelChartSheetModel[] Charts { get; set; } = new ExcelChartSheetModel[0];
     
     public IEnumerable<ExcelBaseSheetModel> AllSheets
     {

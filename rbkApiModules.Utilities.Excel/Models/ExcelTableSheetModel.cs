@@ -1,5 +1,4 @@
-﻿using static rbkApiModules.Utilities.Excel.ExcelModelDefs;
-
+﻿
 namespace rbkApiModules.Utilities.Excel;
 
 /// <summary>
@@ -20,7 +19,7 @@ public class ExcelTableSheetModel: ExcelBaseSheetModel
     /// <summary>
     /// If diferent from "None", applies a theme from excel's standard theme list to this spreadsheet
     /// </summary>
-    public ExcelThemes.Theme Theme { get; set; } = ExcelThemes.Theme.None;
+    public ExcelModelDefs.ExcelThemes.Theme Theme { get; set; } = ExcelModelDefs.ExcelThemes.Theme.None;
 
 
     #region Helper fields and methods

@@ -19,7 +19,7 @@ public class ExcelController : BaseController
     /// </summary>
     [HttpPost("generate-tables")]
     [AllowAnonymous]
-    public async Task<ActionResult<ExcelsDetails>> GenerateSpreadsheetTables(GenerateSpreadsheetTablesFromJsonAsBase64.Command data)
+    public async Task<ActionResult<SpreadsheetDetails>> GenerateSpreadsheetTables(GenerateSpreadsheetAsBase64.Command data)
     {
         return HttpResponse(await Mediator.Send(data));
     }
@@ -29,12 +29,12 @@ public class ExcelController : BaseController
     /// </summary>
     [HttpPost("generate-tables-file-output")]
     [AllowAnonymous]
-    public async Task<ActionResult<ExcelsDetails>> GenerateSpreadsheetTablesAsFile(GenerateSpreadsheetTablesFromJsonAsFile.Command data)
+    public async Task<ActionResult<SpreadsheetDetails>> GenerateSpreadsheetTablesAsFile(GenerateSpreadsheetAsStream.Command data)
     {
         var response = await Mediator.Send(data);
         if (response.IsValid)
         {
-            var file = response.Result as FileDto;
+            var file = response.Result as FileData;
             return File(file.FileStream, file.ContentType, file.FileName);
         }
 

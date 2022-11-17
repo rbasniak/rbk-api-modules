@@ -1,6 +1,6 @@
 ﻿namespace rbkApiModules.Utilities.Excel;
 
-public class ExcelsDetails
+public class SpreadsheetDetails
 {
     /// <summary>
     /// The Excel File as base64 string

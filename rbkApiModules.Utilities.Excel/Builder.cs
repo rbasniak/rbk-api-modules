@@ -12,7 +12,7 @@ public static class Builder
         services.RegisterApplicationServices(Assembly.GetAssembly(typeof(IExcelService)));
 
         AssemblyScanner
-            .FindValidatorsInAssembly(Assembly.GetAssembly(typeof(GenerateSpreadsheetTablesFromJsonAsBase64.Command)))
+            .FindValidatorsInAssembly(Assembly.GetAssembly(typeof(GenerateSpreadsheetAsBase64.Command)))
                 .ForEach(result => services.AddScoped(result.InterfaceType, result.ValidatorType));
     }
 }

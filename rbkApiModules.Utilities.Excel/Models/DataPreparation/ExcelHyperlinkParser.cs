@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using static rbkApiModules.Utilities.Excel.ExcelModelDefs;
 
 namespace rbkApiModules.Utilities.Excel;
 
@@ -11,13 +10,13 @@ namespace rbkApiModules.Utilities.Excel;
 /// </summary>
 internal class ExcelHyperlinkParser
 {
-    internal void PrepareHyperlinks(ExcelColumnModel column, bool isHtml, bool isMultined)
+    internal void PrepareHyperlinks(ExcelColumnModel column, bool isHtml, bool isMultilined, string newLineSeparator)
     {
         if (isHtml)
         {
-            if (isMultined)
+            if (isMultilined)
             {
-                PrepareMultilinedHrefHyperlinks(column);
+                PrepareMultilinedHrefHyperlinks(column, newLineSeparator);
             }
             else
             {
@@ -26,9 +25,9 @@ internal class ExcelHyperlinkParser
         }
         else
         {
-            if (!isMultined)
+            if (isMultilined)
             {
-                PrepareMultilinedRegularHyperlinks(column);
+                PrepareMultilinedRegularHyperlinks(column, newLineSeparator);
             }
             else
             {
@@ -57,25 +56,35 @@ internal class ExcelHyperlinkParser
         return false;
     }
 
-    private void PrepareMultilinedRegularHyperlinks(ExcelColumnModel column)
+    private void PrepareMultilinedRegularHyperlinks(ExcelColumnModel column, string newLineSeparator)
     {
-        column.DataType = ExcelDataTypes.DataType.Text;
+        column.DataType = ExcelModelDefs.ExcelDataTypes.DataType.Text;
         var data = column.Data;
-        for (int itemIndex = 0; itemIndex < data.Length; itemIndex++)
+        if (!String.IsNullOrEmpty(newLineSeparator))
         {
-            data[itemIndex] = Regex.Replace(data[itemIndex], column.NewLineString, Environment.NewLine, RegexOptions.IgnoreCase);
+            for (int itemIndex = 0; itemIndex < data.Length; itemIndex++)
+            {
+                data[itemIndex] = Regex.Replace(data[itemIndex], newLineSeparator, Environment.NewLine, RegexOptions.IgnoreCase);
+            }
         }
     }
 
-    private void PrepareMultilinedHrefHyperlinks(ExcelColumnModel column)
+    private void PrepareMultilinedHrefHyperlinks(ExcelColumnModel column, string newLineSeparator)
     {
-        column.DataType = ExcelDataTypes.DataType.Text;
+        column.DataType = ExcelModelDefs.ExcelDataTypes.DataType.Text;
+        
         var data = column.Data;
+
+        var hasNewLineSeparator = !String.IsNullOrEmpty(newLineSeparator);
+
         for (int itemIndex = 0; itemIndex < data.Length; itemIndex++)
         {
             string hyperlink = data[itemIndex];
-            
-            hyperlink = Regex.Replace(hyperlink, column.NewLineString, Environment.NewLine, RegexOptions.IgnoreCase);
+
+            if (hasNewLineSeparator)
+            { 
+                hyperlink = Regex.Replace(hyperlink, newLineSeparator, Environment.NewLine, RegexOptions.IgnoreCase);
+            }
 
             var matches = Regex.Matches(hyperlink, @"<a.*?href=[\'""]?([^\'"" >]+).*?<\/a>", RegexOptions.IgnoreCase);
 
@@ -105,7 +114,7 @@ internal class ExcelHyperlinkParser
 
         for (int itemIndex = 0; itemIndex < data.Length; itemIndex++)
         {
-            if (!string.IsNullOrEmpty(data[itemIndex].Trim()))
+            if (!string.IsNullOrEmpty(data[itemIndex]))
             {
                 string hyperlink = data[itemIndex];
                 
