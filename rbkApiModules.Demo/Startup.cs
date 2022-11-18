@@ -74,7 +74,7 @@ namespace rbkApiModules.Demo
         {
             Assembly.GetAssembly(typeof(CreateUser.Command)),
             Assembly.GetAssembly(typeof(CommentEntity.Command)),
-            Assembly.GetAssembly(typeof(GenerateSpreadsheetTablesFromJsonAsBase64.Command)),
+            Assembly.GetAssembly(typeof(GenerateSpreadsheetAsBase64.Command)),
             Assembly.GetAssembly(typeof(CreateFaq.Command)),
             Assembly.GetAssembly(typeof(RenewAccessToken.Command)),
             Assembly.GetAssembly(typeof(SharedUIController)),

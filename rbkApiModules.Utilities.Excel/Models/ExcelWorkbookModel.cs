@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using static rbkApiModules.Utilities.Excel.ClosedXMLDefs;
 
 namespace rbkApiModules.Utilities.Excel;
 
@@ -16,35 +15,42 @@ public class ExcelWorkbookModel
     /// <summary>
     /// Authoring Metadata, Title
     /// </summary>
-    public string Info { get; set; } = string.Empty;
+    public string Title { get; set; } = string.Empty;
     /// <summary>
     /// Authoring Metadata, Author name
     /// </summary>
     public string Author { get; set; } = string.Empty;
+    
     /// <summary>
     /// Authoring Metadata, Company name
     /// </summary>
     public string Company { get; set; } = string.Empty;
+    
     /// <summary>
     /// Authoring Metadata, Comments
     /// </summary>
     public string Comments { get; set; } = string.Empty;
+
     /// <summary>
-    /// If the workbook is a Draft or a Release
+    /// This class must contain all rules needed for finding specific data types when autodetect is true for a column.
     /// </summary>
-    public bool IsDraft { get; set; } = false;
+    public ExcelGlobalBehavior GlobalColumnBehavior { get; set; } = new ExcelGlobalBehavior();
+
     /// <summary>
     /// The data to generate a watermark image
     /// </summary>
     public Watermark Watermark { get; set; }
+    
     /// <summary>
     /// List of all spreadsheets for this workbook, with tabular data and styling.
     /// </summary>
-    public ExcelTableSheetModel[] Tables { get; set; }
+    public ExcelTableSheetModel[] Tables { get; set; } = new ExcelTableSheetModel[0]; 
+    
     /// <summary>
     /// List of all plot sheets for this workbook, with plot, their data and styling.
     /// </summary>
-    public ExcelChartSheetModel[] Charts { get; set; }
+    public ExcelChartSheetModel[] Charts { get; set; } = new ExcelChartSheetModel[0];
+    
     public IEnumerable<ExcelBaseSheetModel> AllSheets
     {
         get
