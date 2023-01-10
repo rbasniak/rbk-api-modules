@@ -1,0 +1,482 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Stateless.ActivateActionBehaviour&lt;TState, TTrigger&gt;">
+    <Position X="44.5" Y="9.25" Width="3" />
+    <Members>
+      <Field Name="_state" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="Stateless.ActivateActionBehaviour&lt;TState, TTrigger&gt;.Sync" Collapsed="true" HideInheritanceLine="true">
+        <TypeIdentifier>
+          <NewMemberFileName>___StateMachine\ActivateActionBehaviour.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="Stateless.ActivateActionBehaviour&lt;TState, TTrigger&gt;.Async" Collapsed="true" HideInheritanceLine="true">
+        <TypeIdentifier>
+          <NewMemberFileName>___StateMachine\ActivateActionBehaviour.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAQAAAAACAAAAAAAAAAAAAAAAAAAAEA=</HashCode>
+      <FileName>___StateMachine\ActivateActionBehaviour.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stateless.DeactivateActionBehaviour&lt;TState, TTrigger&gt;">
+    <Position X="44.5" Y="19.25" Width="3" />
+    <Members>
+      <Field Name="_state" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="Stateless.DeactivateActionBehaviour&lt;TState, TTrigger&gt;.Sync" Collapsed="true" HideInheritanceLine="true">
+        <TypeIdentifier>
+          <NewMemberFileName>___StateMachine\DeactivateActionBehaviour.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="Stateless.DeactivateActionBehaviour&lt;TState, TTrigger&gt;.Async" Collapsed="true" HideInheritanceLine="true">
+        <TypeIdentifier>
+          <NewMemberFileName>___StateMachine\DeactivateActionBehaviour.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAQAAAAACAAAAAAAAAAAAAAAAAAAAEA=</HashCode>
+      <FileName>___StateMachine\DeactivateActionBehaviour.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stateless.DynamicTriggerBehaviour&lt;TState, TTrigger&gt;">
+    <Position X="25" Y="16" Width="3.5" />
+    <Members>
+      <Field Name="_destination" Hidden="true" />
+    </Members>
+    <InheritanceLine Type="Stateless.TriggerBehaviour&lt;TState, TTrigger&gt;" ManuallyRouted="true" FixedFromPoint="true">
+      <Path>
+        <Point X="21.75" Y="12.5" />
+        <Point X="22.999" Y="12.5" />
+        <Point X="22.999" Y="16.713" />
+        <Point X="25" Y="16.713" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAQACAAAAAAAAAAAAAAAAAAAAAAAEAAAAA=</HashCode>
+      <FileName>___StateMachine\DynamicTriggerBehaviour.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="TransitionInfo" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Stateless.EntryActionBehavior&lt;TState, TTrigger&gt;">
+    <Position X="44.5" Y="14" Width="3" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="Stateless.EntryActionBehavior&lt;TState, TTrigger&gt;.Sync" Collapsed="true" HideInheritanceLine="true">
+        <TypeIdentifier>
+          <NewMemberFileName>___StateMachine\EntryActionBehaviour.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="Stateless.EntryActionBehavior&lt;TState, TTrigger&gt;.SyncFrom&lt;TTriggerType&gt;" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>___StateMachine\EntryActionBehaviour.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="Stateless.EntryActionBehavior&lt;TState, TTrigger&gt;.Async" Collapsed="true" HideInheritanceLine="true">
+        <TypeIdentifier>
+          <NewMemberFileName>___StateMachine\EntryActionBehaviour.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAQAAAAAAAAAAAAAAAAAAAAAAAAAAEA=</HashCode>
+      <FileName>___StateMachine\EntryActionBehaviour.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stateless.ExitActionBehavior&lt;TState, TTrigger&gt;">
+    <Position X="44.5" Y="23.5" Width="3" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="Stateless.ExitActionBehavior&lt;TState, TTrigger&gt;.Sync" Collapsed="true" HideInheritanceLine="true">
+        <TypeIdentifier>
+          <NewMemberFileName>___StateMachine\ExitActionBehaviour.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="Stateless.ExitActionBehavior&lt;TState, TTrigger&gt;.Async" Collapsed="true" HideInheritanceLine="true">
+        <TypeIdentifier>
+          <NewMemberFileName>___StateMachine\ExitActionBehaviour.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAQAAAAAAAAAAAAAAAAAAAAAAAAAAEA=</HashCode>
+      <FileName>___StateMachine\ExitActionBehaviour.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stateless.GuardCondition">
+    <Position X="15.25" Y="15" Width="2.5" />
+    <Members>
+      <Field Name="_methodDescription" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAgABAAAAAAAACAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>___StateMachine\GuardCondition.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stateless.IgnoredTriggerBehaviour&lt;TState, TTrigger&gt;">
+    <Position X="25" Y="13.75" Width="3.5" />
+    <InheritanceLine Type="Stateless.TriggerBehaviour&lt;TState, TTrigger&gt;" ManuallyRouted="true" FixedFromPoint="true">
+      <Path>
+        <Point X="21.75" Y="12.188" />
+        <Point X="23.888" Y="12.188" />
+        <Point X="23.888" Y="14.463" />
+        <Point X="25" Y="14.463" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>___StateMachine\IgnoredTriggerBehaviour.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stateless.InternalActionBehaviour&lt;TState, TTrigger&gt;">
+    <Position X="37" Y="6.75" Width="3" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="Stateless.InternalActionBehaviour&lt;TState, TTrigger&gt;.Sync" Collapsed="true" HideInheritanceLine="true">
+        <TypeIdentifier>
+          <NewMemberFileName>___StateMachine\InternalActionBehaviour.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="Stateless.InternalActionBehaviour&lt;TState, TTrigger&gt;.Async" Collapsed="true" HideInheritanceLine="true">
+        <TypeIdentifier>
+          <NewMemberFileName>___StateMachine\InternalActionBehaviour.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAEA=</HashCode>
+      <FileName>___StateMachine\InternalActionBehaviour.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stateless.InternalTriggerBehaviour&lt;TState, TTrigger&gt;">
+    <Position X="25" Y="9.5" Width="3.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="Stateless.InternalTriggerBehaviour&lt;TState, TTrigger&gt;.Sync" Collapsed="true" HideInheritanceLine="true">
+        <TypeIdentifier>
+          <NewMemberFileName>___StateMachine\InternalTriggerBehaviour.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="Stateless.InternalTriggerBehaviour&lt;TState, TTrigger&gt;.Async" Collapsed="true" HideInheritanceLine="true">
+        <TypeIdentifier>
+          <NewMemberFileName>___StateMachine\InternalTriggerBehaviour.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <InheritanceLine Type="Stateless.TriggerBehaviour&lt;TState, TTrigger&gt;" FixedFromPoint="true">
+      <Path>
+        <Point X="21.75" Y="11.938" />
+        <Point X="25" Y="11.938" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAQAAQAAAAAAAAAAAAAAAAAAAAAAAAAAEA=</HashCode>
+      <FileName>___StateMachine\InternalTriggerBehaviour.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stateless.OnTransitionedEvent&lt;TState, TTrigger&gt;">
+    <Position X="13.75" Y="4.75" Width="3" />
+    <Members>
+      <Field Name="_onTransitionedAsync" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAAAAAAAAAAEBAAAQCAAAAAAAAAA=</HashCode>
+      <FileName>___StateMachine\OnTransitionedEvent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stateless.ParameterConversion">
+    <Position X="8.5" Y="0.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>___StateMachine\ParameterConversion.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stateless.ReentryTriggerBehaviour&lt;TState, TTrigger&gt;">
+    <Position X="25" Y="7.25" Width="3.5" />
+    <Members>
+      <Field Name="_destination" Hidden="true" />
+    </Members>
+    <InheritanceLine Type="Stateless.TriggerBehaviour&lt;TState, TTrigger&gt;" ManuallyRouted="true" FixedFromPoint="true">
+      <Path>
+        <Point X="21.75" Y="11.688" />
+        <Point X="23.831" Y="11.688" />
+        <Point X="23.831" Y="8.188" />
+        <Point X="25" Y="8.188" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAQACAAAAAAAAAAAAAAAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>___StateMachine\ReentryTriggerBehaviour.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stateless.ReflectionExtensions">
+    <Position X="3.75" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACBAAAAAAAgAAAAAAAAAAAAAAAAAAAAACAA=</HashCode>
+      <FileName>___StateMachine\ReflectionExtensions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stateless.StateConfiguration&lt;TState, TTrigger&gt;">
+    <Position X="35.25" Y="23.5" Width="2.75" />
+    <Members>
+      <Field Name="_lookup" Hidden="true" />
+      <Field Name="_machine" Hidden="true" />
+      <Field Name="_representation" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>EAAAAAQhCwAAEAAsAGFAgEAgACAQAkEUAMkIBggBAAA=</HashCode>
+      <FileName>___StateMachine\StateConfiguration.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Machine" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Stateless.StateReference&lt;TState&gt;">
+    <Position X="9.75" Y="4.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>___StateMachine\StateReference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stateless.StateRepresentation&lt;TState, TTrigger&gt;">
+    <Position X="40" Y="14" Width="2.75" />
+    <Members>
+      <Field Name="_state" Hidden="true" />
+      <Field Name="_substates" Hidden="true" />
+      <Field Name="_superstate" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>BACgECBIAADQAEBIQQTgCQACEBJEAQeAKkAAIQCIIgg=</HashCode>
+      <FileName>___StateMachine\StateRepresentation.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="ExitActions" />
+      <Property Name="EntryActions" />
+      <Property Name="DeactivateActions" />
+      <Property Name="ActivateActions" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Stateless.TaskResult">
+    <Position X="6.25" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>gABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>___StateMachine\TaskResult.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stateless.InitialTransition&lt;TState, TTrigger&gt;">
+    <Position X="4" Y="4.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>___StateMachine\Transition.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stateless.Transition&lt;TState, TTrigger&gt;">
+    <Position X="4" Y="7" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAABAABAAAAAAAAAAAAAAEAIAAAAAAAAA=</HashCode>
+      <FileName>___StateMachine\Transition.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stateless.TransitionGuard">
+    <Position X="19" Y="15" Width="3" />
+    <Members>
+      <Field Name="Empty" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAABIBAAABIAAAAAAIAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>___StateMachine\TransitionGuard.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Conditions" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Stateless.TransitioningTriggerBehaviour&lt;TState, TTrigger&gt;">
+    <Position X="25" Y="5" Width="3.5" />
+    <InheritanceLine Type="Stateless.TriggerBehaviour&lt;TState, TTrigger&gt;" ManuallyRouted="true" FixedFromPoint="true">
+      <Path>
+        <Point X="21.75" Y="11.438" />
+        <Point X="22.976" Y="11.438" />
+        <Point X="22.976" Y="6.152" />
+        <Point X="25" Y="6.152" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>___StateMachine\TransitioningTriggerBehaviour.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stateless.TriggerBehaviour&lt;TState, TTrigger&gt;">
+    <Position X="19.5" Y="11.25" Width="2.25" />
+    <Members>
+      <Field Name="_guard" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAQIBAAAAAAAAAIAIAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>___StateMachine\TriggerBehaviour.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Guard" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Stateless.TriggerBehaviourResult&lt;TState, TTrigger&gt;">
+    <Position X="18.75" Y="7.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>___StateMachine\TriggerBehaviourResult.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Handler" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Stateless.TriggerDetails&lt;TState, TTrigger&gt;">
+    <Position X="14" Y="8" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAABAAAAAAABAAAAAAAAAAAIAAAAAAAAA=</HashCode>
+      <FileName>___StateMachine\TriggerDetails.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Parameters" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Stateless.TriggerWithParameters&lt;TTrigger&gt;">
+    <Position X="9.5" Y="8.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>___StateMachine\TriggerWithParameters.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stateless.TriggerWithParameters&lt;TTrigger, TArg0&gt;">
+    <Position X="5.25" Y="11" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>___StateMachine\TriggerWithParameters.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stateless.TriggerWithParameters&lt;TTrigger, TArg0, TArg1&gt;">
+    <Position X="9" Y="11" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>___StateMachine\TriggerWithParameters.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stateless.TriggerWithParameters&lt;TTrigger, TArg0, TArg1, TArg2&gt;">
+    <Position X="13" Y="11" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>___StateMachine\TriggerWithParameters.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stateless.UnhandledTriggerAction&lt;TState, TTrigger&gt;">
+    <Position X="33.5" Y="6.75" Width="2.75" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="Stateless.UnhandledTriggerAction&lt;TState, TTrigger&gt;.Sync" Collapsed="true" HideInheritanceLine="true">
+        <TypeIdentifier>
+          <NewMemberFileName>___StateMachine\UnhandledTriggerAction.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="Stateless.UnhandledTriggerAction&lt;TState, TTrigger&gt;.Async" Collapsed="true" HideInheritanceLine="true">
+        <TypeIdentifier>
+          <NewMemberFileName>___StateMachine\UnhandledTriggerAction.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAEA=</HashCode>
+      <FileName>___StateMachine\UnhandledTriggerAction.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stateless.StateMachine&lt;TState, TTrigger&gt;">
+    <Position X="35.25" Y="14" Width="2.75" />
+    <Members>
+      <Field Name="_eventQueue" Hidden="true" />
+      <Field Name="_firing" Hidden="true" />
+      <Field Name="_firingMode" Hidden="true" />
+      <Field Name="_initialState" Hidden="true" />
+      <Field Name="_onTransitionCompletedEvent" Hidden="true" />
+      <Field Name="_onTransitionedEvent" Hidden="true" />
+      <Field Name="_stateAccessor" Hidden="true" />
+      <Field Name="_stateConfiguration" Hidden="true" />
+      <Field Name="_stateMutator" Hidden="true" />
+      <Field Name="_triggerConfiguration" Hidden="true" />
+      <Field Name="_unhandledTriggerAction" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>BQggAIKAMADAAEBNAAlVAAAQgIAUFEGEAJQYDQAgQQA=</HashCode>
+      <FileName>___StateMachine\StateMachine.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="CurrentRepresentation" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Stateless.Reflection.DynamicTransitionInfo">
+    <Position X="30.5" Y="16" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAABAAAAAIAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>___StateMachine\Reflection\DynamicTransitionInfo.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="PossibleDestinationStates" />
+      <Property Name="DestinationStateSelectorDescription" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Stateless.Reflection.DynamicStateInfos">
+    <Position X="32" Y="18.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>___StateMachine\Reflection\DynamicTransitionInfo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stateless.Reflection.InvocationInfo">
+    <Position X="29.5" Y="18.75" Width="1.75" />
+    <Members>
+      <Field Name="_description" Hidden="true" />
+      <Field Name="_timing" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="Stateless.Reflection.InvocationInfo.Timing">
+        <TypeIdentifier>
+          <NewMemberFileName>___StateMachine\Reflection\InvocationInfo.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAQAEAAAAAAAAAAAAAEAAAAACAIAAAAA=</HashCode>
+      <FileName>___StateMachine\Reflection\InvocationInfo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="Stateless.FiringMode">
+    <Position X="15.25" Y="18" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>___StateMachine\FiringMode.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

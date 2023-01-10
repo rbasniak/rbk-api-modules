@@ -1,0 +1,41 @@
+---------------
+DECISIONS MADE
+---------------
+
+- tenant to take place of domain
+- library will support 1 db with multiple tenants or sinle db per tenant in a mixed scenario (configuration based)
+- claims sao application wide
+- roles can be either tenant wide or application wide
+    * tenant roles will override application wide roles, and there will be a flag indicating it
+    * global admin can manage application wide roles and local admins can manage tenant wide roles
+- users are tenant wide and if needed, are duplicated in other tenants
+- log/analytics/diagnostics will not be stored into separated databases, we'll use structured json logs instead
+- user and session data will not be get from IHttpContextAccessor anymore, this information will be injected in a BaseCommand
+- localization should be dynamic, allowing it to be setup at initialization and override for each request
+- validations will be able to return an error code together with the message, enabling better handling by the BaseController
+
+-----------
+TO DISCUSS
+-----------
+
+- what to do when a tenant has a few users associated with a given role and he override this role?
+    - move everyone to the new role and preserve database integrity?
+    - process the right information during the reading only?
+    - the first option seems to be the correct one, it's a little complex to implement in the back, but simpler in the front
+
+- how a user request a password reset? How do you know which tenant is he from? This question is also valid for the login.
+
+- superuser page (could be embeded like shared-ui)
+
+- login precisa receber custom data, like application?
+
+-------------
+TO IMPLEMENT
+-------------
+- WinAuth
+- Assymetric key
+- Pensar em pagina de acesso a acoes administrativas para o superuser
+
+- new log/diagnostics/analytics with the option for sql/postgres/sqlite/json text file
+- Pensar em usar sempre REsponse nos commands
+- localization

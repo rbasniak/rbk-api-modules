@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>b8010c2e-2f86-4416-a3ec-3ef834339c21</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+	<IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.0" />
+    <PackageReference Include="FluentValidation" Version="11.4.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
+    <PackageReference Include="Serilog" Version="2.12.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
+    <PackageReference Include="Serilog.Extensions.Logging.File" Version="3.0.0" />
+    <PackageReference Include="Serilog.Sinks.Seq" Version="5.2.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Libraries\rbkApiModules.Auditing.Relational\rbkApiModules.Auditing.Relational.csproj" />
+    <ProjectReference Include="..\..\Libraries\rbkApiModules.Comments.Relational\rbkApiModules.Comments.Relational.csproj" />
+    <ProjectReference Include="..\..\Libraries\rbkApiModules.Faqs.Relational\rbkApiModules.Faqs.Relational.csproj" />
+    <ProjectReference Include="..\..\Libraries\rbkApiModules.Identity.Relational\rbkApiModules.Identity.Relational.csproj" />
+    <ProjectReference Include="..\..\Libraries\rbkApiModules.Notifications.Relational\rbkApiModules.Notifications.Relational.csproj" />
+    <ProjectReference Include="..\..\Libraries\rbkApiModules.SharedUI.Core\rbkApiModules.SharedUI.Core.csproj" />
+    <ProjectReference Include="..\..\Libraries\rbkApiModules.Workflow.Relational\rbkApiModules.Workflow.Relational.csproj" />
+    <ProjectReference Include="..\Demo1.BusinessLogic.Commands\Demo1.BusinessLogic.Commands.csproj" />
+    <ProjectReference Include="..\Demo1.BusinessLogic.Queries\Demo1.BusinessLogic.Queries.csproj" />
+    <ProjectReference Include="..\Demo1.BusinessLogic.Validators\Demo1.BusinessLogic.Validators.csproj" />
+    <ProjectReference Include="..\Demo1.Database.Read\Demo1.Database.Read.csproj" />
+    <ProjectReference Include="..\Demo1.DataTransfer\Demo1.DataTransfer.csproj" />
+    <ProjectReference Include="..\Demo1.Models.Read.Mappings\Demo1.Models.Read.Mappings.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Logs\" />
+  </ItemGroup>
+
+</Project>

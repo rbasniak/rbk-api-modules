@@ -4,7 +4,7 @@
     <DataCollectors>
       <DataCollector friendlyName="XPlat code coverage">
         <Configuration>
-          <ExcludeByFile>**/rbkApiModules.Analytics.UI/**/*.*,**/rbkApiModules.Auditing.UI/**/*.*,**/rbkApiModules.Auditing.SqlServer/**/*.*,**/rbkApiModules.Auditing.Core/**/*.*,**/*.MongoDB/**/*.*,**/*Controller.cs,**/rbkApiModules.SharedUI/**/*.*,**/rbkApiModules.Diagnostics.UI/**/*.*,**/rbkApiModules.Demo/**/*.*</ExcludeByFile>
+          <ExcludeByFile>**/Demo1.*/**/*.*</ExcludeByFile>
         </Configuration>
       </DataCollector>
     </DataCollectors>
