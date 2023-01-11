@@ -69,13 +69,9 @@ public class ChangeRequestWorkflow
         Concluded,
     }
 
-    private readonly TriggerWithParameters<Trigger, ChangeRequest, DateTime> _assignTrigger;
-
     public ChangeRequestWorkflow()
     {
         _machine = new StateMachine<State, Trigger>(State.RASCUNHO);
-
-        _assignTrigger = _machine.SetTriggerParameters<ChangeRequest, DateTime>(Trigger.APROVAR_PARA_EXECUCAO);
 
         _machine.Configure(State.RASCUNHO)
             // .Permit(Trigger.ENVIAR_PARA_AVALIACAO, State.AGUARDANDO_AVALIACAO_DO_ADMINISTRADOR)
@@ -85,12 +81,15 @@ public class ChangeRequestWorkflow
 
             //    return changeRequest.Id == "019";
             //})
-            .PermitIf(_assignTrigger, State.AGUARDANDO_AVALIACAO_DO_ADMINISTRADOR, (changeRequest, date) =>
+            .PermitIf(Trigger.APROVAR_PARA_EXECUCAO, State.AGUARDANDO_AVALIACAO_DO_ADMINISTRADOR, new NamedGuard(String.Empty, (args) =>
             {
-                Debug.WriteLine($"Validating {changeRequest.Id} at {date.ToShortDateString()}");
+                var changeRequest = (ChangeRequest)args[0];
+                var date = (DateTime)args[1];
+
+                Debug.WriteLine($"Validating {changeRequest.Id} at {date}");
 
                 return changeRequest.Id == "019";
-            })
+            }))
             .OnDeactivate(() => Debug.WriteLine($"State {State.RASCUNHO} deactivated"))
             .OnExit(transition => Debug.WriteLine($"Exited from {transition.Source} and entered {transition.Destination} by firing {transition.Trigger}"));
 
@@ -128,7 +127,7 @@ public class ChangeRequestWorkflow
         _machine.Configure(State.EM_EXECUCAO)
             .Permit(Trigger.CANCELAR, State.CANCELADA)
             .Permit(Trigger.CONCLUIR_EXECUCAO, State.AguardandoAvaliacaoDaExecucaoPeloAdministrador)
-            .OnEntryFrom(_machine.SetTriggerParameters<string, int, bool>(Trigger.INICIAR_EXECUCAO), (arg1, arg2, arg3) => Console.WriteLine())
+            .OnEntryFrom(Trigger.INICIAR_EXECUCAO, (args) => Console.WriteLine(args.Length))
             .OnEntry(transition => Console.WriteLine());
 
         _machine.Configure(State.AguardandoAvaliacaoDaExecucaoPeloAdministrador)
@@ -168,6 +167,6 @@ public class ChangeRequestWorkflow
     public void EnterThatState(ChangeRequest request, DateTime date)
     {
         // This is how a trigger with parameter is used, the parameter is supplied to the state machine as a parameter to the Fire method.
-        _machine.Fire(_assignTrigger, request, date);
+        _machine.Fire(Trigger.APROVAR_PARA_EXECUCAO, request, date);
     }
 }

@@ -43,7 +43,7 @@ internal abstract class InternalTriggerBehaviour<TState, TTrigger> : TriggerBeha
     {
         readonly Func<Transition<TState, TTrigger>, object[], Task> InternalAction;
 
-        public Async(TTrigger trigger, Func<bool> guard, Func<Transition<TState, TTrigger>, object[], Task> internalAction, string guardDescription = null) : base(trigger, new TransitionGuard(guard, guardDescription))
+        public Async(TTrigger trigger, NamedGuard guard, Func<Transition<TState, TTrigger>, object[], Task> internalAction) : base(trigger, new TransitionGuard(guard))
         {
             InternalAction = internalAction;
         }

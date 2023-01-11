@@ -8,73 +8,23 @@ internal class TransitionGuard
 {
     internal IList<GuardCondition> Conditions { get; }
 
-    public static readonly TransitionGuard Empty = new TransitionGuard(new Tuple<Func<object[], bool>, string>[0]);
+    public static readonly TransitionGuard Empty = new TransitionGuard(new NamedGuard[0]);
 
-    #region Generic TArg0, ... to object[] converters
-
-    public static Func<object[], bool> ToPackedGuard<TArg0>(Func<TArg0, bool> guard)
+    public static Func<object[], bool> ToPackedGuard(Func<object[], bool> guard)
     {
-        return args => guard(ParameterConversion.Unpack<TArg0>(args, 0));
-    }
+        return args => guard(args);
+    } 
 
-    public static Func<object[], bool> ToPackedGuard<TArg0, TArg1>(Func<TArg0, TArg1, bool> guard)
-    {
-        return args => guard(
-            ParameterConversion.Unpack<TArg0>(args, 0),
-            ParameterConversion.Unpack<TArg1>(args, 1));
-    }
-
-    public static Func<object[], bool> ToPackedGuard<TArg0, TArg1, TArg2>(Func<TArg0, TArg1, TArg2, bool> guard)
-    {
-        return args => guard(
-            ParameterConversion.Unpack<TArg0>(args, 0),
-            ParameterConversion.Unpack<TArg1>(args, 1),
-            ParameterConversion.Unpack<TArg2>(args, 2));
-    }
-
-    public static Tuple<Func<object[], bool>, string>[] ToPackedGuards<TArg0>(Tuple<Func<TArg0, bool>, string>[] guards)
-    {
-        return guards.Select(guard => new Tuple<Func<object[], bool>, string>(
-                ToPackedGuard(guard.Item1), guard.Item2))
-            .ToArray();
-    }
-
-    public static Tuple<Func<object[], bool>, string>[] ToPackedGuards<TArg0, TArg1>(Tuple<Func<TArg0, TArg1, bool>, string>[] guards)
-    {
-        return guards.Select(guard => new Tuple<Func<object[], bool>, string>(
-                ToPackedGuard(guard.Item1), guard.Item2))
-            .ToArray();
-    }
-
-    public static Tuple<Func<object[], bool>, string>[] ToPackedGuards<TArg0, TArg1, TArg2>(Tuple<Func<TArg0, TArg1, TArg2, bool>, string>[] guards)
-    {
-        return guards.Select(guard => new Tuple<Func<object[], bool>, string>(
-                ToPackedGuard(guard.Item1), guard.Item2))
-            .ToArray();
-    }
-
-    #endregion
-
-    internal TransitionGuard(Tuple<Func<bool>, string>[] guards)
+    internal TransitionGuard(NamedGuard[] guards)
     {
         Conditions = guards
-            .Select(g => new GuardCondition(g.Item1, Reflection.InvocationInfo.Create(g.Item1, g.Item2)))
+            .Select(g => new GuardCondition(g.Guard, Reflection.InvocationInfo.Create(g.Guard, g.Description)))
             .ToList();
     }
 
-    internal TransitionGuard(Func<bool> guard, string description = null)
+    internal TransitionGuard(NamedGuard guard)
     {
-        Conditions = new List<GuardCondition>
-            {
-                new GuardCondition(guard, Reflection.InvocationInfo.Create(guard, description))
-            };
-    }
-
-    internal TransitionGuard(Tuple<Func<object[], bool>, string>[] guards)
-    {
-        Conditions = guards
-            .Select(g => new GuardCondition(g.Item1, Reflection.InvocationInfo.Create(g.Item1, g.Item2)))
-            .ToList();
+        Conditions = new List<GuardCondition> { new GuardCondition(guard.Guard, Reflection.InvocationInfo.Create(guard.Guard, guard.Description)) };
     }
 
     internal TransitionGuard(Func<object[], bool> guard, string description = null)

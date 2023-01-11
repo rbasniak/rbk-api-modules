@@ -20,6 +20,8 @@ namespace rbkApiModules.Tests.Integration.Workflow
             // wf1._machine.Fire(ChangeRequestWorkflow.Trigger.ENVIAR_PARA_AVALIACAO);
             wf1.EnterThatState(new ChangeRequest { Id = "019" }, DateTime.Now);
 
+            wf1._machine.Activate();
+
             Debug.WriteLine($"ChangeRequest is in State {wf1._machine.State}");
             
             wf1._machine.Fire(ChangeRequestWorkflow.Trigger.APROVAR_PELO_ADMINISTRADOR);
@@ -32,7 +34,6 @@ namespace rbkApiModules.Tests.Integration.Workflow
             var temp4 = wf1._machine.State;
 
             var graph = UmlDotGraph<ChangeRequestWorkflow.State, ChangeRequestWorkflow.Trigger>.Format(wf1._machine.GetInfo());
-
 
             //var wf2 = new ChangeRequestWorkflow();
 

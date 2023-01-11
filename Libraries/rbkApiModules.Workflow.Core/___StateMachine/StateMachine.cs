@@ -13,7 +13,6 @@ namespace Stateless
     public partial class StateMachine<TState, TTrigger>
     {
         private readonly IDictionary<TState, StateRepresentation<TState, TTrigger>> _stateConfiguration = new Dictionary<TState, StateRepresentation<TState, TTrigger>>();
-        private readonly IDictionary<TTrigger, TriggerWithParameters<TTrigger>> _triggerConfiguration = new Dictionary<TTrigger, TriggerWithParameters<TTrigger>>();
         private readonly Func<TState> _stateAccessor;
         private readonly Action<TState> _stateMutator;
         private UnhandledTriggerAction<TState, TTrigger> _unhandledTriggerAction;
@@ -117,23 +116,17 @@ namespace Stateless
             return CurrentRepresentation.GetPermittedTriggers(args);
         }
 
-#if !NETSTANDARD1_0
-        /// <summary>
-        /// Gets the currently-permissible triggers with any configured parameters.
-        /// </summary>
-        public IEnumerable<TriggerDetails<TState, TTrigger>> GetDetailedPermittedTriggers(params object[] args)
-        {
-            return CurrentRepresentation.GetPermittedTriggers(args)
-                .Select(trigger => new TriggerDetails<TState, TTrigger>(trigger, _triggerConfiguration));
-        }
-#endif
-
         StateRepresentation<TState, TTrigger> CurrentRepresentation
         {
             get
             {
                 return GetRepresentation(State);
             }
+        }
+
+        public IEnumerable<TTrigger> GetDetailedPermittedTriggers(params object[] args)
+        {
+            return CurrentRepresentation.GetPermittedTriggers(args);
         }
 
         /// <summary>
@@ -211,89 +204,11 @@ namespace Stateless
         /// <param name="args">A variable-length parameters list containing arguments. </param>
         /// <exception cref="System.InvalidOperationException">The current state does
         /// not allow the trigger to be fired.</exception>
-        public void Fire(TriggerWithParameters<TTrigger> trigger, params object[] args)
+        public void Fire(TTrigger trigger, params object[] args)
         {
             if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-            InternalFire(trigger.Trigger, args);
-        }
-
-        // TEMP
-        //public void Fire(TTrigger trigger, params object[] args)
-        //{
-        //    if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-        //    InternalFire(trigger, args);
-        //}
-
-        /// <summary>
-        /// Specify the arguments that must be supplied when a specific trigger is fired.
-        /// </summary>
-        /// <param name="trigger">The underlying trigger value.</param>
-        /// <param name="argumentTypes">The argument types expected by the trigger.</param>
-        /// <returns>An object that can be passed to the Fire() method in order to
-        /// fire the parameterised trigger.</returns>
-        public TriggerWithParameters<TTrigger> SetTriggerParameters(TTrigger trigger, params Type[] argumentTypes)
-        {
-            var configuration = new TriggerWithParameters<TTrigger>(trigger, argumentTypes);
-            SaveTriggerConfiguration(configuration);
-            return configuration;
-        }
-
-        /// <summary>
-        /// Transition from the current state via the specified trigger.
-        /// The target state is determined by the configuration of the current state.
-        /// Actions associated with leaving the current state and entering the new one
-        /// will be invoked.
-        /// </summary>
-        /// <typeparam name="TArg0">Type of the first trigger argument.</typeparam>
-        /// <param name="trigger">The trigger to fire.</param>
-        /// <param name="arg0">The first argument.</param>
-        /// <exception cref="System.InvalidOperationException">The current state does
-        /// not allow the trigger to be fired.</exception>
-        public void Fire<TArg0>(TriggerWithParameters<TTrigger, TArg0> trigger, TArg0 arg0)
-        {
-            if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-            InternalFire(trigger.Trigger, arg0);
-        }
-
-        /// <summary>
-        /// Transition from the current state via the specified trigger.
-        /// The target state is determined by the configuration of the current state.
-        /// Actions associated with leaving the current state and entering the new one
-        /// will be invoked.
-        /// </summary>
-        /// <typeparam name="TArg0">Type of the first trigger argument.</typeparam>
-        /// <typeparam name="TArg1">Type of the second trigger argument.</typeparam>
-        /// <param name="arg0">The first argument.</param>
-        /// <param name="arg1">The second argument.</param>
-        /// <param name="trigger">The trigger to fire.</param>
-        /// <exception cref="System.InvalidOperationException">The current state does
-        /// not allow the trigger to be fired.</exception>
-        public void Fire<TArg0, TArg1>(TriggerWithParameters<TTrigger, TArg0, TArg1> trigger, TArg0 arg0, TArg1 arg1)
-        {
-            if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-            InternalFire(trigger.Trigger, arg0, arg1);
-        }
-
-        /// <summary>
-        /// Transition from the current state via the specified trigger.
-        /// The target state is determined by the configuration of the current state.
-        /// Actions associated with leaving the current state and entering the new one
-        /// will be invoked.
-        /// </summary>
-        /// <typeparam name="TArg0">Type of the first trigger argument.</typeparam>
-        /// <typeparam name="TArg1">Type of the second trigger argument.</typeparam>
-        /// <typeparam name="TArg2">Type of the third trigger argument.</typeparam>
-        /// <param name="arg0">The first argument.</param>
-        /// <param name="arg1">The second argument.</param>
-        /// <param name="arg2">The third argument.</param>
-        /// <param name="trigger">The trigger to fire.</param>
-        /// <exception cref="System.InvalidOperationException">The current state does
-        /// not allow the trigger to be fired.</exception>
-        public void Fire<TArg0, TArg1, TArg2>(TriggerWithParameters<TTrigger, TArg0, TArg1, TArg2> trigger, TArg0 arg0, TArg1 arg1, TArg2 arg2)
-        {
-            if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-            InternalFire(trigger.Trigger, arg0, arg1, arg2);
-        }
+            InternalFire(trigger, args);
+        } 
 
         /// <summary>
         /// Activates current state. Actions associated with activating the current state
@@ -380,10 +295,6 @@ namespace Stateless
         /// <param name="args"></param>
         void InternalFireOne(TTrigger trigger, params object[] args)
         {
-            // If this is a trigger with parameters, we must validate the parameter(s)
-            if (_triggerConfiguration.TryGetValue(trigger, out TriggerWithParameters<TTrigger> configuration))
-                configuration.ValidateParameters(args);
-
             var source = State;
             var representativeState = GetRepresentation(source);
 
@@ -576,61 +487,7 @@ namespace Stateless
                 "StateMachine {{ State = {0}, PermittedTriggers = {{ {1} }}}}",
                 State,
                 string.Join(", ", GetPermittedTriggers().Select(t => t.ToString()).ToArray()));
-        }
-
-        /// <summary>
-        /// Specify the arguments that must be supplied when a specific trigger is fired.
-        /// </summary>
-        /// <typeparam name="TArg0">Type of the first trigger argument.</typeparam>
-        /// <param name="trigger">The underlying trigger value.</param>
-        /// <returns>An object that can be passed to the Fire() method in order to
-        /// fire the parameterised trigger.</returns>
-        public TriggerWithParameters<TTrigger, TArg0> SetTriggerParameters<TArg0>(TTrigger trigger)
-        {
-            var configuration = new TriggerWithParameters<TTrigger, TArg0>(trigger);
-            SaveTriggerConfiguration(configuration);
-            return configuration;
-        }
-
-        /// <summary>
-        /// Specify the arguments that must be supplied when a specific trigger is fired.
-        /// </summary>
-        /// <typeparam name="TArg0">Type of the first trigger argument.</typeparam>
-        /// <typeparam name="TArg1">Type of the second trigger argument.</typeparam>
-        /// <param name="trigger">The underlying trigger value.</param>
-        /// <returns>An object that can be passed to the Fire() method in order to
-        /// fire the parameterised trigger.</returns>
-        public TriggerWithParameters<TTrigger, TArg0, TArg1> SetTriggerParameters<TArg0, TArg1>(TTrigger trigger)
-        {
-            var configuration = new TriggerWithParameters<TTrigger, TArg0, TArg1>(trigger);
-            SaveTriggerConfiguration(configuration);
-            return configuration;
-        }
-
-        /// <summary>
-        /// Specify the arguments that must be supplied when a specific trigger is fired.
-        /// </summary>
-        /// <typeparam name="TArg0">Type of the first trigger argument.</typeparam>
-        /// <typeparam name="TArg1">Type of the second trigger argument.</typeparam>
-        /// <typeparam name="TArg2">Type of the third trigger argument.</typeparam>
-        /// <param name="trigger">The underlying trigger value.</param>
-        /// <returns>An object that can be passed to the Fire() method in order to
-        /// fire the parameterised trigger.</returns>
-        public TriggerWithParameters<TTrigger, TArg0, TArg1, TArg2> SetTriggerParameters<TArg0, TArg1, TArg2>(TTrigger trigger)
-        {
-            var configuration = new TriggerWithParameters<TTrigger, TArg0, TArg1, TArg2>(trigger);
-            SaveTriggerConfiguration(configuration);
-            return configuration;
-        }
-
-        void SaveTriggerConfiguration(TriggerWithParameters<TTrigger> trigger)
-        {
-            if (_triggerConfiguration.ContainsKey(trigger.Trigger))
-                throw new InvalidOperationException(
-                    string.Format("Parameters for the trigger '{0}' have already been configured.", trigger));
-
-            _triggerConfiguration.Add(trigger.Trigger, trigger);
-        }
+        } 
 
         void DefaultUnhandledTriggerAction(TState state, TTrigger trigger, ICollection<string> unmetGuardConditions)
         {
@@ -728,53 +585,9 @@ namespace Stateless
         /// <param name="arg0">The first argument.</param>
         /// <exception cref="System.InvalidOperationException">The current state does
         /// not allow the trigger to be fired.</exception>
-        public Task FireAsync<TArg0>(TriggerWithParameters<TTrigger, TArg0> trigger, TArg0 arg0)
+        public Task FireAsync(TTrigger trigger, object[] args)
         {
-            if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-
-            return InternalFireAsync(trigger.Trigger, arg0);
-        }
-
-        /// <summary>
-        /// Transition from the current state via the specified trigger in async fashion.
-        /// The target state is determined by the configuration of the current state.
-        /// Actions associated with leaving the current state and entering the new one
-        /// will be invoked.
-        /// </summary>
-        /// <typeparam name="TArg0">Type of the first trigger argument.</typeparam>
-        /// <typeparam name="TArg1">Type of the second trigger argument.</typeparam>
-        /// <param name="arg0">The first argument.</param>
-        /// <param name="arg1">The second argument.</param>
-        /// <param name="trigger">The trigger to fire.</param>
-        /// <exception cref="System.InvalidOperationException">The current state does
-        /// not allow the trigger to be fired.</exception>
-        public Task FireAsync<TArg0, TArg1>(TriggerWithParameters<TTrigger, TArg0, TArg1> trigger, TArg0 arg0, TArg1 arg1)
-        {
-            if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-
-            return InternalFireAsync(trigger.Trigger, arg0, arg1);
-        }
-
-        /// <summary>
-        /// Transition from the current state via the specified trigger in async fashion.
-        /// The target state is determined by the configuration of the current state.
-        /// Actions associated with leaving the current state and entering the new one
-        /// will be invoked.
-        /// </summary>
-        /// <typeparam name="TArg0">Type of the first trigger argument.</typeparam>
-        /// <typeparam name="TArg1">Type of the second trigger argument.</typeparam>
-        /// <typeparam name="TArg2">Type of the third trigger argument.</typeparam>
-        /// <param name="arg0">The first argument.</param>
-        /// <param name="arg1">The second argument.</param>
-        /// <param name="arg2">The third argument.</param>
-        /// <param name="trigger">The trigger to fire.</param>
-        /// <exception cref="System.InvalidOperationException">The current state does
-        /// not allow the trigger to be fired.</exception>
-        public Task FireAsync<TArg0, TArg1, TArg2>(TriggerWithParameters<TTrigger, TArg0, TArg1, TArg2> trigger, TArg0 arg0, TArg1 arg1, TArg2 arg2)
-        {
-            if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-
-            return InternalFireAsync(trigger.Trigger, arg0, arg1, arg2);
+            return InternalFireAsync(trigger, args);
         }
 
         /// <summary>
@@ -832,10 +645,6 @@ namespace Stateless
 
         async Task InternalFireOneAsync(TTrigger trigger, params object[] args)
         {
-            // If this is a trigger with parameters, we must validate the parameter(s)
-            if (_triggerConfiguration.TryGetValue(trigger, out TriggerWithParameters<TTrigger> configuration))
-                configuration.ValidateParameters(args);
-
             var source = State;
             var representativeState = GetRepresentation(source);
 

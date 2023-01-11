@@ -5,19 +5,6 @@ namespace Stateless
 {
     internal static class ReflectionExtensions
     {
-        public static Assembly GetAssembly(this Type type)
-        {
-            return type.Assembly;
-        }
-        public static bool IsAssignableFrom(this Type type, Type otherType)
-        {
-            return type.IsAssignableFrom(otherType);
-        }
-
-
-
-
-
         /// <summary>
         ///     Convenience method to get <see cref="MethodInfo" /> for different PCL profiles.
         /// </summary>

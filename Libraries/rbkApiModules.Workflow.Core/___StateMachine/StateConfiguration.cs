@@ -46,22 +46,31 @@ public partial class StateConfiguration<TState, TTrigger>
     /// <summary>
     /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
     /// </summary>
-    /// <param name="trigger"></param>
-    /// <param name="entryAction"></param>
-    /// <returns></returns>
-    public StateConfiguration<TState, TTrigger> InternalTransition(TTrigger trigger, Action<Transition<TState, TTrigger>> entryAction)
+    public StateConfiguration<TState, TTrigger> InternalTransition(TTrigger trigger, Action internalAction)
     {
-        return InternalTransitionIf(trigger, t => true, entryAction);
+        return InternalTransitionIf(trigger, t => true, internalAction);
+
     }
 
     /// <summary>
     /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
     /// </summary>
-    /// <param name="trigger"></param>
-    /// <param name="guard">Function that must return true in order for the trigger to be accepted.</param>
-    /// <param name="entryAction"></param>
-    /// <param name="guardDescription">A description of the guard condition</param>
-    /// <returns></returns>
+    public StateConfiguration<TState, TTrigger> InternalTransition(TTrigger trigger, Action<Transition<TState, TTrigger>> internalAction)
+    {
+        return InternalTransitionIf(trigger, t => true, internalAction);
+    }
+
+    /// <summary>
+    /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
+    /// </summary>
+    public StateConfiguration<TState, TTrigger> InternalTransition(TTrigger trigger, Action<object[], Transition<TState, TTrigger>> internalAction)
+    {
+        return InternalTransitionIf(trigger, t => true, internalAction);
+    }
+
+    /// <summary>
+    /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
+    /// </summary>
     public StateConfiguration<TState, TTrigger> InternalTransitionIf(TTrigger trigger, Func<object[], bool> guard, Action<Transition<TState, TTrigger>> entryAction, string guardDescription = null)
     {
         if (entryAction == null) throw new ArgumentNullException(nameof(entryAction));
@@ -73,22 +82,6 @@ public partial class StateConfiguration<TState, TTrigger>
     /// <summary>
     /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
     /// </summary>
-    /// <param name="trigger">The accepted trigger</param>
-    /// <param name="internalAction">The action performed by the internal transition</param>
-    /// <returns></returns>
-    public StateConfiguration<TState, TTrigger> InternalTransition(TTrigger trigger, Action internalAction)
-    {
-        return InternalTransitionIf(trigger, t => true, internalAction);
-    }
-
-    /// <summary>
-    /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
-    /// </summary>
-    /// <param name="trigger">The accepted trigger</param>
-    /// <param name="guard">Function that must return true in order for the trigger to be accepted.</param>
-    /// <param name="internalAction">The action performed by the internal transition</param>
-    /// <param name="guardDescription">A description of the guard condition</param>
-    /// <returns></returns>
     public StateConfiguration<TState, TTrigger> InternalTransitionIf(TTrigger trigger, Func<object[], bool> guard, Action internalAction, string guardDescription = null)
     {
         if (internalAction == null) throw new ArgumentNullException(nameof(internalAction));
@@ -100,204 +93,14 @@ public partial class StateConfiguration<TState, TTrigger>
     /// <summary>
     /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
     /// </summary>
-    /// <typeparam name="TArg0"></typeparam>
-    /// <param name="trigger">The accepted trigger</param>
-    /// <param name="guard">Function that must return true in order for the trigger to be accepted.</param>
-    /// <param name="internalAction">The action performed by the internal transition</param>
-    /// <param name="guardDescription">A description of the guard condition</param>
-    /// <returns></returns>
-    public StateConfiguration<TState, TTrigger> InternalTransitionIf<TArg0>(TTrigger trigger, Func<object[], bool> guard, Action<Transition<TState, TTrigger>> internalAction, string guardDescription = null)
-    {
-        if (internalAction == null) throw new ArgumentNullException(nameof(internalAction));
-
-        _representation.AddTriggerBehaviour(new InternalTriggerBehaviour<TState, TTrigger>.Sync(trigger, guard, (t, args) => internalAction(t), guardDescription));
-        return this;
-    }
-
-    /// <summary>
-    /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
-    /// </summary>
-    /// <typeparam name="TArg0"></typeparam>
-    /// <param name="trigger">The accepted trigger</param>
-    /// <param name="internalAction">The action performed by the internal transition</param>
-    /// <returns></returns>
-    public StateConfiguration<TState, TTrigger> InternalTransition<TArg0>(TTrigger trigger, Action<Transition<TState, TTrigger>> internalAction)
-    {
-        return InternalTransitionIf(trigger, t => true, internalAction);
-    }
-
-    /// <summary>
-    /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
-    /// </summary>
-    /// <typeparam name="TArg0"></typeparam>
-    /// <param name="trigger">The accepted trigger</param>
-    /// <param name="internalAction">The action performed by the internal transition</param>
-    /// <returns></returns>
-    public StateConfiguration<TState, TTrigger> InternalTransition<TArg0>(TriggerWithParameters<TTrigger, TArg0> trigger, Action<TArg0, Transition<TState, TTrigger>> internalAction)
-    {
-        return InternalTransitionIf(trigger, t => true, internalAction);
-    }
-
-    /// <summary>
-    /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
-    /// </summary>
-    /// <typeparam name="TArg0"></typeparam>
-    /// <param name="trigger">The accepted trigger</param>
-    /// <param name="guard">Function that must return true in order for the trigger to be accepted.</param>
-    /// <param name="internalAction">The action performed by the internal transition</param>
-    /// <param name="guardDescription">A description of the guard condition</param>
-    /// <returns></returns>
-    public StateConfiguration<TState, TTrigger> InternalTransitionIf<TArg0>(TriggerWithParameters<TTrigger, TArg0> trigger, Func<TArg0, bool> guard, Action<TArg0, Transition<TState, TTrigger>> internalAction, string guardDescription = null)
+    public StateConfiguration<TState, TTrigger> InternalTransitionIf(TTrigger trigger, Func<object[], bool> guard, Action<object[], Transition<TState, TTrigger>> internalAction, string guardDescription = null)
     {
         if (trigger == null) throw new ArgumentNullException(nameof(trigger));
         if (internalAction == null) throw new ArgumentNullException(nameof(internalAction));
 
-        _representation.AddTriggerBehaviour(new InternalTriggerBehaviour<TState, TTrigger>.Sync(trigger.Trigger, TransitionGuard.ToPackedGuard(guard), (t, args) => internalAction(ParameterConversion.Unpack<TArg0>(args, 0), t), guardDescription));
+        _representation.AddTriggerBehaviour(new InternalTriggerBehaviour<TState, TTrigger>.Sync(trigger,
+            TransitionGuard.ToPackedGuard(guard), (t, args) => internalAction(args, t), guardDescription));
         return this;
-    }
-
-    /// <summary>
-    /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
-    /// </summary>
-    /// <typeparam name="TArg0"></typeparam>
-    /// <typeparam name="TArg1"></typeparam>
-    /// <param name="trigger">The accepted trigger</param>
-    /// <param name="internalAction">The action performed by the internal transition</param>
-    /// <returns></returns>
-    public StateConfiguration<TState, TTrigger> InternalTransition<TArg0, TArg1>(TriggerWithParameters<TTrigger, TArg0, TArg1> trigger,
-        Action<TArg0, TArg1, Transition<TState, TTrigger>> internalAction)
-    {
-        return InternalTransitionIf(trigger, t => true, internalAction);
-    }
-
-    /// <summary>
-    /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
-    /// </summary>
-    /// <typeparam name="TArg0"></typeparam>
-    /// <typeparam name="TArg1"></typeparam>
-    /// <param name="trigger">The accepted trigger</param>
-    /// <param name="guard">Function that must return true in order for the trigger to be accepted.</param>
-    /// <param name="internalAction">The action performed by the internal transition</param>
-    /// <param name="guardDescription">A description of the guard condition</param>
-    /// <returns></returns>
-    public StateConfiguration<TState, TTrigger> InternalTransitionIf<TArg0, TArg1>(TriggerWithParameters<TTrigger, TArg0, TArg1> trigger, Func<object[], bool> guard, Action<TArg0, TArg1, Transition<TState, TTrigger>> internalAction, string guardDescription = null)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-        if (internalAction == null) throw new ArgumentNullException(nameof(internalAction));
-
-        _representation.AddTriggerBehaviour(new InternalTriggerBehaviour<TState, TTrigger>.Sync(trigger.Trigger, guard, (t, args) => internalAction(
-             ParameterConversion.Unpack<TArg0>(args, 0),
-             ParameterConversion.Unpack<TArg1>(args, 1), t),
-             guardDescription));
-        return this;
-    }
-
-    /// <summary>
-    /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
-    /// </summary>
-    /// <typeparam name="TArg0"></typeparam>
-    /// <typeparam name="TArg1"></typeparam>
-    /// <param name="trigger">The accepted trigger</param>
-    /// <param name="guard">Function that must return true in order for the trigger to be accepted.</param>
-    /// <param name="internalAction">The action performed by the internal transition</param>
-    /// <param name="guardDescription">A description of the guard condition</param>
-    /// <returns></returns>
-    public StateConfiguration<TState, TTrigger> InternalTransitionIf<TArg0, TArg1>(TriggerWithParameters<TTrigger, TArg0, TArg1> trigger, Func<TArg0, TArg1, bool> guard, Action<TArg0, TArg1, Transition<TState, TTrigger>> internalAction, string guardDescription = null)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-        if (internalAction == null) throw new ArgumentNullException(nameof(internalAction));
-
-        _representation.AddTriggerBehaviour(new InternalTriggerBehaviour<TState, TTrigger>.Sync(
-            trigger.Trigger,
-            TransitionGuard.ToPackedGuard(guard),
-            (t, args) => internalAction(
-            ParameterConversion.Unpack<TArg0>(args, 0),
-            ParameterConversion.Unpack<TArg1>(args, 1), t),
-            guardDescription
-            ));
-        return this;
-    }
-
-    /// <summary>
-    /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
-    /// </summary>
-    /// <typeparam name="TArg0"></typeparam>
-    /// <typeparam name="TArg1"></typeparam>
-    /// <typeparam name="TArg2"></typeparam>
-    /// <param name="trigger">The accepted trigger</param>
-    /// <param name="guard">Function that must return true in order for the trigger to be accepted.</param>
-    /// <param name="internalAction">The action performed by the internal transition</param>
-    /// <param name="guardDescription">A description of the guard condition</param>
-    /// <returns></returns>
-    public StateConfiguration<TState, TTrigger> InternalTransitionIf<TArg0, TArg1, TArg2>(TriggerWithParameters<TTrigger, TArg0, TArg1, TArg2> trigger, Func<object[], bool> guard, Action<TArg0, TArg1, TArg2, Transition<TState, TTrigger>> internalAction, string guardDescription = null)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-        if (internalAction == null) throw new ArgumentNullException(nameof(internalAction));
-
-        _representation.AddTriggerBehaviour(new InternalTriggerBehaviour<TState, TTrigger>.Sync(trigger.Trigger, guard, (t, args) => internalAction(
-            ParameterConversion.Unpack<TArg0>(args, 0),
-            ParameterConversion.Unpack<TArg1>(args, 1),
-            ParameterConversion.Unpack<TArg2>(args, 2), t),
-            guardDescription));
-        return this;
-    }
-
-    /// <summary>
-    /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
-    /// </summary>
-    /// <typeparam name="TArg0"></typeparam>
-    /// <typeparam name="TArg1"></typeparam>
-    /// <typeparam name="TArg2"></typeparam>
-    /// <param name="trigger">The accepted trigger</param>
-    /// <param name="guard">Function that must return true in order for the trigger to be accepted.</param>
-    /// <param name="internalAction">The action performed by the internal transition</param>
-    /// <param name="guardDescription">A description of the guard condition</param>
-    /// <returns></returns>
-    public StateConfiguration<TState, TTrigger> InternalTransitionIf<TArg0, TArg1, TArg2>(TriggerWithParameters<TTrigger, TArg0, TArg1, TArg2> trigger, Func<TArg0, TArg1, TArg2, bool> guard, Action<TArg0, TArg1, TArg2, Transition<TState, TTrigger>> internalAction, string guardDescription = null)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-        if (internalAction == null) throw new ArgumentNullException(nameof(internalAction));
-
-        _representation.AddTriggerBehaviour(new InternalTriggerBehaviour<TState, TTrigger>.Sync(trigger.Trigger, TransitionGuard.ToPackedGuard(guard), (t, args) => internalAction(
-            ParameterConversion.Unpack<TArg0>(args, 0),
-            ParameterConversion.Unpack<TArg1>(args, 1),
-            ParameterConversion.Unpack<TArg2>(args, 2), t),
-            guardDescription));
-        return this;
-    }
-
-    /// <summary>
-    /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
-    /// </summary>
-    /// <typeparam name="TArg0"></typeparam>
-    /// <typeparam name="TArg1"></typeparam>
-    /// <typeparam name="TArg2"></typeparam>
-    /// <param name="trigger">The accepted trigger</param>
-    /// <param name="internalAction">The action performed by the internal transition</param>
-    /// <returns></returns>
-    public StateConfiguration<TState, TTrigger> InternalTransition<TArg0, TArg1, TArg2>(TriggerWithParameters<TTrigger, TArg0, TArg1, TArg2> trigger, Action<TArg0, TArg1, TArg2, Transition<TState, TTrigger>> internalAction)
-    {
-        return InternalTransitionIf(trigger, t => true, internalAction);
-    }
-
-    /// <summary>
-    /// Accept the specified trigger and transition to the destination state.
-    /// </summary>
-    /// <param name="trigger">The accepted trigger.</param>
-    /// <param name="destinationState">The state that the trigger will cause a
-    /// transition to.</param>
-    /// <param name="guard">Function that must return true in order for the
-    /// trigger to be accepted.</param>
-    /// <param name="guardDescription">Guard description</param>
-    /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> PermitIf(TTrigger trigger, TState destinationState, Func<bool> guard, string guardDescription = null)
-    {
-        EnforceNotIdentityTransition(destinationState);
-
-        return InternalPermitIf(
-            trigger,
-            destinationState,
-            new TransitionGuard(guard, guardDescription));
     }
 
     /// <summary>
@@ -308,7 +111,7 @@ public partial class StateConfiguration<TState, TTrigger>
     /// trigger to be accepted.</param>
     /// <param name="destinationState">State of the destination.</param>
     /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> PermitIf(TTrigger trigger, TState destinationState, params Tuple<Func<bool>, string>[] guards)
+    public StateConfiguration<TState, TTrigger> PermitIf(TTrigger trigger, TState destinationState, params NamedGuard[] guards)
     {
         EnforceNotIdentityTransition(destinationState);
 
@@ -316,171 +119,6 @@ public partial class StateConfiguration<TState, TTrigger>
             trigger,
             destinationState,
             new TransitionGuard(guards));
-    }
-
-    /// <summary>
-    ///  Accept the specified trigger, transition to the destination state, and guard condition. 
-    /// </summary>
-    /// <typeparam name="TArg0"></typeparam>
-    /// <param name="trigger">The accepted trigger.</param>
-    /// <param name="destinationState">The state that the trigger will cause a
-    /// transition to.</param>
-    /// <param name="guard">Function that must return true in order for the
-    /// trigger to be accepted. Takes a single argument of type TArg0</param>
-    /// <param name="guardDescription">Guard description</param>
-    /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> PermitIf<TArg0>(TriggerWithParameters<TTrigger, TArg0> trigger, TState destinationState, Func<TArg0, bool> guard, string guardDescription = null)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-        EnforceNotIdentityTransition(destinationState);
-
-        return InternalPermitIf(
-            trigger.Trigger,
-            destinationState,
-            new TransitionGuard(TransitionGuard.ToPackedGuard(guard), guardDescription));
-    }
-
-    // TEMP
-    //public StateConfiguration<TState, TTrigger> PermitIf<TArg0>(TTrigger trigger, TState destinationState, Func<TArg0, bool> guard, string guardDescription = null)
-    //{
-    //    if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-    //    EnforceNotIdentityTransition(destinationState);
-
-    //    return InternalPermitIf(
-    //        trigger,
-    //        destinationState,
-    //        new TransitionGuard(TransitionGuard.ToPackedGuard(guard), guardDescription));
-    //}
-
-    // TEMP
-    //public StateConfiguration<TState, TTrigger> PermitIf<TArg0, TArg1>(TTrigger trigger, TState destinationState, Func<TArg0, TArg1, bool> guard, string guardDescription = null)
-    //{
-    //    if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-
-    //    EnforceNotIdentityTransition(destinationState);
-
-    //    return InternalPermitIf(
-    //        trigger,
-    //        destinationState,
-    //        new TransitionGuard(TransitionGuard.ToPackedGuard(guard), guardDescription));
-    //}
-
-    /// <summary>
-    /// Accept the specified trigger, transition to the destination state, and guard conditions.
-    /// </summary>
-    /// <typeparam name="TArg0"></typeparam>
-    /// <param name="trigger">The accepted trigger.</param>
-    /// <param name="guards">Functions and their descriptions that must return true in order for the
-    /// trigger to be accepted. Functions take a single argument of type TArg0.</param>
-    /// <param name="destinationState">State of the destination.</param>
-    /// <returns>The receiver.</returns>
-    /// <returns></returns>
-    public StateConfiguration<TState, TTrigger> PermitIf<TArg0>(TriggerWithParameters<TTrigger, TArg0> trigger, TState destinationState, params Tuple<Func<TArg0, bool>, string>[] guards)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-        EnforceNotIdentityTransition(destinationState);
-
-        return InternalPermitIf(
-            trigger.Trigger,
-            destinationState,
-            new TransitionGuard(TransitionGuard.ToPackedGuards(guards))
-        );
-    }
-
-    /// <summary>
-    ///  Accept the specified trigger, transition to the destination state, and guard condition. 
-    /// </summary>
-    /// <typeparam name="TArg0"></typeparam>
-    /// <typeparam name="TArg1"></typeparam>
-    /// <param name="trigger">The accepted trigger.</param>
-    /// <param name="destinationState">The state that the trigger will cause a
-    /// transition to.</param>
-    /// <param name="guard">Function that must return true in order for the
-    /// trigger to be accepted. Takes a single argument of type TArg0</param>
-    /// <param name="guardDescription">Guard description</param>
-    /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> PermitIf<TArg0, TArg1>(TriggerWithParameters<TTrigger, TArg0, TArg1> trigger, TState destinationState, Func<TArg0, TArg1, bool> guard, string guardDescription = null)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-        EnforceNotIdentityTransition(destinationState);
-
-        return InternalPermitIf(
-            trigger.Trigger,
-            destinationState,
-            new TransitionGuard(TransitionGuard.ToPackedGuard(guard), guardDescription));
-    }
-
-    /// <summary>
-    ///  Accept the specified trigger, transition to the destination state, and guard condition. 
-    /// </summary>
-    /// <typeparam name="TArg0"></typeparam>
-    /// <typeparam name="TArg1"></typeparam>
-    /// <param name="trigger">The accepted trigger.</param>
-    /// <param name="guards">Functions and their descriptions that must return true in order for the
-    /// trigger to be accepted. Functions take a single argument of type TArg0.</param>
-    /// <param name="destinationState">State of the destination.</param>
-    /// <returns>The receiver.</returns>
-    /// <returns></returns>
-    /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> PermitIf<TArg0, TArg1>(TriggerWithParameters<TTrigger, TArg0, TArg1> trigger, TState destinationState, params Tuple<Func<TArg0, TArg1, bool>, string>[] guards)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-        EnforceNotIdentityTransition(destinationState);
-
-        return InternalPermitIf(
-            trigger.Trigger,
-            destinationState,
-            new TransitionGuard(TransitionGuard.ToPackedGuards(guards))
-        );
-    }
-
-    /// <summary>
-    ///  Accept the specified trigger, transition to the destination state, and guard condition. 
-    /// </summary>
-    /// <typeparam name="TArg0"></typeparam>
-    /// <typeparam name="TArg1"></typeparam>
-    /// <typeparam name="TArg2"></typeparam>
-    /// <param name="trigger">The accepted trigger.</param>
-    /// <param name="destinationState">The state that the trigger will cause a
-    /// transition to.</param>
-    /// <param name="guard">Function that must return true in order for the
-    /// trigger to be accepted. Takes a single argument of type TArg0</param>
-    /// <param name="guardDescription">Guard description</param>
-    /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> PermitIf<TArg0, TArg1, TArg2>(TriggerWithParameters<TTrigger, TArg0, TArg1, TArg2> trigger, TState destinationState, Func<TArg0, TArg1, TArg2, bool> guard, string guardDescription = null)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-        EnforceNotIdentityTransition(destinationState);
-
-        return InternalPermitIf(
-            trigger.Trigger,
-            destinationState,
-            new TransitionGuard(TransitionGuard.ToPackedGuard(guard), guardDescription));
-    }
-
-    /// <summary>
-    ///  Accept the specified trigger, transition to the destination state, and guard condition. 
-    /// </summary>
-    /// <typeparam name="TArg0"></typeparam>
-    /// <typeparam name="TArg1"></typeparam>
-    /// <typeparam name="TArg2"></typeparam>
-    /// <param name="trigger">The accepted trigger.</param>
-    /// <param name="guards">Functions and their descriptions that must return true in order for the
-    /// trigger to be accepted. Functions take a single argument of type TArg0.</param>
-    /// <param name="destinationState">State of the destination.</param>
-    /// <returns>The receiver.</returns>
-    /// <returns></returns>
-    /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> PermitIf<TArg0, TArg1, TArg2>(TriggerWithParameters<TTrigger, TArg0, TArg1, TArg2> trigger, TState destinationState, params Tuple<Func<TArg0, TArg1, TArg2, bool>, string>[] guards)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-        EnforceNotIdentityTransition(destinationState);
-
-        return InternalPermitIf(
-            trigger.Trigger,
-            destinationState,
-            new TransitionGuard(TransitionGuard.ToPackedGuards(guards))
-        );
     }
 
     /// <summary>
@@ -503,27 +141,6 @@ public partial class StateConfiguration<TState, TTrigger>
     /// Reentry behaves as though the configured state transitions to an identical sibling state.
     /// </summary>
     /// <param name="trigger">The accepted trigger.</param>
-    /// <param name="guard">Function that must return true in order for the
-    /// trigger to be accepted.</param>
-    /// <param name="guardDescription">Guard description</param>
-    /// <returns>The receiver.</returns>
-    /// <remarks>
-    /// Applies to the current state only. Will not re-execute superstate actions, or
-    /// cause actions to execute transitioning between super- and sub-states.
-    /// </remarks>
-    public StateConfiguration<TState, TTrigger> PermitReentryIf(TTrigger trigger, Func<bool> guard, string guardDescription = null)
-    {
-        return InternalPermitReentryIf(
-            trigger,
-            _representation.UnderlyingState,
-            new TransitionGuard(guard, guardDescription));
-    }
-
-    /// <summary>
-    /// Accept the specified trigger, execute exit actions and re-execute entry actions.
-    /// Reentry behaves as though the configured state transitions to an identical sibling state.
-    /// </summary>
-    /// <param name="trigger">The accepted trigger.</param>
     /// <param name="guards">Functions and their descriptions that must return true in order for the
     /// trigger to be accepted.</param>
     /// <returns>The receiver.</returns>
@@ -531,176 +148,13 @@ public partial class StateConfiguration<TState, TTrigger>
     /// Applies to the current state only. Will not re-execute superstate actions, or
     /// cause actions to execute transitioning between super- and sub-states.
     /// </remarks>
-    public StateConfiguration<TState, TTrigger> PermitReentryIf(TTrigger trigger, params Tuple<Func<bool>, string>[] guards)
+    public StateConfiguration<TState, TTrigger> PermitReentryIf(TTrigger trigger, params NamedGuard[] guards)
     {
         return InternalPermitReentryIf(
             trigger,
             _representation.UnderlyingState,
             new TransitionGuard(guards));
-    }
-
-    /// <summary>
-    ///  Accept the specified trigger, transition to the destination state, and guard condition. 
-    /// </summary>
-    /// <typeparam name="TArg0"></typeparam>
-    /// <param name="trigger">The accepted trigger.</param>
-    /// <param name="guard">Function that must return true in order for the
-    /// trigger to be accepted. Takes a single argument of type TArg0</param>
-    /// <param name="guardDescription">Guard description</param>
-    /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> PermitReentryIf<TArg0>(TriggerWithParameters<TTrigger, TArg0> trigger, Func<TArg0, bool> guard, string guardDescription = null)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-
-        return InternalPermitReentryIf(
-            trigger.Trigger,
-            _representation.UnderlyingState,
-            new TransitionGuard(TransitionGuard.ToPackedGuard(guard), guardDescription)
-        );
-    }
-
-    /// <summary>
-    /// Accept the specified trigger, transition to the destination state, and guard conditions.
-    /// </summary>
-    /// <typeparam name="TArg0"></typeparam>
-    /// <param name="trigger">The accepted trigger.</param>
-    /// <param name="guards">Functions and their descriptions that must return true in order for the
-    /// trigger to be accepted. Functions take a single argument of type TArg0.</param>
-    /// <returns>The receiver.</returns>
-    /// <returns></returns>
-    public StateConfiguration<TState, TTrigger> PermitReentryIf<TArg0>(TriggerWithParameters<TTrigger, TArg0> trigger, params Tuple<Func<TArg0, bool>, string>[] guards)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-
-        return InternalPermitReentryIf(
-            trigger.Trigger,
-            _representation.UnderlyingState,
-            new TransitionGuard(TransitionGuard.ToPackedGuards(guards))
-        );
-    }
-
-    /// <summary>
-    ///  Accept the specified trigger, transition to the destination state, and guard condition. 
-    /// </summary>
-    /// <typeparam name="TArg0"></typeparam>
-    /// <typeparam name="TArg1"></typeparam>
-    /// <param name="trigger">The accepted trigger.</param>
-    /// <param name="guard">Function that must return true in order for the
-    /// trigger to be accepted. Takes a single argument of type TArg0</param>
-    /// <param name="guardDescription">Guard description</param>
-    /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> PermitReentryIf<TArg0, TArg1>(TriggerWithParameters<TTrigger, TArg0, TArg1> trigger, Func<TArg0, TArg1, bool> guard, string guardDescription = null)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-
-        return InternalPermitReentryIf(
-            trigger.Trigger,
-            _representation.UnderlyingState,
-            new TransitionGuard(TransitionGuard.ToPackedGuard(guard), guardDescription)
-        );
-    }
-
-    /// <summary>
-    ///  Accept the specified trigger, transition to the destination state, and guard condition. 
-    /// </summary>
-    /// <typeparam name="TArg0"></typeparam>
-    /// <typeparam name="TArg1"></typeparam>
-    /// <param name="trigger">The accepted trigger.</param>
-    /// <param name="guards">Functions and their descriptions that must return true in order for the
-    /// trigger to be accepted. Functions take a single argument of type TArg0.</param>
-    /// <returns>The receiver.</returns>
-    /// <returns></returns>
-    /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> PermitReentryIf<TArg0, TArg1>(TriggerWithParameters<TTrigger, TArg0, TArg1> trigger, params Tuple<Func<TArg0, TArg1, bool>, string>[] guards)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-
-        return InternalPermitReentryIf(
-            trigger.Trigger,
-            _representation.UnderlyingState,
-            new TransitionGuard(TransitionGuard.ToPackedGuards(guards))
-        );
-    }
-
-    /// <summary>
-    ///  Accept the specified trigger, transition to the destination state, and guard condition. 
-    /// </summary>
-    /// <typeparam name="TArg0"></typeparam>
-    /// <typeparam name="TArg1"></typeparam>
-    /// <typeparam name="TArg2"></typeparam>
-    /// <param name="trigger">The accepted trigger.</param>
-    /// <param name="guard">Function that must return true in order for the
-    /// trigger to be accepted. Takes a single argument of type TArg0</param>
-    /// <param name="guardDescription">Guard description</param>
-    /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> PermitReentryIf<TArg0, TArg1, TArg2>(TriggerWithParameters<TTrigger, TArg0, TArg1, TArg2> trigger, Func<TArg0, TArg1, TArg2, bool> guard, string guardDescription = null)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-
-        return InternalPermitReentryIf(
-            trigger.Trigger,
-            _representation.UnderlyingState,
-            new TransitionGuard(TransitionGuard.ToPackedGuard(guard), guardDescription)
-        );
-    }
-
-    /// <summary>
-    ///  Accept the specified trigger, transition to the destination state, and guard condition. 
-    /// </summary>
-    /// <typeparam name="TArg0"></typeparam>
-    /// <typeparam name="TArg1"></typeparam>
-    /// <typeparam name="TArg2"></typeparam>
-    /// <param name="trigger">The accepted trigger.</param>
-    /// <param name="guards">Functions and their descriptions that must return true in order for the
-    /// trigger to be accepted. Functions take a single argument of type TArg0.</param>
-    /// <returns>The receiver.</returns>
-    /// <returns></returns>
-    /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> PermitReentryIf<TArg0, TArg1, TArg2>(TriggerWithParameters<TTrigger, TArg0, TArg1, TArg2> trigger, params Tuple<Func<TArg0, TArg1, TArg2, bool>, string>[] guards)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-
-        return InternalPermitReentryIf(
-            trigger.Trigger,
-            _representation.UnderlyingState,
-            new TransitionGuard(TransitionGuard.ToPackedGuards(guards))
-        );
-    }
-
-    /// <summary>
-    /// Ignore the specified trigger when in the configured state.
-    /// </summary>
-    /// <param name="trigger">The trigger to ignore.</param>
-    /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> Ignore(TTrigger trigger)
-    {
-        // return IgnoreIf(trigger, NoGuard);
-        // Enforce.ArgumentNotNull(guard, nameof(guard));
-        _representation.AddTriggerBehaviour(
-            new IgnoredTriggerBehaviour<TState, TTrigger>(
-                trigger,
-                null));
-        return this;
-    }
-
-    /// <summary>
-    /// Ignore the specified trigger when in the configured state, if the guard
-    /// returns true..
-    /// </summary>
-    /// <param name="trigger">The trigger to ignore.</param>
-    /// <param name="guardDescription">Guard description</param>
-    /// <param name="guard">Function that must return true in order for the
-    /// trigger to be ignored.</param>
-    /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> IgnoreIf(TTrigger trigger, Func<bool> guard, string guardDescription = null)
-    {
-        _representation.AddTriggerBehaviour(
-            new IgnoredTriggerBehaviour<TState, TTrigger>(
-                trigger,
-                new TransitionGuard(guard, guardDescription)
-                ));
-        return this;
-    }
+    } 
 
     /// <summary>
     /// Ignore the specified trigger when in the configured state, if the guard
@@ -710,134 +164,14 @@ public partial class StateConfiguration<TState, TTrigger>
     /// <param name="guards">Functions and their descriptions that must return true in order for the
     /// trigger to be ignored.</param>
     /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> IgnoreIf(TTrigger trigger, params Tuple<Func<bool>, string>[] guards)
+    public StateConfiguration<TState, TTrigger> IgnoreIf(TTrigger trigger, params NamedGuard[] guards)
     {
         _representation.AddTriggerBehaviour(
             new IgnoredTriggerBehaviour<TState, TTrigger>(
                 trigger,
                 new TransitionGuard(guards)));
         return this;
-    }
-
-    /// <summary>
-    /// Ignore the specified trigger when in the configured state, if the guard
-    /// returns true..
-    /// </summary>
-    /// <param name="trigger">The trigger to ignore.</param>
-    /// <param name="guardDescription">Guard description</param>
-    /// <param name="guard">Function that must return true in order for the
-    /// trigger to be ignored.</param>
-    /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> IgnoreIf<TArg0>(TriggerWithParameters<TTrigger, TArg0> trigger, Func<TArg0, bool> guard, string guardDescription = null)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-
-        _representation.AddTriggerBehaviour(
-            new IgnoredTriggerBehaviour<TState, TTrigger>(
-                trigger.Trigger,
-                new TransitionGuard(TransitionGuard.ToPackedGuard(guard), guardDescription)
-            ));
-        return this;
-    }
-
-    /// <summary>
-    /// Ignore the specified trigger when in the configured state, if the guard
-    /// returns true..
-    /// </summary>
-    /// <param name="trigger">The trigger to ignore.</param>
-    /// <param name="guards">Functions and their descriptions that must return true in order for the
-    /// trigger to be ignored.</param>
-    /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> IgnoreIf<TArg0>(TriggerWithParameters<TTrigger, TArg0> trigger, params Tuple<Func<TArg0, bool>, string>[] guards)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-
-        _representation.AddTriggerBehaviour(
-            new IgnoredTriggerBehaviour<TState, TTrigger>(
-                trigger.Trigger,
-                new TransitionGuard(TransitionGuard.ToPackedGuards(guards))));
-        return this;
-    }
-
-    /// <summary>
-    /// Ignore the specified trigger when in the configured state, if the guard
-    /// returns true..
-    /// </summary>
-    /// <param name="trigger">The trigger to ignore.</param>
-    /// <param name="guardDescription">Guard description</param>
-    /// <param name="guard">Function that must return true in order for the
-    /// trigger to be ignored.</param>
-    /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> IgnoreIf<TArg0, TArgo1>(TriggerWithParameters<TTrigger, TArg0, TArgo1> trigger, Func<TArg0, TArgo1, bool> guard, string guardDescription = null)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-
-        _representation.AddTriggerBehaviour(
-            new IgnoredTriggerBehaviour<TState, TTrigger>(
-                trigger.Trigger,
-                new TransitionGuard(TransitionGuard.ToPackedGuard(guard), guardDescription)
-            ));
-        return this;
-    }
-
-    /// <summary>
-    /// Ignore the specified trigger when in the configured state, if the guard
-    /// returns true..
-    /// </summary>
-    /// <param name="trigger">The trigger to ignore.</param>
-    /// <param name="guards">Functions and their descriptions that must return true in order for the
-    /// trigger to be ignored.</param>
-    /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> IgnoreIf<TArg0, TArg1>(TriggerWithParameters<TTrigger, TArg0, TArg1> trigger, params Tuple<Func<TArg0, TArg1, bool>, string>[] guards)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-
-        _representation.AddTriggerBehaviour(
-            new IgnoredTriggerBehaviour<TState, TTrigger>(
-                trigger.Trigger,
-                new TransitionGuard(TransitionGuard.ToPackedGuards(guards))));
-        return this;
-    }
-
-    /// <summary>
-    /// Ignore the specified trigger when in the configured state, if the guard
-    /// returns true..
-    /// </summary>
-    /// <param name="trigger">The trigger to ignore.</param>
-    /// <param name="guardDescription">Guard description</param>
-    /// <param name="guard">Function that must return true in order for the
-    /// trigger to be ignored.</param>
-    /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> IgnoreIf<TArg0, TArg1, TArg2>(TriggerWithParameters<TTrigger, TArg0, TArg1, TArg2> trigger, Func<TArg0, TArg1, TArg2, bool> guard, string guardDescription = null)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-
-        _representation.AddTriggerBehaviour(
-            new IgnoredTriggerBehaviour<TState, TTrigger>(
-                trigger.Trigger,
-                new TransitionGuard(TransitionGuard.ToPackedGuard(guard), guardDescription)
-            ));
-        return this;
-    }
-
-    /// <summary>
-    /// Ignore the specified trigger when in the configured state, if the guard
-    /// returns true..
-    /// </summary>
-    /// <param name="trigger">The trigger to ignore.</param>
-    /// <param name="guards">Functions and their descriptions that must return true in order for the
-    /// trigger to be ignored.</param>
-    /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> IgnoreIf<TArg0, TArg1, TArg2>(TriggerWithParameters<TTrigger, TArg0, TArg1, TArg2> trigger, params Tuple<Func<TArg0, TArg1, TArg2, bool>, string>[] guards)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-
-        _representation.AddTriggerBehaviour(
-            new IgnoredTriggerBehaviour<TState, TTrigger>(
-                trigger.Trigger,
-                new TransitionGuard(TransitionGuard.ToPackedGuards(guards))));
-        return this;
-    }
+    } 
 
     /// <summary>
     /// Specify an action that will execute when activating
@@ -931,7 +265,6 @@ public partial class StateConfiguration<TState, TTrigger>
     /// <param name="entryAction">Action to execute, providing details of the transition.</param>
     /// <param name="trigger">The trigger by which the state must be entered in order for the action to execute.</param>
     /// <param name="entryActionDescription">Action description.</param>
-    /// <returns>The receiver.</returns>
     public StateConfiguration<TState, TTrigger> OnEntryFrom(TTrigger trigger, Action<Transition<TState, TTrigger>> entryAction, string entryActionDescription = null)
     {
         if (entryAction == null) throw new ArgumentNullException(nameof(entryAction));
@@ -950,15 +283,14 @@ public partial class StateConfiguration<TState, TTrigger>
     /// <param name="entryAction">Action to execute, providing details of the transition.</param>
     /// <param name="trigger">The trigger by which the state must be entered in order for the action to execute.</param>
     /// <param name="entryActionDescription">Action description.</param>
-    /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> OnEntryFrom(TriggerWithParameters<TTrigger> trigger, Action<Transition<TState, TTrigger>> entryAction, string entryActionDescription = null)
+    public StateConfiguration<TState, TTrigger> OnEntryFrom(TTrigger trigger, Action<object[]> entryAction, string entryActionDescription = null)
     {
         if (trigger == null) throw new ArgumentNullException(nameof(trigger));
         if (entryAction == null) throw new ArgumentNullException(nameof(entryAction));
 
         _representation.AddEntryAction(
-            trigger.Trigger,
-            (t, args) => entryAction(t),
+            trigger,
+            (t, args) => entryAction(args),
             Reflection.InvocationInfo.Create(entryAction, entryActionDescription));
         return this;
 
@@ -968,138 +300,17 @@ public partial class StateConfiguration<TState, TTrigger>
     /// Specify an action that will execute when transitioning into
     /// the configured state.
     /// </summary>
-    /// <typeparam name="TArg0">Type of the first trigger argument.</typeparam>
     /// <param name="entryAction">Action to execute, providing details of the transition.</param>
     /// <param name="trigger">The trigger by which the state must be entered in order for the action to execute.</param>
     /// <param name="entryActionDescription">Action description.</param>
-    /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> OnEntryFrom<TArg0>(TriggerWithParameters<TTrigger, TArg0> trigger, Action<TArg0> entryAction, string entryActionDescription = null)
+    public StateConfiguration<TState, TTrigger> OnEntryFrom(TTrigger trigger, Action<object[], Transition<TState, TTrigger>> entryAction, string entryActionDescription = null)
     {
         if (trigger == null) throw new ArgumentNullException(nameof(trigger));
         if (entryAction == null) throw new ArgumentNullException(nameof(entryAction));
 
         _representation.AddEntryAction(
-            trigger.Trigger,
-            (t, args) => entryAction(
-                ParameterConversion.Unpack<TArg0>(args, 0)),
-            Reflection.InvocationInfo.Create(entryAction, entryActionDescription));
-        return this;
-
-    }
-
-    /// <summary>
-    /// Specify an action that will execute when transitioning into
-    /// the configured state.
-    /// </summary>
-    /// <typeparam name="TArg0">Type of the first trigger argument.</typeparam>
-    /// <param name="entryAction">Action to execute, providing details of the transition.</param>
-    /// <param name="trigger">The trigger by which the state must be entered in order for the action to execute.</param>
-    /// <param name="entryActionDescription">Action description.</param>
-    /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> OnEntryFrom<TArg0>(TriggerWithParameters<TTrigger, TArg0> trigger, Action<TArg0, Transition<TState, TTrigger>> entryAction, string entryActionDescription = null)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-        if (entryAction == null) throw new ArgumentNullException(nameof(entryAction));
-
-        _representation.AddEntryAction(
-            trigger.Trigger,
-            (t, args) => entryAction(
-                ParameterConversion.Unpack<TArg0>(args, 0), t),
-            Reflection.InvocationInfo.Create(entryAction, entryActionDescription));
-        return this;
-    }
-
-    /// <summary>
-    /// Specify an action that will execute when transitioning into
-    /// the configured state.
-    /// </summary>
-    /// <typeparam name="TArg0">Type of the first trigger argument.</typeparam>
-    /// <typeparam name="TArg1">Type of the second trigger argument.</typeparam>
-    /// <param name="entryAction">Action to execute, providing details of the transition.</param>
-    /// <param name="trigger">The trigger by which the state must be entered in order for the action to execute.</param>
-    /// <param name="entryActionDescription">Action description.</param>
-    /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> OnEntryFrom<TArg0, TArg1>(TriggerWithParameters<TTrigger, TArg0, TArg1> trigger, Action<TArg0, TArg1> entryAction, string entryActionDescription = null)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-        if (entryAction == null) throw new ArgumentNullException(nameof(entryAction));
-
-        _representation.AddEntryAction(trigger.Trigger,
-            (t, args) => entryAction(
-                ParameterConversion.Unpack<TArg0>(args, 0),
-                ParameterConversion.Unpack<TArg1>(args, 1)),
-            Reflection.InvocationInfo.Create(entryAction, entryActionDescription));
-        return this;
-
-    }
-
-    /// <summary>
-    /// Specify an action that will execute when transitioning into
-    /// the configured state.
-    /// </summary>
-    /// <typeparam name="TArg0">Type of the first trigger argument.</typeparam>
-    /// <typeparam name="TArg1">Type of the second trigger argument.</typeparam>
-    /// <param name="entryAction">Action to execute, providing details of the transition.</param>
-    /// <param name="trigger">The trigger by which the state must be entered in order for the action to execute.</param>
-    /// <param name="entryActionDescription">Action description.</param>
-    /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> OnEntryFrom<TArg0, TArg1>(TriggerWithParameters<TTrigger, TArg0, TArg1> trigger, Action<TArg0, TArg1, Transition<TState, TTrigger>> entryAction, string entryActionDescription = null)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-        if (entryAction == null) throw new ArgumentNullException(nameof(entryAction));
-
-        _representation.AddEntryAction(trigger.Trigger, (t, args) => entryAction(
-            ParameterConversion.Unpack<TArg0>(args, 0),
-            ParameterConversion.Unpack<TArg1>(args, 1), t),
-            Reflection.InvocationInfo.Create(entryAction, entryActionDescription));
-        return this;
-    }
-
-    /// <summary>
-    /// Specify an action that will execute when transitioning into
-    /// the configured state.
-    /// </summary>
-    /// <typeparam name="TArg0">Type of the first trigger argument.</typeparam>
-    /// <typeparam name="TArg1">Type of the second trigger argument.</typeparam>
-    /// <typeparam name="TArg2">Type of the third trigger argument.</typeparam>
-    /// <param name="entryAction">Action to execute, providing details of the transition.</param>
-    /// <param name="trigger">The trigger by which the state must be entered in order for the action to execute.</param>
-    /// <param name="entryActionDescription">Action description.</param>
-    /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> OnEntryFrom<TArg0, TArg1, TArg2>(TriggerWithParameters<TTrigger, TArg0, TArg1, TArg2> trigger, Action<TArg0, TArg1, TArg2> entryAction, string entryActionDescription = null)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-        if (entryAction == null) throw new ArgumentNullException(nameof(entryAction));
-
-        _representation.AddEntryAction(trigger.Trigger, (t, args) => entryAction(
-            ParameterConversion.Unpack<TArg0>(args, 0),
-            ParameterConversion.Unpack<TArg1>(args, 1),
-            ParameterConversion.Unpack<TArg2>(args, 2)),
-            Reflection.InvocationInfo.Create(entryAction, entryActionDescription));
-        return this;
-
-    }
-
-    /// <summary>
-    /// Specify an action that will execute when transitioning into
-    /// the configured state.
-    /// </summary>
-    /// <typeparam name="TArg0">Type of the first trigger argument.</typeparam>
-    /// <typeparam name="TArg1">Type of the second trigger argument.</typeparam>
-    /// <typeparam name="TArg2">Type of the third trigger argument.</typeparam>
-    /// <param name="entryAction">Action to execute, providing details of the transition.</param>
-    /// <param name="trigger">The trigger by which the state must be entered in order for the action to execute.</param>
-    /// <param name="entryActionDescription">Action description.</param>
-    /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> OnEntryFrom<TArg0, TArg1, TArg2>(TriggerWithParameters<TTrigger, TArg0, TArg1, TArg2> trigger, Action<TArg0, TArg1, TArg2, Transition<TState, TTrigger>> entryAction, string entryActionDescription = null)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-        if (entryAction == null) throw new ArgumentNullException(nameof(entryAction));
-
-        _representation.AddEntryAction(trigger.Trigger, (t, args) => entryAction(
-            ParameterConversion.Unpack<TArg0>(args, 0),
-            ParameterConversion.Unpack<TArg1>(args, 1),
-            ParameterConversion.Unpack<TArg2>(args, 2), t),
+            trigger,
+            (t, args) => entryAction(args, t),
             Reflection.InvocationInfo.Create(entryAction, entryActionDescription));
         return this;
     }
@@ -1218,8 +429,7 @@ public partial class StateConfiguration<TState, TTrigger>
     /// <param name="destinationStateSelectorDescription">Optional description of the function to calculate the state </param>
     /// <param name="possibleDestinationStates">Optional list of possible target states.</param>
     /// <returns>The receiver.</returns>
-    /// <typeparam name="TArg0">Type of the first trigger argument.</typeparam>
-    public StateConfiguration<TState, TTrigger> PermitDynamic<TArg0>(TriggerWithParameters<TTrigger, TArg0> trigger, Func<TArg0, TState> destinationStateSelector,
+    public StateConfiguration<TState, TTrigger> PermitDynamic(TTrigger trigger, Func<object[], TState> destinationStateSelector,
         string destinationStateSelectorDescription = null, Reflection.DynamicStateInfos possibleDestinationStates = null)
     {
         if (destinationStateSelector == null) throw new ArgumentNullException(nameof(destinationStateSelector));
@@ -1227,11 +437,10 @@ public partial class StateConfiguration<TState, TTrigger>
         if (trigger == null) throw new ArgumentNullException(nameof(trigger));
 
         _representation.AddTriggerBehaviour(
-            new DynamicTriggerBehaviour<TState, TTrigger>(trigger.Trigger,
-                args => destinationStateSelector(
-                    ParameterConversion.Unpack<TArg0>(args, 0)),
+            new DynamicTriggerBehaviour<TState, TTrigger>(trigger,
+                args => destinationStateSelector(args),
                 null,       // No transition guards
-                Reflection.DynamicTransitionInfo.Create(trigger.Trigger,
+                Reflection.DynamicTransitionInfo.Create(trigger,
                     null,    // No guards
                     Reflection.InvocationInfo.Create(destinationStateSelector, destinationStateSelectorDescription),
                     possibleDestinationStates)
@@ -1247,81 +456,15 @@ public partial class StateConfiguration<TState, TTrigger>
     /// <param name="trigger">The accepted trigger.</param>
     /// <param name="destinationStateSelector">Function to calculate the state
     /// that the trigger will cause a transition to.</param>
-    /// <param name="destinationStateSelectorDescription">Optional description of the function to calculate the state </param>
-    /// <param name="possibleDestinationStates">Optional list of possible target states.</param>
-    /// <returns>The receiver.</returns>
-    /// <typeparam name="TArg0">Type of the first trigger argument.</typeparam>
-    /// <typeparam name="TArg1">Type of the second trigger argument.</typeparam>
-    public StateConfiguration<TState, TTrigger> PermitDynamic<TArg0, TArg1>(TriggerWithParameters<TTrigger, TArg0, TArg1> trigger,
-        Func<TArg0, TArg1, TState> destinationStateSelector, string destinationStateSelectorDescription = null, Reflection.DynamicStateInfos possibleDestinationStates = null)
-    {
-        if (destinationStateSelector == null) throw new ArgumentNullException(nameof(destinationStateSelector));
-
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-
-        _representation.AddTriggerBehaviour(
-            new DynamicTriggerBehaviour<TState, TTrigger>(trigger.Trigger, args => destinationStateSelector(
-                ParameterConversion.Unpack<TArg0>(args, 0),
-                ParameterConversion.Unpack<TArg1>(args, 1)),
-            null,       // No transition guard
-            Reflection.DynamicTransitionInfo.Create(trigger.Trigger,
-                null,       // No guards
-                Reflection.InvocationInfo.Create(destinationStateSelector, destinationStateSelectorDescription),
-                possibleDestinationStates)
-        ));
-        return this;
-    }
-
-    /// <summary>
-    /// Accept the specified trigger and transition to the destination state, calculated
-    /// dynamically by the supplied function.
-    /// </summary>
-    /// <param name="trigger">The accepted trigger.</param>
-    /// <param name="destinationStateSelector">Function to calculate the state
-    /// that the trigger will cause a transition to.</param>
-    /// <param name="destinationStateSelectorDescription">Optional description of the function to calculate the state </param>
-    /// <param name="possibleDestinationStates">Optional list of possible target states.</param>
-    /// <returns>The receiver.</returns>
-    /// <typeparam name="TArg0">Type of the first trigger argument.</typeparam>
-    /// <typeparam name="TArg1">Type of the second trigger argument.</typeparam>
-    /// <typeparam name="TArg2">Type of the third trigger argument.</typeparam>
-    public StateConfiguration<TState, TTrigger> PermitDynamic<TArg0, TArg1, TArg2>(TriggerWithParameters<TTrigger, TArg0, TArg1, TArg2> trigger,
-        Func<TArg0, TArg1, TArg2, TState> destinationStateSelector, string destinationStateSelectorDescription = null, Reflection.DynamicStateInfos possibleDestinationStates = null)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-        if (destinationStateSelector == null) throw new ArgumentNullException(nameof(destinationStateSelector));
-
-        _representation.AddTriggerBehaviour(
-            new DynamicTriggerBehaviour<TState, TTrigger>(trigger.Trigger,
-            args => destinationStateSelector(
-                ParameterConversion.Unpack<TArg0>(args, 0),
-                ParameterConversion.Unpack<TArg1>(args, 1),
-                ParameterConversion.Unpack<TArg2>(args, 2)),
-            null,       // No transition guard
-            Reflection.DynamicTransitionInfo.Create(trigger.Trigger,
-                null,       // No guards
-                Reflection.InvocationInfo.Create(destinationStateSelector, destinationStateSelectorDescription),
-                possibleDestinationStates)
-            ));
-        return this;
-    }
-
-    /// <summary>
-    /// Accept the specified trigger and transition to the destination state, calculated
-    /// dynamically by the supplied function.
-    /// </summary>
-    /// <param name="trigger">The accepted trigger.</param>
-    /// <param name="destinationStateSelector">Function to calculate the state
-    /// that the trigger will cause a transition to.</param>
     /// <param name="guard">Function that must return true in order for the
     /// trigger to be accepted.</param>
     /// <param name="guardDescription">Guard description</param>
     /// <param name="possibleDestinationStates">Optional list of possible target states.</param>
     /// <returns>The receiver.</returns>
     public StateConfiguration<TState, TTrigger> PermitDynamicIf(TTrigger trigger, Func<TState> destinationStateSelector,
-        Func<bool> guard, string guardDescription = null, Reflection.DynamicStateInfos possibleDestinationStates = null)
+        NamedGuard[] guards, Reflection.DynamicStateInfos possibleDestinationStates = null)
     {
-        return PermitDynamicIf(trigger, destinationStateSelector, null, guard, guardDescription, possibleDestinationStates);
+        return PermitDynamicIf(trigger, destinationStateSelector, null, guards, possibleDestinationStates);
     }
 
     /// <summary>
@@ -1338,7 +481,7 @@ public partial class StateConfiguration<TState, TTrigger>
     /// <param name="possibleDestinationStates">Optional list of possible target states.</param>
     /// <returns>The receiver.</returns>
     public StateConfiguration<TState, TTrigger> PermitDynamicIf(TTrigger trigger, Func<TState> destinationStateSelector,
-        string destinationStateSelectorDescription, Func<bool> guard, string guardDescription = null, Reflection.DynamicStateInfos possibleDestinationStates = null)
+        string destinationStateSelectorDescription, NamedGuard[] guards, Reflection.DynamicStateInfos possibleDestinationStates = null)
     {
         if (destinationStateSelector == null) throw new ArgumentNullException(nameof(destinationStateSelector));
 
@@ -1346,7 +489,7 @@ public partial class StateConfiguration<TState, TTrigger>
             trigger,
             args => destinationStateSelector(),
             destinationStateSelectorDescription,
-            new TransitionGuard(guard, guardDescription),
+            new TransitionGuard(guards),
             possibleDestinationStates);
     }
 
@@ -1361,7 +504,7 @@ public partial class StateConfiguration<TState, TTrigger>
     /// trigger to be accepted.</param>
     /// <param name="possibleDestinationStates">Optional list of possible target states.</param>
     /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> PermitDynamicIf(TTrigger trigger, Func<TState> destinationStateSelector, Reflection.DynamicStateInfos possibleDestinationStates = null, params Tuple<Func<bool>, string>[] guards)
+    public StateConfiguration<TState, TTrigger> PermitDynamicIf(TTrigger trigger, Func<TState> destinationStateSelector, Reflection.DynamicStateInfos possibleDestinationStates = null, params NamedGuard[] guards)
     {
         return PermitDynamicIf(trigger, destinationStateSelector, null, possibleDestinationStates, guards);
     }
@@ -1379,7 +522,7 @@ public partial class StateConfiguration<TState, TTrigger>
     /// <param name="possibleDestinationStates">Optional list of possible target states.</param>
     /// <returns>The receiver.</returns>
     public StateConfiguration<TState, TTrigger> PermitDynamicIf(TTrigger trigger, Func<TState> destinationStateSelector,
-        string destinationStateSelectorDescription, Reflection.DynamicStateInfos possibleDestinationStates = null, params Tuple<Func<bool>, string>[] guards)
+        string destinationStateSelectorDescription, Reflection.DynamicStateInfos possibleDestinationStates = null, params NamedGuard[] guards)
     {
         if (destinationStateSelector == null) throw new ArgumentNullException(nameof(destinationStateSelector));
 
@@ -1403,18 +546,16 @@ public partial class StateConfiguration<TState, TTrigger>
     /// <param name="guardDescription">Guard description</param>
     /// <param name="possibleDestinationStates">Optional list of possible target states.</param>
     /// <returns>The receiver.</returns>
-    /// <typeparam name="TArg0">Type of the first trigger argument.</typeparam>
-    public StateConfiguration<TState, TTrigger> PermitDynamicIf<TArg0>(TriggerWithParameters<TTrigger, TArg0> trigger, Func<TArg0, TState> destinationStateSelector, Func<bool> guard, string guardDescription = null, Reflection.DynamicStateInfos possibleDestinationStates = null)
+    public StateConfiguration<TState, TTrigger> PermitDynamicIf(TTrigger trigger, Func<object[], TState> destinationStateSelector, NamedGuard[] guards, string guardDescription = null, Reflection.DynamicStateInfos possibleDestinationStates = null)
     {
         if (trigger == null) throw new ArgumentNullException(nameof(trigger));
         if (destinationStateSelector == null) throw new ArgumentNullException(nameof(destinationStateSelector));
 
         return InternalPermitDynamicIf(
-            trigger.Trigger,
-            args => destinationStateSelector(
-                ParameterConversion.Unpack<TArg0>(args, 0)),
+            trigger,
+            args => destinationStateSelector(args),
             null,    // destinationStateSelectorString
-            new TransitionGuard(guard, guardDescription),
+            new TransitionGuard(guards),
             possibleDestinationStates);
     }
 
@@ -1426,10 +567,9 @@ public partial class StateConfiguration<TState, TTrigger>
     /// <param name="destinationStateSelector">Function to calculate the state
     /// that the trigger will cause a transition to.</param>            
     /// <returns>The receiver.</returns>
-    /// <typeparam name="TArg0">Type of the first trigger argument.</typeparam>
-    public StateConfiguration<TState, TTrigger> PermitDynamicIf<TArg0>(TriggerWithParameters<TTrigger, TArg0> trigger, Func<TArg0, TState> destinationStateSelector)
+    public StateConfiguration<TState, TTrigger> PermitDynamicIf(TTrigger trigger, Func<object[], TState> destinationStateSelector)
     {
-        return PermitDynamicIf<TArg0>(trigger, destinationStateSelector, null, new Tuple<Func<bool>, string>[0]);
+        return PermitDynamicIf(trigger, destinationStateSelector, null, new NamedGuard[0]);
     }
 
     /// <summary>
@@ -1443,309 +583,18 @@ public partial class StateConfiguration<TState, TTrigger>
     /// <param name="guards">Functions and their descriptions that must return true in order for the
     /// trigger to be accepted.</param>
     /// <returns>The receiver.</returns>
-    /// <typeparam name="TArg0">Type of the first trigger argument.</typeparam>
-    public StateConfiguration<TState, TTrigger> PermitDynamicIf<TArg0>(TriggerWithParameters<TTrigger, TArg0> trigger, Func<TArg0, TState> destinationStateSelector, Reflection.DynamicStateInfos possibleDestinationStates = null, params Tuple<Func<bool>, string>[] guards)
+    public StateConfiguration<TState, TTrigger> PermitDynamicIf(TTrigger trigger, Func<object[], TState> destinationStateSelector, Reflection.DynamicStateInfos possibleDestinationStates = null, params NamedGuard[] guards)
     {
         if (trigger == null) throw new ArgumentNullException(nameof(trigger));
         if (destinationStateSelector == null) throw new ArgumentNullException(nameof(destinationStateSelector));
 
         return InternalPermitDynamicIf(
-            trigger.Trigger,
-            args => destinationStateSelector(
-                ParameterConversion.Unpack<TArg0>(args, 0)),
+            trigger,
+            args => destinationStateSelector(args),
             null,    // destinationStateSelectorString
             new TransitionGuard(guards),
             possibleDestinationStates);
-    }
-
-    /// <summary>
-    /// Accept the specified trigger and transition to the destination state, calculated
-    /// dynamically by the supplied function.
-    /// </summary>
-    /// <param name="trigger">The accepted trigger.</param>
-    /// <param name="destinationStateSelector">Function to calculate the state
-    /// that the trigger will cause a transition to.</param>
-    /// <param name="guard">Function that must return true in order for the
-    /// trigger to be accepted.</param>
-    /// <param name="guardDescription">Guard description</param>
-    /// <param name="possibleDestinationStates">Optional list of possible target states.</param>
-    /// <returns>The receiver.</returns>
-    /// <typeparam name="TArg0">Type of the first trigger argument.</typeparam>
-    /// <typeparam name="TArg1">Type of the second trigger argument.</typeparam>
-    public StateConfiguration<TState, TTrigger> PermitDynamicIf<TArg0, TArg1>(TriggerWithParameters<TTrigger, TArg0, TArg1> trigger, Func<TArg0, TArg1, TState> destinationStateSelector, Func<bool> guard, string guardDescription = null, Reflection.DynamicStateInfos possibleDestinationStates = null)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-        if (destinationStateSelector == null) throw new ArgumentNullException(nameof(destinationStateSelector));
-
-        return InternalPermitDynamicIf(
-            trigger.Trigger,
-            args => destinationStateSelector(
-                ParameterConversion.Unpack<TArg0>(args, 0),
-                ParameterConversion.Unpack<TArg1>(args, 1)),
-            null,    // destinationStateSelectorString
-            new TransitionGuard(guard, guardDescription),
-            possibleDestinationStates);
-    }
-
-    /// <summary>
-    /// Accept the specified trigger and transition to the destination state, calculated
-    /// dynamically by the supplied function.
-    /// </summary>
-    /// <param name="trigger">The accepted trigger.</param>
-    /// <param name="destinationStateSelector">Function to calculate the state
-    /// that the trigger will cause a transition to.</param>
-    /// <param name="possibleDestinationStates">Optional list of possible target states.</param>
-    /// <param name="guards">Functions and their descriptions that must return true in order for the
-    /// trigger to be accepted.</param>
-    /// <returns>The receiver.</returns>
-    /// <typeparam name="TArg0">Type of the first trigger argument.</typeparam>
-    /// <typeparam name="TArg1">Type of the second trigger argument.</typeparam>
-    public StateConfiguration<TState, TTrigger> PermitDynamicIf<TArg0, TArg1>(TriggerWithParameters<TTrigger, TArg0, TArg1> trigger, Func<TArg0, TArg1, TState> destinationStateSelector, Reflection.DynamicStateInfos possibleDestinationStates = null, params Tuple<Func<bool>, string>[] guards)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-        if (destinationStateSelector == null) throw new ArgumentNullException(nameof(destinationStateSelector));
-
-        return InternalPermitDynamicIf(
-            trigger.Trigger,
-            args => destinationStateSelector(
-                ParameterConversion.Unpack<TArg0>(args, 0),
-                ParameterConversion.Unpack<TArg1>(args, 1)),
-            null,    // destinationStateSelectorString
-            new TransitionGuard(guards),
-            possibleDestinationStates);
-    }
-
-    /// <summary>
-    /// Accept the specified trigger and transition to the destination state, calculated
-    /// dynamically by the supplied function.
-    /// </summary>
-    /// <param name="trigger">The accepted trigger.</param>
-    /// <param name="destinationStateSelector">Function to calculate the state
-    /// that the trigger will cause a transition to.</param>
-    /// <returns>The receiver.</returns>
-    /// <param name="guard">Function that must return true in order for the
-    /// trigger to be accepted.</param>
-    /// <param name="guardDescription">Guard description</param>
-    /// <param name="possibleDestinationStates">Optional list of possible target states.</param>
-    /// <typeparam name="TArg0">Type of the first trigger argument.</typeparam>
-    /// <typeparam name="TArg1">Type of the second trigger argument.</typeparam>
-    /// <typeparam name="TArg2">Type of the third trigger argument.</typeparam>
-    public StateConfiguration<TState, TTrigger> PermitDynamicIf<TArg0, TArg1, TArg2>(TriggerWithParameters<TTrigger, TArg0, TArg1, TArg2> trigger, Func<TArg0, TArg1, TArg2, TState> destinationStateSelector, Func<bool> guard, string guardDescription = null, Reflection.DynamicStateInfos possibleDestinationStates = null)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-        if (destinationStateSelector == null) throw new ArgumentNullException(nameof(destinationStateSelector));
-
-        return InternalPermitDynamicIf(
-            trigger.Trigger,
-            args => destinationStateSelector(
-                ParameterConversion.Unpack<TArg0>(args, 0),
-                ParameterConversion.Unpack<TArg1>(args, 1),
-                ParameterConversion.Unpack<TArg2>(args, 2)),
-            null,    // destinationStateSelectorString
-            new TransitionGuard(guard, guardDescription),
-            possibleDestinationStates);
-    }
-
-    /// <summary>
-    /// Accept the specified trigger and transition to the destination state, calculated
-    /// dynamically by the supplied function.
-    /// </summary>
-    /// <param name="trigger">The accepted trigger.</param>
-    /// <param name="destinationStateSelector">Function to calculate the state
-    /// that the trigger will cause a transition to.</param>
-    /// <param name="possibleDestinationStates">Optional list of possible target states.</param>
-    /// <returns>The receiver.</returns>
-    /// <param name="guards">Functions ant their descriptions that must return true in order for the
-    /// trigger to be accepted.</param>
-    /// <typeparam name="TArg0">Type of the first trigger argument.</typeparam>
-    /// <typeparam name="TArg1">Type of the second trigger argument.</typeparam>
-    /// <typeparam name="TArg2">Type of the third trigger argument.</typeparam>
-    public StateConfiguration<TState, TTrigger> PermitDynamicIf<TArg0, TArg1, TArg2>(TriggerWithParameters<TTrigger, TArg0, TArg1, TArg2> trigger, Func<TArg0, TArg1, TArg2, TState> destinationStateSelector, Reflection.DynamicStateInfos possibleDestinationStates = null, params Tuple<Func<bool>, string>[] guards)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-        if (destinationStateSelector == null) throw new ArgumentNullException(nameof(destinationStateSelector));
-
-        return InternalPermitDynamicIf(
-            trigger.Trigger,
-            args => destinationStateSelector(
-                ParameterConversion.Unpack<TArg0>(args, 0),
-                ParameterConversion.Unpack<TArg1>(args, 1),
-                ParameterConversion.Unpack<TArg2>(args, 2)),
-            null,    // destinationStateSelectorString
-            new TransitionGuard(guards),
-            possibleDestinationStates);
-    }
-
-    /// <summary>
-    /// Accept the specified trigger and transition to the destination state, calculated
-    /// dynamically by the supplied function.
-    /// </summary>
-    /// <param name="trigger">The accepted trigger.</param>
-    /// <param name="destinationStateSelector">Function to calculate the state
-    /// that the trigger will cause a transition to.</param>
-    /// <param name="guard">Parameterized Function that must return true in order for the
-    /// trigger to be accepted.</param>
-    /// <param name="guardDescription">Guard description</param>
-    /// <param name="possibleDestinationStates">Optional list of possible target states.</param>
-    /// <returns>The receiver.</returns>
-    /// <typeparam name="TArg0">Type of the first trigger argument.</typeparam>
-    public StateConfiguration<TState, TTrigger> PermitDynamicIf<TArg0>(TriggerWithParameters<TTrigger, TArg0> trigger, Func<TArg0, TState> destinationStateSelector, Func<TArg0, bool> guard, string guardDescription = null, Reflection.DynamicStateInfos possibleDestinationStates = null)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-        if (destinationStateSelector == null) throw new ArgumentNullException(nameof(destinationStateSelector));
-
-        return InternalPermitDynamicIf(
-            trigger.Trigger,
-            args => destinationStateSelector(
-                ParameterConversion.Unpack<TArg0>(args, 0)),
-            null,    // destinationStateSelectorString
-            new TransitionGuard(TransitionGuard.ToPackedGuard(guard), guardDescription),
-            possibleDestinationStates);
-    }
-
-    /// <summary>
-    /// Accept the specified trigger and transition to the destination state, calculated
-    /// dynamically by the supplied function.
-    /// </summary>
-    /// <param name="trigger">The accepted trigger.</param>
-    /// <param name="destinationStateSelector">Function to calculate the state
-    /// that the trigger will cause a transition to.</param>
-    /// <param name="possibleDestinationStates">Optional list of possible target states.</param>
-    /// <param name="guards">Functions and their descriptions that must return true in order for the
-    /// trigger to be accepted.</param>
-    /// <returns>The receiver.</returns>
-    /// <typeparam name="TArg0">Type of the first trigger argument.</typeparam>
-    public StateConfiguration<TState, TTrigger> PermitDynamicIf<TArg0>(TriggerWithParameters<TTrigger, TArg0> trigger, Func<TArg0, TState> destinationStateSelector, Reflection.DynamicStateInfos possibleDestinationStates = null, params Tuple<Func<TArg0, bool>, string>[] guards)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-        if (destinationStateSelector == null) throw new ArgumentNullException(nameof(destinationStateSelector));
-
-        return InternalPermitDynamicIf(
-            trigger.Trigger,
-            args => destinationStateSelector(
-                ParameterConversion.Unpack<TArg0>(args, 0)),
-            null,    // destinationStateSelectorString
-            new TransitionGuard(TransitionGuard.ToPackedGuards(guards)),
-            possibleDestinationStates);
-    }
-
-    /// <summary>
-    /// Accept the specified trigger and transition to the destination state, calculated
-    /// dynamically by the supplied function.
-    /// </summary>
-    /// <param name="trigger">The accepted trigger.</param>
-    /// <param name="destinationStateSelector">Function to calculate the state
-    /// that the trigger will cause a transition to.</param>
-    /// <param name="guard">Function that must return true in order for the
-    /// trigger to be accepted.</param>
-    /// <param name="guardDescription">Guard description</param>
-    /// <param name="possibleDestinationStates">Optional list of possible target states.</param>
-    /// <returns>The receiver.</returns>
-    /// <typeparam name="TArg0">Type of the first trigger argument.</typeparam>
-    /// <typeparam name="TArg1">Type of the second trigger argument.</typeparam>
-    public StateConfiguration<TState, TTrigger> PermitDynamicIf<TArg0, TArg1>(TriggerWithParameters<TTrigger, TArg0, TArg1> trigger, Func<TArg0, TArg1, TState> destinationStateSelector, Func<TArg0, TArg1, bool> guard, string guardDescription = null, Reflection.DynamicStateInfos possibleDestinationStates = null)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-        if (destinationStateSelector == null) throw new ArgumentNullException(nameof(destinationStateSelector));
-
-        return InternalPermitDynamicIf(
-            trigger.Trigger,
-            args => destinationStateSelector(
-                ParameterConversion.Unpack<TArg0>(args, 0),
-                ParameterConversion.Unpack<TArg1>(args, 1)),
-            null,    // destinationStateSelectorString
-            new TransitionGuard(TransitionGuard.ToPackedGuard(guard), guardDescription),
-            possibleDestinationStates);
-    }
-
-    /// <summary>
-    /// Accept the specified trigger and transition to the destination state, calculated
-    /// dynamically by the supplied function.
-    /// </summary>
-    /// <param name="trigger">The accepted trigger.</param>
-    /// <param name="destinationStateSelector">Function to calculate the state
-    /// that the trigger will cause a transition to.</param>
-    /// <param name="guards">Functions that must return true in order for the
-    /// trigger to be accepted.</param>
-    /// <param name="possibleDestinationStates">Optional list of possible target states.</param>
-    /// <returns>The receiver.</returns>
-    /// <typeparam name="TArg0">Type of the first trigger argument.</typeparam>
-    /// <typeparam name="TArg1">Type of the second trigger argument.</typeparam>
-    public StateConfiguration<TState, TTrigger> PermitDynamicIf<TArg0, TArg1>(TriggerWithParameters<TTrigger, TArg0, TArg1> trigger, Func<TArg0, TArg1, TState> destinationStateSelector, Tuple<Func<TArg0, TArg1, bool>, string>[] guards, Reflection.DynamicStateInfos possibleDestinationStates = null)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-        if (destinationStateSelector == null) throw new ArgumentNullException(nameof(destinationStateSelector));
-
-        return InternalPermitDynamicIf(
-            trigger.Trigger,
-            args => destinationStateSelector(
-                ParameterConversion.Unpack<TArg0>(args, 0),
-                ParameterConversion.Unpack<TArg1>(args, 1)),
-            null,    // destinationStateSelectorString
-            new TransitionGuard(TransitionGuard.ToPackedGuards(guards)),
-            possibleDestinationStates);
-    }
-
-    /// <summary>
-    /// Accept the specified trigger and transition to the destination state, calculated
-    /// dynamically by the supplied function.
-    /// </summary>
-    /// <param name="trigger">The accepted trigger.</param>
-    /// <param name="destinationStateSelector">Function to calculate the state
-    /// that the trigger will cause a transition to.</param>
-    /// <param name="guard">Function that must return true in order for the
-    /// trigger to be accepted.</param>
-    /// <param name="guardDescription">Guard description</param>
-    /// <param name="possibleDestinationStates">Optional list of possible target states.</param>
-    /// <returns>The receiver.</returns>
-    /// <typeparam name="TArg0">Type of the first trigger argument.</typeparam>
-    /// <typeparam name="TArg1">Type of the second trigger argument.</typeparam>
-    /// <typeparam name="TArg2"></typeparam>
-    public StateConfiguration<TState, TTrigger> PermitDynamicIf<TArg0, TArg1, TArg2>(TriggerWithParameters<TTrigger, TArg0, TArg1, TArg2> trigger, Func<TArg0, TArg1, TArg2, TState> destinationStateSelector, Func<TArg0, TArg1, TArg2, bool> guard, string guardDescription = null, Reflection.DynamicStateInfos possibleDestinationStates = null)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-        if (destinationStateSelector == null) throw new ArgumentNullException(nameof(destinationStateSelector));
-
-        return InternalPermitDynamicIf(
-            trigger.Trigger,
-            args => destinationStateSelector(
-                ParameterConversion.Unpack<TArg0>(args, 0),
-                ParameterConversion.Unpack<TArg1>(args, 1),
-                ParameterConversion.Unpack<TArg2>(args, 2)),
-            null,    // destinationStateSelectorString
-            new TransitionGuard(TransitionGuard.ToPackedGuard(guard), guardDescription),
-            possibleDestinationStates);
-    }
-
-    /// <summary>
-    /// Accept the specified trigger and transition to the destination state, calculated
-    /// dynamically by the supplied function.
-    /// </summary>
-    /// <param name="trigger">The accepted trigger.</param>
-    /// <param name="destinationStateSelector">Function to calculate the state
-    /// that the trigger will cause a transition to.</param>
-    /// <param name="guards">Functions that must return true in order for the
-    /// trigger to be accepted.</param>
-    /// <param name="possibleDestinationStates">Optional list of possible target states.</param>
-    /// <returns>The receiver.</returns>
-    /// <typeparam name="TArg0">Type of the first trigger argument.</typeparam>
-    /// <typeparam name="TArg1">Type of the second trigger argument.</typeparam>
-    /// <typeparam name="TArg2"></typeparam>
-    public StateConfiguration<TState, TTrigger> PermitDynamicIf<TArg0, TArg1, TArg2>(TriggerWithParameters<TTrigger, TArg0, TArg1, TArg2> trigger, Func<TArg0, TArg1, TArg2, TState> destinationStateSelector, Tuple<Func<TArg0, TArg1, TArg2, bool>, string>[] guards, Reflection.DynamicStateInfos possibleDestinationStates = null)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-        if (destinationStateSelector == null) throw new ArgumentNullException(nameof(destinationStateSelector));
-
-        return InternalPermitDynamicIf(
-            trigger.Trigger,
-            args => destinationStateSelector(
-                ParameterConversion.Unpack<TArg0>(args, 0),
-                ParameterConversion.Unpack<TArg1>(args, 1),
-                ParameterConversion.Unpack<TArg2>(args, 2)),
-            null,    // destinationStateSelectorString
-            new TransitionGuard(TransitionGuard.ToPackedGuards(guards)),
-            possibleDestinationStates);
-    }
+    } 
 
     void EnforceNotIdentityTransition(TState destination)
     {
@@ -1814,7 +663,6 @@ public partial class StateConfiguration<TState, TTrigger>
 
 
 
-
     /// <summary>
     /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
     /// </summary>
@@ -1822,11 +670,11 @@ public partial class StateConfiguration<TState, TTrigger>
     /// <param name="guard">Function that must return true in order for the trigger to be accepted.</param>
     /// <param name="entryAction"></param>
     /// <returns></returns>
-    public StateConfiguration<TState, TTrigger> InternalTransitionAsyncIf(TTrigger trigger, Func<bool> guard, Func<Transition<TState, TTrigger>, Task> entryAction)
+    public StateConfiguration<TState, TTrigger> InternalTransitionAsyncIf(TTrigger trigger, NamedGuard[] guards, Func<Transition<TState, TTrigger>, Task> entryAction)
     {
         if (entryAction == null) throw new ArgumentNullException(nameof(entryAction));
 
-        _representation.AddTriggerBehaviour(new InternalTriggerBehaviour<TState, TTrigger>.Async(trigger, guard, (t, args) => entryAction(t)));
+        _representation.AddTriggerBehaviour(new InternalTriggerBehaviour<TState, TTrigger>.Async(trigger, guards, (t, args) => entryAction(t)));
         return this;
     }
 
@@ -1837,89 +685,30 @@ public partial class StateConfiguration<TState, TTrigger>
     /// <param name="guard">Function that must return true in order for the\r\n            /// trigger to be accepted.</param>
     /// <param name="internalAction">The asynchronous action performed by the internal transition</param>
     /// <returns></returns>
-    public StateConfiguration<TState, TTrigger> InternalTransitionAsyncIf(TTrigger trigger, Func<bool> guard, Func<Task> internalAction)
+    public StateConfiguration<TState, TTrigger> InternalTransitionAsyncIf(TTrigger trigger, NamedGuard[] guards, Func<Task> internalAction)
     {
         if (internalAction == null) throw new ArgumentNullException(nameof(internalAction));
 
-        _representation.AddTriggerBehaviour(new InternalTriggerBehaviour<TState, TTrigger>.Async(trigger, guard, (t, args) => internalAction()));
+        _representation.AddTriggerBehaviour(new InternalTriggerBehaviour<TState, TTrigger>.Async(trigger, guards, (t, args) => internalAction()));
         return this;
-    }
+    } 
 
     /// <summary>
     /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
     /// </summary>
-    /// <typeparam name="TArg0"></typeparam>
     /// <param name="trigger">The accepted trigger</param>
     /// <param name="guard">Function that must return true in order for the trigger to be accepted.</param>
     /// <param name="internalAction">The asynchronous action performed by the internal transition</param>
     /// <returns></returns>
-    public StateConfiguration<TState, TTrigger> InternalTransitionAsyncIf<TArg0>(TTrigger trigger, Func<bool> guard, Func<Transition<TState, TTrigger>, Task> internalAction)
-    {
-        if (internalAction == null) throw new ArgumentNullException(nameof(internalAction));
-
-        _representation.AddTriggerBehaviour(new InternalTriggerBehaviour<TState, TTrigger>.Async(trigger, guard, (t, args) => internalAction(t)));
-        return this;
-    }
-
-    /// <summary>
-    /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
-    /// </summary>
-    /// <typeparam name="TArg0"></typeparam>
-    /// <param name="trigger">The accepted trigger</param>
-    /// <param name="guard">Function that must return true in order for the trigger to be accepted.</param>
-    /// <param name="internalAction">The asynchronous action performed by the internal transition</param>
-    /// <returns></returns>
-    public StateConfiguration<TState, TTrigger> InternalTransitionAsyncIf<TArg0>(TriggerWithParameters<TTrigger, TArg0> trigger, Func<bool> guard, Func<TArg0, Transition<TState, TTrigger>, Task> internalAction)
+    public StateConfiguration<TState, TTrigger> InternalTransitionAsyncIf(TTrigger trigger, Func<object[], bool> guards, Func<object[], Transition<TState, TTrigger>, Task> internalAction)
     {
         if (trigger == null) throw new ArgumentNullException(nameof(trigger));
         if (internalAction == null) throw new ArgumentNullException(nameof(internalAction));
 
-        _representation.AddTriggerBehaviour(new InternalTriggerBehaviour<TState, TTrigger>.Async(trigger.Trigger, guard, (t, args) => internalAction(ParameterConversion.Unpack<TArg0>(args, 0), t)));
+        _representation.AddTriggerBehaviour(new InternalTriggerBehaviour<TState, TTrigger>.Async(trigger, guards,
+            (t, args) => internalAction(args, t)));
         return this;
     }
-
-    /// <summary>
-    /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
-    /// </summary>
-    /// <typeparam name="TArg0"></typeparam>
-    /// <typeparam name="TArg1"></typeparam>
-    /// <param name="trigger">The accepted trigger</param>
-    /// <param name="guard">Function that must return true in order for the trigger to be accepted.</param>
-    /// <param name="internalAction">The asynchronous action performed by the internal transition</param>
-    /// <returns></returns>
-    public StateConfiguration<TState, TTrigger> InternalTransitionAsyncIf<TArg0, TArg1>(TriggerWithParameters<TTrigger, TArg0, TArg1> trigger, Func<bool> guard, Func<TArg0, TArg1, Transition<TState, TTrigger>, Task> internalAction)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-        if (internalAction == null) throw new ArgumentNullException(nameof(internalAction));
-
-        _representation.AddTriggerBehaviour(new InternalTriggerBehaviour<TState, TTrigger>.Async(trigger.Trigger, guard, (t, args) => internalAction(
-            ParameterConversion.Unpack<TArg0>(args, 0),
-            ParameterConversion.Unpack<TArg1>(args, 1), t)));
-        return this;
-    }
-
-    /// <summary>
-    /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
-    /// </summary>
-    /// <typeparam name="TArg0"></typeparam>
-    /// <typeparam name="TArg1"></typeparam>
-    /// <typeparam name="TArg2"></typeparam>
-    /// <param name="trigger">The accepted trigger</param>
-    /// <param name="guard">Function that must return true in order for the trigger to be accepted.</param>
-    /// <param name="internalAction">The asynchronous action performed by the internal transition</param>
-    /// <returns></returns>
-    public StateConfiguration<TState, TTrigger> InternalTransitionAsyncIf<TArg0, TArg1, TArg2>(TriggerWithParameters<TTrigger, TArg0, TArg1, TArg2> trigger, Func<bool> guard, Func<TArg0, TArg1, TArg2, Transition<TState, TTrigger>, Task> internalAction)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-        if (internalAction == null) throw new ArgumentNullException(nameof(internalAction));
-
-        _representation.AddTriggerBehaviour(new InternalTriggerBehaviour<TState, TTrigger>.Async(trigger.Trigger, guard, (t, args) => internalAction(
-            ParameterConversion.Unpack<TArg0>(args, 0),
-            ParameterConversion.Unpack<TArg1>(args, 1),
-            ParameterConversion.Unpack<TArg2>(args, 2), t)));
-        return this;
-    }
-
 
     /// <summary>
     /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
@@ -1929,8 +718,9 @@ public partial class StateConfiguration<TState, TTrigger>
     /// <returns></returns>
     public StateConfiguration<TState, TTrigger> InternalTransitionAsync(TTrigger trigger, Func<Transition<TState, TTrigger>, Task> entryAction)
     {
-        return InternalTransitionAsyncIf(trigger, () => true, entryAction);
+        return InternalTransitionAsyncIf(trigger, new[] { new NamedGuard(String.Empty, (args) => true) }, entryAction);
     }
+
     /// <summary>
     /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
     /// </summary>
@@ -1939,54 +729,16 @@ public partial class StateConfiguration<TState, TTrigger>
     /// <returns></returns>
     public StateConfiguration<TState, TTrigger> InternalTransitionAsync(TTrigger trigger, Func<Task> internalAction)
     {
-        return InternalTransitionAsyncIf(trigger, () => true, internalAction);
+        return InternalTransitionAsyncIf(trigger, new[] { new NamedGuard(String.Empty, (args) => true) }, internalAction);
     }
+ 
     /// <summary>
     /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
     /// </summary>
-    /// <typeparam name="TArg0"></typeparam>
     /// <param name="trigger">The accepted trigger</param>
     /// <param name="internalAction">The asynchronous action performed by the internal transition</param>
     /// <returns></returns>
-    public StateConfiguration<TState, TTrigger> InternalTransitionAsync<TArg0>(TTrigger trigger, Func<Transition<TState, TTrigger>, Task> internalAction)
-    {
-        return InternalTransitionAsyncIf(trigger, () => true, internalAction);
-    }
-    /// <summary>
-    /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
-    /// </summary>
-    /// <typeparam name="TArg0"></typeparam>
-    /// <param name="trigger">The accepted trigger</param>
-    /// <param name="internalAction">The asynchronous action performed by the internal transition</param>
-    /// <returns></returns>
-    public StateConfiguration<TState, TTrigger> InternalTransitionAsync<TArg0>(TriggerWithParameters<TTrigger, TArg0> trigger, Func<TArg0, Transition<TState, TTrigger>, Task> internalAction)
-    {
-        return InternalTransitionAsyncIf(trigger, () => true, internalAction);
-    }
-
-    /// <summary>
-    /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
-    /// </summary>
-    /// <typeparam name="TArg0"></typeparam>
-    /// <typeparam name="TArg1"></typeparam>
-    /// <param name="trigger">The accepted trigger</param>
-    /// <param name="internalAction">The asynchronous action performed by the internal transition</param>
-    /// <returns></returns>
-    public StateConfiguration<TState, TTrigger> InternalTransitionAsync<TArg0, TArg1>(TriggerWithParameters<TTrigger, TArg0, TArg1> trigger, Func<TArg0, TArg1, Transition<TState, TTrigger>, Task> internalAction)
-    {
-        return InternalTransitionAsyncIf(trigger, () => true, internalAction);
-    }
-
-    /// <summary>
-    /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
-    /// </summary>
-    /// <typeparam name="TArg0"></typeparam>
-    /// <typeparam name="TArg1"></typeparam>
-    /// <typeparam name="TArg2"></typeparam>
-    /// <param name="trigger">The accepted trigger</param>
-    /// <param name="internalAction">The asynchronous action performed by the internal transition</param>
-    /// <returns></returns>
-    public StateConfiguration<TState, TTrigger> InternalTransitionAsync<TArg0, TArg1, TArg2>(TriggerWithParameters<TTrigger, TArg0, TArg1, TArg2> trigger, Func<TArg0, TArg1, TArg2, Transition<TState, TTrigger>, Task> internalAction)
+    public StateConfiguration<TState, TTrigger> InternalTransitionAsync(TTrigger trigger, Func<object[], Transition<TState, TTrigger>, Task> internalAction)
     {
         return InternalTransitionAsyncIf(trigger, () => true, internalAction);
     }
@@ -2098,20 +850,18 @@ public partial class StateConfiguration<TState, TTrigger>
     /// Specify an asynchronous action that will execute when transitioning into
     /// the configured state.
     /// </summary>
-    /// <typeparam name="TArg0">Type of the first trigger argument.</typeparam>
     /// <param name="entryAction">Action to execute, providing details of the transition.</param>
     /// <param name="trigger">The trigger by which the state must be entered in order for the action to execute.</param>
     /// <param name="entryActionDescription">Action description.</param>
     /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> OnEntryFromAsync<TArg0>(TriggerWithParameters<TTrigger, TArg0> trigger, Func<TArg0, Task> entryAction, string entryActionDescription = null)
+    public StateConfiguration<TState, TTrigger> OnEntryFromAsync(TTrigger trigger, Func<object[], Task> entryAction, string entryActionDescription = null)
     {
         if (trigger == null) throw new ArgumentNullException(nameof(trigger));
         if (entryAction == null) throw new ArgumentNullException(nameof(entryAction));
 
         _representation.AddEntryAction(
-            trigger.Trigger,
-            (t, args) => entryAction(
-                ParameterConversion.Unpack<TArg0>(args, 0)),
+            trigger,
+            (t, args) => entryAction(args),
             Reflection.InvocationInfo.Create(entryAction, entryActionDescription, Reflection.InvocationInfo.Timing.Asynchronous));
         return this;
     }
@@ -2120,116 +870,18 @@ public partial class StateConfiguration<TState, TTrigger>
     /// Specify an asynchronous action that will execute when transitioning into
     /// the configured state.
     /// </summary>
-    /// <typeparam name="TArg0">Type of the first trigger argument.</typeparam>
     /// <param name="entryAction">Action to execute, providing details of the transition.</param>
     /// <param name="trigger">The trigger by which the state must be entered in order for the action to execute.</param>
     /// <param name="entryActionDescription">Action description.</param>
     /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> OnEntryFromAsync<TArg0>(TriggerWithParameters<TTrigger, TArg0> trigger, Func<TArg0, Transition<TState, TTrigger>, Task> entryAction, string entryActionDescription = null)
+    public StateConfiguration<TState, TTrigger> OnEntryFromAsync(TTrigger trigger, Func<object[], Transition<TState, TTrigger>, Task> entryAction, string entryActionDescription = null)
     {
         if (trigger == null) throw new ArgumentNullException(nameof(trigger));
         if (entryAction == null) throw new ArgumentNullException(nameof(entryAction));
 
         _representation.AddEntryAction(
-            trigger.Trigger,
-            (t, args) => entryAction(
-                ParameterConversion.Unpack<TArg0>(args, 0), t),
-            Reflection.InvocationInfo.Create(entryAction, entryActionDescription, Reflection.InvocationInfo.Timing.Asynchronous));
-        return this;
-    }
-
-    /// <summary>
-    /// Specify an asynchronous action that will execute when transitioning into
-    /// the configured state.
-    /// </summary>
-    /// <typeparam name="TArg0">Type of the first trigger argument.</typeparam>
-    /// <typeparam name="TArg1">Type of the second trigger argument.</typeparam>
-    /// <param name="entryAction">Action to execute, providing details of the transition.</param>
-    /// <param name="trigger">The trigger by which the state must be entered in order for the action to execute.</param>
-    /// <param name="entryActionDescription">Action description.</param>
-    /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> OnEntryFromAsync<TArg0, TArg1>(TriggerWithParameters<TTrigger, TArg0, TArg1> trigger, Func<TArg0, TArg1, Task> entryAction, string entryActionDescription = null)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-        if (entryAction == null) throw new ArgumentNullException(nameof(entryAction));
-
-        _representation.AddEntryAction(trigger.Trigger,
-            (t, args) => entryAction(
-                ParameterConversion.Unpack<TArg0>(args, 0),
-                ParameterConversion.Unpack<TArg1>(args, 1)),
-            Reflection.InvocationInfo.Create(entryAction, entryActionDescription, Reflection.InvocationInfo.Timing.Asynchronous));
-        return this;
-    }
-
-    /// <summary>
-    /// Specify an asynchronous action that will execute when transitioning into
-    /// the configured state.
-    /// </summary>
-    /// <typeparam name="TArg0">Type of the first trigger argument.</typeparam>
-    /// <typeparam name="TArg1">Type of the second trigger argument.</typeparam>
-    /// <param name="entryAction">Action to execute, providing details of the transition.</param>
-    /// <param name="trigger">The trigger by which the state must be entered in order for the action to execute.</param>
-    /// <param name="entryActionDescription">Action description.</param>
-    /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> OnEntryFromAsync<TArg0, TArg1>(TriggerWithParameters<TTrigger, TArg0, TArg1> trigger, Func<TArg0, TArg1, Transition<TState, TTrigger>, Task> entryAction, string entryActionDescription = null)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-        if (entryAction == null) throw new ArgumentNullException(nameof(entryAction));
-
-        _representation.AddEntryAction(trigger.Trigger,
-            (t, args) => entryAction(
-                ParameterConversion.Unpack<TArg0>(args, 0),
-                ParameterConversion.Unpack<TArg1>(args, 1), t),
-            Reflection.InvocationInfo.Create(entryAction, entryActionDescription, Reflection.InvocationInfo.Timing.Asynchronous));
-        return this;
-    }
-
-    /// <summary>
-    /// Specify an asynchronous action that will execute when transitioning into
-    /// the configured state.
-    /// </summary>
-    /// <typeparam name="TArg0">Type of the first trigger argument.</typeparam>
-    /// <typeparam name="TArg1">Type of the second trigger argument.</typeparam>
-    /// <typeparam name="TArg2">Type of the third trigger argument.</typeparam>
-    /// <param name="entryAction">Action to execute, providing details of the transition.</param>
-    /// <param name="trigger">The trigger by which the state must be entered in order for the action to execute.</param>
-    /// <param name="entryActionDescription">Action description.</param>
-    /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> OnEntryFromAsync<TArg0, TArg1, TArg2>(TriggerWithParameters<TTrigger, TArg0, TArg1, TArg2> trigger, Func<TArg0, TArg1, TArg2, Task> entryAction, string entryActionDescription = null)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-        if (entryAction == null) throw new ArgumentNullException(nameof(entryAction));
-
-        _representation.AddEntryAction(trigger.Trigger,
-            (t, args) => entryAction(
-                ParameterConversion.Unpack<TArg0>(args, 0),
-                ParameterConversion.Unpack<TArg1>(args, 1),
-                ParameterConversion.Unpack<TArg2>(args, 2)),
-            Reflection.InvocationInfo.Create(entryAction, entryActionDescription, Reflection.InvocationInfo.Timing.Asynchronous));
-        return this;
-    }
-
-    /// <summary>
-    /// Specify an asynchronous action that will execute when transitioning into
-    /// the configured state.
-    /// </summary>
-    /// <typeparam name="TArg0">Type of the first trigger argument.</typeparam>
-    /// <typeparam name="TArg1">Type of the second trigger argument.</typeparam>
-    /// <typeparam name="TArg2">Type of the third trigger argument.</typeparam>
-    /// <param name="entryAction">Action to execute, providing details of the transition.</param>
-    /// <param name="trigger">The trigger by which the state must be entered in order for the action to execute.</param>
-    /// <param name="entryActionDescription">Action description.</param>
-    /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> OnEntryFromAsync<TArg0, TArg1, TArg2>(TriggerWithParameters<TTrigger, TArg0, TArg1, TArg2> trigger, Func<TArg0, TArg1, TArg2, Transition<TState, TTrigger>, Task> entryAction, string entryActionDescription = null)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-        if (entryAction == null) throw new ArgumentNullException(nameof(entryAction));
-
-        _representation.AddEntryAction(trigger.Trigger,
-            (t, args) => entryAction(
-                ParameterConversion.Unpack<TArg0>(args, 0),
-                ParameterConversion.Unpack<TArg1>(args, 1),
-                ParameterConversion.Unpack<TArg2>(args, 2), t),
+            trigger,
+            (t, args) => entryAction(args, t),
             Reflection.InvocationInfo.Create(entryAction, entryActionDescription, Reflection.InvocationInfo.Timing.Asynchronous));
         return this;
     }
@@ -2265,4 +917,17 @@ public partial class StateConfiguration<TState, TTrigger>
             Reflection.InvocationInfo.Create(exitAction, exitActionDescription, Reflection.InvocationInfo.Timing.Asynchronous));
         return this;
     }
+}
+
+public class NamedGuard
+{
+    public NamedGuard(string description, Func<object[], bool> guard)
+    {
+        Guard = guard;
+        Description = description;
+    }
+
+    public string Description { get; }
+
+    public Func<object[], bool> Guard { get; }
 }

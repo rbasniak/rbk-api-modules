@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Stateless;
+﻿namespace Stateless;
 
 internal class TriggerBehaviourResult<TState, TTrigger>
 {
