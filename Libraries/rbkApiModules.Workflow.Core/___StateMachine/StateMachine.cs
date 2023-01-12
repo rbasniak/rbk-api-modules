@@ -19,7 +19,6 @@ namespace Stateless
         private readonly OnTransitionedEvent<TState, TTrigger> _onTransitionedEvent;
         private readonly OnTransitionedEvent<TState, TTrigger> _onTransitionCompletedEvent;
         private readonly TState _initialState;
-        private readonly FiringMode _firingMode;
 
         private readonly Queue<QueuedTrigger<TTrigger>> _eventQueue = new Queue<QueuedTrigger<TTrigger>>();
         private bool _firing;
@@ -29,31 +28,13 @@ namespace Stateless
         /// </summary>
         /// <param name="stateAccessor">A function that will be called to read the current state value.</param>
         /// <param name="stateMutator">An action that will be called to write new state values.</param>
-        public StateMachine(Func<TState> stateAccessor, Action<TState> stateMutator) :this(stateAccessor, stateMutator, FiringMode.Queued)
-        {
-        }
-
-        /// <summary>
-        /// Construct a state machine.
-        /// </summary>
-        /// <param name="initialState">The initial state.</param>
-        public StateMachine(TState initialState) : this(initialState, FiringMode.Queued)
-        {
-        }
-
-        /// <summary>
-        /// Construct a state machine with external state storage.
-        /// </summary>
-        /// <param name="stateAccessor">A function that will be called to read the current state value.</param>
-        /// <param name="stateMutator">An action that will be called to write new state values.</param>
         /// <param name="firingMode">Optional specification of fireing mode.</param>
-        public StateMachine(Func<TState> stateAccessor, Action<TState> stateMutator, FiringMode firingMode) : this()
+        public StateMachine(Func<TState> stateAccessor, Action<TState> stateMutator) : this()
         {
             _stateAccessor = stateAccessor ?? throw new ArgumentNullException(nameof(stateAccessor));
             _stateMutator = stateMutator ?? throw new ArgumentNullException(nameof(stateMutator));
 
             _initialState = stateAccessor();
-            _firingMode = firingMode;
         }
 
         /// <summary>
@@ -61,14 +42,13 @@ namespace Stateless
         /// </summary>
         /// <param name="initialState">The initial state.</param>
         /// <param name="firingMode">Optional specification of fireing mode.</param>
-        public StateMachine(TState initialState, FiringMode firingMode) : this()
+        public StateMachine(TState initialState) : this()
         {
             var reference = new StateReference<TState> { State = initialState };
             _stateAccessor = () => reference.State;
             _stateMutator = s => reference.State = s;
 
             _initialState = initialState;
-            _firingMode = firingMode;
         }
 
 
@@ -232,33 +212,12 @@ namespace Stateless
         }
 
         /// <summary>
-        /// Determine how to Fire the trigger
-        /// </summary>
-        /// <param name="trigger">The trigger. </param>
-        /// <param name="args">A variable-length parameters list containing arguments. </param>
-        void InternalFire(TTrigger trigger, params object[] args)
-        {
-            switch (_firingMode)
-            {
-                case FiringMode.Immediate:
-                    InternalFireOne(trigger, args);
-                    break;
-                case FiringMode.Queued:
-                    InternalFireQueued(trigger, args);
-                    break;
-                default:
-                    // If something is completely messed up we let the user know ;-)
-                    throw new InvalidOperationException("The firing mode has not been configured!");
-            }
-        }
-
-        /// <summary>
         /// Queue events and then fire in order.
         /// If only one event is queued, this behaves identically to the non-queued version.
         /// </summary>
         /// <param name="trigger">  The trigger. </param>
         /// <param name="args">     A variable-length parameters list containing arguments. </param>
-        private void InternalFireQueued(TTrigger trigger, params object[] args)
+        private void InternalFire(TTrigger trigger, params object[] args)
         {
             // Add trigger to queue
             _eventQueue.Enqueue(new QueuedTrigger<TTrigger> { Trigger = trigger, Args = args });
@@ -390,14 +349,6 @@ namespace Stateless
         {
             // Enter the new state
             representation.Enter(transition, args);
-
-            if (FiringMode.Immediate.Equals(_firingMode) && !State.Equals(transition.Destination))
-            {
-                // This can happen if triggers are fired in OnEntry
-                // Must update current representation with updated State
-                representation = GetRepresentation(State);
-                transition = new Transition<TState, TTrigger>(transition.Source, State, transition.Trigger, args);
-            }
 
             // Recursively enter substates that have an initial transition
             if (representation.HasInitialTransition)
@@ -590,33 +541,12 @@ namespace Stateless
         }
 
         /// <summary>
-        /// Determine how to Fire the trigger
-        /// </summary>
-        /// <param name="trigger">The trigger. </param>
-        /// <param name="args">A variable-length parameters list containing arguments. </param>
-        async Task InternalFireAsync(TTrigger trigger, params object[] args)
-        {
-            switch (_firingMode)
-            {
-                case FiringMode.Immediate:
-                    await InternalFireOneAsync(trigger, args);
-                    break;
-                case FiringMode.Queued:
-                    await InternalFireQueuedAsync(trigger, args);
-                    break;
-                default:
-                    // If something is completely messed up we let the user know ;-)
-                    throw new InvalidOperationException("The firing mode has not been configured!");
-            }
-        }
-
-        /// <summary>
         /// Queue events and then fire in order.
         /// If only one event is queued, this behaves identically to the non-queued version.
         /// </summary>
         /// <param name="trigger">  The trigger. </param>
         /// <param name="args">     A variable-length parameters list containing arguments. </param>
-        async Task InternalFireQueuedAsync(TTrigger trigger, params object[] args)
+        async Task InternalFireAsync(TTrigger trigger, params object[] args)
         {
             if (_firing)
             {
@@ -744,14 +674,6 @@ namespace Stateless
         {
             // Enter the new state
             await representation.EnterAsync(transition, args);
-
-            if (FiringMode.Immediate.Equals(_firingMode) && !State.Equals(transition.Destination))
-            {
-                // This can happen if triggers are fired in OnEntry
-                // Must update current representation with updated State
-                representation = GetRepresentation(State);
-                transition = new Transition<TState, TTrigger>(transition.Source, State, transition.Trigger, args);
-            }
 
             // Recursively enter substates that have an initial transition
             if (representation.HasInitialTransition)
