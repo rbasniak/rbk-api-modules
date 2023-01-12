@@ -206,7 +206,6 @@ namespace Stateless
         /// not allow the trigger to be fired.</exception>
         public void Fire(TTrigger trigger, params object[] args)
         {
-            if (trigger == null) throw new ArgumentNullException(nameof(trigger));
             InternalFire(trigger, args);
         } 
 

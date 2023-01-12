@@ -154,7 +154,7 @@ public partial class StateConfiguration<TState, TTrigger>
             trigger,
             _representation.UnderlyingState,
             new TransitionGuard(guards));
-    } 
+    }
 
     /// <summary>
     /// Ignore the specified trigger when in the configured state, if the guard
@@ -171,7 +171,7 @@ public partial class StateConfiguration<TState, TTrigger>
                 trigger,
                 new TransitionGuard(guards)));
         return this;
-    } 
+    }
 
     /// <summary>
     /// Specify an action that will execute when activating
@@ -504,7 +504,8 @@ public partial class StateConfiguration<TState, TTrigger>
     /// trigger to be accepted.</param>
     /// <param name="possibleDestinationStates">Optional list of possible target states.</param>
     /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> PermitDynamicIf(TTrigger trigger, Func<TState> destinationStateSelector, Reflection.DynamicStateInfos possibleDestinationStates = null, params NamedGuard[] guards)
+    public StateConfiguration<TState, TTrigger> PermitDynamicIf(TTrigger trigger, Func<TState> destinationStateSelector,
+        Reflection.DynamicStateInfos possibleDestinationStates = null, params NamedGuard[] guards)
     {
         return PermitDynamicIf(trigger, destinationStateSelector, null, possibleDestinationStates, guards);
     }
@@ -583,7 +584,8 @@ public partial class StateConfiguration<TState, TTrigger>
     /// <param name="guards">Functions and their descriptions that must return true in order for the
     /// trigger to be accepted.</param>
     /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> PermitDynamicIf(TTrigger trigger, Func<object[], TState> destinationStateSelector, Reflection.DynamicStateInfos possibleDestinationStates = null, params NamedGuard[] guards)
+    public StateConfiguration<TState, TTrigger> PermitDynamicIf(TTrigger trigger, Func<object[], TState> destinationStateSelector,
+        Reflection.DynamicStateInfos possibleDestinationStates = null, params NamedGuard[] guards)
     {
         if (trigger == null) throw new ArgumentNullException(nameof(trigger));
         if (destinationStateSelector == null) throw new ArgumentNullException(nameof(destinationStateSelector));
@@ -594,7 +596,7 @@ public partial class StateConfiguration<TState, TTrigger>
             null,    // destinationStateSelectorString
             new TransitionGuard(guards),
             possibleDestinationStates);
-    } 
+    }
 
     void EnforceNotIdentityTransition(TState destination)
     {
@@ -667,14 +669,12 @@ public partial class StateConfiguration<TState, TTrigger>
     /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
     /// </summary>
     /// <param name="trigger"></param>
-    /// <param name="guard">Function that must return true in order for the trigger to be accepted.</param>
+    /// <param name="guards">Function that must return true in order for the trigger to be accepted.</param>
     /// <param name="entryAction"></param>
     /// <returns></returns>
-    public StateConfiguration<TState, TTrigger> InternalTransitionAsyncIf(TTrigger trigger, NamedGuard[] guards, Func<Transition<TState, TTrigger>, Task> entryAction)
+    public StateConfiguration<TState, TTrigger> InternalTransitionAsyncIf(TTrigger trigger, NamedGuard[] guards, Func<object[], Transition<TState, TTrigger>, Task> entryAction)
     {
-        if (entryAction == null) throw new ArgumentNullException(nameof(entryAction));
-
-        _representation.AddTriggerBehaviour(new InternalTriggerBehaviour<TState, TTrigger>.Async(trigger, guards, (t, args) => entryAction(t)));
+        _representation.AddTriggerBehaviour(new InternalTriggerBehaviour<TState, TTrigger>.Async(trigger, guards, (t, args) => entryAction(args, t)));
         return this;
     }
 
@@ -685,28 +685,11 @@ public partial class StateConfiguration<TState, TTrigger>
     /// <param name="guard">Function that must return true in order for the\r\n            /// trigger to be accepted.</param>
     /// <param name="internalAction">The asynchronous action performed by the internal transition</param>
     /// <returns></returns>
-    public StateConfiguration<TState, TTrigger> InternalTransitionAsyncIf(TTrigger trigger, NamedGuard[] guards, Func<Task> internalAction)
+    public StateConfiguration<TState, TTrigger> InternalTransitionAsyncIf(TTrigger trigger, NamedGuard[] guards, Func<object[], Task> internalAction)
     {
         if (internalAction == null) throw new ArgumentNullException(nameof(internalAction));
 
-        _representation.AddTriggerBehaviour(new InternalTriggerBehaviour<TState, TTrigger>.Async(trigger, guards, (t, args) => internalAction()));
-        return this;
-    } 
-
-    /// <summary>
-    /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
-    /// </summary>
-    /// <param name="trigger">The accepted trigger</param>
-    /// <param name="guard">Function that must return true in order for the trigger to be accepted.</param>
-    /// <param name="internalAction">The asynchronous action performed by the internal transition</param>
-    /// <returns></returns>
-    public StateConfiguration<TState, TTrigger> InternalTransitionAsyncIf(TTrigger trigger, Func<object[], bool> guards, Func<object[], Transition<TState, TTrigger>, Task> internalAction)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-        if (internalAction == null) throw new ArgumentNullException(nameof(internalAction));
-
-        _representation.AddTriggerBehaviour(new InternalTriggerBehaviour<TState, TTrigger>.Async(trigger, guards,
-            (t, args) => internalAction(args, t)));
+        _representation.AddTriggerBehaviour(new InternalTriggerBehaviour<TState, TTrigger>.Async(trigger, guards, (t, args) => internalAction(args)));
         return this;
     }
 
@@ -716,7 +699,7 @@ public partial class StateConfiguration<TState, TTrigger>
     /// <param name="trigger"></param>
     /// <param name="entryAction"></param>
     /// <returns></returns>
-    public StateConfiguration<TState, TTrigger> InternalTransitionAsync(TTrigger trigger, Func<Transition<TState, TTrigger>, Task> entryAction)
+    public StateConfiguration<TState, TTrigger> InternalTransitionAsync(TTrigger trigger, Func<object[], Transition<TState, TTrigger>, Task> entryAction)
     {
         return InternalTransitionAsyncIf(trigger, new[] { new NamedGuard(String.Empty, (args) => true) }, entryAction);
     }
@@ -727,20 +710,9 @@ public partial class StateConfiguration<TState, TTrigger>
     /// <param name="trigger">The accepted trigger</param>
     /// <param name="internalAction">The asynchronous action performed by the internal transition</param>
     /// <returns></returns>
-    public StateConfiguration<TState, TTrigger> InternalTransitionAsync(TTrigger trigger, Func<Task> internalAction)
+    public StateConfiguration<TState, TTrigger> InternalTransitionAsync(TTrigger trigger, Func<object[], Task> internalAction)
     {
         return InternalTransitionAsyncIf(trigger, new[] { new NamedGuard(String.Empty, (args) => true) }, internalAction);
-    }
- 
-    /// <summary>
-    /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
-    /// </summary>
-    /// <param name="trigger">The accepted trigger</param>
-    /// <param name="internalAction">The asynchronous action performed by the internal transition</param>
-    /// <returns></returns>
-    public StateConfiguration<TState, TTrigger> InternalTransitionAsync(TTrigger trigger, Func<object[], Transition<TState, TTrigger>, Task> internalAction)
-    {
-        return InternalTransitionAsyncIf(trigger, () => true, internalAction);
     }
 
     /// <summary>
