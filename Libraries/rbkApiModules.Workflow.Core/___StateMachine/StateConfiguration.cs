@@ -111,7 +111,7 @@ public partial class StateConfiguration<TState, TTrigger>
     /// trigger to be accepted.</param>
     /// <param name="destinationState">State of the destination.</param>
     /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> PermitIf(TTrigger trigger, TState destinationState, params NamedGuard[] guards)
+    public StateConfiguration<TState, TTrigger> PermitIf(TTrigger trigger, TState destinationState, params GuardDefinition[] guards)
     {
         EnforceNotIdentityTransition(destinationState);
 
@@ -148,7 +148,7 @@ public partial class StateConfiguration<TState, TTrigger>
     /// Applies to the current state only. Will not re-execute superstate actions, or
     /// cause actions to execute transitioning between super- and sub-states.
     /// </remarks>
-    public StateConfiguration<TState, TTrigger> PermitReentryIf(TTrigger trigger, params NamedGuard[] guards)
+    public StateConfiguration<TState, TTrigger> PermitReentryIf(TTrigger trigger, params GuardDefinition[] guards)
     {
         return InternalPermitReentryIf(
             trigger,
@@ -164,7 +164,7 @@ public partial class StateConfiguration<TState, TTrigger>
     /// <param name="guards">Functions and their descriptions that must return true in order for the
     /// trigger to be ignored.</param>
     /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> IgnoreIf(TTrigger trigger, params NamedGuard[] guards)
+    public StateConfiguration<TState, TTrigger> IgnoreIf(TTrigger trigger, params GuardDefinition[] guards)
     {
         _representation.AddTriggerBehaviour(
             new IgnoredTriggerBehaviour<TState, TTrigger>(
@@ -462,7 +462,7 @@ public partial class StateConfiguration<TState, TTrigger>
     /// <param name="possibleDestinationStates">Optional list of possible target states.</param>
     /// <returns>The receiver.</returns>
     public StateConfiguration<TState, TTrigger> PermitDynamicIf(TTrigger trigger, Func<TState> destinationStateSelector,
-        NamedGuard[] guards, Reflection.DynamicStateInfos possibleDestinationStates = null)
+        GuardDefinition[] guards, Reflection.DynamicStateInfos possibleDestinationStates = null)
     {
         return PermitDynamicIf(trigger, destinationStateSelector, null, guards, possibleDestinationStates);
     }
@@ -481,7 +481,7 @@ public partial class StateConfiguration<TState, TTrigger>
     /// <param name="possibleDestinationStates">Optional list of possible target states.</param>
     /// <returns>The receiver.</returns>
     public StateConfiguration<TState, TTrigger> PermitDynamicIf(TTrigger trigger, Func<TState> destinationStateSelector,
-        string destinationStateSelectorDescription, NamedGuard[] guards, Reflection.DynamicStateInfos possibleDestinationStates = null)
+        string destinationStateSelectorDescription, GuardDefinition[] guards, Reflection.DynamicStateInfos possibleDestinationStates = null)
     {
         if (destinationStateSelector == null) throw new ArgumentNullException(nameof(destinationStateSelector));
 
@@ -505,7 +505,7 @@ public partial class StateConfiguration<TState, TTrigger>
     /// <param name="possibleDestinationStates">Optional list of possible target states.</param>
     /// <returns>The receiver.</returns>
     public StateConfiguration<TState, TTrigger> PermitDynamicIf(TTrigger trigger, Func<TState> destinationStateSelector,
-        Reflection.DynamicStateInfos possibleDestinationStates = null, params NamedGuard[] guards)
+        Reflection.DynamicStateInfos possibleDestinationStates = null, params GuardDefinition[] guards)
     {
         return PermitDynamicIf(trigger, destinationStateSelector, null, possibleDestinationStates, guards);
     }
@@ -523,7 +523,7 @@ public partial class StateConfiguration<TState, TTrigger>
     /// <param name="possibleDestinationStates">Optional list of possible target states.</param>
     /// <returns>The receiver.</returns>
     public StateConfiguration<TState, TTrigger> PermitDynamicIf(TTrigger trigger, Func<TState> destinationStateSelector,
-        string destinationStateSelectorDescription, Reflection.DynamicStateInfos possibleDestinationStates = null, params NamedGuard[] guards)
+        string destinationStateSelectorDescription, Reflection.DynamicStateInfos possibleDestinationStates = null, params GuardDefinition[] guards)
     {
         if (destinationStateSelector == null) throw new ArgumentNullException(nameof(destinationStateSelector));
 
@@ -547,7 +547,7 @@ public partial class StateConfiguration<TState, TTrigger>
     /// <param name="guardDescription">Guard description</param>
     /// <param name="possibleDestinationStates">Optional list of possible target states.</param>
     /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> PermitDynamicIf(TTrigger trigger, Func<object[], TState> destinationStateSelector, NamedGuard[] guards, string guardDescription = null, Reflection.DynamicStateInfos possibleDestinationStates = null)
+    public StateConfiguration<TState, TTrigger> PermitDynamicIf(TTrigger trigger, Func<object[], TState> destinationStateSelector, GuardDefinition[] guards, string guardDescription = null, Reflection.DynamicStateInfos possibleDestinationStates = null)
     {
         if (trigger == null) throw new ArgumentNullException(nameof(trigger));
         if (destinationStateSelector == null) throw new ArgumentNullException(nameof(destinationStateSelector));
@@ -570,7 +570,7 @@ public partial class StateConfiguration<TState, TTrigger>
     /// <returns>The receiver.</returns>
     public StateConfiguration<TState, TTrigger> PermitDynamicIf(TTrigger trigger, Func<object[], TState> destinationStateSelector)
     {
-        return PermitDynamicIf(trigger, destinationStateSelector, null, new NamedGuard[0]);
+        return PermitDynamicIf(trigger, destinationStateSelector, null, new GuardDefinition[0]);
     }
 
     /// <summary>
@@ -585,7 +585,7 @@ public partial class StateConfiguration<TState, TTrigger>
     /// trigger to be accepted.</param>
     /// <returns>The receiver.</returns>
     public StateConfiguration<TState, TTrigger> PermitDynamicIf(TTrigger trigger, Func<object[], TState> destinationStateSelector,
-        Reflection.DynamicStateInfos possibleDestinationStates = null, params NamedGuard[] guards)
+        Reflection.DynamicStateInfos possibleDestinationStates = null, params GuardDefinition[] guards)
     {
         if (trigger == null) throw new ArgumentNullException(nameof(trigger));
         if (destinationStateSelector == null) throw new ArgumentNullException(nameof(destinationStateSelector));
@@ -672,7 +672,7 @@ public partial class StateConfiguration<TState, TTrigger>
     /// <param name="guards">Function that must return true in order for the trigger to be accepted.</param>
     /// <param name="entryAction"></param>
     /// <returns></returns>
-    public StateConfiguration<TState, TTrigger> InternalTransitionAsyncIf(TTrigger trigger, NamedGuard[] guards, Func<object[], Transition<TState, TTrigger>, Task> entryAction)
+    public StateConfiguration<TState, TTrigger> InternalTransitionAsyncIf(TTrigger trigger, GuardDefinition[] guards, Func<object[], Transition<TState, TTrigger>, Task> entryAction)
     {
         _representation.AddTriggerBehaviour(new InternalTriggerBehaviour<TState, TTrigger>.Async(trigger, guards, (t, args) => entryAction(args, t)));
         return this;
@@ -685,7 +685,7 @@ public partial class StateConfiguration<TState, TTrigger>
     /// <param name="guard">Function that must return true in order for the\r\n            /// trigger to be accepted.</param>
     /// <param name="internalAction">The asynchronous action performed by the internal transition</param>
     /// <returns></returns>
-    public StateConfiguration<TState, TTrigger> InternalTransitionAsyncIf(TTrigger trigger, NamedGuard[] guards, Func<object[], Task> internalAction)
+    public StateConfiguration<TState, TTrigger> InternalTransitionAsyncIf(TTrigger trigger, GuardDefinition[] guards, Func<object[], Task> internalAction)
     {
         if (internalAction == null) throw new ArgumentNullException(nameof(internalAction));
 
@@ -701,7 +701,7 @@ public partial class StateConfiguration<TState, TTrigger>
     /// <returns></returns>
     public StateConfiguration<TState, TTrigger> InternalTransitionAsync(TTrigger trigger, Func<object[], Transition<TState, TTrigger>, Task> entryAction)
     {
-        return InternalTransitionAsyncIf(trigger, new[] { new NamedGuard(String.Empty, (args) => true) }, entryAction);
+        return InternalTransitionAsyncIf(trigger, new[] { new GuardDefinition(String.Empty, (args) => true) }, entryAction);
     }
 
     /// <summary>
@@ -712,7 +712,7 @@ public partial class StateConfiguration<TState, TTrigger>
     /// <returns></returns>
     public StateConfiguration<TState, TTrigger> InternalTransitionAsync(TTrigger trigger, Func<object[], Task> internalAction)
     {
-        return InternalTransitionAsyncIf(trigger, new[] { new NamedGuard(String.Empty, (args) => true) }, internalAction);
+        return InternalTransitionAsyncIf(trigger, new[] { new GuardDefinition(String.Empty, (args) => true) }, internalAction);
     }
 
     /// <summary>
@@ -891,12 +891,18 @@ public partial class StateConfiguration<TState, TTrigger>
     }
 }
 
-public class NamedGuard
+public class GuardDefinition
 {
-    public NamedGuard(string description, Func<object[], bool> guard)
+    public GuardDefinition(string description, Func<object[], bool> guard)
     {
         Guard = guard;
         Description = description;
+    }
+
+    public GuardDefinition(Func<object[], bool> guard)
+    {
+        Guard = guard;
+        Description = String.Empty;
     }
 
     public string Description { get; }

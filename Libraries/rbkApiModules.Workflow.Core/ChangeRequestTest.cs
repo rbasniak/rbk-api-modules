@@ -81,7 +81,7 @@ public class ChangeRequestWorkflow
 
             //    return changeRequest.Id == "019";
             //})
-            .PermitIf(Trigger.APROVAR_PARA_EXECUCAO, State.AGUARDANDO_AVALIACAO_DO_ADMINISTRADOR, new NamedGuard(String.Empty, (args) =>
+            .PermitIf(Trigger.APROVAR_PARA_EXECUCAO, State.AGUARDANDO_AVALIACAO_DO_ADMINISTRADOR, new GuardDefinition(String.Empty, (args) =>
             {
                 var changeRequest = (ChangeRequest)args[0];
                 var date = (DateTime)args[1];

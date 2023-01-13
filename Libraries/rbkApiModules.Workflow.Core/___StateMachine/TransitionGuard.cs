@@ -8,21 +8,21 @@ internal class TransitionGuard
 {
     internal IList<GuardCondition> Conditions { get; }
 
-    public static readonly TransitionGuard Empty = new TransitionGuard(new NamedGuard[0]);
+    public static readonly TransitionGuard Empty = new TransitionGuard(new GuardDefinition[0]);
 
     public static Func<object[], bool> ToPackedGuard(Func<object[], bool> guard)
     {
         return args => guard(args);
     } 
 
-    internal TransitionGuard(NamedGuard[] guards)
+    internal TransitionGuard(GuardDefinition[] guards)
     {
         Conditions = guards
             .Select(g => new GuardCondition(g.Guard, Reflection.InvocationInfo.Create(g.Guard, g.Description)))
             .ToList();
     }
 
-    internal TransitionGuard(NamedGuard guard)
+    internal TransitionGuard(GuardDefinition guard)
     {
         Conditions = new List<GuardCondition> { new GuardCondition(guard.Guard, Reflection.InvocationInfo.Create(guard.Guard, guard.Description)) };
     }
