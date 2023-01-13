@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net7.0</TargetFramework>
@@ -8,7 +8,6 @@
 		<PackageIcon>logo.png</PackageIcon>
 		<IncludeSymbols>true</IncludeSymbols>
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
-		<Version>7.0.0-beta.1</Version>
 		<Authors>rbasniak</Authors>
 		<Product>rbkApiModules</Product>
 		<Copyright>rbasniak</Copyright>
