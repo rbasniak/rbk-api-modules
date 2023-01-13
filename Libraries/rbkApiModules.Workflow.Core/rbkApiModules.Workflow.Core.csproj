@@ -22,7 +22,14 @@
 		</None>
 	</ItemGroup>
 
-  <ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
     <ProjectReference Include="..\rbkApiModules.Commons.Core\rbkApiModules.Commons.Core.csproj" />
   </ItemGroup>
 

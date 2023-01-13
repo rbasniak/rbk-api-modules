@@ -21,17 +21,21 @@
 			<PackagePath>\</PackagePath>
 		</None>
 	</ItemGroup>
-	
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="7.0.1" />
-    <PackageReference Include="Shouldly" Version="4.1.0" />
-    <PackageReference Include="xunit.extensibility.core" Version="2.4.2" />
-	<PackageReference Include="MimeKit" Version="3.4.3" />
-  </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\rbkApiModules.Commons.Relational\rbkApiModules.Commons.Relational.csproj" />
-    <ProjectReference Include="..\rbkApiModules.Identity.Core\rbkApiModules.Identity.Core.csproj" />
-  </ItemGroup>
- 
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.TestHost" Version="7.0.2" />
+		<PackageReference Include="Shouldly" Version="4.1.0" />
+		<PackageReference Include="xunit.extensibility.core" Version="2.4.2" />
+		<PackageReference Include="MimeKit" Version="3.4.3" />
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\rbkApiModules.Commons.Relational\rbkApiModules.Commons.Relational.csproj" />
+		<ProjectReference Include="..\rbkApiModules.Identity.Core\rbkApiModules.Identity.Core.csproj" />
+	</ItemGroup>
+
 </Project>

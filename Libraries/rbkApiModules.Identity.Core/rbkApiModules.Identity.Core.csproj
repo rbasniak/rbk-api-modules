@@ -22,35 +22,39 @@
 		</None>
 	</ItemGroup>
 
-  <ItemGroup>
-    <None Remove="Resources\email-confirmation.html" />
-    <None Remove="Resources\email-confirmation.txt" />
-    <None Remove="Resources\email-confirmed.html" />
-    <None Remove="Resources\email-confirmed.txt" />
-    <None Remove="Resources\email-reset.html" />
-    <None Remove="Resources\email-reset.txt" />
-    <None Remove="Resources\reset-confirmed.html" />
-    <None Remove="Resources\reset-confirmed.txt" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\email-confirmation.html" />
-    <EmbeddedResource Include="Resources\email-confirmation.txt" />
-    <EmbeddedResource Include="Resources\email-confirmed.html" />
-    <EmbeddedResource Include="Resources\email-confirmed.txt" />
-    <EmbeddedResource Include="Resources\email-reset.html" />
-    <EmbeddedResource Include="Resources\email-reset.txt" />
-    <EmbeddedResource Include="Resources\reset-confirmed.html" />
-    <EmbeddedResource Include="Resources\reset-confirmed.txt" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Remove="Resources\email-confirmation.html" />
+		<None Remove="Resources\email-confirmation.txt" />
+		<None Remove="Resources\email-confirmed.html" />
+		<None Remove="Resources\email-confirmed.txt" />
+		<None Remove="Resources\email-reset.html" />
+		<None Remove="Resources\email-reset.txt" />
+		<None Remove="Resources\reset-confirmed.html" />
+		<None Remove="Resources\reset-confirmed.txt" />
+	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.1" />
-	  <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.25.1" />
-	</ItemGroup> 
+		<EmbeddedResource Include="Resources\email-confirmation.html" />
+		<EmbeddedResource Include="Resources\email-confirmation.txt" />
+		<EmbeddedResource Include="Resources\email-confirmed.html" />
+		<EmbeddedResource Include="Resources\email-confirmed.txt" />
+		<EmbeddedResource Include="Resources\email-reset.html" />
+		<EmbeddedResource Include="Resources\email-reset.txt" />
+		<EmbeddedResource Include="Resources\reset-confirmed.html" />
+		<EmbeddedResource Include="Resources\reset-confirmed.txt" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\rbkApiModules.Commons.Core\rbkApiModules.Commons.Core.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.2" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.25.1" />
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\rbkApiModules.Commons.Core\rbkApiModules.Commons.Core.csproj" />
+	</ItemGroup>
 
 </Project>
