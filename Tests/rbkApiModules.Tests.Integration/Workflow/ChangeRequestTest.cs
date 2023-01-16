@@ -1,4 +1,5 @@
-﻿using Stateless;
+﻿using rbkApiModules.Tests.Integration.Workflow;
+using Stateless;
 using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
 
@@ -12,6 +13,8 @@ public class ChangeRequest
 {
     public ChangeRequestWorkflow.State State { get; set; }
     public string Id { get; set; }
+    public string CurrentOwner { get; set; }
+    public string InternalNumber { get; set; }
 }
 
 
@@ -69,7 +72,7 @@ public class ChangeRequestWorkflow
         Concluded,
     }
 
-    public ChangeRequestWorkflow()
+    public ChangeRequestWorkflow(FakeNotificationService notificationService)
     {
         _machine = new StateMachine<State, Trigger>(State.RASCUNHO);
 
