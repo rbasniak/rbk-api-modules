@@ -133,9 +133,14 @@ internal partial class StateRepresentation<TState, TTrigger>
         EntryActions.Add(new EntryActionBehavior<TState, TTrigger>.Sync(action, entryActionDescription));
     }
 
-    public void AddExitAction(Action<Transition<TState, TTrigger>> action, Reflection.InvocationInfo exitActionDescription)
+    public void AddExitAction(Action<Transition<TState, TTrigger>, object[]> action, Reflection.InvocationInfo exitActionDescription)
     {
         ExitActions.Add(new ExitActionBehavior<TState, TTrigger>.Sync(action, exitActionDescription));
+    }
+
+    public void AddExitAction(Action<object[]> action, Reflection.InvocationInfo exitActionDescription)
+    {
+        ExitActions.Add(new ExitActionBehavior<TState, TTrigger>.Sync((t, args) => action(args), exitActionDescription));
     }
 
     public void Activate()
@@ -400,7 +405,7 @@ internal partial class StateRepresentation<TState, TTrigger>
                 entryActionDescription));
     }
 
-    public void AddExitAction(Func<Transition<TState, TTrigger>, Task> action, Reflection.InvocationInfo exitActionDescription)
+    public void AddExitAction(Func<Transition<TState, TTrigger>, object[], Task> action, Reflection.InvocationInfo exitActionDescription)
     {
         ExitActions.Add(new ExitActionBehavior<TState, TTrigger>.Async(action, exitActionDescription));
     }

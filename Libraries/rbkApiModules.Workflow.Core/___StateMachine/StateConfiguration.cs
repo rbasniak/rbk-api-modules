@@ -332,6 +332,16 @@ public partial class StateConfiguration<TState, TTrigger>
         return this;
     }
 
+    public StateConfiguration<TState, TTrigger> OnExit(Action<object[]> exitAction, string exitActionDescription = null)
+    {
+        if (exitAction == null) throw new ArgumentNullException(nameof(exitAction));
+
+        _representation.AddExitAction(
+            (t, args) => exitAction(args),
+            Reflection.InvocationInfo.Create(exitAction, exitActionDescription));
+        return this;
+    }
+
     /// <summary>
     /// Specify an action that will execute when transitioning from
     /// the configured state.
@@ -339,10 +349,18 @@ public partial class StateConfiguration<TState, TTrigger>
     /// <param name="exitAction">Action to execute, providing details of the transition.</param>
     /// <param name="exitActionDescription">Action description.</param>
     /// <returns>The receiver.</returns>
+    public StateConfiguration<TState, TTrigger> OnExit(Action<Transition<TState, TTrigger>, object[]> exitAction, string exitActionDescription = null)
+    {
+        _representation.AddExitAction(
+            (t, args) => exitAction(t, args),
+            Reflection.InvocationInfo.Create(exitAction, exitActionDescription));
+        return this;
+    }
+
     public StateConfiguration<TState, TTrigger> OnExit(Action<Transition<TState, TTrigger>> exitAction, string exitActionDescription = null)
     {
         _representation.AddExitAction(
-            exitAction,
+            (t, args) => exitAction(t),
             Reflection.InvocationInfo.Create(exitAction, exitActionDescription));
         return this;
     }
@@ -882,10 +900,18 @@ public partial class StateConfiguration<TState, TTrigger>
     /// <param name="exitAction">Action to execute, providing details of the transition.</param>
     /// <param name="exitActionDescription">Action description.</param>
     /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> OnExitAsync(Func<Transition<TState, TTrigger>, Task> exitAction, string exitActionDescription = null)
+    public StateConfiguration<TState, TTrigger> OnExitAsync(Func<Transition<TState, TTrigger>, object[], Task> exitAction, string exitActionDescription = null)
     {
         _representation.AddExitAction(
             exitAction,
+            Reflection.InvocationInfo.Create(exitAction, exitActionDescription, Reflection.InvocationInfo.Timing.Asynchronous));
+        return this;
+    }
+
+    public StateConfiguration<TState, TTrigger> OnExitAsync(Func<Transition<TState, TTrigger>, Task> exitAction, string exitActionDescription = null)
+    {
+        _representation.AddExitAction(
+            (t, args) => exitAction(t),
             Reflection.InvocationInfo.Create(exitAction, exitActionDescription, Reflection.InvocationInfo.Timing.Asynchronous));
         return this;
     }
