@@ -82,7 +82,7 @@ public class SyncDocumentWorkflow
             .PermitReentry(Trigger.UPDATE)
             .Permit(Trigger.BEGIN_REVIEW, State.REVIEW)
             .OnEntry(
-                (t) => _document.Events.Add(
+                t => _document.Events.Add(
                     new DocumentWorkflowEvent
                     {
                         PreviousState = t.Source,
@@ -91,7 +91,7 @@ public class SyncDocumentWorkflow
                         Type = EventType.OnEntry
                     }))
             .OnExit(
-                (t) => _document.Events.Add(
+                t => _document.Events.Add(
                     new DocumentWorkflowEvent
                     {
                         PreviousState = t.Source,
@@ -104,7 +104,7 @@ public class SyncDocumentWorkflow
             .Permit(Trigger.CHANGE_NEEDED, State.CHANGE_REQUESTED)
             .Permit(Trigger.SUBMIT, State.SUBMITTED_TO_CLIENT)
             .OnEntry(
-                (t) => _document.Events.Add(
+                t => _document.Events.Add(
                     new DocumentWorkflowEvent
                     {
                         PreviousState = t.Source,
@@ -113,7 +113,7 @@ public class SyncDocumentWorkflow
                         Type = EventType.OnEntry
                     }))
             .OnExit(
-                (t) => _document.Events.Add(
+                t => _document.Events.Add(
                     new DocumentWorkflowEvent
                     {
                         PreviousState = t.Source,
@@ -126,7 +126,7 @@ public class SyncDocumentWorkflow
             .Permit(Trigger.ACCEPT, State.DRAFT)
             .Permit(Trigger.REJECT, State.REVIEW)
             .OnEntry(
-                (t) => _document.Events.Add(
+                t => _document.Events.Add(
                     new DocumentWorkflowEvent
                     {
                         PreviousState = t.Source,
@@ -135,7 +135,7 @@ public class SyncDocumentWorkflow
                         Type = EventType.OnEntry
                     }))
             .OnExit(
-                (t) => _document.Events.Add(
+                t => _document.Events.Add(
                     new DocumentWorkflowEvent
                     {
                         PreviousState = t.Source,
@@ -148,7 +148,7 @@ public class SyncDocumentWorkflow
             .Permit(Trigger.APPROVE, State.APPROVED)
             .Permit(Trigger.DECLINE, State.DECLINED)
             .OnEntry(
-                (t) => _document.Events.Add(
+                t => _document.Events.Add(
                     new DocumentWorkflowEvent
                     {
                         PreviousState = t.Source,
@@ -157,7 +157,7 @@ public class SyncDocumentWorkflow
                         Type = EventType.OnEntry
                     }))
             .OnExit(
-                (t) => _document.Events.Add(
+                t => _document.Events.Add(
                     new DocumentWorkflowEvent
                     {
                         PreviousState = t.Source,
@@ -169,7 +169,7 @@ public class SyncDocumentWorkflow
         _machine.Configure(State.DECLINED)
             .Permit(Trigger.RESTART_REVIEW, State.REVIEW)
             .OnEntry(
-                (t) => _document.Events.Add(
+                t => _document.Events.Add(
                     new DocumentWorkflowEvent
                     {
                         PreviousState = t.Source,
@@ -178,7 +178,7 @@ public class SyncDocumentWorkflow
                         Type = EventType.OnEntry
                     }))
             .OnExit(
-                (t) => _document.Events.Add(
+                t => _document.Events.Add(
                     new DocumentWorkflowEvent
                     {
                         PreviousState = t.Source,
@@ -189,7 +189,7 @@ public class SyncDocumentWorkflow
 
         _machine.Configure(State.APPROVED)
             .OnEntry(
-                (t) => _document.Events.Add(
+                t => _document.Events.Add(
                     new DocumentWorkflowEvent
                     {
                         PreviousState = t.Source,
@@ -198,7 +198,7 @@ public class SyncDocumentWorkflow
                         Type = EventType.OnEntry
                     }))
             .OnExit(
-                (t) => _document.Events.Add(
+                t => _document.Events.Add(
                     new DocumentWorkflowEvent
                     {
                         PreviousState = t.Source,

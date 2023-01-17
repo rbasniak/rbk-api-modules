@@ -16,7 +16,7 @@ namespace rbkApiModules.Tests.Integration.Workflow.Document.Async;
 public class AsyncDocumentWorkflowTests
 {
     [FriendlyNamedFact("IT-000")]
-    public void Document_Workflow_Should_Finish_With_Async_Events()
+    public async void Document_Workflow_Should_Finish_With_Async_Events()
     {
         var document = new Document
         {
@@ -29,77 +29,65 @@ public class AsyncDocumentWorkflowTests
 
         var workflow = new AsyncDocumentWorkflow(document);
 
-        workflow.Dispatch(Trigger.UPDATE);
+        await workflow.DispatchAsync(Trigger.UPDATE);
+
         document.State.ShouldBe(State.DRAFT);
-        Thread.Sleep(1000);
+
         document.Events.PreviousLastEventsShouldBe(State.DRAFT, Trigger.UPDATE, State.DRAFT);
 
-        workflow.Dispatch(Trigger.DECLINE);
+        await workflow.DispatchAsync(Trigger.DECLINE);
 
         document.State.ShouldBe(State.DRAFT);
-        Thread.Sleep(1000);
         document.Events.Last().Trigger.ShouldBe(Trigger.DECLINE);
         document.Events.Last().Type.ShouldBe(EventType.OnUnhandledTrigger);
         document.Events.Last().PreviousState.ShouldBe(State.DRAFT);
         document.Events.Last().NextState.ShouldBe(State.DRAFT);
 
-        workflow.Dispatch(Trigger.BEGIN_REVIEW);
-        Thread.Sleep(1000);
+        await workflow.DispatchAsync(Trigger.BEGIN_REVIEW);
         document.State.ShouldBe(State.REVIEW);
         document.Events.PreviousLastEventsShouldBe(State.DRAFT, Trigger.BEGIN_REVIEW, State.REVIEW);
 
-        workflow.Dispatch(Trigger.CHANGE_NEEDED);
-        Thread.Sleep(1000);
+        await workflow.DispatchAsync(Trigger.CHANGE_NEEDED);
         document.State.ShouldBe(State.CHANGE_REQUESTED);
         document.Events.PreviousLastEventsShouldBe(State.REVIEW, Trigger.CHANGE_NEEDED, State.CHANGE_REQUESTED);
 
-        workflow.Dispatch(Trigger.REJECT);
-        Thread.Sleep(1000);
+        await workflow.DispatchAsync(Trigger.REJECT);
         document.State.ShouldBe(State.REVIEW);
         document.Events.PreviousLastEventsShouldBe(State.CHANGE_REQUESTED, Trigger.REJECT, State.REVIEW);
 
-        workflow.Dispatch(Trigger.CHANGE_NEEDED);
-        Thread.Sleep(1000);
+        await workflow.DispatchAsync(Trigger.CHANGE_NEEDED);
         document.State.ShouldBe(State.CHANGE_REQUESTED);
         document.Events.PreviousLastEventsShouldBe(State.REVIEW, Trigger.CHANGE_NEEDED, State.CHANGE_REQUESTED);
 
-        workflow.Dispatch(Trigger.ACCEPT);
-        Thread.Sleep(1000);
+        await workflow.DispatchAsync(Trigger.ACCEPT);
         document.State.ShouldBe(State.DRAFT);
         document.Events.PreviousLastEventsShouldBe(State.CHANGE_REQUESTED, Trigger.ACCEPT, State.DRAFT);
 
-        workflow.Dispatch(Trigger.UPDATE);
-        Thread.Sleep(1000);
+        await workflow.DispatchAsync(Trigger.UPDATE);
         document.State.ShouldBe(State.DRAFT);
         document.Events.PreviousLastEventsShouldBe(State.DRAFT, Trigger.UPDATE, State.DRAFT);
 
-        workflow.Dispatch(Trigger.BEGIN_REVIEW);
-        Thread.Sleep(1000);
+        await workflow.DispatchAsync(Trigger.BEGIN_REVIEW);
         document.State.ShouldBe(State.REVIEW);
         document.Events.PreviousLastEventsShouldBe(State.DRAFT, Trigger.BEGIN_REVIEW, State.REVIEW);
 
-        workflow.Dispatch(Trigger.SUBMIT);
-        Thread.Sleep(1000);
+        await workflow.DispatchAsync(Trigger.SUBMIT);
         document.State.ShouldBe(State.SUBMITTED_TO_CLIENT);
         document.Events.PreviousLastEventsShouldBe(State.REVIEW, Trigger.SUBMIT, State.SUBMITTED_TO_CLIENT);
 
-        workflow.Dispatch(Trigger.DECLINE);
-        Thread.Sleep(1000);
+        await workflow.DispatchAsync(Trigger.DECLINE);
         document.State.ShouldBe(State.DECLINED);
         document.Events.PreviousLastEventsShouldBe(State.SUBMITTED_TO_CLIENT, Trigger.DECLINE, State.DECLINED);
 
-        workflow.Dispatch(Trigger.RESTART_REVIEW);
-        Thread.Sleep(1000);
+        await workflow.DispatchAsync(Trigger.RESTART_REVIEW);
         document.State.ShouldBe(State.REVIEW);
         document.Events.PreviousLastEventsShouldBe(State.DECLINED, Trigger.RESTART_REVIEW, State.REVIEW);
 
-        workflow.Dispatch(Trigger.SUBMIT);
-        Thread.Sleep(1000);
+        await workflow.DispatchAsync(Trigger.SUBMIT);
         document.State.ShouldBe(State.SUBMITTED_TO_CLIENT);
         document.Events.PreviousLastEventsShouldBe(State.REVIEW, Trigger.SUBMIT, State.SUBMITTED_TO_CLIENT);
 
-        workflow.Dispatch(Trigger.APPROVE);
-        Thread.Sleep(1000);
+        await workflow.DispatchAsync(Trigger.APPROVE);
         document.State.ShouldBe(State.APPROVED);
         document.Events.PreviousLastEventsShouldBe(State.SUBMITTED_TO_CLIENT, Trigger.APPROVE, State.APPROVED);
     }

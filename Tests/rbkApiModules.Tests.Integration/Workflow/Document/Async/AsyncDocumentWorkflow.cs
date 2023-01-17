@@ -1,6 +1,7 @@
 ﻿using Stateless;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -72,7 +73,7 @@ public class AsyncDocumentWorkflow
                         NextState = transition.Destination,
                         Trigger = transition.Trigger,
                         Type = EventType.OnTransitioned
-                    });
+                    });     
             });
 
         _machine.OnUnhandledTriggerAsync(
@@ -280,9 +281,9 @@ public class AsyncDocumentWorkflow
                 });
     }
 
-    internal void Dispatch(Trigger trigger)
+    internal async Task DispatchAsync(Trigger trigger)
     {
-        _machine.FireAsync(trigger);
+        await _machine.FireAsync(trigger);
     }
 }
 
