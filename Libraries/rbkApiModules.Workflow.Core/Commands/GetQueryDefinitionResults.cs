@@ -2,7 +2,6 @@
 using FluentValidation;
 using MediatR;
 using rbkApiModules.Commons.Core;
-using rbkApiModules.Commons.Relational;
 
 namespace rbkApiModules.Workflow.Core;
 

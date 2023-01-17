@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace Stateless;
 
-namespace Stateless;
-
-    internal abstract class TriggerBehaviour<TState, TTrigger>
+internal abstract class TriggerBehaviour<TState, TTrigger>
 {
         /// <summary>
         /// If there is no guard function, _guard is set to TransitionGuard.Empty

@@ -1,11 +1,4 @@
-﻿using Stateless;
-using Stateless.Graph;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Stateless.Graph;
 using State = rbkApiModules.Tests.Integration.Workflow.Document.Sync.SyncDocumentWorkflow.State;
 using Trigger = rbkApiModules.Tests.Integration.Workflow.Document.Sync.SyncDocumentWorkflow.Trigger;
 
@@ -86,6 +79,40 @@ public class SyncDocumentWorkflowTests
         workflow.Dispatch(Trigger.APPROVE);
         document.State.ShouldBe(State.APPROVED);
         document.Events.PreviousLastEventsShouldBe(State.SUBMITTED_TO_CLIENT, Trigger.APPROVE, State.APPROVED);
+    }
+
+    [FriendlyNamedFact("IT-001")]
+    public void Document_Workflow_Should_Generate_Dot_Graph()
+    {
+        var workflow = new SyncDocumentWorkflow(new Document());
+
+        var graph = UmlDotGraph<State, Trigger>.Format(workflow._machine.GetInfo());
+
+        graph.ShouldBe("""
+            digraph {
+            compound=true;
+            node [shape=Mrecord]
+            rankdir="LR"
+            "DRAFT" [label="DRAFT|entry / DRAFT::OnEnter\nexit / DRAFT::OnExit"];
+            "REVIEW" [label="REVIEW|entry / REVIEW::OnEnter\nexit / REVIEW::OnExit"];
+            "CHANGE_REQUESTED" [label="CHANGE_REQUESTED|entry / CHANGE_REQUESTED::OnEnter\nexit / CHANGE_REQUESTED::OnExit"];
+            "SUBMITTED_TO_CLIENT" [label="SUBMITTED_TO_CLIENT|entry / SUBMITTED_TO_CLIENT::OnEnter\nexit / SUBMITTED_TO_CLIENT::OnExit"];
+            "DECLINED" [label="DECLINED|entry / DECLINED::OnEnter\nexit / DECLINED::OnExit"];
+            "APPROVED" [label="APPROVED|entry / APPROVED::OnEnter\nexit / APPROVED::OnExit"];
+
+            "DRAFT" -> "DRAFT" [style="solid", label="UPDATE / DRAFT::OnEnter"];
+            "DRAFT" -> "REVIEW" [style="solid", label="BEGIN_REVIEW"];
+            "REVIEW" -> "CHANGE_REQUESTED" [style="solid", label="CHANGE_NEEDED"];
+            "REVIEW" -> "SUBMITTED_TO_CLIENT" [style="solid", label="SUBMIT"];
+            "CHANGE_REQUESTED" -> "DRAFT" [style="solid", label="ACCEPT"];
+            "CHANGE_REQUESTED" -> "REVIEW" [style="solid", label="REJECT"];
+            "SUBMITTED_TO_CLIENT" -> "APPROVED" [style="solid", label="APPROVE"];
+            "SUBMITTED_TO_CLIENT" -> "DECLINED" [style="solid", label="DECLINE"];
+            "DECLINED" -> "REVIEW" [style="solid", label="RESTART_REVIEW"];
+             init [label="", shape=point];
+             init -> "DRAFT"[style = "solid"]
+            }
+            """);
     }
 }
 

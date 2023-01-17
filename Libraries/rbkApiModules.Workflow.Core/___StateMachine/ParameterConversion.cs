@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Stateless;
+﻿namespace Stateless;
 
 static class ParameterConversion
 {

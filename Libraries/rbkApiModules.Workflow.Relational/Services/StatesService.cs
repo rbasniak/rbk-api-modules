@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Workflow.Core;
 
 namespace rbkApiModules.Workflow.Relational;

@@ -1,10 +1,4 @@
 ﻿using Stateless;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace rbkApiModules.Tests.Integration.Workflow.Document.Async;
 
@@ -107,7 +101,7 @@ public class AsyncDocumentWorkflow
                             Trigger = t.Trigger,
                             Type = EventType.OnEntry
                         });
-                })
+                }, "DRAFT::OnEnter")
             .OnExitAsync(
                 async t =>
                 {
@@ -121,7 +115,7 @@ public class AsyncDocumentWorkflow
                             Trigger = t.Trigger,
                             Type = EventType.OnExit
                         });
-                });
+                }, "DRAFT::OnExit");
 
         _machine.Configure(State.REVIEW)
             .Permit(Trigger.CHANGE_NEEDED, State.CHANGE_REQUESTED)
@@ -139,7 +133,7 @@ public class AsyncDocumentWorkflow
                             Trigger = t.Trigger,
                             Type = EventType.OnEntry
                         });
-                })
+                }, "REVIEW::OnEnter")
             .OnExitAsync(
                 async t =>
                 {
@@ -153,7 +147,7 @@ public class AsyncDocumentWorkflow
                             Trigger = t.Trigger,
                             Type = EventType.OnExit
                         });
-                });
+                }, "REVIEW::OnExit");
 
         _machine.Configure(State.CHANGE_REQUESTED)
             .Permit(Trigger.ACCEPT, State.DRAFT)
@@ -171,7 +165,7 @@ public class AsyncDocumentWorkflow
                             Trigger = t.Trigger,
                             Type = EventType.OnEntry
                         });
-                })
+                }, "CHANGE_REQUESTED::OnEnter")
             .OnExitAsync(
                 async t =>
                 {
@@ -185,7 +179,7 @@ public class AsyncDocumentWorkflow
                             Trigger = t.Trigger,
                             Type = EventType.OnExit
                         });
-                });
+                }, "CHANGE_REQUESTED::OnExit");
 
         _machine.Configure(State.SUBMITTED_TO_CLIENT)
             .Permit(Trigger.APPROVE, State.APPROVED)
@@ -203,7 +197,7 @@ public class AsyncDocumentWorkflow
                             Trigger = t.Trigger,
                             Type = EventType.OnEntry
                         });
-                })
+                }, "SUBMITTED_TO_CLIENT::OnEnter")
             .OnExitAsync(
                 async t =>
                 {
@@ -217,7 +211,7 @@ public class AsyncDocumentWorkflow
                             Trigger = t.Trigger,
                             Type = EventType.OnExit
                         });
-                });
+                }, "SUBMITTED_TO_CLIENT::OnExit");
 
         _machine.Configure(State.DECLINED)
             .Permit(Trigger.RESTART_REVIEW, State.REVIEW)
@@ -234,7 +228,7 @@ public class AsyncDocumentWorkflow
                             Trigger = t.Trigger,
                             Type = EventType.OnEntry
                         });
-                })
+                }, "DECLINED::OnEnter")
             .OnExitAsync(
                 async t =>
                 {
@@ -248,7 +242,7 @@ public class AsyncDocumentWorkflow
                             Trigger = t.Trigger,
                             Type = EventType.OnExit
                         });
-                });
+                }, "DECLINED::OnExit");
 
         _machine.Configure(State.APPROVED)
             .OnEntryAsync(
@@ -264,7 +258,7 @@ public class AsyncDocumentWorkflow
                             Trigger = t.Trigger,
                             Type = EventType.OnEntry
                         });
-                })
+                }, "APPROVED::OnEnter")
             .OnExitAsync(
                 async t =>
                 {
@@ -278,7 +272,7 @@ public class AsyncDocumentWorkflow
                             Trigger = t.Trigger,
                             Type = EventType.OnExit
                         });
-                });
+                }, "APPROVED::OnExit");
     }
 
     internal async Task DispatchAsync(Trigger trigger)

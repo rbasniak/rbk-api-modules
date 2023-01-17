@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Stateless;
+﻿namespace Stateless;
 
 /// <summary>
 /// Associates configured parameters with an underlying trigger value.

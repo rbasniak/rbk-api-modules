@@ -1,9 +1,5 @@
-﻿using AutoMapper;
-using FluentValidation;
-using MediatR;
+﻿using MediatR;
 using rbkApiModules.Commons.Core;
-using rbkApiModules.Commons.Core.Localization;
-using rbkApiModules.Workflow.Core;
 
 namespace rbkApiModules.Workflow.Core;
 

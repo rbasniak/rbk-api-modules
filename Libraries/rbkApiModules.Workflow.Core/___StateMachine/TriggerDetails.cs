@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Stateless;
+﻿namespace Stateless;
 
 /// <summary>
 /// Represents a trigger with details of any configured trigger parameters.

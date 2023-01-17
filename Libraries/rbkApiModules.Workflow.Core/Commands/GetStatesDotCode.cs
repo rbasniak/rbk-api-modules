@@ -3,8 +3,6 @@ using FluentValidation;
 using MediatR;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.Localization;
-using rbkApiModules.Commons.Relational;
-using rbkApiModules.Workflow.Core;
 
 namespace rbkApiModules.Workflow.Core;
 

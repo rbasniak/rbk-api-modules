@@ -1,9 +1,4 @@
 ﻿using Stateless;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace rbkApiModules.Tests.Integration.Workflow.Document.Sync;
 
@@ -89,7 +84,7 @@ public class SyncDocumentWorkflow
                         NextState = t.Destination,
                         Trigger = t.Trigger,
                         Type = EventType.OnEntry
-                    }))
+                    }), "DRAFT::OnEnter")
             .OnExit(
                 t => _document.Events.Add(
                     new DocumentWorkflowEvent
@@ -98,7 +93,7 @@ public class SyncDocumentWorkflow
                         NextState = t.Destination,
                         Trigger = t.Trigger,
                         Type = EventType.OnExit
-                    }));
+                    }), "DRAFT::OnExit");
 
         _machine.Configure(State.REVIEW)
             .Permit(Trigger.CHANGE_NEEDED, State.CHANGE_REQUESTED)
@@ -111,7 +106,7 @@ public class SyncDocumentWorkflow
                         NextState = t.Destination,
                         Trigger = t.Trigger,
                         Type = EventType.OnEntry
-                    }))
+                    }), "REVIEW::OnEnter")
             .OnExit(
                 t => _document.Events.Add(
                     new DocumentWorkflowEvent
@@ -120,7 +115,7 @@ public class SyncDocumentWorkflow
                         NextState = t.Destination,
                         Trigger = t.Trigger,
                         Type = EventType.OnExit
-                    })); ;
+                    }), "REVIEW::OnExit");
 
         _machine.Configure(State.CHANGE_REQUESTED)
             .Permit(Trigger.ACCEPT, State.DRAFT)
@@ -133,7 +128,7 @@ public class SyncDocumentWorkflow
                         NextState = t.Destination,
                         Trigger = t.Trigger,
                         Type = EventType.OnEntry
-                    }))
+                    }), "CHANGE_REQUESTED::OnEnter")
             .OnExit(
                 t => _document.Events.Add(
                     new DocumentWorkflowEvent
@@ -142,7 +137,7 @@ public class SyncDocumentWorkflow
                         NextState = t.Destination,
                         Trigger = t.Trigger,
                         Type = EventType.OnExit
-                    }));
+                    }), "CHANGE_REQUESTED::OnExit");
 
         _machine.Configure(State.SUBMITTED_TO_CLIENT)
             .Permit(Trigger.APPROVE, State.APPROVED)
@@ -155,7 +150,7 @@ public class SyncDocumentWorkflow
                         NextState = t.Destination,
                         Trigger = t.Trigger,
                         Type = EventType.OnEntry
-                    }))
+                    }), "SUBMITTED_TO_CLIENT::OnEnter")
             .OnExit(
                 t => _document.Events.Add(
                     new DocumentWorkflowEvent
@@ -164,7 +159,7 @@ public class SyncDocumentWorkflow
                         NextState = t.Destination,
                         Trigger = t.Trigger,
                         Type = EventType.OnExit
-                    }));
+                    }), "SUBMITTED_TO_CLIENT::OnExit");
 
         _machine.Configure(State.DECLINED)
             .Permit(Trigger.RESTART_REVIEW, State.REVIEW)
@@ -176,7 +171,7 @@ public class SyncDocumentWorkflow
                         NextState = t.Destination,
                         Trigger = t.Trigger,
                         Type = EventType.OnEntry
-                    }))
+                    }), "DECLINED::OnEnter")
             .OnExit(
                 t => _document.Events.Add(
                     new DocumentWorkflowEvent
@@ -185,7 +180,7 @@ public class SyncDocumentWorkflow
                         NextState = t.Destination,
                         Trigger = t.Trigger,
                         Type = EventType.OnExit
-                    }));
+                    }), "DECLINED::OnExit");
 
         _machine.Configure(State.APPROVED)
             .OnEntry(
@@ -196,7 +191,7 @@ public class SyncDocumentWorkflow
                         NextState = t.Destination,
                         Trigger = t.Trigger,
                         Type = EventType.OnEntry
-                    }))
+                    }), "APPROVED::OnEnter")
             .OnExit(
                 t => _document.Events.Add(
                     new DocumentWorkflowEvent
@@ -205,7 +200,7 @@ public class SyncDocumentWorkflow
                         NextState = t.Destination,
                         Trigger = t.Trigger,
                         Type = EventType.OnExit
-                    }));
+                    }), "APPROVED::OnExit");
     }
 
     internal void Dispatch(Trigger trigger)

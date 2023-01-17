@@ -1,8 +1,6 @@
-﻿using System;
+﻿namespace Stateless;
 
-namespace Stateless;
-
-    internal class GuardCondition
+internal class GuardCondition
     {
         Reflection.InvocationInfo _methodDescription;
 

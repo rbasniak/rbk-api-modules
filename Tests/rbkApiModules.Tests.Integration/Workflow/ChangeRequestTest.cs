@@ -1,7 +1,6 @@
 ﻿using rbkApiModules.Tests.Integration.Workflow;
 using Stateless;
 using System.Diagnostics;
-using System.Security.Cryptography.X509Certificates;
 
 public class ApplicationClaims
 {

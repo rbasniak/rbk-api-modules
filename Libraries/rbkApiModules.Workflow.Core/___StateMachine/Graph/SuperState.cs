@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Stateless.Graph
+﻿namespace Stateless.Graph
 {
     /// <summary>
     /// Used to keep track of a state that has substates

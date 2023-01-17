@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace Stateless;
+﻿namespace Stateless;
 
 /// <summary>
 /// The configuration for a single state value.

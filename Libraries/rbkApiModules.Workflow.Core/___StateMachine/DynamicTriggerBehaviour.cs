@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Stateless;
+﻿namespace Stateless;
 
 internal class DynamicTriggerBehaviour<TState, TTrigger> : TriggerBehaviour<TState, TTrigger>
 {
