@@ -91,7 +91,7 @@ namespace Stateless
         /// <summary>
         /// The currently-permissible trigger values.
         /// </summary>
-        public IEnumerable<TTrigger> GetPermittedTriggers(params object[] args)
+        public TTrigger[] GetPermittedTriggers(params object[] args)
         {
             return CurrentRepresentation.GetPermittedTriggers(args);
         }
@@ -102,12 +102,7 @@ namespace Stateless
             {
                 return GetRepresentation(State);
             }
-        }
-
-        public IEnumerable<TTrigger> GetDetailedPermittedTriggers(params object[] args)
-        {
-            return CurrentRepresentation.GetPermittedTriggers(args);
-        }
+        } 
 
         /// <summary>
         /// Provides an info object which exposes the states, transitions, and actions of this machine.

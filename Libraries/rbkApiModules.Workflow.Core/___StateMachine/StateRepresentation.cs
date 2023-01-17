@@ -311,7 +311,7 @@ internal partial class StateRepresentation<TState, TTrigger>
             (_superstate != null && _superstate.IsIncludedIn(state));
     }
 
-    public IEnumerable<TTrigger> PermittedTriggers
+    public TTrigger[] PermittedTriggers
     {
         get
         {
@@ -319,7 +319,7 @@ internal partial class StateRepresentation<TState, TTrigger>
         }
     }
 
-    public IEnumerable<TTrigger> GetPermittedTriggers(params object[] args)
+    public TTrigger[] GetPermittedTriggers(params object[] args)
     {
         var result = TriggerBehaviours
             .Where(t => t.Value.Any(a => !a.UnmetGuardConditions(args).Any()))
@@ -328,7 +328,7 @@ internal partial class StateRepresentation<TState, TTrigger>
         if (Superstate != null)
             result = result.Union(Superstate.GetPermittedTriggers(args));
 
-        return result;
+        return result.ToArray();
     }
 
     internal void SetInitialTransition(TState state)

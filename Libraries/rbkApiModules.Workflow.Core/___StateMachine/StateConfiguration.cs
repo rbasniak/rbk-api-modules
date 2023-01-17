@@ -303,42 +303,15 @@ public partial class StateConfiguration<TState, TTrigger>
     /// <param name="entryAction">Action to execute, providing details of the transition.</param>
     /// <param name="trigger">The trigger by which the state must be entered in order for the action to execute.</param>
     /// <param name="entryActionDescription">Action description.</param>
-    public StateConfiguration<TState, TTrigger> OnEntryFrom(TTrigger trigger, Action<object[], Transition<TState, TTrigger>> entryAction, string entryActionDescription = null)
+    public StateConfiguration<TState, TTrigger> OnEntryFrom(TTrigger trigger, Action<Transition<TState, TTrigger>, object[]> entryAction, string entryActionDescription = null)
     {
         if (trigger == null) throw new ArgumentNullException(nameof(trigger));
         if (entryAction == null) throw new ArgumentNullException(nameof(entryAction));
 
         _representation.AddEntryAction(
             trigger,
-            (t, args) => entryAction(args, t),
+            (t, args) => entryAction(t, args),
             Reflection.InvocationInfo.Create(entryAction, entryActionDescription));
-        return this;
-    }
-
-    /// <summary>
-    /// Specify an action that will execute when transitioning from
-    /// the configured state.
-    /// </summary>
-    /// <param name="exitAction">Action to execute.</param>
-    /// <param name="exitActionDescription">Action description.</param>
-    /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> OnExit(Action exitAction, string exitActionDescription = null)
-    {
-        if (exitAction == null) throw new ArgumentNullException(nameof(exitAction));
-
-        _representation.AddExitAction(
-            t => exitAction(),
-            Reflection.InvocationInfo.Create(exitAction, exitActionDescription));
-        return this;
-    }
-
-    public StateConfiguration<TState, TTrigger> OnExit(Action<object[]> exitAction, string exitActionDescription = null)
-    {
-        if (exitAction == null) throw new ArgumentNullException(nameof(exitAction));
-
-        _representation.AddExitAction(
-            (t, args) => exitAction(args),
-            Reflection.InvocationInfo.Create(exitAction, exitActionDescription));
         return this;
     }
 

@@ -28,7 +28,6 @@ public class WorflowTests
 
         Debug.WriteLine($"ChangeRequest is in State {wf1._machine.State}");
 
-        var temp1 = wf1._machine.GetDetailedPermittedTriggers();
         var temp2 = wf1._machine.GetInfo();
         var temp3 = wf1._machine.PermittedTriggers;
         var temp4 = wf1._machine.State;
