@@ -11,10 +11,7 @@ public class BugWorkflowTests
     [FriendlyNamedFact("IT-000")]
     public void Bug_Workflow_Should_Finish_With_Sync_Events()
     {
-        var bug = new Bug
-        {
-            Title = "New Bug"
-        };
+        var bug = new Bug("New Bug");
 
         var workflow = new BugWorkflow(bug);
 
@@ -25,10 +22,20 @@ public class BugWorkflowTests
         workflow.Close();
     }
 
-    [FriendlyNamedFact("IT-001")]
+    [FriendlyNamedFact("IT-000")]
+    public void Bug_Workflow_Should_Continue_When_Entity_Is_Already_In_The_Workflow()
+    {
+        var bug = new Bug("New Bug") { State = State.Assigned, Assignee = "John" };
+
+        var workflow = new BugWorkflow(bug);
+
+        workflow.Close();
+    }
+
+    [FriendlyNamedFact("IT-000")]
     public void Document_Workflow_Should_Generate_Dot_Graph()
     {
-        var workflow = new BugWorkflow(new Bug());
+        var workflow = new BugWorkflow(new Bug(String.Empty));
 
         var graph = UmlDotGraph<State, Trigger>.Format(workflow._machine.GetInfo());
 

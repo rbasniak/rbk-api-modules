@@ -21,7 +21,9 @@ public class BugWorkflow
     {
         _bug = bug;
 
-        _machine = new StateMachine<State, Trigger>(State.Open);
+        _machine = new StateMachine<State, Trigger>(_bug.State);
+
+        _machine.OnTransitionCompleted(t => _bug.State = t.Destination);
 
         _machine.Configure(State.Open)
             .Permit(Trigger.Assign, State.Assigned);
@@ -81,6 +83,13 @@ public class BugWorkflow
 
 public class Bug
 {
+    public Bug(string title)
+    {
+        Title = title; 
+        State = BugWorkflow.State.Open;
+    }
+
+    public BugWorkflow.State State { get; set; }
     public string Title { get; set; }
     public string Assignee { get; set; }
 }
