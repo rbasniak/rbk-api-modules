@@ -104,17 +104,6 @@ namespace Stateless.Graph
             return FormatOneLine(sourceNodeName, destinationNodeName, label);
         }
 
-        /// <summary>
-        /// Generate the text for a single decision node
-        /// </summary>
-        /// <param name="nodeName">Name of the node</param>
-        /// <param name="label">Label for the node</param>
-        /// <returns></returns>
-        public override string FormatOneDecisionNode(string nodeName, string label)
-        {
-            return $"\"{nodeName}\" [shape = \"diamond\", label = \"{label}\"];\n";
-        }
-
         internal string FormatOneLine(string fromNodeName, string toNodeName, string label)
         {
             return $"\"{fromNodeName}\" -> \"{toNodeName}\" [style=\"solid\", label=\"{label}\"];";

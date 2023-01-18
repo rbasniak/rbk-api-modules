@@ -22,12 +22,6 @@ namespace Stateless.Graph
         public List<Transition<TState, TTrigger>> Transitions { get; private set; } = new List<Transition<TState, TTrigger>>();
 
         /// <summary>
-        /// List of all decision nodes in the graph.  A decision node is generated each time there
-        /// is a PermitDynamic() transition.
-        /// </summary>
-        public List<Decision<TState, TTrigger>> Decisions { get; private set; } = new List<Decision<TState, TTrigger>>();
-
-        /// <summary>
         /// Creates a new instance of <see cref="StateGraph"/>.
         /// </summary>
         /// <param name="machineInfo">An object which exposes the states, transitions, and actions of this machine.</param>
@@ -67,16 +61,9 @@ namespace Stateless.Graph
             // Next process all non-cluster states
             foreach (var state in States.Values)
             {
-                if ((state is SuperState<TState, TTrigger>) || (state is Decision<TState, TTrigger>) || (state.SuperState != null))
+                if ((state is SuperState<TState, TTrigger>) || (state.SuperState != null))
                     continue;
                 dirgraphText += style.FormatOneState(state).Replace("\n", System.Environment.NewLine);
-            }
-
-            // Finally, add decision nodes
-            foreach (var dec in Decisions)
-            {
-                dirgraphText += style.FormatOneDecisionNode(dec.NodeName, dec.Method.Description)
-                    .Replace("\n", System.Environment.NewLine);
             }
 
             // now build behaviours
@@ -150,30 +137,6 @@ namespace Stateless.Graph
                         Transitions.Add(trans);
                         fromState.Leaving.Add(trans);
                         toState.Arriving.Add(trans);
-                    }
-                }
-                foreach (var dyno in stateInfo.DynamicTransitions)
-                {
-                    var decide = new Decision<TState, TTrigger>(dyno.DestinationStateSelectorDescription, Decisions.Count + 1);
-                    Decisions.Add(decide);
-                    var trans = new FixedTransition<TState, TTrigger>(fromState, decide, dyno.Trigger,
-                        dyno.GuardConditionsMethodDescriptions);
-                    Transitions.Add(trans);
-                    fromState.Leaving.Add(trans);
-                    decide.Arriving.Add(trans);
-                    if (dyno.PossibleDestinationStates != null)
-                    {
-                        foreach (var dynamicStateInfo in dyno.PossibleDestinationStates)
-                        {
-                            States.TryGetValue(dynamicStateInfo.DestinationState, out State<TState, TTrigger> toState);
-                            if (toState != null)
-                            {
-                                var dtrans = new DynamicTransition<TState, TTrigger>(decide, toState, dyno.Trigger, dynamicStateInfo.Criterion);
-                                Transitions.Add(dtrans);
-                                decide.Leaving.Add(dtrans);
-                                toState.Arriving.Add(dtrans);
-                            }
-                        }
                     }
                 }
                 foreach (var igno in stateInfo.IgnoredTriggers)

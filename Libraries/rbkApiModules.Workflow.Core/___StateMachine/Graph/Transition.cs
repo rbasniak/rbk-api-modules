@@ -67,37 +67,7 @@ namespace Stateless.Graph
             DestinationState = destinationState;
             Guards = guards;
         }
-    }
-
-    /// <summary>
-    /// Represents a dynamic transition.
-    /// </summary>
-    public class DynamicTransition<TState, TTrigger> : Transition<TState, TTrigger>
-    {
-        /// <summary>
-        /// The state where this transition finishes
-        /// </summary>
-        public State<TState, TTrigger> DestinationState { get; private set; }
-
-        /// <summary>
-        /// When is this transition followed
-        /// </summary>
-        public string Criterion { get; private set; }
-
-        /// <summary>
-        /// Creates a new instance of <see cref="DynamicTransition"/>.
-        /// </summary>
-        /// <param name="sourceState">The source state.</param>
-        /// <param name="destinationState">The destination state.</param>
-        /// <param name="trigger">The trigger associated with this transition.</param>
-        /// <param name="criterion">The reason the destination state was chosen.</param>
-        public DynamicTransition(State<TState, TTrigger> sourceState, State<TState, TTrigger> destinationState, TriggerInfo trigger, string criterion)
-            : base(sourceState, trigger)
-        {
-            DestinationState = destinationState;
-            Criterion = criterion;
-        }
-    }
+    } 
 
     /// <summary>
     /// Represents a transition from a state to itself.

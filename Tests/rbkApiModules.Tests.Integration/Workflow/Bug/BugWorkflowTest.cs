@@ -56,13 +56,13 @@ public class BugWorkflowTests
             "Deferred" [label="Deferred|entry / Function\nentry / DEFERRED:OnEntry\nexit / DEFERRED:OnExit"];
             "Closed" [label="Closed"];
 
-            "Open" -> "Assigned" [style="solid", label="Assign / OnAssigned"];
+            "Open" -> "Assigned" [style="solid", label="Assign / ASSIGNED:OnEntryFrom"];
             "Assigned" -> "Assigned" [style="solid", label="Assign / ASSIGNED:OnEntry"];
             "Assigned" -> "Deferred" [style="solid", label="Defer"];
             "Assigned" -> "Doing" [style="solid", label="Start"];
             "Assigned" -> "Closed" [style="solid", label="Close"];
             "Doing" -> "Assigned" [style="solid", label="Stop"];
-            "Deferred" -> "Assigned" [style="solid", label="Assign / OnAssigned"];
+            "Deferred" -> "Assigned" [style="solid", label="Assign / ASSIGNED:OnEntryFrom"];
              init [label="", shape=point];
              init -> "Open"[style = "solid"]
             }

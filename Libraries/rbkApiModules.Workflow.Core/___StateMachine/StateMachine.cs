@@ -269,8 +269,7 @@ namespace Stateless
                     HandleReentryTrigger(args, representativeState, transition);
                     break;
                 }
-                case DynamicTriggerBehaviour<TState, TTrigger> _ when (result.Handler.ResultsInTransitionFrom(source, args, out var destination)):
-                case TransitioningTriggerBehaviour<TState, TTrigger> _ when (result.Handler.ResultsInTransitionFrom(source, args, out destination)):
+                case TransitioningTriggerBehaviour<TState, TTrigger> _ when (result.Handler.ResultsInTransitionFrom(source, args, out var destination)):
                 {
                     // Handle transition, and set new state
                     var transition = new Transition<TState, TTrigger>(source, destination, trigger, args);
@@ -590,8 +589,7 @@ namespace Stateless
                         await HandleReentryTriggerAsync(args, representativeState, transition);
                         break;
                     }
-                case DynamicTriggerBehaviour<TState, TTrigger> _ when (result.Handler.ResultsInTransitionFrom(source, args, out var destination)):
-                case TransitioningTriggerBehaviour<TState, TTrigger> _ when (result.Handler.ResultsInTransitionFrom(source, args, out destination)):
+                case TransitioningTriggerBehaviour<TState, TTrigger> _ when (result.Handler.ResultsInTransitionFrom(source, args, out var destination)):
                     {
                         // Handle transition, and set new state
                         var transition = new Transition<TState, TTrigger>(source, destination, trigger, args);

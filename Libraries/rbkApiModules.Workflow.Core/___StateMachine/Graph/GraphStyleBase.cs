@@ -33,18 +33,6 @@
         public abstract string FormatOneCluster(SuperState<TState, TTrigger> stateInfo);
 
         /// <summary>
-        /// Returns the formatted text for a single decision node.
-        /// A decision node is created each time there is a PermitDynamic() transition.  There will be a transition
-        /// from the state that has the dynamic transition to the decision node, and transitions from the decision
-        /// node to each of the destination nodes.  If the caller did not specify the possible destination states,
-        /// there will be no transitions leaving the decision node.
-        /// </summary>
-        /// <param name="nodeName">Name of the node</param>
-        /// <param name="label">Label for the node</param>
-        /// <returns></returns>
-        public abstract string FormatOneDecisionNode(string nodeName, string label);
-
-        /// <summary>
         /// Returns the formatted text for all the transitions found in the state graph.
         /// This form, which can be overridden, determines the type of each transition and passes the appropriate
         /// parameters to the virtual FormatOneTransition() function.
@@ -89,14 +77,7 @@
                     }
                     else
                     {
-                        if (transit is DynamicTransition<TState, TTrigger> dyn)
-                        {
-                            line = FormatOneTransition(dyn.SourceState.NodeName, dyn.Trigger.UnderlyingTrigger.ToString(),
-                                dyn.DestinationEntryActions.Select(x => x.Method.Description),
-                                dyn.DestinationState.NodeName, new List<string> { dyn.Criterion });
-                        }
-                        else
-                            throw new ArgumentException("Unexpected transition type");
+                        throw new ArgumentException("Unexpected transition type");
                     }
                 }
                 if (line != null)

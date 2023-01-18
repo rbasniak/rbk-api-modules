@@ -42,7 +42,6 @@ public class StateInfo<TState, TTrigger>
             superstate = lookupState(stateRepresentation.Superstate.UnderlyingState);
 
         var fixedTransitions = new List<FixedTransitionInfo<TState, TTrigger>>();
-        var dynamicTransitions = new List<DynamicTransitionInfo>();
 
         foreach (var triggerBehaviours in stateRepresentation.TriggerBehaviours)
         {
@@ -63,14 +62,9 @@ public class StateInfo<TState, TTrigger>
                 var destinationInfo = lookupState(stateRepresentation.UnderlyingState);
                 fixedTransitions.Add(FixedTransitionInfo<TState, TTrigger>.Create(item, destinationInfo));
             }
-            // Then add all the dynamic transitions
-            foreach (var item in triggerBehaviours.Value.Where(behaviour => behaviour is DynamicTriggerBehaviour<TState, TTrigger>))
-            {
-                dynamicTransitions.Add(((DynamicTriggerBehaviour<TState, TTrigger>)item).TransitionInfo);
-            }
         }
 
-        info.AddRelationships(superstate, substates, fixedTransitions, dynamicTransitions);
+        info.AddRelationships(superstate, substates, fixedTransitions);
     }
 
     private StateInfo(
@@ -92,13 +86,11 @@ public class StateInfo<TState, TTrigger>
     private void AddRelationships(
         StateInfo<TState, TTrigger> superstate,
         IEnumerable<StateInfo<TState, TTrigger>> substates,
-        IEnumerable<FixedTransitionInfo<TState, TTrigger>> transitions,
-        IEnumerable<DynamicTransitionInfo> dynamicTransitions)
+        IEnumerable<FixedTransitionInfo<TState, TTrigger>> transitions)
     {
         Superstate = superstate;
         Substates = substates ?? throw new ArgumentNullException(nameof(substates));
         FixedTransitions = transitions ?? throw new ArgumentNullException(nameof(transitions));
-        DynamicTransitions = dynamicTransitions ?? throw new ArgumentNullException(nameof(dynamicTransitions));
     }
 
     /// <summary>
@@ -139,18 +131,13 @@ public class StateInfo<TState, TTrigger>
     /// <summary> 
     /// Transitions defined for this state.
     /// </summary>
-    public IEnumerable<TransitionInfo> Transitions { get { return FixedTransitions.Concat<TransitionInfo>(DynamicTransitions); } }
+    public IEnumerable<TransitionInfo> Transitions { get { return FixedTransitions; } }
 
     /// <summary>
     /// Transitions defined for this state.
     /// </summary>
     public IEnumerable<FixedTransitionInfo<TState, TTrigger>> FixedTransitions { get; private set; }
-
-    /// <summary>
-    /// Dynamic Transitions defined for this state internally.
-    /// </summary>
-    public IEnumerable<DynamicTransitionInfo> DynamicTransitions { get; private set; }
-
+     
     /// <summary>
     /// Triggers ignored for this state.
     /// </summary>
