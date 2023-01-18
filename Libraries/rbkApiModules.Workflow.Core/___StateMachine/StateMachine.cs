@@ -10,8 +10,7 @@ namespace Stateless
     public partial class StateMachine<TState, TTrigger>
     {
         private readonly IDictionary<TState, StateRepresentation<TState, TTrigger>> _stateConfiguration = new Dictionary<TState, StateRepresentation<TState, TTrigger>>();
-        private readonly Func<TState> _stateAccessor;
-        private readonly Action<TState> _stateMutator;
+        private readonly StateReference<TState> _stateReference;
         private UnhandledTriggerAction<TState, TTrigger> _unhandledTriggerAction;
         private readonly OnTransitionedEvent<TState, TTrigger> _onTransitionedEvent;
         private readonly OnTransitionedEvent<TState, TTrigger> _onTransitionCompletedEvent;
@@ -21,29 +20,13 @@ namespace Stateless
         private bool _firing;
 
         /// <summary>
-        /// Construct a state machine with external state storage.
-        /// </summary>
-        /// <param name="stateAccessor">A function that will be called to read the current state value.</param>
-        /// <param name="stateMutator">An action that will be called to write new state values.</param>
-        /// <param name="firingMode">Optional specification of fireing mode.</param>
-        public StateMachine(Func<TState> stateAccessor, Action<TState> stateMutator) : this()
-        {
-            _stateAccessor = stateAccessor ?? throw new ArgumentNullException(nameof(stateAccessor));
-            _stateMutator = stateMutator ?? throw new ArgumentNullException(nameof(stateMutator));
-
-            _initialState = stateAccessor();
-        }
-
-        /// <summary>
         /// Construct a state machine.
         /// </summary>
         /// <param name="initialState">The initial state.</param>
         /// <param name="firingMode">Optional specification of fireing mode.</param>
         public StateMachine(TState initialState) : this()
         {
-            var reference = new StateReference<TState> { State = initialState };
-            _stateAccessor = () => reference.State;
-            _stateMutator = s => reference.State = s;
+            _stateReference = new StateReference<TState> { State = initialState };
 
             _initialState = initialState;
         }
@@ -66,11 +49,11 @@ namespace Stateless
         {
             get
             {
-                return _stateAccessor();
+                return _stateReference.State;
             }
             private set
             {
-                _stateMutator(value);
+                _stateReference.State = value;
             }
         }
 
