@@ -25,14 +25,6 @@
         public abstract string FormatOneState(State<TState, TTrigger> state);
 
         /// <summary>
-        /// Returns the formatted text for a single superstate and its substates.
-        /// For example, for DOT files this would be a subgraph containing nodes for all the substates.
-        /// </summary>
-        /// <param name="stateInfo">The superstate to generate text for</param>
-        /// <returns>Description of the superstate, and all its substates, in the desired format</returns>
-        public abstract string FormatOneCluster(SuperState<TState, TTrigger> stateInfo);
-
-        /// <summary>
         /// Returns the formatted text for all the transitions found in the state graph.
         /// This form, which can be overridden, determines the type of each transition and passes the appropriate
         /// parameters to the virtual FormatOneTransition() function.

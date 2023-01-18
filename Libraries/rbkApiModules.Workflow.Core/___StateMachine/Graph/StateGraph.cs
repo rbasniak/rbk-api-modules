@@ -30,9 +30,6 @@ namespace Stateless.Graph
             // Add initial state
             initialState = machineInfo.InitialState;
 
-            // Start with top-level superstates
-            AddSuperstates(machineInfo);
-
             // Now add any states that aren't part of a tree
             AddSingleStates(machineInfo);
 
@@ -52,17 +49,9 @@ namespace Stateless.Graph
         {
             string dirgraphText = style.GetPrefix().Replace("\n", System.Environment.NewLine);
 
-            // Start with the clusters
-            foreach (var state in States.Values.Where(x => x is SuperState<TState, TTrigger>))
-            {
-                dirgraphText += style.FormatOneCluster((SuperState<TState, TTrigger>)state).Replace("\n", System.Environment.NewLine);
-            }
-
             // Next process all non-cluster states
             foreach (var state in States.Values)
             {
-                if ((state is SuperState<TState, TTrigger>) || (state.SuperState != null))
-                    continue;
                 dirgraphText += style.FormatOneState(state).Replace("\n", System.Environment.NewLine);
             }
 
@@ -160,46 +149,6 @@ namespace Stateless.Graph
             {
                 if (!States.ContainsKey(stateInfo.UnderlyingState.ToString()))
                     States[stateInfo.UnderlyingState.ToString()] = new State<TState, TTrigger>(stateInfo);
-            }
-        }
-
-        /// <summary>
-        /// Add superstates to the graph (states that have substates)
-        /// </summary>
-        /// <param name="machineInfo"></param>
-        void AddSuperstates(StateMachineInfo<TState, TTrigger> machineInfo)
-        {
-            foreach (var stateInfo in machineInfo.States.Where(sc => (sc.Substates?.Count() > 0) && (sc.Superstate == null)))
-            {
-                SuperState<TState, TTrigger> state = new SuperState<TState, TTrigger>(stateInfo);
-                States[stateInfo.UnderlyingState.ToString()] = state;
-                AddSubstates(state, stateInfo.Substates);
-            }
-        }
-
-        void AddSubstates(SuperState<TState, TTrigger> superState, IEnumerable<StateInfo<TState, TTrigger>> substates)
-        {
-            foreach (var subState in substates)
-            {
-                if (States.ContainsKey(subState.UnderlyingState.ToString()))
-                {
-                    // This shouldn't happen
-                }
-                else if (subState.Substates.Any())
-                {
-                    SuperState<TState, TTrigger> sub = new SuperState<TState, TTrigger>(subState);
-                    States[subState.UnderlyingState.ToString()] = sub;
-                    superState.SubStates.Add(sub);
-                    sub.SuperState = superState;
-                    AddSubstates(sub, subState.Substates);
-                }
-                else
-                {
-                    var sub = new State<TState, TTrigger>(subState);
-                    States[subState.UnderlyingState.ToString()] = sub;
-                    superState.SubStates.Add(sub);
-                    sub.SuperState = superState;
-                }
             }
         }
     }

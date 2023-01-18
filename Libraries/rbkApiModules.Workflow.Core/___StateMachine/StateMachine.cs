@@ -341,24 +341,6 @@ namespace Stateless
             // Enter the new state
             representation.Enter(transition, args);
 
-            // Recursively enter substates that have an initial transition
-            if (representation.HasInitialTransition)
-            {
-                // Verify that the target state is a substate
-                // Check if state has substate(s), and if an initial transition(s) has been set up.
-                if (!representation.GetSubstates().Any(s => s.UnderlyingState.Equals(representation.InitialTransitionTarget)))
-                {
-                    throw new InvalidOperationException($"The target ({representation.InitialTransitionTarget}) for the initial transition is not a substate.");
-                }
-
-                var initialTransition = new InitialTransition<TState, TTrigger>(transition.Source, representation.InitialTransitionTarget, transition.Trigger, args);
-                representation = GetRepresentation(representation.InitialTransitionTarget);
-
-                // Alert all listeners of initial state transition
-                _onTransitionedEvent.Invoke(new Transition<TState, TTrigger>(transition.Destination, initialTransition.Destination, transition.Trigger, transition.Parameters));
-                representation = EnterState(representation, initialTransition, args);
-            }
-
             return representation;
         }
 
@@ -664,24 +646,6 @@ namespace Stateless
         {
             // Enter the new state
             await representation.EnterAsync(transition);
-
-            // Recursively enter substates that have an initial transition
-            if (representation.HasInitialTransition)
-            {
-                // Verify that the target state is a substate
-                // Check if state has substate(s), and if an initial transition(s) has been set up.
-                if (!representation.GetSubstates().Any(s => s.UnderlyingState.Equals(representation.InitialTransitionTarget)))
-                {
-                    throw new InvalidOperationException($"The target ({representation.InitialTransitionTarget}) for the initial transition is not a substate.");
-                }
-
-                var initialTransition = new InitialTransition<TState, TTrigger>(transition.Source, representation.InitialTransitionTarget, transition.Trigger, args);
-                representation = GetRepresentation(representation.InitialTransitionTarget);
-
-                // Alert all listeners of initial state transition
-                await _onTransitionedEvent.InvokeAsync(new Transition<TState, TTrigger>(transition.Destination, initialTransition.Destination, transition.Trigger, transition.Parameters));
-                representation = await EnterStateAsync(representation, initialTransition, args);
-            }
 
             return representation;
         }

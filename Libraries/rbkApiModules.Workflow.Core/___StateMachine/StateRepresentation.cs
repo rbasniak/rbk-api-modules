@@ -10,20 +10,10 @@ internal partial class StateRepresentation<TState, TTrigger>
     internal ICollection<ActivateActionBehaviour<TState, TTrigger>> ActivateActions { get; } = new List<ActivateActionBehaviour<TState, TTrigger>>();
     internal ICollection<DeactivateActionBehaviour<TState, TTrigger>> DeactivateActions { get; } = new List<DeactivateActionBehaviour<TState, TTrigger>>();
 
-    StateRepresentation<TState, TTrigger> _superstate; // null
-
-    readonly ICollection<StateRepresentation<TState, TTrigger>> _substates = new List<StateRepresentation<TState, TTrigger>>();
-    public TState InitialTransitionTarget { get; private set; } = default;
-
     public StateRepresentation(TState state)
     {
         _state = state;
-    }
-
-    internal ICollection<StateRepresentation<TState, TTrigger>> GetSubstates()
-    {
-        return _substates;
-    }
+    } 
 
     public bool CanHandle(TTrigger trigger, params object[] args)
     {
@@ -41,8 +31,7 @@ internal partial class StateRepresentation<TState, TTrigger>
     {
         TriggerBehaviourResult<TState, TTrigger> superStateHandler = null;
 
-        bool handlerFound = (TryFindLocalHandler(trigger, args, out TriggerBehaviourResult<TState, TTrigger> localHandler) ||
-                            (Superstate != null && Superstate.TryFindHandler(trigger, args, out superStateHandler)));
+        bool handlerFound = TryFindLocalHandler(trigger, args, out TriggerBehaviourResult<TState, TTrigger> localHandler);
 
         // If no handler for super state, replace by local handler (see issue #398)
         handler = superStateHandler ?? localHandler;
@@ -136,18 +125,12 @@ internal partial class StateRepresentation<TState, TTrigger>
 
     public void Activate()
     {
-        if (_superstate != null)
-            _superstate.Activate();
-
         ExecuteActivationActions();
     }
 
     public void Deactivate()
     {
         ExecuteDeactivationActions();
-
-        if (_superstate != null)
-            _superstate.Deactivate();
     }
 
     void ExecuteActivationActions()
@@ -170,9 +153,6 @@ internal partial class StateRepresentation<TState, TTrigger>
         }
         else if (!Includes(transition.Source))
         {
-            if (_superstate != null && !(transition is InitialTransition<TState, TTrigger>))
-                _superstate.Enter(transition, entryArgs);
-
             ExecuteEntryActions(transition);
         }
     }
@@ -186,25 +166,6 @@ internal partial class StateRepresentation<TState, TTrigger>
         else if (!Includes(transition.Destination))
         {
             ExecuteExitActions(transition);
-
-            // Must check if there is a superstate, and if we are leaving that superstate
-            if (_superstate != null)
-            {
-                // Check if destination is within the state list
-                if (IsIncludedIn(transition.Destination))
-                {
-                    // Destination state is within the list, exit first superstate only if it is NOT the the first
-                    if (!_superstate.UnderlyingState.Equals(transition.Destination))
-                    {
-                        return _superstate.Exit(transition);
-                    }
-                }
-                else
-                {
-                    // Exit the superstate as well
-                    return _superstate.Exit(transition);
-                }
-            }
         }
         return transition;
     }
@@ -224,23 +185,6 @@ internal partial class StateRepresentation<TState, TTrigger>
     {
         InternalTriggerBehaviour<TState, TTrigger>.Sync internalTransition = null;
 
-        // Look for actions in superstate(s) recursivly until we hit the topmost superstate, or we actually find some trigger handlers.
-        StateRepresentation<TState, TTrigger> aStateRep = this;
-        while (aStateRep != null)
-        {
-            if (aStateRep.TryFindLocalHandler(transition.Trigger, args, out TriggerBehaviourResult<TState, TTrigger> result))
-            {
-                // Trigger handler found in this state
-                if (result.Handler is InternalTriggerBehaviour<TState, TTrigger>.Async)
-                    throw new InvalidOperationException("Running Async internal actions in synchronous mode is not allowed");
-
-                internalTransition = result.Handler as InternalTriggerBehaviour<TState, TTrigger>.Sync;
-                break;
-            }
-            // Try to look for trigger handlers in superstate (if it exists)
-            aStateRep = aStateRep._superstate;
-        }
-
         // Execute internal transition event handler
         if (internalTransition == null) throw new ArgumentNullException("The configuration is incorrect, no action assigned to this internal transition.");
         internalTransition.InternalAction(transition);
@@ -255,30 +199,13 @@ internal partial class StateRepresentation<TState, TTrigger>
         allowed.Add(triggerBehaviour);
     }
 
-    public StateRepresentation<TState, TTrigger> Superstate
-    {
-        get
-        {
-            return _superstate;
-        }
-        set
-        {
-            _superstate = value;
-        }
-    }
-
     public TState UnderlyingState
     {
         get
         {
             return _state;
         }
-    }
-
-    public void AddSubstate(StateRepresentation<TState, TTrigger> substate)
-    {
-        _substates.Add(substate);
-    }
+    } 
 
     /// <summary>
     /// Checks if the state is in the set of this state or its sub-states
@@ -287,7 +214,7 @@ internal partial class StateRepresentation<TState, TTrigger>
     /// <returns>True if included</returns>
     public bool Includes(TState state)
     {
-        return _state.Equals(state) || _substates.Any(s => s.Includes(state));
+        return _state.Equals(state);
     }
 
     /// <summary>
@@ -297,9 +224,7 @@ internal partial class StateRepresentation<TState, TTrigger>
     /// <returns>True if included</returns>
     public bool IsIncludedIn(TState state)
     {
-        return
-            _state.Equals(state) ||
-            (_superstate != null && _superstate.IsIncludedIn(state));
+        return _state.Equals(state);
     }
 
     public TTrigger[] PermittedTriggers
@@ -316,20 +241,8 @@ internal partial class StateRepresentation<TState, TTrigger>
             .Where(t => t.Value.Any(a => !a.UnmetGuardConditions(args).Any()))
             .Select(t => t.Key);
 
-        if (Superstate != null)
-            result = result.Union(Superstate.GetPermittedTriggers(args));
-
         return result.ToArray();
     }
-
-    internal void SetInitialTransition(TState state)
-    {
-        InitialTransitionTarget = state;
-        HasInitialTransition = true;
-    }
-    public bool HasInitialTransition { get; private set; }
-
-
 
 
 
@@ -403,18 +316,12 @@ internal partial class StateRepresentation<TState, TTrigger>
 
     public async Task ActivateAsync()
     {
-        if (_superstate != null)
-            await _superstate.ActivateAsync().ConfigureAwait(false);
-
         await ExecuteActivationActionsAsync().ConfigureAwait(false);
     }
 
     public async Task DeactivateAsync()
     {
         await ExecuteDeactivationActionsAsync().ConfigureAwait(false);
-
-        if (_superstate != null)
-            await _superstate.DeactivateAsync().ConfigureAwait(false);
     }
 
     async Task ExecuteActivationActionsAsync()
@@ -438,9 +345,6 @@ internal partial class StateRepresentation<TState, TTrigger>
         }
         else if (!Includes(transition.Source))
         {
-            if (_superstate != null && !(transition is InitialTransition<TState, TTrigger>))
-                await _superstate.EnterAsync(transition).ConfigureAwait(false);
-
             await ExecuteEntryActionsAsync(transition).ConfigureAwait(false);
         }
     }
@@ -454,25 +358,6 @@ internal partial class StateRepresentation<TState, TTrigger>
         else if (!Includes(transition.Destination))
         {
             await ExecuteExitActionsAsync(transition).ConfigureAwait(false);
-
-            // Must check if there is a superstate, and if we are leaving that superstate
-            if (_superstate != null)
-            {
-                // Check if destination is within the state list
-                if (IsIncludedIn(transition.Destination))
-                {
-                    // Destination state is within the list, exit first superstate only if it is NOT the first
-                    if (!_superstate.UnderlyingState.Equals(transition.Destination))
-                    {
-                        return await _superstate.ExitAsync(transition).ConfigureAwait(false);
-                    }
-                }
-                else
-                {
-                    // Exit the superstate as well
-                    return await _superstate.ExitAsync(transition).ConfigureAwait(false);
-                }
-            }
         }
         return transition;
     }

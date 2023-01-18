@@ -8,11 +8,6 @@ namespace Stateless.Graph
     public class State<TState, TTrigger>
     {
         /// <summary>
-        /// The superstate of this state (null if none)
-        /// </summary>
-        public SuperState<TState, TTrigger> SuperState { get; set; }
-
-        /// <summary>
         /// List of all transitions that leave this state (never null)
         /// </summary>
         public List<Transition<TState, TTrigger>> Leaving { get; } = new List<Transition<TState, TTrigger>>();

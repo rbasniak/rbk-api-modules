@@ -31,42 +31,6 @@ public class StateInfo<TState, TTrigger>
             stateRepresentation.ExitActions.Select(e => e.Description).ToList());
     }
 
-    internal static void AddRelationships(StateInfo<TState, TTrigger> info, StateRepresentation<TState, TTrigger> stateRepresentation, Func<TState, StateInfo<TState, TTrigger>> lookupState)
-    {
-        if (lookupState == null) throw new ArgumentNullException(nameof(lookupState));
-
-        var substates = stateRepresentation.GetSubstates().Select(s => lookupState(s.UnderlyingState)).ToList();
-
-        StateInfo<TState, TTrigger> superstate = null;
-        if (stateRepresentation.Superstate != null)
-            superstate = lookupState(stateRepresentation.Superstate.UnderlyingState);
-
-        var fixedTransitions = new List<FixedTransitionInfo<TState, TTrigger>>();
-
-        foreach (var triggerBehaviours in stateRepresentation.TriggerBehaviours)
-        {
-            // First add all the deterministic transitions
-            foreach (var item in triggerBehaviours.Value.Where(behaviour => (behaviour is TransitioningTriggerBehaviour<TState, TTrigger>)))
-            {
-                var destinationInfo = lookupState(((TransitioningTriggerBehaviour<TState, TTrigger>)item).Destination);
-                fixedTransitions.Add(FixedTransitionInfo<TState, TTrigger>.Create(item, destinationInfo));
-            }
-            foreach (var item in triggerBehaviours.Value.Where(behaviour => (behaviour is ReentryTriggerBehaviour<TState, TTrigger>)))
-            {
-                var destinationInfo = lookupState(((ReentryTriggerBehaviour<TState, TTrigger>)item).Destination);
-                fixedTransitions.Add(FixedTransitionInfo<TState, TTrigger>.Create(item, destinationInfo));
-            }
-            //Then add all the internal transitions
-            foreach (var item in triggerBehaviours.Value.Where(behaviour => (behaviour is InternalTriggerBehaviour<TState, TTrigger>)))
-            {
-                var destinationInfo = lookupState(stateRepresentation.UnderlyingState);
-                fixedTransitions.Add(FixedTransitionInfo<TState, TTrigger>.Create(item, destinationInfo));
-            }
-        }
-
-        info.AddRelationships(superstate, substates, fixedTransitions);
-    }
-
     private StateInfo(
     object underlyingState,
         IEnumerable<IgnoredTransitionInfo<TState, TTrigger>> ignoredTriggers,
@@ -83,30 +47,10 @@ public class StateInfo<TState, TTrigger>
         ExitActions = exitActions;
     }
 
-    private void AddRelationships(
-        StateInfo<TState, TTrigger> superstate,
-        IEnumerable<StateInfo<TState, TTrigger>> substates,
-        IEnumerable<FixedTransitionInfo<TState, TTrigger>> transitions)
-    {
-        Superstate = superstate;
-        Substates = substates ?? throw new ArgumentNullException(nameof(substates));
-        FixedTransitions = transitions ?? throw new ArgumentNullException(nameof(transitions));
-    }
-
     /// <summary>
     /// The instance or value this state represents.
     /// </summary>
     public object UnderlyingState { get; }
-
-    /// <summary>
-    /// Substates defined for this StateResource.
-    /// </summary>
-    public IEnumerable<StateInfo<TState, TTrigger>> Substates { get; private set; }
-
-    /// <summary>
-    /// Superstate defined, if any, for this StateResource.
-    /// </summary>
-    public StateInfo<TState, TTrigger> Superstate { get; private set; }
 
     /// <summary>
     /// Actions that are defined to be executed on state-entry.
@@ -142,6 +86,41 @@ public class StateInfo<TState, TTrigger>
     /// Triggers ignored for this state.
     /// </summary>
     public IEnumerable<IgnoredTransitionInfo<TState, TTrigger>> IgnoredTriggers { get; private set; }
+
+    internal static void AddRelationships(StateInfo<TState, TTrigger> info, StateRepresentation<TState, TTrigger> stateRepresentation, Func<TState, StateInfo<TState, TTrigger>> lookupState)
+    {
+        if (lookupState == null) throw new ArgumentNullException(nameof(lookupState));
+
+        var fixedTransitions = new List<FixedTransitionInfo<TState, TTrigger>>();
+
+        foreach (var triggerBehaviours in stateRepresentation.TriggerBehaviours)
+        {
+            // First add all the deterministic transitions
+            foreach (var item in triggerBehaviours.Value.Where(behaviour => (behaviour is TransitioningTriggerBehaviour<TState, TTrigger>)))
+            {
+                var destinationInfo = lookupState(((TransitioningTriggerBehaviour<TState, TTrigger>)item).Destination);
+                fixedTransitions.Add(FixedTransitionInfo<TState, TTrigger>.Create(item, destinationInfo));
+            }
+            foreach (var item in triggerBehaviours.Value.Where(behaviour => (behaviour is ReentryTriggerBehaviour<TState, TTrigger>)))
+            {
+                var destinationInfo = lookupState(((ReentryTriggerBehaviour<TState, TTrigger>)item).Destination);
+                fixedTransitions.Add(FixedTransitionInfo<TState, TTrigger>.Create(item, destinationInfo));
+            }
+            //Then add all the internal transitions
+            foreach (var item in triggerBehaviours.Value.Where(behaviour => (behaviour is InternalTriggerBehaviour<TState, TTrigger>)))
+            {
+                var destinationInfo = lookupState(stateRepresentation.UnderlyingState);
+                fixedTransitions.Add(FixedTransitionInfo<TState, TTrigger>.Create(item, destinationInfo));
+            }
+        }
+
+        info.AddRelationships(fixedTransitions);
+    }
+
+    private void AddRelationships(IEnumerable<FixedTransitionInfo<TState, TTrigger>> transitions)
+    {
+        FixedTransitions = transitions ?? throw new ArgumentNullException(nameof(transitions));
+    }
 
     /// <summary>
     /// Passes through to the value's ToString.

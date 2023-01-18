@@ -15,42 +15,7 @@ namespace Stateless.Graph
                       + "compound=true;\n"
                       + "node [shape=Mrecord]\n"
                       + "rankdir=\"LR\"\n";
-        }
-
-        /// <summary>
-        /// Returns the formatted text for a single superstate and its substates.
-        /// For example, for DOT files this would be a subgraph containing nodes for all the substates.
-        /// </summary>
-        /// <param name="stateInfo">The superstate to generate text for</param>
-        /// <returns>Description of the superstate, and all its substates, in the desired format</returns>
-        public override string FormatOneCluster(SuperState<TState, TTrigger> stateInfo)
-        {
-            string stateRepresentationString = "";
-            var sourceName = stateInfo.StateName;
-
-            StringBuilder label = new StringBuilder($"{sourceName}");
-
-            if ((stateInfo.EntryActions.Count > 0) || (stateInfo.ExitActions.Count > 0))
-            {
-                label.Append("\\n----------");
-                label.Append(string.Concat(stateInfo.EntryActions.Select(act => "\\nentry / " + act)));
-                label.Append(string.Concat(stateInfo.ExitActions.Select(act => "\\nexit / " + act)));
-            }
-
-            stateRepresentationString = "\n"
-                + $"subgraph \"cluster{stateInfo.NodeName}\"" + "\n"
-                + "\t{" + "\n"
-                + $"\tlabel = \"{label.ToString()}\"" + "\n";
-
-            foreach (var subState in stateInfo.SubStates)
-            {
-                stateRepresentationString += FormatOneState(subState);
-            }
-
-            stateRepresentationString += "}\n";
-
-            return stateRepresentationString;
-        }
+        } 
 
         /// <summary>
         /// Generate the text for a single state

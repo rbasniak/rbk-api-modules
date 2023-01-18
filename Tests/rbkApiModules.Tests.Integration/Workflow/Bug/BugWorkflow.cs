@@ -69,7 +69,6 @@ public class BugWorkflow
             }), "OPEN:OnExit");
 
         _machine.Configure(State.Assigned)
-            .SubstateOf(State.Open)
             .PermitReentry(Trigger.Assign)
             .Permit(Trigger.Defer, State.Deferred)
             .Permit(Trigger.Start, State.Doing)
@@ -100,7 +99,6 @@ public class BugWorkflow
             }), "ASSIGNED:OnExit");
 
         _machine.Configure(State.Doing)
-            .SubstateOf(State.Open)
             .Permit(Trigger.Stop, State.Assigned)
             .OnEntry(x => _bug.AddEvent(new BugWorkflowEvent
             {

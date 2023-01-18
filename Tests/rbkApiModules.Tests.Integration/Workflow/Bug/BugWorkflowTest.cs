@@ -46,13 +46,9 @@ public class BugWorkflowTests
             compound=true;
             node [shape=Mrecord]
             rankdir="LR"
-
-            subgraph "clusterOpen"
-            	{
-            	label = "Open\n----------\nentry / OPEN:OnEntry\nexit / OPEN:OnExit"
+            "Open" [label="Open|entry / OPEN:OnEntry\nexit / OPEN:OnExit"];
             "Assigned" [label="Assigned|entry / ASSIGNED:OnEntry\nexit / ASSIGNED:OnExit"];
             "Doing" [label="Doing|entry / DOING:OnEntry\nexit / DOING:OnExit"];
-            }
             "Deferred" [label="Deferred|entry / Function\nentry / DEFERRED:OnEntry\nexit / DEFERRED:OnExit"];
             "Closed" [label="Closed"];
 

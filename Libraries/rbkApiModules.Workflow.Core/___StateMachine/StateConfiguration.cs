@@ -272,51 +272,7 @@ public partial class StateConfiguration<TState, TTrigger>
             t => exitAction(t),
             Reflection.InvocationInfo.Create(exitAction, exitActionDescription));
         return this;
-    }
-
-    /// <summary>
-    /// Sets the superstate that the configured state is a substate of.
-    /// </summary>
-    /// <remarks>
-    /// Substates inherit the allowed transitions of their superstate.
-    /// When entering directly into a substate from outside of the superstate,
-    /// entry actions for the superstate are executed.
-    /// Likewise when leaving from the substate to outside the supserstate,
-    /// exit actions for the superstate will execute.
-    /// </remarks>
-    /// <param name="superstate">The superstate.</param>
-    /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> SubstateOf(TState superstate)
-    {
-        var State = _representation.UnderlyingState;
-
-        // Check for accidental identical cyclic configuration
-        if (State.Equals(superstate))
-        {
-            throw new ArgumentException($"Configuring {State} as a substate of {superstate} creates an illegal cyclic configuration.");
-        }
-
-        // Check for accidental identical nested cyclic configuration
-        var superstates = new HashSet<TState> { State };
-
-        // Build list of super states and check for
-        var activeRepresentation = _lookup(superstate);
-        while (activeRepresentation.Superstate != null)
-        {
-            // Check if superstate is already added to hashset
-            if (superstates.Contains(activeRepresentation.Superstate.UnderlyingState))
-                throw new ArgumentException($"Configuring {State} as a substate of {superstate} creates an illegal nested cyclic configuration.");
-
-            superstates.Add(activeRepresentation.Superstate.UnderlyingState);
-            activeRepresentation = _lookup(activeRepresentation.Superstate.UnderlyingState);
-        }
-
-        // The check was OK, we can add this
-        var superRepresentation = _lookup(superstate);
-        _representation.Superstate = superRepresentation;
-        superRepresentation.AddSubstate(_representation);
-        return this;
-    }      
+    } 
 
     void EnforceNotIdentityTransition(TState destination)
     {
@@ -343,22 +299,6 @@ public partial class StateConfiguration<TState, TTrigger>
         _representation.AddTriggerBehaviour(new ReentryTriggerBehaviour<TState, TTrigger>(trigger, destinationState, transitionGuard));
         return this;
     } 
-
-    /// <summary>
-    ///  Adds internal transition to this state. When entering the current state the state machine will look for an initial transition, and enter the target state.
-    /// </summary>
-    /// <param name="targetState">The target initial state</param>
-    /// <returns>A StateConfiguration<TState, TTrigger> object</returns>
-    public StateConfiguration<TState, TTrigger> InitialTransition(TState targetState)
-    {
-        if (_representation.HasInitialTransition) throw new InvalidOperationException($"This state has already been configured with an inital transition ({_representation.InitialTransitionTarget}).");
-        if (targetState.Equals(State)) throw new ArgumentException("Setting the current state as the target destination state is not allowed.", nameof(targetState));
-
-        _representation.SetInitialTransition(targetState);
-        return this;
-    }
-
-
 
 
 
