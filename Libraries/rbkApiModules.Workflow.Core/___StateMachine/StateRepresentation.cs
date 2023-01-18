@@ -119,25 +119,20 @@ internal partial class StateRepresentation<TState, TTrigger>
         DeactivateActions.Add(new DeactivateActionBehaviour<TState, TTrigger>.Sync(_state, action, deactivateActionDescription));
     }
 
-    public void AddEntryAction(TTrigger trigger, Action<Transition<TState, TTrigger>, object[]> action, Reflection.InvocationInfo entryActionDescription)
+    public void AddEntryAction(TTrigger trigger, Action<Transition<TState, TTrigger>> action, Reflection.InvocationInfo entryActionDescription)
     {
         EntryActions.Add(new EntryActionBehavior<TState, TTrigger>.SyncFrom<TTrigger>(trigger, action, entryActionDescription));
     }
 
-    public void AddEntryAction(Action<Transition<TState, TTrigger>, object[]> action, Reflection.InvocationInfo entryActionDescription)
+    public void AddEntryAction(Action<Transition<TState, TTrigger>> action, Reflection.InvocationInfo entryActionDescription)
     {
         EntryActions.Add(new EntryActionBehavior<TState, TTrigger>.Sync(action, entryActionDescription));
     }
 
-    public void AddExitAction(Action<Transition<TState, TTrigger>, object[]> action, Reflection.InvocationInfo exitActionDescription)
+    public void AddExitAction(Action<Transition<TState, TTrigger>> action, Reflection.InvocationInfo exitActionDescription)
     {
         ExitActions.Add(new ExitActionBehavior<TState, TTrigger>.Sync(action, exitActionDescription));
-    }
-
-    public void AddExitAction(Action<object[]> action, Reflection.InvocationInfo exitActionDescription)
-    {
-        ExitActions.Add(new ExitActionBehavior<TState, TTrigger>.Sync((t, args) => action(args), exitActionDescription));
-    }
+    } 
 
     public void Activate()
     {
@@ -171,14 +166,14 @@ internal partial class StateRepresentation<TState, TTrigger>
     {
         if (transition.IsReentry)
         {
-            ExecuteEntryActions(transition, entryArgs);
+            ExecuteEntryActions(transition);
         }
         else if (!Includes(transition.Source))
         {
             if (_superstate != null && !(transition is InitialTransition<TState, TTrigger>))
                 _superstate.Enter(transition, entryArgs);
 
-            ExecuteEntryActions(transition, entryArgs);
+            ExecuteEntryActions(transition);
         }
     }
 
@@ -214,10 +209,10 @@ internal partial class StateRepresentation<TState, TTrigger>
         return transition;
     }
 
-    void ExecuteEntryActions(Transition<TState, TTrigger> transition, object[] entryArgs)
+    void ExecuteEntryActions(Transition<TState, TTrigger> transition)
     {
         foreach (var action in EntryActions)
-            action.Execute(transition, entryArgs);
+            action.Execute(transition);
     }
 
     void ExecuteExitActions(Transition<TState, TTrigger> transition)
@@ -248,7 +243,7 @@ internal partial class StateRepresentation<TState, TTrigger>
 
         // Execute internal transition event handler
         if (internalTransition == null) throw new ArgumentNullException("The configuration is incorrect, no action assigned to this internal transition.");
-        internalTransition.InternalAction(transition, args);
+        internalTransition.InternalAction(transition);
     }
     public void AddTriggerBehaviour(TriggerBehaviour<TState, TTrigger> triggerBehaviour)
     {
@@ -378,22 +373,22 @@ internal partial class StateRepresentation<TState, TTrigger>
         DeactivateActions.Add(new DeactivateActionBehaviour<TState, TTrigger>.Async(_state, action, deactivateActionDescription));
     }
 
-    public void AddEntryAction(TTrigger trigger, Func<Transition<TState, TTrigger>, object[], Task> action, Reflection.InvocationInfo entryActionDescription)
+    public void AddEntryAction(TTrigger trigger, Func<Transition<TState, TTrigger>, Task> action, Reflection.InvocationInfo entryActionDescription)
     {
         if (action == null) throw new ArgumentNullException(nameof(action));
 
         EntryActions.Add(
-            new EntryActionBehavior<TState, TTrigger>.Async((t, args) =>
+            new EntryActionBehavior<TState, TTrigger>.Async(t =>
             {
                 if (t.Trigger.Equals(trigger))
-                    return action(t, args);
+                    return action(t);
 
                 return TaskResult.Done;
             },
             entryActionDescription));
     }
 
-    public void AddEntryAction(Func<Transition<TState, TTrigger>, object[], Task> action, Reflection.InvocationInfo entryActionDescription)
+    public void AddEntryAction(Func<Transition<TState, TTrigger>, Task> action, Reflection.InvocationInfo entryActionDescription)
     {
         EntryActions.Add(
             new EntryActionBehavior<TState, TTrigger>.Async(
@@ -435,18 +430,18 @@ internal partial class StateRepresentation<TState, TTrigger>
     }
 
 
-    public async Task EnterAsync(Transition<TState, TTrigger> transition, params object[] entryArgs)
+    public async Task EnterAsync(Transition<TState, TTrigger> transition)
     {
         if (transition.IsReentry)
         {
-            await ExecuteEntryActionsAsync(transition, entryArgs).ConfigureAwait(false);
+            await ExecuteEntryActionsAsync(transition).ConfigureAwait(false);
         }
         else if (!Includes(transition.Source))
         {
             if (_superstate != null && !(transition is InitialTransition<TState, TTrigger>))
-                await _superstate.EnterAsync(transition, entryArgs).ConfigureAwait(false);
+                await _superstate.EnterAsync(transition).ConfigureAwait(false);
 
-            await ExecuteEntryActionsAsync(transition, entryArgs).ConfigureAwait(false);
+            await ExecuteEntryActionsAsync(transition).ConfigureAwait(false);
         }
     }
 
@@ -482,10 +477,10 @@ internal partial class StateRepresentation<TState, TTrigger>
         return transition;
     }
 
-    async Task ExecuteEntryActionsAsync(Transition<TState, TTrigger> transition, object[] entryArgs)
+    async Task ExecuteEntryActionsAsync(Transition<TState, TTrigger> transition)
     {
         foreach (var action in EntryActions)
-            await action.ExecuteAsync(transition, entryArgs).ConfigureAwait(false);
+            await action.ExecuteAsync(transition).ConfigureAwait(false);
     }
 
     async Task ExecuteExitActionsAsync(Transition<TState, TTrigger> transition)

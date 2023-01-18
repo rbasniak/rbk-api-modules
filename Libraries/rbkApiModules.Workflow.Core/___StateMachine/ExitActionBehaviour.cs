@@ -3,9 +3,7 @@
 internal abstract class ExitActionBehavior<TState, TTrigger>
 {
     public abstract void Execute(Transition<TState, TTrigger> transition);
-    public abstract void Execute(Transition<TState, TTrigger> transition, object[] args);
     public abstract Task ExecuteAsync(Transition<TState, TTrigger> transition);
-    public abstract Task ExecuteAsync(Transition<TState, TTrigger> transition, object[] args);
 
     protected ExitActionBehavior(Reflection.InvocationInfo actionDescription)
     {
@@ -16,27 +14,16 @@ internal abstract class ExitActionBehavior<TState, TTrigger>
 
     public class Sync : ExitActionBehavior<TState, TTrigger>
     {
-        readonly Action<Transition<TState, TTrigger>, object[]> _action;
+        readonly Action<Transition<TState, TTrigger>> _action;
 
-        public Sync(Action<Transition<TState, TTrigger>, object[]> action, Reflection.InvocationInfo actionDescription) : base(actionDescription)
+        public Sync(Action<Transition<TState, TTrigger>> action, Reflection.InvocationInfo actionDescription) : base(actionDescription)
         {
             _action = action;
         }
 
-        public override void Execute(Transition<TState, TTrigger> transition, object[] args)
-        {
-            _action(transition, args);
-        }
-
         public override void Execute(Transition<TState, TTrigger> transition)
         {
-            _action(transition, null);
-        }
-
-        public override Task ExecuteAsync(Transition<TState, TTrigger> transition, object[] args)
-        {
-            Execute(transition, args);
-            return TaskResult.Done;
+            _action(transition);
         }
 
         public override Task ExecuteAsync(Transition<TState, TTrigger> transition)
@@ -55,23 +42,11 @@ internal abstract class ExitActionBehavior<TState, TTrigger>
             _action = action;
         }
 
-        public override void Execute(Transition<TState, TTrigger> transition, object[] args)
-        {
-            throw new InvalidOperationException(
-                $"Cannot execute asynchronous action specified in OnExit event for '{transition.Source}' state. " +
-                 "Use asynchronous version of Fire [FireAsync]");
-        }
-
         public override void Execute(Transition<TState, TTrigger> transition)
         {
             throw new InvalidOperationException(
                 $"Cannot execute asynchronous action specified in OnExit event for '{transition.Source}' state. " +
                  "Use asynchronous version of Fire [FireAsync]");
-        }
-
-        public override Task ExecuteAsync(Transition<TState, TTrigger> transition, object[] args)
-        {
-            return _action(transition, args);
         }
 
         public override Task ExecuteAsync(Transition<TState, TTrigger> transition)

@@ -665,7 +665,7 @@ namespace Stateless
         private async Task<StateRepresentation<TState, TTrigger>> EnterStateAsync(StateRepresentation<TState, TTrigger> representation, Transition<TState, TTrigger> transition, object[] args)
         {
             // Enter the new state
-            await representation.EnterAsync(transition, args);
+            await representation.EnterAsync(transition);
 
             // Recursively enter substates that have an initial transition
             if (representation.HasInitialTransition)

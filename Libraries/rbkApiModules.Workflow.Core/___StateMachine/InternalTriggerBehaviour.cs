@@ -18,15 +18,15 @@ internal abstract class InternalTriggerBehaviour<TState, TTrigger> : TriggerBeha
 
     public class Sync : InternalTriggerBehaviour<TState, TTrigger>
     {
-        public Action<Transition<TState, TTrigger>, object[]> InternalAction { get; }
+        public Action<Transition<TState, TTrigger>> InternalAction { get; }
 
-        public Sync(TTrigger trigger, Func<object[], bool> guard, Action<Transition<TState, TTrigger>, object[]> internalAction, string guardDescription = null) : base(trigger, new TransitionGuard(guard, guardDescription))
+        public Sync(TTrigger trigger, Func<object[], bool> guard, Action<Transition<TState, TTrigger>> internalAction, string guardDescription = null) : base(trigger, new TransitionGuard(guard, guardDescription))
         {
             InternalAction = internalAction;
         }
         public override void Execute(Transition<TState, TTrigger> transition, object[] args)
         {
-            InternalAction(transition, args);
+            InternalAction(transition);
         }
 
         public override Task ExecuteAsync(Transition<TState, TTrigger> transition, object[] args)

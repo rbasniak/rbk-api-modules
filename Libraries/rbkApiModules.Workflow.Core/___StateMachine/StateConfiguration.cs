@@ -59,19 +59,11 @@ public partial class StateConfiguration<TState, TTrigger>
     /// <summary>
     /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
     /// </summary>
-    public StateConfiguration<TState, TTrigger> InternalTransition(TTrigger trigger, Action<object[], Transition<TState, TTrigger>> internalAction)
-    {
-        return InternalTransitionIf(trigger, t => true, internalAction);
-    }
-
-    /// <summary>
-    /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
-    /// </summary>
     public StateConfiguration<TState, TTrigger> InternalTransitionIf(TTrigger trigger, Func<object[], bool> guard, Action<Transition<TState, TTrigger>> entryAction, string guardDescription = null)
     {
         if (entryAction == null) throw new ArgumentNullException(nameof(entryAction));
 
-        _representation.AddTriggerBehaviour(new InternalTriggerBehaviour<TState, TTrigger>.Sync(trigger, guard, (t, args) => entryAction(t), guardDescription));
+        _representation.AddTriggerBehaviour(new InternalTriggerBehaviour<TState, TTrigger>.Sync(trigger, guard, t => entryAction(t), guardDescription));
         return this;
     }
 
@@ -82,22 +74,9 @@ public partial class StateConfiguration<TState, TTrigger>
     {
         if (internalAction == null) throw new ArgumentNullException(nameof(internalAction));
 
-        _representation.AddTriggerBehaviour(new InternalTriggerBehaviour<TState, TTrigger>.Sync(trigger, guard, (t, args) => internalAction(), guardDescription));
+        _representation.AddTriggerBehaviour(new InternalTriggerBehaviour<TState, TTrigger>.Sync(trigger, guard, t => internalAction(), guardDescription));
         return this;
-    }
-
-    /// <summary>
-    /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
-    /// </summary>
-    public StateConfiguration<TState, TTrigger> InternalTransitionIf(TTrigger trigger, Func<object[], bool> guard, Action<object[], Transition<TState, TTrigger>> internalAction, string guardDescription = null)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-        if (internalAction == null) throw new ArgumentNullException(nameof(internalAction));
-
-        _representation.AddTriggerBehaviour(new InternalTriggerBehaviour<TState, TTrigger>.Sync(trigger,
-            TransitionGuard.ToPackedGuard(guard), (t, args) => internalAction(args, t), guardDescription));
-        return this;
-    }
+    } 
 
     /// <summary>
     /// Accept the specified trigger and transition to the destination state.
@@ -211,7 +190,7 @@ public partial class StateConfiguration<TState, TTrigger>
         if (entryAction == null) throw new ArgumentNullException(nameof(entryAction));
 
         _representation.AddEntryAction(
-            (t, args) => entryAction(),
+            t => entryAction(),
             Reflection.InvocationInfo.Create(entryAction, entryActionDescription));
         return this;
 
@@ -229,7 +208,7 @@ public partial class StateConfiguration<TState, TTrigger>
         if (entryAction == null) throw new ArgumentNullException(nameof(entryAction));
 
         _representation.AddEntryAction(
-            (t, args) => entryAction(t),
+            t => entryAction(t),
             Reflection.InvocationInfo.Create(entryAction, entryActionDescription));
         return this;
     }
@@ -248,7 +227,7 @@ public partial class StateConfiguration<TState, TTrigger>
 
         _representation.AddEntryAction(
             trigger,
-            (t, args) => entryAction(),
+            t => entryAction(),
             Reflection.InvocationInfo.Create(entryAction, entryActionDescription));
         return this;
 
@@ -267,49 +246,10 @@ public partial class StateConfiguration<TState, TTrigger>
 
         _representation.AddEntryAction(
             trigger,
-            (t, args) => entryAction(t),
+            t => entryAction(t),
             Reflection.InvocationInfo.Create(entryAction, entryActionDescription));
         return this;
-    }
-
-    /// <summary>
-    /// Specify an action that will execute when transitioning into
-    /// the configured state.
-    /// </summary>
-    /// <param name="entryAction">Action to execute, providing details of the transition.</param>
-    /// <param name="trigger">The trigger by which the state must be entered in order for the action to execute.</param>
-    /// <param name="entryActionDescription">Action description.</param>
-    public StateConfiguration<TState, TTrigger> OnEntryFrom(TTrigger trigger, Action<object[]> entryAction, string entryActionDescription = null)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-        if (entryAction == null) throw new ArgumentNullException(nameof(entryAction));
-
-        _representation.AddEntryAction(
-            trigger,
-            (t, args) => entryAction(args),
-            Reflection.InvocationInfo.Create(entryAction, entryActionDescription));
-        return this;
-
-    }
-
-    /// <summary>
-    /// Specify an action that will execute when transitioning into
-    /// the configured state.
-    /// </summary>
-    /// <param name="entryAction">Action to execute, providing details of the transition.</param>
-    /// <param name="trigger">The trigger by which the state must be entered in order for the action to execute.</param>
-    /// <param name="entryActionDescription">Action description.</param>
-    public StateConfiguration<TState, TTrigger> OnEntryFrom(TTrigger trigger, Action<Transition<TState, TTrigger>, object[]> entryAction, string entryActionDescription = null)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-        if (entryAction == null) throw new ArgumentNullException(nameof(entryAction));
-
-        _representation.AddEntryAction(
-            trigger,
-            (t, args) => entryAction(t, args),
-            Reflection.InvocationInfo.Create(entryAction, entryActionDescription));
-        return this;
-    }
+    }  
 
     /// <summary>
     /// Specify an action that will execute when transitioning from
@@ -321,7 +261,7 @@ public partial class StateConfiguration<TState, TTrigger>
     public StateConfiguration<TState, TTrigger> OnExit(Action exitAction, string exitActionDescription = null)
     {
         _representation.AddExitAction(
-            (t, args) => exitAction(),
+            t => exitAction(),
             Reflection.InvocationInfo.Create(exitAction, exitActionDescription));
         return this;
     }
@@ -329,7 +269,7 @@ public partial class StateConfiguration<TState, TTrigger>
     public StateConfiguration<TState, TTrigger> OnExit(Action<Transition<TState, TTrigger>> exitAction, string exitActionDescription = null)
     {
         _representation.AddExitAction(
-            (t, args) => exitAction(t),
+            t => exitAction(t),
             Reflection.InvocationInfo.Create(exitAction, exitActionDescription));
         return this;
     }
@@ -744,7 +684,7 @@ public partial class StateConfiguration<TState, TTrigger>
         if (entryAction == null) throw new ArgumentNullException(nameof(entryAction));
 
         _representation.AddEntryAction(
-            (t, args) => entryAction(),
+            t => entryAction(),
             Reflection.InvocationInfo.Create(entryAction, entryActionDescription, Reflection.InvocationInfo.Timing.Asynchronous));
         return this;
 
@@ -762,7 +702,7 @@ public partial class StateConfiguration<TState, TTrigger>
         if (entryAction == null) throw new ArgumentNullException(nameof(entryAction));
 
         _representation.AddEntryAction(
-            (t, args) => entryAction(t),
+            t => entryAction(t),
             Reflection.InvocationInfo.Create(entryAction, entryActionDescription, Reflection.InvocationInfo.Timing.Asynchronous));
         return this;
     }
@@ -781,7 +721,7 @@ public partial class StateConfiguration<TState, TTrigger>
 
         _representation.AddEntryAction(
             trigger,
-            (t, args) => entryAction(),
+            t => entryAction(),
             Reflection.InvocationInfo.Create(entryAction, entryActionDescription, Reflection.InvocationInfo.Timing.Asynchronous));
         return this;
     }
@@ -800,47 +740,7 @@ public partial class StateConfiguration<TState, TTrigger>
 
         _representation.AddEntryAction(
             trigger,
-            (t, args) => entryAction(t),
-            Reflection.InvocationInfo.Create(entryAction, entryActionDescription, Reflection.InvocationInfo.Timing.Asynchronous));
-        return this;
-    }
-
-    /// <summary>
-    /// Specify an asynchronous action that will execute when transitioning into
-    /// the configured state.
-    /// </summary>
-    /// <param name="entryAction">Action to execute, providing details of the transition.</param>
-    /// <param name="trigger">The trigger by which the state must be entered in order for the action to execute.</param>
-    /// <param name="entryActionDescription">Action description.</param>
-    /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> OnEntryFromAsync(TTrigger trigger, Func<object[], Task> entryAction, string entryActionDescription = null)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-        if (entryAction == null) throw new ArgumentNullException(nameof(entryAction));
-
-        _representation.AddEntryAction(
-            trigger,
-            (t, args) => entryAction(args),
-            Reflection.InvocationInfo.Create(entryAction, entryActionDescription, Reflection.InvocationInfo.Timing.Asynchronous));
-        return this;
-    }
-
-    /// <summary>
-    /// Specify an asynchronous action that will execute when transitioning into
-    /// the configured state.
-    /// </summary>
-    /// <param name="entryAction">Action to execute, providing details of the transition.</param>
-    /// <param name="trigger">The trigger by which the state must be entered in order for the action to execute.</param>
-    /// <param name="entryActionDescription">Action description.</param>
-    /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> OnEntryFromAsync(TTrigger trigger, Func<object[], Transition<TState, TTrigger>, Task> entryAction, string entryActionDescription = null)
-    {
-        if (trigger == null) throw new ArgumentNullException(nameof(trigger));
-        if (entryAction == null) throw new ArgumentNullException(nameof(entryAction));
-
-        _representation.AddEntryAction(
-            trigger,
-            (t, args) => entryAction(args, t),
+            t => entryAction(t),
             Reflection.InvocationInfo.Create(entryAction, entryActionDescription, Reflection.InvocationInfo.Timing.Asynchronous));
         return this;
     }

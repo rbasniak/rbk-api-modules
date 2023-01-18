@@ -129,7 +129,7 @@ public class ChangeRequestWorkflow
         _machine.Configure(State.EM_EXECUCAO)
             .Permit(Trigger.CANCELAR, State.CANCELADA)
             .Permit(Trigger.CONCLUIR_EXECUCAO, State.AguardandoAvaliacaoDaExecucaoPeloAdministrador)
-            .OnEntryFrom(Trigger.INICIAR_EXECUCAO, (args) => Console.WriteLine(args.Length))
+            .OnEntryFrom(Trigger.INICIAR_EXECUCAO, (t) => Console.WriteLine(t.Parameters.Length))
             .OnEntry(transition => Console.WriteLine());
 
         _machine.Configure(State.AguardandoAvaliacaoDaExecucaoPeloAdministrador)

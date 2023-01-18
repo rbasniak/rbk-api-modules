@@ -9,26 +9,26 @@ internal abstract class EntryActionBehavior<TState, TTrigger>
 
     public Reflection.InvocationInfo Description { get; }
 
-    public abstract void Execute(Transition<TState, TTrigger> transition, object[] args);
-    public abstract Task ExecuteAsync(Transition<TState, TTrigger> transition, object[] args);
+    public abstract void Execute(Transition<TState, TTrigger> transition);
+    public abstract Task ExecuteAsync(Transition<TState, TTrigger> transition);
 
     public class Sync : EntryActionBehavior<TState, TTrigger>
     {
-        readonly Action<Transition<TState, TTrigger>, object[]> _action;
+        readonly Action<Transition<TState, TTrigger>> _action;
 
-        public Sync(Action<Transition<TState, TTrigger>, object[]> action, Reflection.InvocationInfo description) : base(description)
+        public Sync(Action<Transition<TState, TTrigger>> action, Reflection.InvocationInfo description) : base(description)
         {
             _action = action;
         }
 
-        public override void Execute(Transition<TState, TTrigger> transition, object[] args)
+        public override void Execute(Transition<TState, TTrigger> transition)
         {
-            _action(transition, args);
+            _action(transition);
         }
 
-        public override Task ExecuteAsync(Transition <TState, TTrigger>transition, object[] args)
+        public override Task ExecuteAsync(Transition <TState, TTrigger>transition)
         {
-            Execute(transition, args);
+            Execute(transition);
             return TaskResult.Done;
         }
     }
@@ -37,44 +37,44 @@ internal abstract class EntryActionBehavior<TState, TTrigger>
     {
         internal TTriggerType Trigger { get; private set; }
 
-        public SyncFrom(TTriggerType trigger, Action<Transition<TState, TTrigger>, object[]> action, Reflection.InvocationInfo description)
+        public SyncFrom(TTriggerType trigger, Action<Transition<TState, TTrigger>> action, Reflection.InvocationInfo description)
             : base(action, description)
         {
             Trigger = trigger;
         }
 
-        public override void Execute(Transition<TState, TTrigger> transition, object[] args)
+        public override void Execute(Transition<TState, TTrigger> transition)
         {
             if (transition.Trigger.Equals(Trigger))
-                base.Execute(transition, args);
+                base.Execute(transition);
         }
 
-        public override Task ExecuteAsync(Transition<TState, TTrigger> transition, object[] args)
+        public override Task ExecuteAsync(Transition<TState, TTrigger> transition)
         {
-            Execute(transition, args);
+            Execute(transition);
             return TaskResult.Done;
         }
     }
 
     public class Async : EntryActionBehavior<TState, TTrigger>
     {
-        readonly Func<Transition<TState, TTrigger>, object[], Task> _action;
+        readonly Func<Transition<TState, TTrigger>, Task> _action;
 
-        public Async(Func<Transition<TState, TTrigger>, object[], Task> action, Reflection.InvocationInfo description) : base(description)
+        public Async(Func<Transition<TState, TTrigger>, Task> action, Reflection.InvocationInfo description) : base(description)
         {
             _action = action;
         }
 
-        public override void Execute(Transition<TState, TTrigger> transition, object[] args)
+        public override void Execute(Transition<TState, TTrigger> transition)
         {
             throw new InvalidOperationException(
                 $"Cannot execute asynchronous action specified in OnEntry event for '{transition.Destination}' state. " +
                  "Use asynchronous version of Fire [FireAsync]");
         }
 
-        public override Task ExecuteAsync(Transition<TState, TTrigger> transition, object[] args)
+        public override Task ExecuteAsync(Transition<TState, TTrigger> transition)
         {
-            return _action(transition, args);
+            return _action(transition);
         }
     }
 }
