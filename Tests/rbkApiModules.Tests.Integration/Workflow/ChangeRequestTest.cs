@@ -92,14 +92,13 @@ public class ChangeRequestWorkflow
 
                 return changeRequest.Id == "019";
             }))
-            .OnDeactivate(() => Debug.WriteLine($"State {State.RASCUNHO} deactivated"))
+            // .OnDeactivate(() => Debug.WriteLine($"State {State.RASCUNHO} deactivated"))
             .OnExit(transition => Debug.WriteLine($"Exited from {transition.Source} and entered {transition.Destination} by firing {transition.Trigger}"));
 
         _machine.Configure(State.AGUARDANDO_AVALIACAO_DO_ADMINISTRADOR)
             .Permit(Trigger.CANCELAR, State.CANCELADA)
             .OnEntry(transition => Debug.WriteLine($"Entered {transition.Destination} from {transition.Source} by firing {transition.Trigger}"))
             // .OnEntryFrom(Trigger.ENVIAR_PARA_AVALIACAO, (transition) => Debug.WriteLine($"Entered {transition.Destination} from {transition.Source} by firing ONLY {transition.Trigger}"))
-            .OnActivate(() => Debug.WriteLine($"State {State.AGUARDANDO_AVALIACAO_DO_ADMINISTRADOR} activated"))
             // .OnEntryFrom(_machine.SetTriggerParameters<ChangeRequest>(Trigger.ENVIAR_PARA_AVALIACAO), OnEnteredThisState)
 
             .Permit(Trigger.SOLICITAR_INFORMACOES_ADICIONAIS, State.AGUARDANDO_INFORMACOES_EXTRAS_DA_AVALIACAO_INICIAL_SOLICITADAS_PELO_ADMINISTRADOR)

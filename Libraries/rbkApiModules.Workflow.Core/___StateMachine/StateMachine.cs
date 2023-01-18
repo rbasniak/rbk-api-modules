@@ -179,29 +179,31 @@ namespace Stateless
         public void Fire(TTrigger trigger, params object[] args)
         {
             InternalFire(trigger, args);
-        } 
-
-        /// <summary>
-        /// Activates current state. Actions associated with activating the current state
-        /// will be invoked. The activation is idempotent and subsequent activation of the same current state
-        /// will not lead to re-execution of activation callbacks.
-        /// </summary>
-        public void Activate()
-        {
-            var representativeState = GetRepresentation(State);
-            representativeState.Activate();
         }
 
-        /// <summary>
-        /// Deactivates current state. Actions associated with deactivating the current state
-        /// will be invoked. The deactivation is idempotent and subsequent deactivation of the same current state
-        /// will not lead to re-execution of deactivation callbacks.
-        /// </summary>
-        public void Deactivate()
-        {
-            var representativeState = GetRepresentation(State);
-            representativeState.Deactivate();
-        }
+        // TODO: REMOVE ACTIVATION
+        ///// <summary>
+        ///// Activates current state. Actions associated with activating the current state
+        ///// will be invoked. The activation is idempotent and subsequent activation of the same current state
+        ///// will not lead to re-execution of activation callbacks.
+        ///// </summary>
+        //public void Activate()
+        //{
+        //    var representativeState = GetRepresentation(State);
+        //    representativeState.Activate();
+        //}
+
+        // TODO: REMOVE ACTIVATION
+        ///// <summary>
+        ///// Deactivates current state. Actions associated with deactivating the current state
+        ///// will be invoked. The deactivation is idempotent and subsequent deactivation of the same current state
+        ///// will not lead to re-execution of deactivation callbacks.
+        ///// </summary>
+        //public void Deactivate()
+        //{
+        //    var representativeState = GetRepresentation(State);
+        //    representativeState.Deactivate();
+        //}
 
         /// <summary>
         /// Queue events and then fire in order.
@@ -461,27 +463,29 @@ namespace Stateless
 
 
 
-        /// <summary>
-        /// Activates current state in asynchronous fashion. Actions associated with activating the currrent state
-        /// will be invoked. The activation is idempotent and subsequent activation of the same current state 
-        /// will not lead to re-execution of activation callbacks.
-        /// </summary>
-        public Task ActivateAsync()
-        {
-            var representativeState = GetRepresentation(State);
-            return representativeState.ActivateAsync();
-        }
+        // TODO: REMOVE ACTIVATION
+        ///// <summary>
+        ///// Activates current state in asynchronous fashion. Actions associated with activating the currrent state
+        ///// will be invoked. The activation is idempotent and subsequent activation of the same current state 
+        ///// will not lead to re-execution of activation callbacks.
+        ///// </summary>
+        //public Task ActivateAsync()
+        //{
+        //    var representativeState = GetRepresentation(State);
+        //    return representativeState.ActivateAsync();
+        //}
 
-        /// <summary>
-        /// Deactivates current state in asynchronous fashion. Actions associated with deactivating the currrent state
-        /// will be invoked. The deactivation is idempotent and subsequent deactivation of the same current state 
-        /// will not lead to re-execution of deactivation callbacks.
-        /// </summary>
-        public Task DeactivateAsync()
-        {
-            var representativeState = GetRepresentation(State);
-            return representativeState.DeactivateAsync();
-        }
+        // TODO: REMOVE ACTIVATION
+        ///// <summary>
+        ///// Deactivates current state in asynchronous fashion. Actions associated with deactivating the currrent state
+        ///// will be invoked. The deactivation is idempotent and subsequent deactivation of the same current state 
+        ///// will not lead to re-execution of deactivation callbacks.
+        ///// </summary>
+        //public Task DeactivateAsync()
+        //{
+        //    var representativeState = GetRepresentation(State);
+        //    return representativeState.DeactivateAsync();
+        //}
 
         /// <summary>
         /// Transition from the current state via the specified trigger in async fashion.

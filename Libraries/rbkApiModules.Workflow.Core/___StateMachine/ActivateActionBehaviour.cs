@@ -1,62 +1,64 @@
-﻿namespace Stateless;
+﻿// TODO: REMOVE ACTIVATION
 
-internal abstract class ActivateActionBehaviour<TState, TTrigger>
-{
-    readonly TState _state;
+//namespace Stateless;
 
-    protected ActivateActionBehaviour(TState state, Reflection.InvocationInfo actionDescription)
-    {
-        _state = state;
-        Description = actionDescription ?? throw new ArgumentNullException(nameof(actionDescription));
-    }
+//internal abstract class ActivateActionBehaviour<TState, TTrigger>
+//{
+//    readonly TState _state;
 
-    internal Reflection.InvocationInfo Description { get; }
+//    protected ActivateActionBehaviour(TState state, Reflection.InvocationInfo actionDescription)
+//    {
+//        _state = state;
+//        Description = actionDescription ?? throw new ArgumentNullException(nameof(actionDescription));
+//    }
 
-    public abstract void Execute();
-    public abstract Task ExecuteAsync();
+//    internal Reflection.InvocationInfo Description { get; }
 
-    public class Sync : ActivateActionBehaviour<TState, TTrigger>
-    {
-        readonly Action _action;
+//    public abstract void Execute();
+//    public abstract Task ExecuteAsync();
 
-        public Sync(TState state, Action action, Reflection.InvocationInfo actionDescription)
-            : base(state, actionDescription)
-        {
-            _action = action;
-        }
+//    public class Sync : ActivateActionBehaviour<TState, TTrigger>
+//    {
+//        readonly Action _action;
 
-        public override void Execute()
-        {
-            _action();
-        }
+//        public Sync(TState state, Action action, Reflection.InvocationInfo actionDescription)
+//            : base(state, actionDescription)
+//        {
+//            _action = action;
+//        }
 
-        public override Task ExecuteAsync()
-        {
-            Execute();
-            return TaskResult.Done;
-        }
-    }
+//        public override void Execute()
+//        {
+//            _action();
+//        }
 
-    public class Async : ActivateActionBehaviour<TState, TTrigger>
-    {
-        readonly Func<Task> _action;
+//        public override Task ExecuteAsync()
+//        {
+//            Execute();
+//            return TaskResult.Done;
+//        }
+//    }
 
-        public Async(TState state, Func<Task> action, Reflection.InvocationInfo actionDescription)
-            : base(state, actionDescription)
-        {
-            _action = action;
-        }
+//    public class Async : ActivateActionBehaviour<TState, TTrigger>
+//    {
+//        readonly Func<Task> _action;
 
-        public override void Execute()
-        {
-            throw new InvalidOperationException(
-                $"Cannot execute asynchronous action specified in OnActivateAsync for '{_state}' state. " +
-                 "Use asynchronous version of Activate [ActivateAsync]");
-        }
+//        public Async(TState state, Func<Task> action, Reflection.InvocationInfo actionDescription)
+//            : base(state, actionDescription)
+//        {
+//            _action = action;
+//        }
 
-        public override Task ExecuteAsync()
-        {
-            return _action();
-        }
-    }
-}
+//        public override void Execute()
+//        {
+//            throw new InvalidOperationException(
+//                $"Cannot execute asynchronous action specified in OnActivateAsync for '{_state}' state. " +
+//                 "Use asynchronous version of Activate [ActivateAsync]");
+//        }
+
+//        public override Task ExecuteAsync()
+//        {
+//            return _action();
+//        }
+//    }
+//}

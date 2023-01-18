@@ -148,35 +148,37 @@ public partial class StateConfiguration<TState, TTrigger>
         return this;
     }
 
-    /// <summary>
-    /// Specify an action that will execute when activating
-    /// the configured state.
-    /// </summary>
-    /// <param name="activateAction">Action to execute.</param>
-    /// <param name="activateActionDescription">Action description.</param>
-    /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> OnActivate(Action activateAction, string activateActionDescription = null)
-    {
-        _representation.AddActivateAction(
-            activateAction,
-            Reflection.InvocationInfo.Create(activateAction, activateActionDescription));
-        return this;
-    }
+    // TODO: REMOVE ACTIVATION
+    ///// <summary>
+    ///// Specify an action that will execute when activating
+    ///// the configured state.
+    ///// </summary>
+    ///// <param name="activateAction">Action to execute.</param>
+    ///// <param name="activateActionDescription">Action description.</param>
+    ///// <returns>The receiver.</returns>
+    //public StateConfiguration<TState, TTrigger> OnActivate(Action activateAction, string activateActionDescription = null)
+    //{
+    //    _representation.AddActivateAction(
+    //        activateAction,
+    //        Reflection.InvocationInfo.Create(activateAction, activateActionDescription));
+    //    return this;
+    //}
 
-    /// <summary>
-    /// Specify an action that will execute when deactivating
-    /// the configured state.
-    /// </summary>
-    /// <param name="deactivateAction">Action to execute.</param>
-    /// <param name="deactivateActionDescription">Action description.</param>
-    /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> OnDeactivate(Action deactivateAction, string deactivateActionDescription = null)
-    {
-        _representation.AddDeactivateAction(
-            deactivateAction,
-            Reflection.InvocationInfo.Create(deactivateAction, deactivateActionDescription));
-        return this;
-    }
+    // TODO: REMOVE ACTIVATION
+    ///// <summary>
+    ///// Specify an action that will execute when deactivating
+    ///// the configured state.
+    ///// </summary>
+    ///// <param name="deactivateAction">Action to execute.</param>
+    ///// <param name="deactivateActionDescription">Action description.</param>
+    ///// <returns>The receiver.</returns>
+    //public StateConfiguration<TState, TTrigger> OnDeactivate(Action deactivateAction, string deactivateActionDescription = null)
+    //{
+    //    _representation.AddDeactivateAction(
+    //        deactivateAction,
+    //        Reflection.InvocationInfo.Create(deactivateAction, deactivateActionDescription));
+    //    return this;
+    //}
 
     /// <summary>
     /// Specify an action that will execute when transitioning into
@@ -358,35 +360,37 @@ public partial class StateConfiguration<TState, TTrigger>
         return InternalTransitionAsyncIf(trigger, new[] { new GuardDefinition(String.Empty, (args) => true) }, internalAction);
     }
 
-    /// <summary>
-    /// Specify an asynchronous action that will execute when activating
-    /// the configured state.
-    /// </summary>
-    /// <param name="activateAction">Action to execute.</param>
-    /// <param name="activateActionDescription">Action description.</param>
-    /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> OnActivateAsync(Func<Task> activateAction, string activateActionDescription = null)
-    {
-        _representation.AddActivateAction(
-            activateAction,
-            Reflection.InvocationInfo.Create(activateAction, activateActionDescription, Reflection.InvocationInfo.Timing.Asynchronous));
-        return this;
-    }
+    // TODO: REMOVE ACTIVATION
+    ///// <summary>
+    ///// Specify an asynchronous action that will execute when activating
+    ///// the configured state.
+    ///// </summary>
+    ///// <param name="activateAction">Action to execute.</param>
+    ///// <param name="activateActionDescription">Action description.</param>
+    ///// <returns>The receiver.</returns>
+    //public StateConfiguration<TState, TTrigger> OnActivateAsync(Func<Task> activateAction, string activateActionDescription = null)
+    //{
+    //    _representation.AddActivateAction(
+    //        activateAction,
+    //        Reflection.InvocationInfo.Create(activateAction, activateActionDescription, Reflection.InvocationInfo.Timing.Asynchronous));
+    //    return this;
+    //}
 
-    /// <summary>
-    /// Specify an asynchronous action that will execute when deactivating
-    /// the configured state.
-    /// </summary>
-    /// <param name="deactivateAction">Action to execute.</param>
-    /// <param name="deactivateActionDescription">Action description.</param>
-    /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> OnDeactivateAsync(Func<Task> deactivateAction, string deactivateActionDescription = null)
-    {
-        _representation.AddDeactivateAction(
-            deactivateAction,
-            Reflection.InvocationInfo.Create(deactivateAction, deactivateActionDescription, Reflection.InvocationInfo.Timing.Asynchronous));
-        return this;
-    }
+    // TODO: REMOVE ACTIVATION
+    ///// <summary>
+    ///// Specify an asynchronous action that will execute when deactivating
+    ///// the configured state.
+    ///// </summary>
+    ///// <param name="deactivateAction">Action to execute.</param>
+    ///// <param name="deactivateActionDescription">Action description.</param>
+    ///// <returns>The receiver.</returns>
+    //public StateConfiguration<TState, TTrigger> OnDeactivateAsync(Func<Task> deactivateAction, string deactivateActionDescription = null)
+    //{
+    //    _representation.AddDeactivateAction(
+    //        deactivateAction,
+    //        Reflection.InvocationInfo.Create(deactivateAction, deactivateActionDescription, Reflection.InvocationInfo.Timing.Asynchronous));
+    //    return this;
+    //}
 
     /// <summary>
     /// Specify an asynchronous action that will execute when transitioning into

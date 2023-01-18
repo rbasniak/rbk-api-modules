@@ -15,7 +15,7 @@ public class WorflowTests
         // wf1._machine.Fire(ChangeRequestWorkflow.Trigger.ENVIAR_PARA_AVALIACAO);
         wf1.EnterThatState(new ChangeRequest { Id = "019" }, DateTime.Now);
 
-        wf1._machine.Activate(); // TODO: check if it's possible to remove the Activate and their events
+        // wf1._machine.Activate(); // TODO: check if it's possible to remove the Activate and their events
 
         Debug.WriteLine($"ChangeRequest is in State {wf1._machine.State}");
         

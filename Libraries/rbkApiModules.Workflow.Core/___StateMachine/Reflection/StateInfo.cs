@@ -26,8 +26,9 @@ public class StateInfo<TState, TTrigger>
 
         return new StateInfo<TState, TTrigger>(stateRepresentation.UnderlyingState, ignoredTriggers,
             stateRepresentation.EntryActions.Select(e => ActionInfo.Create(e)).ToList(),
-            stateRepresentation.ActivateActions.Select(e => e.Description).ToList(),
-            stateRepresentation.DeactivateActions.Select(e => e.Description).ToList(),
+            // TODO: REMOVE ACTIVATION
+            //stateRepresentation.ActivateActions.Select(e => e.Description).ToList(),
+            //stateRepresentation.DeactivateActions.Select(e => e.Description).ToList(),
             stateRepresentation.ExitActions.Select(e => e.Description).ToList());
     }
 
@@ -35,15 +36,17 @@ public class StateInfo<TState, TTrigger>
     object underlyingState,
         IEnumerable<IgnoredTransitionInfo<TState, TTrigger>> ignoredTriggers,
         IEnumerable<ActionInfo> entryActions,
-        IEnumerable<InvocationInfo> activateActions,
-        IEnumerable<InvocationInfo> deactivateActions,
+        // TODO: REMOVE ACTIVATION
+        //IEnumerable<InvocationInfo> activateActions,
+        //IEnumerable<InvocationInfo> deactivateActions,
         IEnumerable<InvocationInfo> exitActions)
     {
         UnderlyingState = underlyingState;
         IgnoredTriggers = ignoredTriggers ?? throw new ArgumentNullException(nameof(ignoredTriggers));
         EntryActions = entryActions;
-        ActivateActions = activateActions;
-        DeactivateActions = deactivateActions;
+        // TODO: REMOVE ACTIVATION
+        //ActivateActions = activateActions;
+        //DeactivateActions = deactivateActions;
         ExitActions = exitActions;
     }
 
