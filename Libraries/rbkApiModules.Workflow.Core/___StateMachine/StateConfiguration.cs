@@ -318,10 +318,10 @@ public partial class StateConfiguration<TState, TTrigger>
     /// <param name="exitAction">Action to execute, providing details of the transition.</param>
     /// <param name="exitActionDescription">Action description.</param>
     /// <returns>The receiver.</returns>
-    public StateConfiguration<TState, TTrigger> OnExit(Action<Transition<TState, TTrigger>, object[]> exitAction, string exitActionDescription = null)
+    public StateConfiguration<TState, TTrigger> OnExit(Action exitAction, string exitActionDescription = null)
     {
         _representation.AddExitAction(
-            (t, args) => exitAction(t, args),
+            (t, args) => exitAction(),
             Reflection.InvocationInfo.Create(exitAction, exitActionDescription));
         return this;
     }
