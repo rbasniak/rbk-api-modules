@@ -18,6 +18,8 @@ public class BugWorkflowTests
         workflow.Assign("John");
         workflow.Defer();
         workflow.Assign("Jane");
+        workflow.Start();
+        workflow.Stop();
         workflow.Assign("John");
         workflow.Close();
     }
@@ -47,16 +49,19 @@ public class BugWorkflowTests
 
             subgraph "clusterOpen"
             	{
-            	label = "Open"
-            "Assigned" [label="Assigned|exit / Function"];
+            	label = "Open\n----------\nentry / OPEN:OnEntry\nexit / OPEN:OnExit"
+            "Assigned" [label="Assigned|entry / ASSIGNED:OnEntry\nexit / ASSIGNED:OnExit"];
+            "Doing" [label="Doing|entry / DOING:OnEntry\nexit / DOING:OnExit"];
             }
-            "Deferred" [label="Deferred|entry / Function"];
+            "Deferred" [label="Deferred|entry / Function\nentry / DEFERRED:OnEntry\nexit / DEFERRED:OnExit"];
             "Closed" [label="Closed"];
 
             "Open" -> "Assigned" [style="solid", label="Assign / OnAssigned"];
-            "Assigned" -> "Assigned" [style="solid", label="Assign"];
-            "Assigned" -> "Closed" [style="solid", label="Close"];
+            "Assigned" -> "Assigned" [style="solid", label="Assign / ASSIGNED:OnEntry"];
             "Assigned" -> "Deferred" [style="solid", label="Defer"];
+            "Assigned" -> "Doing" [style="solid", label="Start"];
+            "Assigned" -> "Closed" [style="solid", label="Close"];
+            "Doing" -> "Assigned" [style="solid", label="Stop"];
             "Deferred" -> "Assigned" [style="solid", label="Assign / OnAssigned"];
              init [label="", shape=point];
              init -> "Open"[style = "solid"]
