@@ -164,30 +164,6 @@ namespace Stateless
             InternalFire(trigger, args);
         }
 
-        // TODO: REMOVE ACTIVATION
-        ///// <summary>
-        ///// Activates current state. Actions associated with activating the current state
-        ///// will be invoked. The activation is idempotent and subsequent activation of the same current state
-        ///// will not lead to re-execution of activation callbacks.
-        ///// </summary>
-        //public void Activate()
-        //{
-        //    var representativeState = GetRepresentation(State);
-        //    representativeState.Activate();
-        //}
-
-        // TODO: REMOVE ACTIVATION
-        ///// <summary>
-        ///// Deactivates current state. Actions associated with deactivating the current state
-        ///// will be invoked. The deactivation is idempotent and subsequent deactivation of the same current state
-        ///// will not lead to re-execution of deactivation callbacks.
-        ///// </summary>
-        //public void Deactivate()
-        //{
-        //    var representativeState = GetRepresentation(State);
-        //    representativeState.Deactivate();
-        //}
-
         /// <summary>
         /// Queue events and then fire in order.
         /// If only one event is queued, this behaves identically to the non-queued version.
@@ -260,13 +236,6 @@ namespace Stateless
                     var transition = new Transition<TState, TTrigger>(source, destination, trigger, args);
                     HandleTransitioningTrigger(args, representativeState, transition);
 
-                    break;
-                }
-                case InternalTriggerBehaviour<TState, TTrigger> _:
-                {
-                    // Internal transitions does not update the current state, but must execute the associated action.
-                    var transition = new Transition<TState, TTrigger>(source, source, trigger, args);
-                    CurrentRepresentation.InternalAction(transition, args);
                     break;
                 }
                 default:
@@ -446,30 +415,7 @@ namespace Stateless
 
 
 
-        // TODO: REMOVE ACTIVATION
-        ///// <summary>
-        ///// Activates current state in asynchronous fashion. Actions associated with activating the currrent state
-        ///// will be invoked. The activation is idempotent and subsequent activation of the same current state 
-        ///// will not lead to re-execution of activation callbacks.
-        ///// </summary>
-        //public Task ActivateAsync()
-        //{
-        //    var representativeState = GetRepresentation(State);
-        //    return representativeState.ActivateAsync();
-        //}
-
-        // TODO: REMOVE ACTIVATION
-        ///// <summary>
-        ///// Deactivates current state in asynchronous fashion. Actions associated with deactivating the currrent state
-        ///// will be invoked. The deactivation is idempotent and subsequent deactivation of the same current state 
-        ///// will not lead to re-execution of deactivation callbacks.
-        ///// </summary>
-        //public Task DeactivateAsync()
-        //{
-        //    var representativeState = GetRepresentation(State);
-        //    return representativeState.DeactivateAsync();
-        //}
-
+         
         /// <summary>
         /// Transition from the current state via the specified trigger in async fashion.
         /// The target state is determined by the configuration of the current state.
@@ -564,17 +510,6 @@ namespace Stateless
                         var transition = new Transition<TState, TTrigger>(source, destination, trigger, args);
                         await HandleTransitioningTriggerAsync(args, representativeState, transition);
 
-                        break;
-                    }
-                case InternalTriggerBehaviour<TState, TTrigger> itb:
-                    {
-                        // Internal transitions does not update the current state, but must execute the associated action.
-                        var transition = new Transition<TState, TTrigger>(source, source, trigger, args);
-
-                        if (itb is InternalTriggerBehaviour<TState, TTrigger>.Async ita)
-                            await ita.ExecuteAsync(transition, args);
-                        else
-                            await Task.Run(() => itb.Execute(transition, args));
                         break;
                     }
                 default:

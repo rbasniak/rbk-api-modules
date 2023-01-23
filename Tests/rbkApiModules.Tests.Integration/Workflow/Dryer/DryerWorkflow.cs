@@ -148,9 +148,7 @@ public class DryerWorkflowEvent
 public enum EventType
 {
     OnEntry,
-    OnLeave,
-    OnActivate,
-    OnDeactivate,
+    OnLeave, 
     OnTransitionCompleted,
     OnTransitioned,
     OnExit,

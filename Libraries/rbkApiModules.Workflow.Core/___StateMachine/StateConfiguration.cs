@@ -37,45 +37,6 @@ public partial class StateConfiguration<TState, TTrigger>
     {
         EnforceNotIdentityTransition(destinationState);
         return InternalPermit(trigger, destinationState);
-    }
-
-    /// <summary>
-    /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
-    /// </summary>
-    public StateConfiguration<TState, TTrigger> InternalTransition(TTrigger trigger, Action internalAction)
-    {
-        return InternalTransitionIf(trigger, t => true, internalAction);
-
-    }
-
-    /// <summary>
-    /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
-    /// </summary>
-    public StateConfiguration<TState, TTrigger> InternalTransition(TTrigger trigger, Action<Transition<TState, TTrigger>> internalAction)
-    {
-        return InternalTransitionIf(trigger, t => true, internalAction);
-    }
-
-    /// <summary>
-    /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
-    /// </summary>
-    public StateConfiguration<TState, TTrigger> InternalTransitionIf(TTrigger trigger, Func<object[], bool> guard, Action<Transition<TState, TTrigger>> entryAction, string guardDescription = null)
-    {
-        if (entryAction == null) throw new ArgumentNullException(nameof(entryAction));
-
-        _representation.AddTriggerBehaviour(new InternalTriggerBehaviour<TState, TTrigger>.Sync(trigger, guard, t => entryAction(t), guardDescription));
-        return this;
-    }
-
-    /// <summary>
-    /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
-    /// </summary>
-    public StateConfiguration<TState, TTrigger> InternalTransitionIf(TTrigger trigger, Func<object[], bool> guard, Action internalAction, string guardDescription = null)
-    {
-        if (internalAction == null) throw new ArgumentNullException(nameof(internalAction));
-
-        _representation.AddTriggerBehaviour(new InternalTriggerBehaviour<TState, TTrigger>.Sync(trigger, guard, t => internalAction(), guardDescription));
-        return this;
     } 
 
     /// <summary>
@@ -147,38 +108,6 @@ public partial class StateConfiguration<TState, TTrigger>
                 new TransitionGuard(guards)));
         return this;
     }
-
-    // TODO: REMOVE ACTIVATION
-    ///// <summary>
-    ///// Specify an action that will execute when activating
-    ///// the configured state.
-    ///// </summary>
-    ///// <param name="activateAction">Action to execute.</param>
-    ///// <param name="activateActionDescription">Action description.</param>
-    ///// <returns>The receiver.</returns>
-    //public StateConfiguration<TState, TTrigger> OnActivate(Action activateAction, string activateActionDescription = null)
-    //{
-    //    _representation.AddActivateAction(
-    //        activateAction,
-    //        Reflection.InvocationInfo.Create(activateAction, activateActionDescription));
-    //    return this;
-    //}
-
-    // TODO: REMOVE ACTIVATION
-    ///// <summary>
-    ///// Specify an action that will execute when deactivating
-    ///// the configured state.
-    ///// </summary>
-    ///// <param name="deactivateAction">Action to execute.</param>
-    ///// <param name="deactivateActionDescription">Action description.</param>
-    ///// <returns>The receiver.</returns>
-    //public StateConfiguration<TState, TTrigger> OnDeactivate(Action deactivateAction, string deactivateActionDescription = null)
-    //{
-    //    _representation.AddDeactivateAction(
-    //        deactivateAction,
-    //        Reflection.InvocationInfo.Create(deactivateAction, deactivateActionDescription));
-    //    return this;
-    //}
 
     /// <summary>
     /// Specify an action that will execute when transitioning into
@@ -309,88 +238,7 @@ public partial class StateConfiguration<TState, TTrigger>
 
 
 
-
-    /// <summary>
-    /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
-    /// </summary>
-    /// <param name="trigger"></param>
-    /// <param name="guards">Function that must return true in order for the trigger to be accepted.</param>
-    /// <param name="entryAction"></param>
-    /// <returns></returns>
-    public StateConfiguration<TState, TTrigger> InternalTransitionAsyncIf(TTrigger trigger, GuardDefinition[] guards, Func<object[], Transition<TState, TTrigger>, Task> entryAction)
-    {
-        _representation.AddTriggerBehaviour(new InternalTriggerBehaviour<TState, TTrigger>.Async(trigger, guards, (t, args) => entryAction(args, t)));
-        return this;
-    }
-
-    /// <summary>
-    /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
-    /// </summary>
-    /// <param name="trigger">The accepted trigger</param>
-    /// <param name="guard">Function that must return true in order for the\r\n            /// trigger to be accepted.</param>
-    /// <param name="internalAction">The asynchronous action performed by the internal transition</param>
-    /// <returns></returns>
-    public StateConfiguration<TState, TTrigger> InternalTransitionAsyncIf(TTrigger trigger, GuardDefinition[] guards, Func<object[], Task> internalAction)
-    {
-        if (internalAction == null) throw new ArgumentNullException(nameof(internalAction));
-
-        _representation.AddTriggerBehaviour(new InternalTriggerBehaviour<TState, TTrigger>.Async(trigger, guards, (t, args) => internalAction(args)));
-        return this;
-    }
-
-    /// <summary>
-    /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
-    /// </summary>
-    /// <param name="trigger"></param>
-    /// <param name="entryAction"></param>
-    /// <returns></returns>
-    public StateConfiguration<TState, TTrigger> InternalTransitionAsync(TTrigger trigger, Func<object[], Transition<TState, TTrigger>, Task> entryAction)
-    {
-        return InternalTransitionAsyncIf(trigger, new[] { new GuardDefinition(String.Empty, (args) => true) }, entryAction);
-    }
-
-    /// <summary>
-    /// Add an internal transition to the state machine. An internal action does not cause the Exit and Entry actions to be triggered, and does not change the state of the state machine
-    /// </summary>
-    /// <param name="trigger">The accepted trigger</param>
-    /// <param name="internalAction">The asynchronous action performed by the internal transition</param>
-    /// <returns></returns>
-    public StateConfiguration<TState, TTrigger> InternalTransitionAsync(TTrigger trigger, Func<object[], Task> internalAction)
-    {
-        return InternalTransitionAsyncIf(trigger, new[] { new GuardDefinition(String.Empty, (args) => true) }, internalAction);
-    }
-
-    // TODO: REMOVE ACTIVATION
-    ///// <summary>
-    ///// Specify an asynchronous action that will execute when activating
-    ///// the configured state.
-    ///// </summary>
-    ///// <param name="activateAction">Action to execute.</param>
-    ///// <param name="activateActionDescription">Action description.</param>
-    ///// <returns>The receiver.</returns>
-    //public StateConfiguration<TState, TTrigger> OnActivateAsync(Func<Task> activateAction, string activateActionDescription = null)
-    //{
-    //    _representation.AddActivateAction(
-    //        activateAction,
-    //        Reflection.InvocationInfo.Create(activateAction, activateActionDescription, Reflection.InvocationInfo.Timing.Asynchronous));
-    //    return this;
-    //}
-
-    // TODO: REMOVE ACTIVATION
-    ///// <summary>
-    ///// Specify an asynchronous action that will execute when deactivating
-    ///// the configured state.
-    ///// </summary>
-    ///// <param name="deactivateAction">Action to execute.</param>
-    ///// <param name="deactivateActionDescription">Action description.</param>
-    ///// <returns>The receiver.</returns>
-    //public StateConfiguration<TState, TTrigger> OnDeactivateAsync(Func<Task> deactivateAction, string deactivateActionDescription = null)
-    //{
-    //    _representation.AddDeactivateAction(
-    //        deactivateAction,
-    //        Reflection.InvocationInfo.Create(deactivateAction, deactivateActionDescription, Reflection.InvocationInfo.Timing.Asynchronous));
-    //    return this;
-    //}
+ 
 
     /// <summary>
     /// Specify an asynchronous action that will execute when transitioning into

@@ -225,9 +225,7 @@ public class DocumentWorkflowEvent
 public enum EventType
 {
     OnEntry,
-    OnLeave,
-    OnActivate,
-    OnDeactivate,
+    OnLeave, 
     OnEntryAsync,
     OnLeaveAsync,
     OnActivateAsync,

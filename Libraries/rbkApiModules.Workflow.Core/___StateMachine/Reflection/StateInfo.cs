@@ -26,9 +26,6 @@ public class StateInfo<TState, TTrigger>
 
         return new StateInfo<TState, TTrigger>(stateRepresentation.UnderlyingState, ignoredTriggers,
             stateRepresentation.EntryActions.Select(e => ActionInfo.Create(e)).ToList(),
-            // TODO: REMOVE ACTIVATION
-            //stateRepresentation.ActivateActions.Select(e => e.Description).ToList(),
-            //stateRepresentation.DeactivateActions.Select(e => e.Description).ToList(),
             stateRepresentation.ExitActions.Select(e => e.Description).ToList());
     }
 
@@ -36,17 +33,11 @@ public class StateInfo<TState, TTrigger>
     object underlyingState,
         IEnumerable<IgnoredTransitionInfo<TState, TTrigger>> ignoredTriggers,
         IEnumerable<ActionInfo> entryActions,
-        // TODO: REMOVE ACTIVATION
-        //IEnumerable<InvocationInfo> activateActions,
-        //IEnumerable<InvocationInfo> deactivateActions,
         IEnumerable<InvocationInfo> exitActions)
     {
         UnderlyingState = underlyingState;
         IgnoredTriggers = ignoredTriggers ?? throw new ArgumentNullException(nameof(ignoredTriggers));
         EntryActions = entryActions;
-        // TODO: REMOVE ACTIVATION
-        //ActivateActions = activateActions;
-        //DeactivateActions = deactivateActions;
         ExitActions = exitActions;
     }
 
@@ -107,12 +98,6 @@ public class StateInfo<TState, TTrigger>
             foreach (var item in triggerBehaviours.Value.Where(behaviour => (behaviour is ReentryTriggerBehaviour<TState, TTrigger>)))
             {
                 var destinationInfo = lookupState(((ReentryTriggerBehaviour<TState, TTrigger>)item).Destination);
-                fixedTransitions.Add(FixedTransitionInfo<TState, TTrigger>.Create(item, destinationInfo));
-            }
-            //Then add all the internal transitions
-            foreach (var item in triggerBehaviours.Value.Where(behaviour => (behaviour is InternalTriggerBehaviour<TState, TTrigger>)))
-            {
-                var destinationInfo = lookupState(stateRepresentation.UnderlyingState);
                 fixedTransitions.Add(FixedTransitionInfo<TState, TTrigger>.Create(item, destinationInfo));
             }
         }

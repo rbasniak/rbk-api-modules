@@ -208,9 +208,7 @@ public class BugWorkflowEvent
 public enum EventType
 {
     OnEntry,
-    OnLeave,
-    OnActivate,
-    OnDeactivate,
+    OnLeave, 
     OnTransitionCompleted,
     OnTransitioned,
     OnExit,

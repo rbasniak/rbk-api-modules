@@ -7,9 +7,6 @@ internal partial class StateRepresentation<TState, TTrigger>
     internal IDictionary<TTrigger, ICollection<TriggerBehaviour<TState, TTrigger>>> TriggerBehaviours { get; } = new Dictionary<TTrigger, ICollection<TriggerBehaviour<TState, TTrigger>>>();
     internal ICollection<EntryActionBehavior<TState, TTrigger>> EntryActions { get; } = new List<EntryActionBehavior<TState, TTrigger>>();
     internal ICollection<ExitActionBehavior<TState, TTrigger>> ExitActions { get; } = new List<ExitActionBehavior<TState, TTrigger>>();
-    // TODO: REMOVE ACTIVATION
-    // internal ICollection<ActivateActionBehaviour<TState, TTrigger>> ActivateActions { get; } = new List<ActivateActionBehaviour<TState, TTrigger>>();
-    // internal ICollection<DeactivateActionBehaviour<TState, TTrigger>> DeactivateActions { get; } = new List<DeactivateActionBehaviour<TState, TTrigger>>();
 
     public StateRepresentation(TState state)
     {
@@ -99,18 +96,6 @@ internal partial class StateRepresentation<TState, TTrigger>
         return result;
     }
 
-    // TODO: REMOVE ACTIVATION
-    //public void AddActivateAction(Action action, Reflection.InvocationInfo activateActionDescription)
-    //{
-    //    ActivateActions.Add(new ActivateActionBehaviour<TState, TTrigger>.Sync(_state, action, activateActionDescription));
-    //}
-
-    // TODO: REMOVE ACTIVATION
-    //public void AddDeactivateAction(Action action, Reflection.InvocationInfo deactivateActionDescription)
-    //{
-    //    DeactivateActions.Add(new DeactivateActionBehaviour<TState, TTrigger>.Sync(_state, action, deactivateActionDescription));
-    //}
-
     public void AddEntryAction(TTrigger trigger, Action<Transition<TState, TTrigger>> action, Reflection.InvocationInfo entryActionDescription)
     {
         EntryActions.Add(new EntryActionBehavior<TState, TTrigger>.SyncFrom<TTrigger>(trigger, action, entryActionDescription));
@@ -125,32 +110,6 @@ internal partial class StateRepresentation<TState, TTrigger>
     {
         ExitActions.Add(new ExitActionBehavior<TState, TTrigger>.Sync(action, exitActionDescription));
     }
-
-    // TODO: REMOVE ACTIVATION
-    //public void Activate()
-    //{
-    //    ExecuteActivationActions();
-    //}
-
-    // TODO: REMOVE ACTIVATION
-    //public void Deactivate()
-    //{
-    //    ExecuteDeactivationActions();
-    //}
-
-    // TODO: REMOVE ACTIVATION
-    //void ExecuteActivationActions()
-    //{
-    //    foreach (var action in ActivateActions)
-    //        action.Execute();
-    //}
-
-    // TODO: REMOVE ACTIVATION
-    //void ExecuteDeactivationActions()
-    //{
-    //    foreach (var action in DeactivateActions)
-    //        action.Execute();
-    //}
 
     public void Enter(Transition<TState, TTrigger> transition, params object[] entryArgs)
     {
@@ -188,14 +147,7 @@ internal partial class StateRepresentation<TState, TTrigger>
         foreach (var action in ExitActions)
             action.Execute(transition);
     }
-    internal void InternalAction(Transition<TState, TTrigger> transition, object[] args)
-    {
-        InternalTriggerBehaviour<TState, TTrigger>.Sync internalTransition = null;
-
-        // Execute internal transition event handler
-        if (internalTransition == null) throw new ArgumentNullException("The configuration is incorrect, no action assigned to this internal transition.");
-        internalTransition.InternalAction(transition);
-    }
+ 
     public void AddTriggerBehaviour(TriggerBehaviour<TState, TTrigger> triggerBehaviour)
     {
         if (!TriggerBehaviours.TryGetValue(triggerBehaviour.Trigger, out ICollection<TriggerBehaviour<TState, TTrigger>> allowed))
@@ -282,18 +234,6 @@ internal partial class StateRepresentation<TState, TTrigger>
 
 
 
-    // TODO: REMOVE ACTIVATION
-    //public void AddActivateAction(Func<Task> action, Reflection.InvocationInfo activateActionDescription)
-    //{
-    //    ActivateActions.Add(new ActivateActionBehaviour<TState, TTrigger>.Async(_state, action, activateActionDescription));
-    //}
-
-    // TODO: REMOVE ACTIVATION
-    //public void AddDeactivateAction(Func<Task> action, Reflection.InvocationInfo deactivateActionDescription)
-    //{
-    //    DeactivateActions.Add(new DeactivateActionBehaviour<TState, TTrigger>.Async(_state, action, deactivateActionDescription));
-    //}
-
     public void AddEntryAction(TTrigger trigger, Func<Transition<TState, TTrigger>, Task> action, Reflection.InvocationInfo entryActionDescription)
     {
         if (action == null) throw new ArgumentNullException(nameof(action));
@@ -321,32 +261,6 @@ internal partial class StateRepresentation<TState, TTrigger>
     {
         ExitActions.Add(new ExitActionBehavior<TState, TTrigger>.Async(action, exitActionDescription));
     }
-
-    // TODO: REMOVE ACTIVATION
-    //public async Task ActivateAsync()
-    //{
-    //    await ExecuteActivationActionsAsync().ConfigureAwait(false);
-    //}
-
-    // TODO: REMOVE ACTIVATION
-    //public async Task DeactivateAsync()
-    //{
-    //    await ExecuteDeactivationActionsAsync().ConfigureAwait(false);
-    //}
-
-    // TODO: REMOVE ACTIVATION
-    //async Task ExecuteActivationActionsAsync()
-    //{
-    //    foreach (var action in ActivateActions)
-    //        await action.ExecuteAsync().ConfigureAwait(false);
-    //}
-
-    // TODO: REMOVE ACTIVATION
-    //async Task ExecuteDeactivationActionsAsync()
-    //{
-    //    foreach (var action in DeactivateActions)
-    //        await action.ExecuteAsync().ConfigureAwait(false);
-    //}
 
 
     public async Task EnterAsync(Transition<TState, TTrigger> transition)
