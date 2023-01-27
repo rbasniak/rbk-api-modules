@@ -23,6 +23,7 @@ using rbkApiModules.Commons.Core;
 using rbkApiModules.Notifications.Relational;
 using Demo1.BusinessLogic.Queries;
 using rbkApiModules.Commons.Relational.CQRS;
+using Serilog;
 
 namespace Demo1.Api;
 
@@ -150,6 +151,8 @@ public class Startup
 
     public void Configure(IApplicationBuilder app)
     {
+        app.UseSerilogRequestLogging();
+
         app.UseExceptionHandler(builder =>
         {
             builder.Run(async context =>
@@ -166,7 +169,7 @@ public class Startup
                     // invalid data will be kept in the context and EF will tries to save it again
                     using (var scope = scopeFactory.CreateScope())
                     {
-                        var logger = scope.ServiceProvider.GetService<ILogger>();
+                        var logger = scope.ServiceProvider.GetService<Microsoft.Extensions.Logging.ILogger>();
 
                         logger.LogCritical(errorHandler.Error, "Exception caught by the global exception handler");
                     }

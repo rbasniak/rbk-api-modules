@@ -13,7 +13,7 @@ public static class CommonsRelationalBuilder
         var options = new RbkApiCoreOptions();
         configureOptions(options);
 
-        Log.Logger.Debug($"Start configuring Core Relation API capabilities");
+        Log.Logger.Debug($"Start configuring Core Relational API capabilities");
 
         services.AddTransient<IDatabaseTransactionHandler, DatabaseTransactionHandler>();
 

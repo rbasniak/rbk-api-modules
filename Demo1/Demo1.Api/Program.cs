@@ -13,29 +13,73 @@ public class Program
             .MinimumLevel.Verbose()
             .Enrich.FromLogContext()
             .Enrich.WithExceptionDetails()
-            .WriteTo.Conditional(@event => @event.Level >= LogEventLevel.Error, w => w.Console())
-            // .WriteTo.Seq("http://localhost:5341", LogEventLevel.Information)
-            .WriteTo.File(Path.Combine(Environment.CurrentDirectory, "Logs", "log.txt"), LogEventLevel.Debug, fileSizeLimitBytes: 1024 * 1024, shared: true, rollOnFileSizeLimit: true, rollingInterval: RollingInterval.Day)
-            .WriteTo.File(new JsonFormatter(renderMessage: true), Path.Combine(Environment.CurrentDirectory, "Logs", "log.json"), LogEventLevel.Debug, fileSizeLimitBytes: 1024 * 1024, shared: true, rollOnFileSizeLimit: true, rollingInterval: RollingInterval.Day)
-            .CreateLogger();
 
-        Log.Logger.Verbose("VERBOSE DATA");
-        Log.Logger.Debug("DEBUG DATA");
-        Log.Logger.Information("INFORMATION DATA");
-        Log.Logger.Warning("WARNING DATA");
-        Log.Logger.Error("ERROR DATA");
-        Log.Logger.Fatal("FATAL DATA");
+            .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Error)
+
+            .WriteTo.File(Path.Combine(Environment.CurrentDirectory, "Logs", "startup-.log"),
+                restrictedToMinimumLevel: LogEventLevel.Debug,
+                fileSizeLimitBytes: 1024 * 1024,
+                shared: true,
+                rollOnFileSizeLimit: true,
+                retainedFileTimeLimit: TimeSpan.FromDays(10),
+                rollingInterval: RollingInterval.Day)
+
+            .WriteTo.Debug(LogEventLevel.Debug)
+
+            .CreateBootstrapLogger();
 
         try
         {
+            Log.Information("Starting API host");
+
             Host.CreateDefaultBuilder(args)
-                .UseSerilog()
+                .UseSerilog((context, services, configuration) =>
+                {
+                    var temp1 = context.Configuration.GetValue<string>("Log:SQLite");
+
+                    configuration
+                        .ReadFrom.Configuration(context.Configuration)
+                        .ReadFrom.Services(services)
+                        .Enrich.FromLogContext()
+                        .Enrich.WithExceptionDetails()
+
+                        .WriteTo.Debug(LogEventLevel.Debug)
+
+                        .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Error)
+
+                        .WriteTo.File(Path.Combine(Environment.CurrentDirectory, "Logs", "log-.log"),
+                            restrictedToMinimumLevel: LogEventLevel.Debug,
+                            fileSizeLimitBytes: 1024 * 1024,
+                            shared: true,
+                            rollOnFileSizeLimit: true,
+                            rollingInterval: RollingInterval.Day)
+
+                        .WriteTo.File(new JsonFormatter(renderMessage: true), Path.Combine(Environment.CurrentDirectory, "Logs", "log-.json"),
+                            restrictedToMinimumLevel: LogEventLevel.Debug,
+                            fileSizeLimitBytes: 1024 * 1024,
+                            shared: true,
+                            rollOnFileSizeLimit: true,
+                            rollingInterval: RollingInterval.Day)
+
+                        .WriteTo.LiteDB(Path.Combine(Environment.CurrentDirectory, "Logs", "log.lite"),
+                            restrictedToMinimumLevel: LogEventLevel.Debug)
+
+                        .WriteTo.SQLite(Path.Combine(Environment.CurrentDirectory, "Logs", "log.db"),
+                            restrictedToMinimumLevel: LogEventLevel.Debug,
+                            storeTimestampInUtc: true,
+                            batchSize: 1)
+
+                        .WriteTo.Seq("http://localhost:5341/")
+                        ;
+                })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
                 })
                 .Build()
                 .Run();
+
+            Log.Information("Stopping API host");
 
             return 0;
         }

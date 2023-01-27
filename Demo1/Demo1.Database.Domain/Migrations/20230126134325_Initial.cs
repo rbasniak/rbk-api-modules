@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -40,7 +41,7 @@ namespace Demo1.Database.Domain.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: false)
+                    Description = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -101,6 +102,26 @@ namespace Demo1.Database.Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Folder",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ParentId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Folder", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Folder_Folder_ParentId",
+                        column: x => x.ParentId,
+                        principalTable: "Folder",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Notifications",
                 columns: table => new
                 {
@@ -125,8 +146,8 @@ namespace Demo1.Database.Domain.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Desciption = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Desciption = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TenantId = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: true)
                 },
                 constraints: table =>
@@ -184,7 +205,7 @@ namespace Demo1.Database.Domain.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    Body = table.Column<string>(type: "nvarchar(max)", maxLength: 4096, nullable: false),
+                    Body = table.Column<string>(type: "nvarchar(max)", maxLength: 4096, nullable: true),
                     PublishingDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     AuthorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     BlogId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -206,6 +227,28 @@ namespace Demo1.Database.Domain.Migrations
                         name: "FK_Posts_Blogs_BlogId",
                         column: x => x.BlogId,
                         principalTable: "Blogs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "File",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Size = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Extension = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FolderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_File", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_File_Folder_FolderId",
+                        column: x => x.FolderId,
+                        principalTable: "Folder",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -319,6 +362,16 @@ namespace Demo1.Database.Domain.Migrations
                 column: "ParentId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_File_FolderId",
+                table: "File",
+                column: "FolderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Folder_ParentId",
+                table: "Folder",
+                column: "ParentId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Posts_AuthorId",
                 table: "Posts",
                 column: "AuthorId");
@@ -362,6 +415,9 @@ namespace Demo1.Database.Domain.Migrations
                 name: "Faqs");
 
             migrationBuilder.DropTable(
+                name: "File");
+
+            migrationBuilder.DropTable(
                 name: "Notifications");
 
             migrationBuilder.DropTable(
@@ -381,6 +437,9 @@ namespace Demo1.Database.Domain.Migrations
 
             migrationBuilder.DropTable(
                 name: "UsersToRoles");
+
+            migrationBuilder.DropTable(
+                name: "Folder");
 
             migrationBuilder.DropTable(
                 name: "Authors");
