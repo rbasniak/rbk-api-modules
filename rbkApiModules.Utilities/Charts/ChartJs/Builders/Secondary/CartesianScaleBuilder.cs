@@ -87,6 +87,12 @@ namespace rbkApiModules.Utilities.Charts.ChartJs
 
             return this;
         }
+
+        public CartesianScaleBuilder<TFactory, TChart> Hide()
+        {
+            Scale.Display = false;
+            return this;
+        }
     }
 
     public class CartesianTitleBuilder<TFactory, TChart> where TChart : BaseChart where TFactory : BaseChartBuilder<TFactory, TChart>
