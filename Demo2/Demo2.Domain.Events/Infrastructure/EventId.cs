@@ -8,12 +8,22 @@ namespace Demo2.Domain.Events.Infrastructure;
 
 public interface IEntityId
 {
-    new string ToString();
-}
+    string ToString();
+} 
 
 public abstract class EntityId : ValueObject, IEntityId
 {
-    public abstract override string ToString();
+    private readonly Guid _id;
+
+    public EntityId(Guid id)
+    {
+        _id = id;
+    }
+
+    public override string ToString()
+    {
+        return _id.ToString().ToLower();
+    }
 
     protected override IEnumerable<object> GetAtomicValues()
     {

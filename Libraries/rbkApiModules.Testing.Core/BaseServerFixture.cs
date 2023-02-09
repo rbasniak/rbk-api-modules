@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Identity.Core;
 using rbkApiModules.Commons.Relational.CQRS;
+using rbkApiModules.Commons.Relational;
 
 namespace rbkApiModules.Testing.Core;
 

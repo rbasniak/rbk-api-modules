@@ -25,6 +25,19 @@ public class AuthenticationController : BaseController
     [HttpPost("login")]
     public async Task<ActionResult<JwtResponse>> Login(UserLogin.Command data, CancellationToken cancellation)
     {
+        var usingNtlm = HttpContext.Request.Headers.Authorization.ToString().ToUpper().StartsWith("NTLM");
+        var isAuthenticated = HttpContext.User.Identity.IsAuthenticated;
+
+        if (data != null && String.IsNullOrEmpty(data.Username) && usingNtlm && isAuthenticated)
+        {
+            data.Username = HttpContext.User.Identity.Name.Split('\\').Last();
+            data.AuthenticationMode = AuthenticationMode.Windows;
+        }
+        else
+        {
+            data.AuthenticationMode = AuthenticationMode.Credentials;
+        }
+
         try
         {
             var result = await Mediator.Send(data, cancellation);

@@ -18,7 +18,7 @@ public static class ServicesCollectionExtensions
                 // foreach (var handlerType in interfaces.Where(i => i.IsGenericType))
                 foreach (var handlerType in interfaces)
                 {
-                    if (handlerType.Name == $"I{type.Name}")
+                    if (handlerType.Name == $"I{type.Name}" && !handlerType.HasAttribute<IgnoreAutomaticIocContainerRegistrationAttribute>())
                     {
                         services.AddScoped(handlerType.AsType(), type.AsType());
                     }
@@ -26,4 +26,9 @@ public static class ServicesCollectionExtensions
             }
         }
     }
+}
+
+public class IgnoreAutomaticIocContainerRegistrationAttribute: Attribute
+{
+
 }

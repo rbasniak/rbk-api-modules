@@ -2,6 +2,7 @@
 using rbkApiModules.Identity.Core;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Relational.CQRS;
+using rbkApiModules.Commons.Relational;
 
 namespace rbkApiModules.Identity.Relational;
 

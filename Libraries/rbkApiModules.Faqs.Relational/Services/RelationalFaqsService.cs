@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Faqs.Core;
 using rbkApiModules.Commons.Relational.CQRS;
+using rbkApiModules.Commons.Relational;
 
 namespace rbkApiModules.Faqs.Relational;
 
