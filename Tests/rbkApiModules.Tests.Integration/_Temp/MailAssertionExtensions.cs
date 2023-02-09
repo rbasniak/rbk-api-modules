@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Options;
 using MimeKit;
 using rbkApiModules.Identity.Core;
-using Shouldly;
 
 namespace rbkApiModules.Testing.Core;
 

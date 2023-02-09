@@ -7,7 +7,7 @@ namespace rbkApiModules.Comments.Core;
 
 public class CommentEntity
 {
-    public class Command : AuthenticatedCommand, IRequest<CommandResponse>
+    public class Command : AuthenticatedRequest, IRequest<CommandResponse>
     {
         public Guid EntityId { get; set; }
         public Guid? ParentId { get; set; }

@@ -104,6 +104,7 @@ public class Startup
             .UseDefaultHsts(_environment.IsDevelopment())
             .UseDefaultHttpsRedirection(_isInTestMode)
             .UseDefaultMemoryCache()
+            .UseDefaultHttpClient()
             .UseDefaultPipelines()
             .UseDefaultSwagger("PoC for the new API libraries")
             .UseHttpContextAccessor()

@@ -42,7 +42,7 @@ internal static class Validators
             .WithMessage(command => localization.GetValue("Tenant not found"));
     }
 
-    public static IRuleBuilderOptions<T, Guid> RoleExistOnDatabaseForTheCurrentTenant<T>(this IRuleBuilder<T, Guid> rule, IRolesService roles, ILocalizationService localization) where T: AuthenticatedCommand
+    public static IRuleBuilderOptions<T, Guid> RoleExistOnDatabaseForTheCurrentTenant<T>(this IRuleBuilder<T, Guid> rule, IRolesService roles, ILocalizationService localization) where T: AuthenticatedRequest
     {
         return rule
             .MustAsync(async (command, roleId, cancellation) =>

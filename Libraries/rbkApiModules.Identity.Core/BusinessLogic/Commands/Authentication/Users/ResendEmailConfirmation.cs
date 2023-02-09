@@ -7,7 +7,7 @@ namespace rbkApiModules.Identity.Core;
 
 public class ResendEmailConfirmation
 {
-    public class Command : AuthenticatedCommand, IRequest<CommandResponse>
+    public class Command : AuthenticatedRequest, IRequest<CommandResponse>
     {
         private string _tenant;
 

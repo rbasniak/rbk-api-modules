@@ -7,7 +7,7 @@ namespace rbkApiModules.Faqs.Core;
 
 public class UpdateFaq
 {
-    public class Command : AuthenticatedCommand, IRequest<CommandResponse>
+    public class Command : AuthenticatedRequest, IRequest<CommandResponse>
     {
         public Guid Id { get; set; }
         public string Question { get; set; }

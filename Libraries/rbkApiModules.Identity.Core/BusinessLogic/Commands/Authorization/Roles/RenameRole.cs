@@ -8,7 +8,7 @@ namespace rbkApiModules.Identity.Core;
 
 public class RenameRole
 {
-    public class Command : AuthenticatedCommand, IRequest<CommandResponse>
+    public class Command : AuthenticatedRequest, IRequest<CommandResponse>
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

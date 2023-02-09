@@ -5,7 +5,7 @@ namespace rbkApiModules.Notifications.Core;
 
 public class GetNotifications
 {
-    public class Command : AuthenticatedCommand, IRequest<QueryResponse>
+    public class Command : AuthenticatedRequest, IRequest<QueryResponse>
     {
         public string Category { get; set; }
         public NotificationStatus? Status { get; set; }

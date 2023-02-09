@@ -19,7 +19,7 @@ public class AuthCommandPreProcessingBehavior<TRequest, TResponse> : IPipelineBe
 
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellation)
     {
-        if (request is IAuthenticatedCommand authenticatedRequest)
+        if (request is IAuthenticatedRequest authenticatedRequest)
         {
             var user = _httpContextAccessor.HttpContext.User;
 

@@ -7,7 +7,7 @@ namespace rbkApiModules.Identity.Core;
 
 public class ReplaceUserRoles
 {
-    public class Command : AuthenticatedCommand, IRequest<CommandResponse>
+    public class Command : AuthenticatedRequest, IRequest<CommandResponse>
     {
         public string Username { get; set; }
         public Guid[] RoleIds { get; set; }

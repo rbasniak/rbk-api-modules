@@ -14,7 +14,12 @@ public class CommandResponse : BaseResponse
 
     public ChangedEntity[] AffectedEntities { get; }
 
-    public static CommandResponse Success(object result = null)
+    public static CommandResponse Success()
+    {
+        return CommandResponse.Success(null);
+    }
+
+    public static CommandResponse Success(object result)
     {
         var response = new CommandResponse(result);
 

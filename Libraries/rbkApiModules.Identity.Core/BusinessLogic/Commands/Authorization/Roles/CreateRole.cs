@@ -7,7 +7,7 @@ namespace rbkApiModules.Identity.Core;
 
 public class CreateRole
 {
-    public class Command : AuthenticatedCommand, IRequest<CommandResponse>
+    public class Command : AuthenticatedRequest, IRequest<CommandResponse>
     {
         public string Name { get; set; }
     }

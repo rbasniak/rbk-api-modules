@@ -6,6 +6,7 @@ using Demo1.Models.Domain.Demo;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Relational;
 using rbkApiModules.Commons.Core.CQRS;
+using rbkApiModules.Commons.Core.Localization;
 
 namespace Demo1.BusinessLogic.Commands;
 
@@ -20,9 +21,9 @@ public class DeletePost
 
     public class Validator: AbstractValidator<Command>
     {
-        public Validator(DatabaseContext context)
+        public Validator(DatabaseContext context, ILocalizationService localization)
         {
-            RuleFor(x => x.Id).MustExistInDatabase<Command, Post>(context);
+            RuleFor(x => x.Id).MustExistInDatabase<Command, Post>(context, localization);
         }
     }
 

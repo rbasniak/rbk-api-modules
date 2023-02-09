@@ -5,7 +5,7 @@ namespace rbkApiModules.Comments.Core;
 
 public class GetComments
 {
-    public class Command : AuthenticatedCommand, IRequest<QueryResponse>
+    public class Command : AuthenticatedRequest, IRequest<QueryResponse>
     {
         public Guid EntityId { get; set; }
     } 

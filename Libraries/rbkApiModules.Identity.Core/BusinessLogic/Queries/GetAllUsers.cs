@@ -5,7 +5,7 @@ namespace rbkApiModules.Identity.Core;
 
 public class GetAllUsers
 {
-    public class Command : AuthenticatedCommand, IRequest<QueryResponse>
+    public class Command : AuthenticatedRequest, IRequest<QueryResponse>
     {
     }
 

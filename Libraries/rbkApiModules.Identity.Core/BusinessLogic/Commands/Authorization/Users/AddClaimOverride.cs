@@ -7,7 +7,7 @@ namespace rbkApiModules.Identity.Core;
 
 public class AddClaimOverride
 {
-    public class Command : AuthenticatedCommand, IRequest<CommandResponse>
+    public class Command : AuthenticatedRequest, IRequest<CommandResponse>
     {
         public string Username { get; set; }
         public Guid ClaimId { get; set; }

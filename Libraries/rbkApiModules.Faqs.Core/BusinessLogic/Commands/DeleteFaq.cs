@@ -7,7 +7,7 @@ namespace rbkApiModules.Faqs.Core;
 
 public class DeleteFaq
 {
-    public class Command : AuthenticatedCommand, IRequest<CommandResponse>
+    public class Command : AuthenticatedRequest, IRequest<CommandResponse>
     {
         public Guid Id { get; set; }
     }

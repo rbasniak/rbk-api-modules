@@ -5,7 +5,7 @@ namespace rbkApiModules.Notifications.Core;
 
 public class UpdateNotificationStatus
 {
-    public class Command : AuthenticatedCommand, IRequest<CommandResponse>
+    public class Command : AuthenticatedRequest, IRequest<CommandResponse>
     {
         public Guid[] NotificationIds { get; set; }
 

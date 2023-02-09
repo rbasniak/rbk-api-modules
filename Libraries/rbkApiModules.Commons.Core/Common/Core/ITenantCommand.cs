@@ -1,28 +1,34 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Security.Claims;
+using System.Text.Json.Serialization;
 
 namespace rbkApiModules.Commons.Core;
 
-public interface IAuthenticatedCommand
+public interface IAuthenticatedRequest
 {
     AuthenticatedUser Identity { get; }
+    bool IsAuthenticated { get; }
 
     void SetIdentity(string tenant, string username, string[] claims);
 }
 
-public abstract class AuthenticatedCommand: IAuthenticatedCommand
+public abstract class AuthenticatedRequest: IAuthenticatedRequest
 {
-    public AuthenticatedCommand()
+    public AuthenticatedRequest()
     {
         Identity = AuthenticatedUser.Empty();
+        IsAuthenticated = false;
     }
 
     [JsonIgnore]
     public AuthenticatedUser Identity { get; private set; }
 
+    public bool IsAuthenticated { get; private set; }
+
     public void SetIdentity(string tenant, string username, string[] claims)
     {
         Identity = new AuthenticatedUser(tenant, username, claims);
-    }
+        IsAuthenticated = true;
+    } 
 }
 
 public class AuthenticatedUser
@@ -37,11 +43,9 @@ public class AuthenticatedUser
     }
 
     public bool IsAuthenticated => !String.IsNullOrEmpty(Username.Trim());
-
     public bool HasTenant => !String.IsNullOrEmpty(Tenant?.Trim());
-
     public bool HasNoTenant => String.IsNullOrEmpty(Tenant?.Trim());
-
+    public IEnumerable<string> Claims => _claims;
     public string Username { get; }
     public string Tenant { get; }
 

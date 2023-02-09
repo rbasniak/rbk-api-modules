@@ -7,6 +7,8 @@ using System.Globalization;
 using System.Reflection;
 using System.Text;
 using rbkApiModules.Commons.Core;
+using Microsoft.AspNetCore.Authentication.Negotiate;
+using System.Reflection.PortableExecutable;
 
 namespace rbkApiModules.Identity.Core;
 
@@ -112,6 +114,16 @@ public static class CoreAuthenticationBuilder
             configureOptions.TokenValidationParameters = tokenValidationParameters;
             configureOptions.SaveToken = true;
         });
+
+        // TODO: windows authentication
+        //appBuilder.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
+        //    .AddNegotiate();
+
+        //appBuilder.AddAuthorization(options =>
+        //{
+        //    // By default, all incoming requests will be authorized according to the default policy.
+        //    options.FallbackPolicy = options.DefaultPolicy;
+        //});
 
         services.RegisterApplicationServices(Assembly.GetAssembly(typeof(IJwtFactory)));
 

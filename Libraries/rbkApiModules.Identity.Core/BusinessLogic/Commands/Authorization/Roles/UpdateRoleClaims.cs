@@ -7,7 +7,7 @@ namespace rbkApiModules.Identity.Core;
 
 public class UpdateRoleClaims
 {
-    public class Command : AuthenticatedCommand, IRequest<CommandResponse>
+    public class Command : AuthenticatedRequest, IRequest<CommandResponse>
     {
         public Guid Id { get; set; }
         public Guid[] ClaimsIds { get; set; }

@@ -21,6 +21,7 @@ using Swashbuckle.AspNetCore.SwaggerUI;
 using rbkApiModules.Commons.Relational.CQRS;
 using Serilog;
 using rbkApiModules.Commons.Core.Pipelines;
+using Microsoft.AspNetCore.Authentication.Negotiate;
 
 namespace rbkApiModules.Commons.Core;
 
@@ -1041,6 +1042,23 @@ public static class CommonsCoreBuilder
             #endregion
 
             #region API routes
+
+            app.MapWhen((context) => context.Request.Path.StartsWithSegments("api/authentication/login"), (appBuilder) =>
+            {
+                Log.Logger.Debug($"Enabling routing for API");
+                appBuilder.UseRouting();
+
+                if (options._defaultCorsPolicy != null)
+                {
+                    Log.Logger.Debug($"Enabling CORS for API with the specified policy: {options._defaultCorsPolicy}");
+                    appBuilder.UseCors(options._defaultCorsPolicy);
+                }
+                else
+                {
+                    Log.Logger.Debug($"Enabling CORS for API with defaults");
+                    appBuilder.UseCors();
+                }
+            });
 
             app.MapWhen((context) => context.Request.Path.StartsWithSegments("/api"), (appBuilder) =>
             {

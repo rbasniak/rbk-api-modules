@@ -7,7 +7,7 @@ namespace rbkApiModules.Faqs.Core;
 
 public class CreateFaq
 {
-    public class Command : AuthenticatedCommand, IRequest<CommandResponse>
+    public class Command : AuthenticatedRequest, IRequest<CommandResponse>
     {
         public string Tag { get; set; }
         public string Question { get; set; }
