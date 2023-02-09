@@ -45,6 +45,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.2" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="7.0.2" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.25.1" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
 			<PrivateAssets>all</PrivateAssets>

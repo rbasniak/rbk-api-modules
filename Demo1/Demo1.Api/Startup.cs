@@ -130,7 +130,7 @@ public class Startup
 
         services.AddRbkRelationalAuthentication(options => options
             .UseSymetricEncryptationKey()
-            //.DisableWindowsAuthentication()
+            // .EnableWindowsAuthentication(NtlmMode.LoginOnly)
             //.DisableEmailConfirmation()
             //.DisablePasswordReset()
         );

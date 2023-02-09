@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.Localization;
+using System.Text.Json.Serialization;
 
 namespace rbkApiModules.Identity.Core;
 
@@ -23,6 +24,9 @@ public class UserLogin
                 _tenant = value?.ToUpper();
             }
         }
+
+        [JsonIgnore]
+        public AuthenticationMode AuthenticationMode { get; set; }
     }
 
     public class Validator : AbstractValidator<Command>
@@ -107,7 +111,10 @@ public class UserLogin
 
             user = await _authService.GetUserWithDependenciesAsync(request.Username, request.Tenant);
 
-            var extraClaims = new Dictionary<string, string[]>();
+            var extraClaims = new Dictionary<string, string[]>
+            {
+                { "authentication-mode", new[] { request.AuthenticationMode.ToString().ToLower() } }
+            };
 
             foreach (var claimHandler in _claimHandlers)
             {
@@ -124,4 +131,10 @@ public class UserLogin
             return CommandResponse.Success(jwt);
         }
     }
+}
+
+public enum AuthenticationMode
+{
+    Credentials,
+    Windows
 }

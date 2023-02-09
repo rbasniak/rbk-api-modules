@@ -42,9 +42,9 @@ public static class CoreAuthenticationBuilder
                 data.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.RefreshToken)));
             }
 
-            if (options._disableWindowsAuthentication)
+            if (options._ntlmMode == NtlmMode.LoginOnly)
             {
-                // TODO: data.Add(new Tuple<Type, string>(typeof(SecurityController), nameof(SecurityController.Get)));
+                o.Filters.Add(new NtlmFilter());
             }
 
             o.Conventions.Add(new RemoveActionConvention(data.ToArray()));
@@ -115,15 +115,16 @@ public static class CoreAuthenticationBuilder
             configureOptions.SaveToken = true;
         });
 
-        // TODO: windows authentication
-        //appBuilder.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
-        //    .AddNegotiate();
+        if (options._ntlmMode != NtlmMode.None)
+        {
+            services.AddAuthentication(NegotiateDefaults.AuthenticationScheme).AddNegotiate();
 
-        //appBuilder.AddAuthorization(options =>
-        //{
-        //    // By default, all incoming requests will be authorized according to the default policy.
-        //    options.FallbackPolicy = options.DefaultPolicy;
-        //});
+            // TODO: Check whether this is really needed
+            //services.AddAuthorization(options =>
+            //{
+            //    options.FallbackPolicy = options.DefaultPolicy;
+            //});
+        }
 
         services.RegisterApplicationServices(Assembly.GetAssembly(typeof(IJwtFactory)));
 
@@ -268,4 +269,11 @@ public static class CoreAuthenticationBuilder
 
         return result.ToArray();
     }
+}
+
+public enum NtlmMode
+{
+    LoginOnly,
+    All,
+    None
 }

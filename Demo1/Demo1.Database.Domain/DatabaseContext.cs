@@ -46,7 +46,8 @@ public class DatabaseContext: DbContext
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
-        configurationBuilder.Properties<DateTime>().HaveConversion<NullableDateTimeWithoutKindConverter>();
+        configurationBuilder.Properties<DateTime>().HaveConversion<DateTimeWithoutKindConverter>();
+        configurationBuilder.Properties<DateTime?>().HaveConversion<NullableDateTimeWithoutKindConverter>();
     }
 
     public override int SaveChanges()

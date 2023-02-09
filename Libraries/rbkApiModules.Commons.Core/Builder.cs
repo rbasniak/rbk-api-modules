@@ -21,9 +21,13 @@ using Swashbuckle.AspNetCore.SwaggerUI;
 using rbkApiModules.Commons.Relational.CQRS;
 using Serilog;
 using rbkApiModules.Commons.Core.Pipelines;
+using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Authentication.Negotiate;
 
+[assembly: InternalsVisibleTo("rbkApiModules.Commons.Relational")]
+
 namespace rbkApiModules.Commons.Core;
+
 
 public class RbkApiCoreOptions
 {
@@ -901,7 +905,10 @@ public static class CommonsCoreBuilder
 
         Log.Logger.Debug($"Registering MediatR commands");
 
-        services.AddMediatR(options._assembliesForMediatR.ToArray());
+        if (options._assembliesForMediatR.Count > 0)
+        {
+            services.AddMediatR(options._assembliesForMediatR.ToArray());
+        }
 
         #endregion
 

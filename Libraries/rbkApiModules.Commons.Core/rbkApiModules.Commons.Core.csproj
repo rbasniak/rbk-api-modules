@@ -51,6 +51,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Folder Include="Features\UiDefinitions\Commands\" />
 		<Folder Include="Features\UiDefinitions\Utilities\" />
 	</ItemGroup>
 </Project>

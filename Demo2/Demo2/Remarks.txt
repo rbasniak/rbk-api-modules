@@ -1,0 +1,4 @@
+﻿It's not very safe, we can call SaveChanges in the eventStore 2 times and the entity would be duplicated
+Depends on dynamic object to apply the events, errors are not very descriptive
+Can be slow due to the dynamic object
+Exposes the On(EventyType event) methods publicly
