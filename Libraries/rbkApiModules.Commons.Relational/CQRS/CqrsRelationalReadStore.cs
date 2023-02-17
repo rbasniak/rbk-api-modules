@@ -3,7 +3,7 @@ using rbkApiModules.Commons.Core.CQRS;
 
 namespace rbkApiModules.Commons.Relational.CQRS;
 
-public class CqrsRelationalStore : ICqrsReadStore
+public abstract class CqrsRelationalStore<T> : ICqrsReadStore<T>
 {
     private readonly IEnumerable<DbContext> _contexts;
 
@@ -12,7 +12,7 @@ public class CqrsRelationalStore : ICqrsReadStore
         _contexts = contexts;
     }
 
-    public async Task AddAsync(object entity)
+    public async Task AddAsync(T entity)
     {
         var context = GetReadContext();
 
@@ -20,13 +20,13 @@ public class CqrsRelationalStore : ICqrsReadStore
     }
 
 
-    public async Task<object> FindAsync(Type type, Guid id)
+    public async Task<T> FindAsync(Guid id)
     {
         var context = GetReadContext();
 
-        var result = await context.FindAsync(type, id);
+        var result = await context.FindAsync(typeof(T), id);
 
-        return result;
+        return (T)result;
     }
 
     public async Task SaveChangesAsync()
@@ -36,14 +36,14 @@ public class CqrsRelationalStore : ICqrsReadStore
         await context.SaveChangesAsync();
     }
 
-    public void Remove(object entity)
+    public void Remove(Guid id, T entity)
     {
         var context = GetReadContext();
 
         context.Remove(entity);
     }
 
-    public async Task UpdateAsync(object entity)
+    public async Task UpdateAsync(Guid id, T entity)
     {
         var context = GetReadContext();
 

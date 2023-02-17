@@ -13,16 +13,16 @@ public class GetAllBlogs
 
     public class Handler : RequestHandler<Command, QueryResponse>
     {
-        private readonly IInMemoryDatabase _context;
+        private readonly IInMemoryDatabase<Blog> _context;
 
-        public Handler(IInMemoryDatabase context)
+        public Handler(IInMemoryDatabase<Blog> context)
         {
             _context = context;
         }
 
         protected override QueryResponse Handle(Command request)
         {
-            return QueryResponse.Success( _context.Set<Blog>().ToList());
+            return QueryResponse.Success( _context.All());
         }
     }
 }

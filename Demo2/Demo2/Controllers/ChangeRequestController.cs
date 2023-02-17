@@ -11,7 +11,7 @@ public class ChangeRequestController: BaseController
 {
     [AllowAnonymous]
     [HttpPost("create-by-general-user")]
-    public async Task<ActionResult> CreateByGeneralUser(ChangeRequestCommands.CreateByGeneralUser.Request request)
+    public async Task<ActionResult> CreateByGeneralUser(CreateChangeRequestByGeneralUser.Request request)
     {
         var response = await Mediator.Send(request);
 
@@ -20,19 +20,19 @@ public class ChangeRequestController: BaseController
 
     [AllowAnonymous]
     [HttpPost("fics/add")]
-    public async Task<ActionResult> AddFic(ChangeRequestCommands.AddFic.Request request)
+    public async Task<ActionResult> AddFic(AddFicToChangeRequest.Request request)
     {
         var response = await Mediator.Send(request);
 
         return HttpResponse(response);
     }
 
-    //[AllowAnonymous]
-    //[HttpPost("/fics/remove")]
-    //public async Task<ActionResult> RemoveFic(ChangeRequestCommands.RemoveFic.Request request)
-    //{
-    //    var response = await Mediator.Send(request);
+    [AllowAnonymous]
+    [HttpPost("fics/remove")]
+    public async Task<ActionResult> RemoveFic(RemoveFicToChangeRequest.Request request)
+    {
+        var response = await Mediator.Send(request);
 
-    //    return HttpResponse(response);
-    //}
+        return HttpResponse(response);
+    }
 }

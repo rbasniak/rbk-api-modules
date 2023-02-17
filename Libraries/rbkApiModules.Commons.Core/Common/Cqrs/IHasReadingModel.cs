@@ -11,5 +11,6 @@ public interface IHasReadingModel<T> where T : class
 public enum OperationType
 {
     AddOrUpdate,
-    Remove
+    Remove,
+    Add
 }

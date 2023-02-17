@@ -109,22 +109,22 @@ public class Startup
             .UseDefaultSwagger("PoC for the new API libraries")
             .UseHttpContextAccessor()
             .UseStaticFiles()
-            .UseSimpleCqrs(options => options
-                .ForType<Models.Read.Post, CqrsRelationalStore>()
-                .ForType<Models.Read.Blog, CqrsInMemoryStore>((services) => {
-                    using (var scope = services.CreateScope())
-                    {
-                        var context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
-                        var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
+            //.UseSimpleCqrs(options => options
+            //    .ForType<Models.Read.Post, CqrsRelationalStore>()
+            //    .ForType<Models.Read.Blog, CqrsInMemoryStore>((services) => {
+            //        using (var scope = services.CreateScope())
+            //        {
+            //            var context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
+            //            var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
 
-                        var blogs = context.Blogs.ToList();
+            //            var blogs = context.Blogs.ToList();
 
-                        var data = mapper.Map<List<Models.Read.Blog>>(blogs); ;
+            //            var data = mapper.Map<List<Models.Read.Blog>>(blogs); ;
 
-                        return data.Select(x => (BaseEntity)x).ToArray();
-                    }
-                })
-            )
+            //            return data.Select(x => (BaseEntity)x).ToArray();
+            //        }
+            //    })
+            // )
             // .UseCustomMvcFilters(new AnalyticsMvcFilter())
         );
 
@@ -144,10 +144,6 @@ public class Startup
         services.AddRbkRelationalNotifications();
         
         services.AddRbkRelationalFaqs();
-
-        services.AddRbkRelationalCqrsStore();
-
-        services.AddRbkInMemoryCqrsStore();
     }
 
     public void Configure(IApplicationBuilder app)
@@ -215,8 +211,6 @@ public class Startup
         );
 
         app.SeedDatabase<DatabaseSeed>();
-
-        app.UseSimpleCqrs();
     }
 
     private static Assembly[] AssembliesForAutoMapper => new[]

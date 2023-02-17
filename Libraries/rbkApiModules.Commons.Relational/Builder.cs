@@ -27,12 +27,5 @@ public static class CommonsRelationalBuilder
         Log.Logger.Debug($"Done configuring Core Relational API capabilities");
 
         services.AddRbkApiCoreSetup(options);
-    }
-
-    public static IServiceCollection AddRbkRelationalCqrsStore(this IServiceCollection services)
-    {
-        services.AddScoped<ICqrsReadStore, CqrsRelationalStore>();
-
-        return services;
-    }
+    } 
 }

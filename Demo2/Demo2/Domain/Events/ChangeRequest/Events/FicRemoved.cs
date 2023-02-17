@@ -2,20 +2,17 @@
 
 namespace Demo2.Domain.Events;
 
-public partial class ChangeRequestEvents
+public class FicRemovedFromChangeRequest
 {
-    public class FicRemoved
+    public class V1 : DomainEvent
     {
-        public class V1 : DomainEvent
+        public V1(Guid changeRequestId, Guid ficId) : base(changeRequestId)
         {
-            public V1(Guid changeRequestId, Guid ficId) : base(changeRequestId)
-            {
-                FicId = ficId;
-            }
-
-            public Guid FicId { get; set; }
-
-            public override string Description => "Usuário removeu uma FIC";
+            FicId = ficId;
         }
+
+        public Guid FicId { get; set; }
+
+        public override string Description => "Usuário removeu uma FIC";
     }
 }

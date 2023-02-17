@@ -28,14 +28,14 @@ public class ChangeRequest: AggregateRoot
 
     public static ChangeRequest CreateByGeneralUser(string requestedBy, string createdBy, string description, string title)
     {
-        var @event = new ChangeRequestEvents.CreatedByGeneralUser.V1(Guid.NewGuid(), requestedBy, createdBy, description, title);
+        var @event = new ChangeRequestCreatedByGeneralUser.V1(Guid.NewGuid(), requestedBy, createdBy, description, title);
         var changeRequest = new ChangeRequest();
         changeRequest.Apply(@event);
 
         return changeRequest;
     }
 
-    public void On(ChangeRequestEvents.CreatedByGeneralUser.V1 @event)
+    public void On(ChangeRequestCreatedByGeneralUser.V1 @event)
     {
         Id = @event.AggregateId;
         RequestedBy = @event.RequestedBy;
@@ -44,26 +44,26 @@ public class ChangeRequest: AggregateRoot
         Title = @event.Title;
     }
 
-    public void On(ChangeRequestEvents.FicAdded.V1 @event)
+    public void On(FicAddedtoChangeRequest.V1 @event)
     {
         var fic = new Fic(@event.Number, @event.Name, @event.Source);
         _fics.Add(fic);
     }
 
-    public void On(ChangeRequestEvents.FicRemoved.V1 @event)
+    public void On(FicRemovedFromChangeRequest.V1 @event)
     {
         _fics.Remove(_fics.First(x => x.Id == @event.EventId));
     }
 
     internal void AddFic(string name, string number, string source)
     {
-        var @event = new ChangeRequestEvents.FicAdded.V1(Id, name, number, source);
+        var @event = new FicAddedtoChangeRequest.V1(Id, name, number, source);
         Apply(@event);
     }
 
     internal void RemoveFic(Guid ficId)
     {
-        var @event = new ChangeRequestEvents.FicRemoved.V1(Id, ficId);
+        var @event = new FicRemovedFromChangeRequest.V1(Id, ficId);
         Apply(@event);
     }
 } 

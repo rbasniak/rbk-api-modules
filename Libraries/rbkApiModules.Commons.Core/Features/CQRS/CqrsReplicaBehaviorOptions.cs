@@ -1,59 +1,57 @@
-﻿using rbkApiModules.Commons.Core;
-using rbkApiModules.Commons.Core.CQRS;
+﻿//using rbkApiModules.Commons.Core;
+//using rbkApiModules.Commons.Core.CQRS;
 
-namespace rbkApiModules.Commons.Relational.CQRS;
+//namespace rbkApiModules.Commons.Relational.CQRS;
 
-public class SimpleCqrsBehaviorOptions
-{
-    private readonly Dictionary<Type, Type> _configuration;
-    private Type _defaultProvider;
-    internal Dictionary<Type, Func<IServiceProvider, BaseEntity[]>> _initializationFunctions;
+//public class SimpleCqrsBehaviorOptions
+//{
+//    private readonly Dictionary<Type, Type> _configuration;
+//    private Type _defaultProvider;
+//    internal Dictionary<Type, Func<IServiceProvider, BaseEntity[]>> _initializationFunctions;
 
-    public SimpleCqrsBehaviorOptions()
-    {
-        _configuration = new Dictionary<Type, Type>();
-        _initializationFunctions = new Dictionary<Type, Func<IServiceProvider, BaseEntity[]>>();
-    }
+//    public SimpleCqrsBehaviorOptions()
+//    {
+//        _configuration = new Dictionary<Type, Type>();
+//        _initializationFunctions = new Dictionary<Type, Func<IServiceProvider, BaseEntity[]>>();
+//    }
 
-    public SimpleCqrsBehaviorOptions SetupType(Type entityType, Type storeProviderType, Func<IServiceProvider, BaseEntity[]> initialization = null)
-    {
-        _configuration.TryAdd(entityType, storeProviderType);
+//    public SimpleCqrsBehaviorOptions SetupType(Type entityType, Type storeProviderType, Func<IServiceProvider, BaseEntity[]> initialization = null)
+//    {
+//        _configuration.TryAdd(entityType, storeProviderType);
 
-        if (initialization != null)
-        {
-            _initializationFunctions.Add(entityType, initialization);
-        }
+//        if (initialization != null)
+//        {
+//            _initializationFunctions.Add(entityType, initialization);
+//        }
 
-        return this;
-    }
+//        return this;
+//    }
 
-    public SimpleCqrsBehaviorOptions UseDefaultProvider(Type storeProviderType)
-    {
-        _defaultProvider = storeProviderType;
+//    public SimpleCqrsBehaviorOptions UseDefaultProvider(Type storeProviderType)
+//    {
+//        _defaultProvider = storeProviderType;
 
-        return this;
-    }
+//        return this;
+//    }
 
-    public SimpleCqrsBehaviorOptions ForType<TEntity, TProvider>(Func<IServiceProvider, BaseEntity[]> initialization = null)
-        where TEntity : BaseEntity
-        where TProvider : ICqrsReadStore
-    {
-        SetupType(typeof(TEntity), typeof(TProvider), initialization);
+//    public SimpleCqrsBehaviorOptions ForStore<TEntity>(Func<IServiceProvider, BaseEntity[]> initialization = null)
+//    {
+//        SetupType(typeof(TEntity), typeof(TProvider), initialization);
 
-        return this;
-    } 
+//        return this;
+//    } 
 
-    public Type GetProvider(Type type)
-    {
-        Type provider;
+//    public Type GetProvider(Type type)
+//    {
+//        Type provider;
 
-        if (_configuration.TryGetValue(type, out provider))
-        {
-            return provider;
-        }
-        else
-        {
-            return _defaultProvider != null ? _defaultProvider : null;
-        }
-    } 
-}
+//        if (_configuration.TryGetValue(type, out provider))
+//        {
+//            return provider;
+//        }
+//        else
+//        {
+//            return _defaultProvider != null ? _defaultProvider : null;
+//        }
+//    } 
+//}
