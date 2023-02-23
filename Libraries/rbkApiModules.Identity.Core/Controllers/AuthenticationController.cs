@@ -30,7 +30,7 @@ public class AuthenticationController : BaseController
 
         if (data != null && String.IsNullOrEmpty(data.Username) && usingNtlm && isAuthenticated)
         {
-            data.Username = HttpContext.User.Identity.Name.Split('\\').Last();
+            data.Username = HttpContext.User.Identity.Name.Split('\\').Last().ToLower();
             data.AuthenticationMode = AuthenticationMode.Windows;
         }
         else

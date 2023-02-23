@@ -54,7 +54,7 @@ public class UiDefinitionsController : BaseController
 
             var temp = new JsonResult(result, new System.Text.Json.JsonSerializerOptions()
             {
-                IgnoreNullValues = true,
+                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
                 PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase
             });
 
@@ -62,7 +62,7 @@ public class UiDefinitionsController : BaseController
         } 
         catch (Exception ex) 
         {
-            return StatusCode(500, new[] { "Could not get generate ui-definitions" });
+            return StatusCode(500, new[] { ex.ToBetterString() });
         } 
     }
 } 

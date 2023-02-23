@@ -1050,31 +1050,50 @@ public static class CommonsCoreBuilder
 
             #region API routes
 
-            app.MapWhen((context) => context.Request.Path.StartsWithSegments("api/authentication/login"), (appBuilder) =>
-            {
-                Log.Logger.Debug($"Enabling routing for API");
-                appBuilder.UseRouting();
+            //app.MapWhen((context) => context.Request.Path.StartsWithSegments("/api/authentication/login"), (appBuilder) =>
+            //{
+            //    Log.Logger.Debug($"Enabling routing for API");
+            //    appBuilder.UseRouting();
 
-                if (options._defaultCorsPolicy != null)
-                {
-                    Log.Logger.Debug($"Enabling CORS for API with the specified policy: {options._defaultCorsPolicy}");
-                    appBuilder.UseCors(options._defaultCorsPolicy);
-                }
-                else
-                {
-                    Log.Logger.Debug($"Enabling CORS for API with defaults");
-                    appBuilder.UseCors();
-                }
-            });
+            //    if (options._defaultCorsPolicy != null)
+            //    {
+            //        Log.Logger.Debug($"Enabling CORS for API with the specified policy: {options._defaultCorsPolicy}");
+            //        appBuilder.UseCors(options._defaultCorsPolicy);
+            //    }
+            //    else
+            //    {
+            //        Log.Logger.Debug($"Enabling CORS for API with defaults");
+            //        appBuilder.UseCors();
+            //    }
+
+            //    Log.Logger.Debug($"Enabling authentication for API");
+            //    appBuilder.UseAuthentication();
+
+            //    Log.Logger.Debug($"Enabling authorization for API");
+            //    appBuilder.UseAuthorization();
+
+            //    Log.Logger.Debug($"Enabling endpoints for API");
+            //    appBuilder.UseEndpoints(endpoints =>
+            //    {
+            //        Log.Logger.Debug($"Enabling controller mapping for API");
+            //        endpoints.MapControllers();
+
+            //        if (options._hubMappings != null)
+            //        {
+            //            Log.Logger.Debug($"Enabling SignalR hubs for API");
+            //            options._hubMappings(endpoints);
+            //        }
+            //    });
+            //});
 
             app.MapWhen((context) => context.Request.Path.StartsWithSegments("/api"), (appBuilder) =>
             {
                 Log.Logger.Debug($"Enabling routing for API");
                 appBuilder.UseRouting();
 
-                if (options._defaultCorsPolicy != null)
+                if (!String.IsNullOrEmpty(options._defaultCorsPolicy))
                 {
-                    Log.Logger.Debug($"Enabling CORS for API with the specified policy: {options._defaultCorsPolicy}");
+                    Log.Logger.Debug($"Enabling CORS for API with the specified policy: '{options._defaultCorsPolicy}'");
                     appBuilder.UseCors(options._defaultCorsPolicy);
                 }
                 else

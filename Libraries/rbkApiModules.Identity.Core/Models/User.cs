@@ -95,6 +95,12 @@ public class User : TenantEntity
         PasswordRedefineCode = null;
     }
 
+    public void UpdateDetails(string displayName, string email)
+    {
+        DisplayName = displayName;
+        Email = email;
+    }
+
     /// <summary>
     /// Método que processa as roles e claims de um usuário 
     /// e retorma uma lista compilada apenas do que do usuário tem acesso

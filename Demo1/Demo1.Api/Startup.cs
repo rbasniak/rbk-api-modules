@@ -106,6 +106,7 @@ public class Startup
             .UseDefaultMemoryCache()
             .UseDefaultHttpClient()
             .UseDefaultPipelines()
+            .UseDefaultHttpClient()
             .UseDefaultSwagger("PoC for the new API libraries")
             .UseHttpContextAccessor()
             .UseStaticFiles()

@@ -20,6 +20,8 @@ public class Authentication : ControllerBase
     {
         var username = HttpContext.User.Identity.Name;
 
+        if (username == null) username = "admin";
+
         var issuer = "https://demo3.com/";
         var audience = "https://demo3.com/";
         var key = Encoding.ASCII.GetBytes("My super duper awesome secret key");
@@ -27,7 +29,8 @@ public class Authentication : ControllerBase
         {
             Subject = new ClaimsIdentity(new[]
             {
-                new Claim("Id", Guid.NewGuid().ToString()),
+                new Claim("id", Guid.NewGuid().ToString()),
+                new Claim("username", username),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
              }),
             Expires = DateTime.UtcNow.AddYears(5),
@@ -38,9 +41,8 @@ public class Authentication : ControllerBase
         var tokenHandler = new JwtSecurityTokenHandler();
         var token = tokenHandler.CreateToken(tokenDescriptor);
         var jwtToken = tokenHandler.WriteToken(token);
-        var stringToken = tokenHandler.WriteToken(token);
 
-        return Ok(new { JwtToken = jwtToken, StringToken = stringToken });
+        return Ok(new { JwtToken = jwtToken });
     }
 
     [Authorize]
