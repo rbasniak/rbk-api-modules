@@ -2,8 +2,8 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System.Collections;
-using rbkApiModules.Commons.Relational.CQRS;
 using rbkApiModules.Commons.Core.CQRS;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace rbkApiModules.Commons.Core.Pipelines;
 
@@ -12,17 +12,21 @@ public class CqrsReplicaBehavior<TRequest, TResponse> : IPipelineBehavior<TReque
         where TResponse : BaseResponse
 {
     private readonly ILogger<TRequest> _logger;
-    private readonly IEnumerable<ICqrsReadStore> _contexts;
     private readonly IMapper _mapper;
-    private readonly SimpleCqrsBehaviorOptions _storeConfiguration;
+    private readonly IServiceCollection _services;
+    private readonly IServiceProvider _serviceProvider;
 
-    public CqrsReplicaBehavior(ILogger<TRequest> logger, IMapper mapper, 
-        IEnumerable<ICqrsReadStore> contexts, SimpleCqrsBehaviorOptions storeConfiguration)
+    //private readonly SimpleCqrsBehaviorOptions _storeConfiguration;
+
+    public CqrsReplicaBehavior(ILogger<TRequest> logger, IMapper mapper, IServiceCollection services, IServiceProvider serviceProvider
+        // , SimpleCqrsBehaviorOptions storeConfiguration
+        )
     {
         _logger = logger;
         _mapper = mapper;
-        _contexts = contexts;
-        _storeConfiguration = storeConfiguration;
+        _services = services;
+        _serviceProvider = serviceProvider;
+        // _storeConfiguration = storeConfiguration;
     }
 
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellation)
@@ -61,7 +65,7 @@ public class CqrsReplicaBehavior<TRequest, TResponse> : IPipelineBehavior<TReque
 
             var mappedResults = new List<object>();
 
-            var context = GetContext();
+            dynamic context = GetContext(destinatinoType.GetType()); // TODO: think in a better solution
 
             foreach (var entity in entitiesToProcess)
             {
@@ -69,7 +73,7 @@ public class CqrsReplicaBehavior<TRequest, TResponse> : IPipelineBehavior<TReque
 
                 mappedResults.Add(mappedEntity);
 
-                var existingReplica = await context.FindAsync(mappedEntity.GetType(), mappedEntity.Id);
+                var existingReplica = await context.FindAsync(mappedEntity.Id);
 
                 var exists = existingReplica != null;
 
@@ -79,7 +83,7 @@ public class CqrsReplicaBehavior<TRequest, TResponse> : IPipelineBehavior<TReque
                 }
                 else
                 {
-                    await context.UpdateAsync(mappedEntity);
+                    await context.UpdateAsync(mappedEntity.Id, mappedEntity);
                 }
             }
 
@@ -91,8 +95,12 @@ public class CqrsReplicaBehavior<TRequest, TResponse> : IPipelineBehavior<TReque
         return response;
     }
 
-    private ICqrsReadStore GetContext()
+    private object GetContext(Type type)
     {
-        throw new NotImplementedException();
+        var registration =_services.FirstOrDefault(x => x.ServiceType == typeof(ICqrsReadStore<>) && x.ServiceType.GenericTypeArguments.First() == type);
+
+        if (registration == null) throw new InvalidOperationException("service not registered");
+
+        return _serviceProvider.GetService(registration.ImplementationType);
     }
 }

@@ -18,7 +18,6 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Routing;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Swashbuckle.AspNetCore.SwaggerUI;
-using rbkApiModules.Commons.Relational.CQRS;
 using Serilog;
 using rbkApiModules.Commons.Core.Pipelines;
 using System.Runtime.CompilerServices;
@@ -440,15 +439,15 @@ public class RbkApiCoreOptions
     #region Simple CQRS
 
     internal bool _useSimpleCqrsBehavior = false;
-    internal Action<SimpleCqrsBehaviorOptions> _configureCqrsAction;
+    // internal Action<SimpleCqrsBehaviorOptions> _configureCqrsAction;
 
-    public RbkApiCoreOptions UseSimpleCqrs(Action<SimpleCqrsBehaviorOptions> options)
-    {
-        _useSimpleCqrsBehavior = true;
-        _configureCqrsAction = options;
+    //public RbkApiCoreOptions UseSimpleCqrs(Action<SimpleCqrsBehaviorOptions> options)
+    //{
+    //    _useSimpleCqrsBehavior = true;
+    //    _configureCqrsAction = options;
 
-        return this;
-    }
+    //    return this;
+    //}
 
     #endregion
 }
@@ -461,8 +460,8 @@ public static class CommonsCoreBuilder
 
         Log.Logger.Debug($"Start configuring Core API capabilities");
 
-        Log.Logger.Debug($"Registering {nameof(IInMemoryDatabase)}");
-        services.AddScoped<IInMemoryDatabase, InMemoryDatabase>();
+        // Log.Logger.Debug($"Registering {nameof(IInMemoryDatabase)}");
+        // services.AddScoped<IInMemoryDatabase, InMemoryDatabase>();
 
         #region Response Compression
 
@@ -957,16 +956,16 @@ public static class CommonsCoreBuilder
 
         #region Simple CQRS
 
-        Log.Logger.Debug($"Enabling simple CQRS behavior");
+        // Log.Logger.Debug($"Enabling simple CQRS behavior");
 
-        if (options._useSimpleCqrsBehavior)
-        {
-            var cqrsOptions = new SimpleCqrsBehaviorOptions();
+        //if (options._useSimpleCqrsBehavior)
+        //{
+        //    var cqrsOptions = new SimpleCqrsBehaviorOptions();
 
-            options._configureCqrsAction(cqrsOptions);
+        //    options._configureCqrsAction(cqrsOptions);
 
-            services.AddSingleton(cqrsOptions);
-        }
+        //    services.AddSingleton(cqrsOptions);
+        //}
 
         #endregion
 
@@ -1172,30 +1171,30 @@ public static class CommonsCoreBuilder
         return app;
     }
 
-    public static IApplicationBuilder UseSimpleCqrs(this IApplicationBuilder app)
-    {
-        using (var scope = app.ApplicationServices.CreateScope())
-        {
-            var options = scope.ServiceProvider.GetService<RbkApiCoreOptions>();
+    //public static IApplicationBuilder UseSimpleCqrs(this IApplicationBuilder app)
+    //{
+    //    using (var scope = app.ApplicationServices.CreateScope())
+    //    {
+    //        var options = scope.ServiceProvider.GetService<RbkApiCoreOptions>();
 
-            #region Simple CQRS
+    //        #region Simple CQRS
 
-            if (options._useSimpleCqrsBehavior)
-            {
-                var context = scope.ServiceProvider.GetRequiredService<IInMemoryDatabase>();
+    //        if (options._useSimpleCqrsBehavior)
+    //        {
+    //            var context = scope.ServiceProvider.GetRequiredService<IInMemoryDatabase>();
 
-                if (context == null) throw new InvalidOperationException($"It seems that {nameof(IInMemoryDatabase)} is not properly setup");
+    //            if (context == null) throw new InvalidOperationException($"It seems that {nameof(IInMemoryDatabase)} is not properly setup");
 
-                var cqrsOptions = scope.ServiceProvider.GetRequiredService<SimpleCqrsBehaviorOptions>();
+    //            var cqrsOptions = scope.ServiceProvider.GetRequiredService<SimpleCqrsBehaviorOptions>();
 
-                foreach (var item in cqrsOptions._initializationFunctions)
-                {
-                    context.Initialize(item.Key, item.Value);
-                }
-            }
-            #endregion
-        }
+    //            foreach (var item in cqrsOptions._initializationFunctions)
+    //            {
+    //                context.Initialize(item.Key, item.Value);
+    //            }
+    //        }
+    //        #endregion
+    //    }
 
-        return app;
-    }
+    //    return app;
+    //}
 }

@@ -30,9 +30,9 @@ public abstract class AggregateRoot : Entity, IAggregateRoot
 
     protected void RemoveDomainEvent(IDomainEvent @event) => _domainEvents.Remove(@event);
 
-    protected void ClearDomainEvents() => _domainEvents.Clear();
+    internal void ClearDomainEvents() => _domainEvents.Clear();
 
-    public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
+    internal IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
     protected void Apply(IEnumerable<IDomainEvent> events)
     {
@@ -54,5 +54,5 @@ public abstract class AggregateRoot : Entity, IAggregateRoot
 public interface IAggregateRoot : IEntity
 {
     int Version { get; }
-    IReadOnlyCollection<IDomainEvent> DomainEvents { get; }
+    // IReadOnlyCollection<IDomainEvent> DomainEvents { get; }
 }

@@ -1,4 +1,6 @@
-﻿namespace Demo2.Domain.Events;
+﻿using MediatR;
+
+namespace Demo2.Domain.Events;
 
 public abstract class DomainEvent : IDomainEvent
 {
@@ -26,7 +28,7 @@ public abstract class DomainEvent : IDomainEvent
     public abstract string Description { get; } 
 }
 
-public interface IDomainEvent
+public interface IDomainEvent: INotification
 {
     Guid EventId { get; }
     Guid AggregateId { get; }

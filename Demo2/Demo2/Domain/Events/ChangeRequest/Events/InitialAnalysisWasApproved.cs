@@ -1,17 +1,14 @@
 ﻿namespace Demo2.Domain.Events;
 
-public partial class ChangeRequestEvents 
+public class ChangeRequestInitialAnalysisWasApproved
 {
-    public class InitialAnalysisWasApproved
+    public class V1 : DomainEvent
     {
-        public class V1 : DomainEvent
+        public V1(Guid changeRequestId) : base(changeRequestId)
         {
-            public V1(Guid changeRequestId) : base(changeRequestId)
-            {
 
-            }
-
-            public override string Description => "Admin aprovou a solicitação durante a análise inicial";
         }
+
+        public override string Description => "Admin aprovou a solicitação durante a análise inicial";
     }
 }

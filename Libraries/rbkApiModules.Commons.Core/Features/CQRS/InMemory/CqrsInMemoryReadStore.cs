@@ -1,25 +1,25 @@
 ﻿namespace rbkApiModules.Commons.Core.CQRS;
 
-public class CqrsInMemoryStore : ICqrsReadStore
+public class CqrsInMemoryStore<T> : ICqrsReadStore<T>
 {
-    private static IInMemoryDatabase _context;
+    private static IInMemoryDatabase<T> _context;
 
-    public CqrsInMemoryStore(IInMemoryDatabase context)
+    public CqrsInMemoryStore(IInMemoryDatabase<T> context)
     {
         _context = context ?? throw new ArgumentNullException("Could not inject InMemoryDatabase, please check it is registered in the container");
     }
 
-    public async Task AddAsync(object entity)
+    public async Task AddAsync(T entity)
     {
-        _context.Add((BaseEntity)entity);
+        _context.Add(entity);
 
         await Task.CompletedTask;
     }
 
 
-    public async Task<object> FindAsync(Type type, Guid id)
+    public async Task<T> FindAsync(Guid id)
     {
-        return await Task.FromResult(_context.FindAsync(type, id));
+        return await Task.FromResult(_context.FindAsync(id));
     }
 
     public async Task SaveChangesAsync()
@@ -27,14 +27,14 @@ public class CqrsInMemoryStore : ICqrsReadStore
         await Task.CompletedTask;
     }
 
-    public void Remove(object entity)
+    public void Remove(Guid id, T entity)
     {
-        _context.Remove((BaseEntity)entity);
+        _context.Remove(id, entity);
     }
 
-    public async Task UpdateAsync(object entity)
+    public async Task UpdateAsync(Guid id, T entity)
     {
-        _context.Add((BaseEntity)entity);
+        _context.UpdateAsync(entity);
 
         await Task.CompletedTask;
     }

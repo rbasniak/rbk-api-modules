@@ -1,11 +1,11 @@
 ﻿namespace rbkApiModules.Commons.Core.CQRS;
 
-public interface ICqrsReadStore
+public interface ICqrsReadStore<T>
 {
-    Task<object> FindAsync(Type type, Guid id);
-    Task AddAsync(object entity);
-    Task UpdateAsync(object entity);
-    void Remove(object entity);
+    Task<T> FindAsync(Guid id);
+    Task AddAsync(T entity);
+    Task UpdateAsync(Guid id, T entity);
+    void Remove(Guid id, T entity);
     Task SaveChangesAsync();
 }
 

@@ -1,6 +1,7 @@
 ﻿using Demo2.Domain.Events.Infrastructure;
 using Demo2.Domain.Models;
 using Demo2.Infrastructure.EventSourcing.Database.Repositories;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,9 +20,12 @@ public interface IChangeRequestRepository
 public class ChangeRequestRepository: IChangeRequestRepository
 {
     private readonly IEventStore _eventStore;
-    public ChangeRequestRepository(IEventStore eventStore)
+    private readonly IMediator _mediator;
+
+    public ChangeRequestRepository(IEventStore eventStore, IMediator mediator)
     {
         _eventStore = eventStore;
+        _mediator = mediator;
     }
 
     public async Task<Guid> Create(string requestedBy, string createdBy, string description, string title)
@@ -43,6 +47,11 @@ public class ChangeRequestRepository: IChangeRequestRepository
     public async Task SaveAsync(ChangeRequest changeRequest)
     {
         await _eventStore.SaveAsync(changeRequest.Id, changeRequest.Version, changeRequest.DomainEvents);
+
+        foreach (var @event in changeRequest.DomainEvents)
+        {
+            await _mediator.Send(@event);
+        }
     }
 
     //public async Task<ChangeRequestId> SaveAsync(ChangeRequest person)

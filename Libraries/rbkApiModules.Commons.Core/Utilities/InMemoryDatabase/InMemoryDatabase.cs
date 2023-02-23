@@ -3,10 +3,10 @@ using System.Data;
 
 namespace rbkApiModules.Commons.Core;
 
-public class InMemoryDatabase : IInMemoryDatabase
+public abstract class InMemoryDatabase<T> : IInMemoryDatabase<T> where T : BaseEntity
 {
     private static bool _isInitialized = false;
-    private static readonly ConcurrentDictionary<Type, ConcurrentDictionary<Guid, BaseEntity>> _database = new ConcurrentDictionary<Type, ConcurrentDictionary<Guid, BaseEntity>>();
+    private static readonly ConcurrentDictionary<Guid, T> _database = new ConcurrentDictionary<Guid, T>();
 
     private readonly IServiceProvider _services;
 
@@ -15,18 +15,14 @@ public class InMemoryDatabase : IInMemoryDatabase
         _services = services;
     }
 
-    public IEnumerable<T> Set<T>() where T : BaseEntity
+    public IEnumerable<T> All() 
     {
-        var data = GetTable(typeof(T));
-
-        return data.Select(x => (T)x.Value);
+        return _database.Select(x => x.Value);
     }
 
-    public void Add<T>(T entity) where T : BaseEntity
+    public void Add(T entity) 
     {
-        var data = GetTable(typeof(T));
-
-        var success = data.TryAdd(entity.Id, entity);
+        var success = _database.TryAdd(entity.Id, entity);
 
         if (!success)
         {
@@ -34,29 +30,16 @@ public class InMemoryDatabase : IInMemoryDatabase
         }
     }
 
-    public object FindAsync(Type type, Guid id)
+    public T FindAsync(Guid id)
     {
-        var data = GetTable(type);
-
-        data.TryGetValue(id, out var entity);
+        _database.TryGetValue(id, out var entity);
 
         return entity;
-    }
+    } 
 
-    public T FindAsync<T>(Guid id) where T : BaseEntity
+    public void Remove(Guid id, T entity) 
     {
-        var data = GetTable(typeof(T));
-
-        data.TryGetValue(id, out var entity);
-
-        return (T)entity;
-    }
-
-    public void Remove<T>(T entity) where T : BaseEntity
-    {
-        var data = GetTable(typeof(T));
-
-        var success = data.TryRemove(entity.Id, out var _);
+        var success = _database.TryRemove(entity.Id, out var _);
 
         if (!success)
         {
@@ -64,48 +47,32 @@ public class InMemoryDatabase : IInMemoryDatabase
         }
     }
 
-    public void UpdateAsync<T>(T entity) where T : BaseEntity
+    public void UpdateAsync(T entity) 
     {
-        var data = GetTable(typeof(T));
-
-        var exists = data.TryGetValue(entity.Id, out var oldEntity);
+        var exists = _database.TryGetValue(entity.Id, out var oldEntity);
 
         if (!exists)
         {
             throw new DBConcurrencyException("Could not update entity from the in memory database because it was not found.");
         }
 
-        var success = data.TryUpdate(entity.Id, entity, oldEntity);
+        var success = _database.TryUpdate(entity.Id, entity, oldEntity);
 
         if (!success)
         {
             throw new DBConcurrencyException("Could not update entity from the in memory database for unknown reasons.");
         }
-    }
+    } 
 
-    private ConcurrentDictionary<Guid, BaseEntity> GetTable(Type type)
-    {
-        var success = _database.TryGetValue(type, out var data);
-
-        if (!success)
-        {
-            throw new KeyNotFoundException("Could not find the table in the in memory database. Please check that it's been properly setup and initialized");
-        }
-
-        return data;
-    }
-
-    public void Initialize(Type type, Func<IServiceProvider, BaseEntity[]> initialLoadFunction)
+    public void Initialize(Func<IServiceProvider, T[]> initialLoadFunction)
     {
         var entities = initialLoadFunction(_services);
 
-        var tableData = new ConcurrentDictionary<Guid, BaseEntity>();
+        var _database = new ConcurrentDictionary<Guid, T>();
 
         foreach (var entity in entities)
         {
-            tableData.TryAdd(entity.Id, entity);
+            _database.TryAdd(entity.Id, entity);
         }
-
-        _database.TryAdd(type, tableData);
     }
 }

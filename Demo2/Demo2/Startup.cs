@@ -98,10 +98,6 @@ public class Startup
         //);
 
         services.AddRbkUIDefinitions(AssembliesForUiDefinitions);
-
-        services.AddRbkRelationalCqrsStore();
-
-        services.AddRbkInMemoryCqrsStore();
     }
 
     public void Configure(IApplicationBuilder app)
@@ -167,8 +163,6 @@ public class Startup
         //);
 
         //app.SeedDatabase<DatabaseSeed>();
-
-        app.UseSimpleCqrs();
     }
 
     private static Assembly[] AssembliesForAutoMapper => new[]
@@ -179,12 +173,12 @@ public class Startup
 
     private static Assembly[] AssembliesForMediatR => new[] 
     {
-        Assembly.GetAssembly(typeof(Demo2.Domain.Events.ChangeRequestCommands.CreateByGeneralUser.Request))
+        Assembly.GetAssembly(typeof(Demo2.Domain.Events.CreateChangeRequestByGeneralUser.Request))
     };
 
     private static Assembly[] AssembliesForAdditionalValidations => new[]
     {
-        Assembly.GetAssembly(typeof(Demo2.Domain.Events.ChangeRequestCommands.CreateByGeneralUser.Validator))
+        Assembly.GetAssembly(typeof(Demo2.Domain.Events.CreateChangeRequestByGeneralUser.Validator))
     };
 
     private static Assembly[] AssembliesForUiDefinitions => new Assembly[0];

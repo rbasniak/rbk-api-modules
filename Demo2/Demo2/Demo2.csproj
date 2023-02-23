@@ -28,4 +28,8 @@
     <ProjectReference Include="..\..\Libraries\rbkApiModules.Commons.Relational\rbkApiModules.Commons.Relational.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Logs\" />
+  </ItemGroup>
+
 </Project>

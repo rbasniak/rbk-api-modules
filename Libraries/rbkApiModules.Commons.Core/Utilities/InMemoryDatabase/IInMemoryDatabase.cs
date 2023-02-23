@@ -1,12 +1,11 @@
 ﻿namespace rbkApiModules.Commons.Core;
 
-public interface IInMemoryDatabase
+public interface IInMemoryDatabase<T>
 {
-    IEnumerable<T> Set<T>() where T : BaseEntity;
-    void Add<T>(T entity) where T : BaseEntity;
-    T FindAsync<T>(Guid id) where T : BaseEntity;
-    object FindAsync(Type type, Guid id);
-    void Remove<T>(T entity) where T : BaseEntity;
-    void UpdateAsync<T>(T entity) where T : BaseEntity;
-    void Initialize(Type type, Func<IServiceProvider, BaseEntity[]> initialLoadFunction);
+    IEnumerable<T> All();
+    void Add(T entity);
+    T FindAsync(Guid id);
+    void Remove(Guid id, T entity);
+    void UpdateAsync(T entity);
+    void Initialize(Func<IServiceProvider, T[]> initialLoadFunction);
 }
