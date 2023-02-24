@@ -48,7 +48,7 @@ public class DatabaseSeedManager<T> : IDatabaseSeeder where T : DbContext
                                 {
                                     kvp.Value.Function(context);
 
-                                    context.Add(new SeedHistory(kvp.Key, DateTime.Now));
+                                    context.Add(new SeedHistory(kvp.Key, DateTime.UtcNow));
                                     context.SaveChanges();
 
                                     transaction.Commit();

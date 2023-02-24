@@ -24,6 +24,7 @@ using rbkApiModules.Notifications.Relational;
 using Demo1.BusinessLogic.Queries;
 using rbkApiModules.Commons.Relational.CQRS;
 using Serilog;
+using rbkApiModules.Commons.Core.Pipelines;
 
 namespace Demo1.Api;
 
@@ -53,7 +54,7 @@ public class Startup
         //if (!_isInTestMode)
         //{
             services.AddDbContext<ReadDatabaseContext>((scope, options) => options
-                .UseSqlServer(
+                .UseNpgsql(
                     _configuration.GetConnectionString(readConnection).Replace("**CONTEXT**", "Database.Read"))
                 //.AddInterceptors(scope.GetRequiredService<DatabaseAnalyticsInterceptor>())
                 //.AddInterceptors(scope.GetRequiredService<DatabaseDiagnosticsInterceptor>())
@@ -62,7 +63,7 @@ public class Startup
             );
 
             services.AddDbContext<DatabaseContext>((scope, options) => options
-                .UseSqlServer(
+                .UseNpgsql(
                     _configuration.GetConnectionString(writeConnection).Replace("**CONTEXT**", "Database.Write"))
                 //.AddInterceptors(scope.GetRequiredService<DatabaseAnalyticsInterceptor>())
                 //.AddInterceptors(scope.GetRequiredService<DatabaseDiagnosticsInterceptor>())
@@ -110,6 +111,7 @@ public class Startup
             .UseDefaultSwagger("PoC for the new API libraries")
             .UseHttpContextAccessor()
             .UseStaticFiles()
+            .SuppressPipeline(typeof(CqrsReplicaBehavior<,>))
             //.UseSimpleCqrs(options => options
             //    .ForType<Models.Read.Post, CqrsRelationalStore>()
             //    .ForType<Models.Read.Blog, CqrsInMemoryStore>((services) => {

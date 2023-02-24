@@ -15,10 +15,10 @@ public class GetAllBlogs
     {
         private readonly IInMemoryDatabase<Blog> _context;
 
-        public Handler(IInMemoryDatabase<Blog> context)
-        {
-            _context = context;
-        }
+        //public Handler(IInMemoryDatabase<Blog> context)
+        //{
+        //    _context = context;
+        //}
 
         protected override QueryResponse Handle(Command request)
         {
