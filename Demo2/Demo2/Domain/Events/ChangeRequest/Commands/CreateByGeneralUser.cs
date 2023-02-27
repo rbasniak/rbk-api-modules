@@ -41,7 +41,7 @@ public class CreateChangeRequestByGeneralUser
 
         public async Task<CommandResponse> Handle(Request request, CancellationToken cancellationToken)
         {
-            var newId = await _changeRequestRepository.Create(request.RequestedBy, request.CreatedBy, request.Description, request.Title);
+            var newId = await _changeRequestRepository.CreateAsync(request.RequestedBy, request.CreatedBy, request.Description, request.Title);
 
             var changeRequest = await _changeRequestRepository.FindAsync(newId);
 

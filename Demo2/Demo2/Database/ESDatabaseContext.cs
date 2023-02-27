@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace Demo2.Domain.Events.MyImplementation.Database;
 
-public class DatabaseContext: DbContext
+public class ESDatabaseContext: DbContext
 {
-    public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
+    public ESDatabaseContext(DbContextOptions<ESDatabaseContext> options) : base(options)
     {
     }
 
@@ -22,7 +22,7 @@ public class DatabaseContext: DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(DatabaseContext).Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ESDatabaseContext).Assembly);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(SeedHistory).Assembly);
 
         modelBuilder.AddJsonFields();

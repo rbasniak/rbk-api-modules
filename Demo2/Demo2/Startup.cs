@@ -52,7 +52,7 @@ public class Startup
         //    .EnableSensitiveDataLogging()
         //);
 
-        services.AddDbContext<DatabaseContext>((scope, options) => options
+        services.AddDbContext<ESDatabaseContext>((scope, options) => options
             .UseSqlServer(
                 _configuration.GetConnectionString(writeConnection).Replace("**CONTEXT**", "Database.Write"))
             //.AddInterceptors(scope.GetRequiredService<DatabaseAnalyticsInterceptor>())
@@ -61,7 +61,7 @@ public class Startup
             .EnableSensitiveDataLogging()
         );
 
-        services.AddScoped<DbContext, DatabaseContext>();
+        services.AddScoped<DbContext, ESDatabaseContext>();
         //services.AddScoped<DbContext, ReadDatabaseContext>();
 
         services.AddRbkApiRelationalSetup(options => options
@@ -134,7 +134,7 @@ public class Startup
 
         app.UseRbkApiCoreSetup();
 
-        app.SetupDatabase<DatabaseContext>(options => options
+        app.SetupDatabase<ESDatabaseContext>(options => options
             .MigrateOnStartup()
             .ResetOnStartup(_isInTestMode)
         );

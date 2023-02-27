@@ -4,6 +4,8 @@ using Serilog;
 using Serilog.Exceptions;
 using Serilog.Formatting.Json;
 using Demo2.Api;
+using Demo2.Domain;
+using Demo2.Domain.Events.Repositories;
 
 namespace Demo2;
 

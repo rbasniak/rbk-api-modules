@@ -12,7 +12,7 @@ namespace Demo2.Domain.Events.Repositories;
 
 public interface IChangeRequestRepository
 {
-    Task<Guid> Create(string requestedBy, string createdBy, string description, string title);
+    Task<Guid> CreateAsync(string requestedBy, string createdBy, string description, string title);
     Task<ChangeRequest> FindAsync(Guid id);
     Task SaveAsync(ChangeRequest changeRequest);
 }
@@ -28,7 +28,7 @@ public class ChangeRequestRepository: IChangeRequestRepository
         _mediator = mediator;
     }
 
-    public async Task<Guid> Create(string requestedBy, string createdBy, string description, string title)
+    public async Task<Guid> CreateAsync(string requestedBy, string createdBy, string description, string title)
     {
         var request = ChangeRequest.CreateByGeneralUser(requestedBy, createdBy, description, title);
 

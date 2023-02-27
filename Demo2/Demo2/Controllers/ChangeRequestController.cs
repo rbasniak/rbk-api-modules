@@ -2,6 +2,9 @@
 using rbkApiModules.Commons.Core;
 using Demo2.Domain.Events;
 using Microsoft.AspNetCore.Authorization;
+using Demo2.Domain.Events.Repositories;
+using Demo2.Domain;
+using System.Diagnostics;
 
 namespace Demo2.Controllers;
 
@@ -34,5 +37,25 @@ public class ChangeRequestController: BaseController
         var response = await Mediator.Send(request);
 
         return HttpResponse(response);
+    }
+
+    [AllowAnonymous]
+    [HttpGet("seed/{amount}")]
+    public async Task<ActionResult> Seed([FromServices] IChangeRequestRepository repository, int amount)
+    {
+        try
+        {
+            var sw = Stopwatch.StartNew();
+
+            var temp = await ChangeRequestGenerator.GenerateAsync(amount);
+
+            sw.Stop();
+
+            return Ok($"Done in {sw.Elapsed.TotalSeconds:0.00}s!");
+        }
+        catch (Exception ex)
+        {
+            return Ok(ex.ToBetterString());
+        }
     }
 }

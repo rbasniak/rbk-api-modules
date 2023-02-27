@@ -10,17 +10,17 @@ namespace Demo2.Domain.Events.ChangeRequests.Projectors
         private readonly IProjectionRepository<ChangeRequest> _projectionRepository;
         private readonly IChangeRequestRepository _domainRepository;
 
-        public ChangeRequestCreatedHandler(IProjectionRepository<ChangeRequest> repository, IChangeRequestRepository domainRepository)
-        {
-            _projectionRepository = repository;
-            _domainRepository = domainRepository;
-        }
+        //public ChangeRequestCreatedHandler(IProjectionRepository<ChangeRequest> repository, IChangeRequestRepository domainRepository)
+        //{
+        //    _projectionRepository = repository;
+        //    _domainRepository = domainRepository;
+        //}
 
         public async Task Handle(ChangeRequestCreatedByGeneralUser.V1 notification, CancellationToken cancellation)
         {
-            var entity = await _domainRepository.FindAsync(notification.AggregateId);
+            //var entity = await _domainRepository.FindAsync(notification.AggregateId);
 
-            await _projectionRepository.AddAsync(entity);
+            //await _projectionRepository.AddAsync(entity);
         }
     }
 }
