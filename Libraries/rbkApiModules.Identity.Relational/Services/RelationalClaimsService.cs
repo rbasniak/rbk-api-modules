@@ -33,7 +33,7 @@ public class RelationalClaimsService : IClaimsService
 
     public async Task<Claim> FindByIdentificationAsync(string identification, CancellationToken cancellation = default)
     {
-        return await _context.Set<Claim>().FirstOrDefaultAsync(x => x.Identification == identification);
+        return await _context.Set<Claim>().FirstOrDefaultAsync(x => x.Identification.ToUpper() == identification.ToUpper());
     }
 
     public async Task<Claim> CreateAsync(Claim claim, CancellationToken cancellation = default)
@@ -141,6 +141,6 @@ public class RelationalClaimsService : IClaimsService
 
     public async Task<Claim> FindByDescriptionAsync(string description)
     {
-        return await _context.Set<Claim>().FirstOrDefaultAsync(x => x.Description == description);
+        return await _context.Set<Claim>().FirstOrDefaultAsync(x => x.Description.ToLower() == description.ToLower());
     }
 }

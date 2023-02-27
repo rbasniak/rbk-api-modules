@@ -13,7 +13,7 @@ namespace Demo1.Api.Controllers;
 public class LoggingController : BaseController
 { 
     [HttpPost("log-exception-test")]
-    public async Task<ActionResult<BaseResponse>> LogExceptionTest(LogExceptionTest.Command data)
+    public async Task<ActionResult<BaseResponse>> LogExceptionTest(LogExceptionTest.Request data)
     {
         Logger.LogTrace("request to {Method} {Url}", HttpContext.Request.Method.ToString(), HttpContext.Request.GetDisplayUrl());
 
@@ -23,7 +23,7 @@ public class LoggingController : BaseController
     }
 
     [HttpPost("scoped-log-test")]
-    public async Task<ActionResult<BaseResponse>> ScopeLogTest(ScopeLogTest.Command data)
+    public async Task<ActionResult<BaseResponse>> ScopeLogTest(ScopeLogTest.Request data)
     {
         Logger.LogTrace("request to {Method} {Url}", HttpContext.Request.Method.ToString(), HttpContext.Request.GetDisplayUrl());
 

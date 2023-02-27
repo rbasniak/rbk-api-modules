@@ -7,14 +7,14 @@ namespace rbkApiModules.Faqs.Core;
 
 public class CreateFaq
 {
-    public class Command : AuthenticatedRequest, IRequest<CommandResponse>
+    public class Request : AuthenticatedRequest, IRequest<CommandResponse>
     {
         public string Tag { get; set; }
         public string Question { get; set; }
         public string Answer { get; set; }
     }
 
-    public class Validator : AbstractValidator<Command>
+    public class Validator : AbstractValidator<Request>
     {
         public Validator(ILocalizationService localization)
         {
@@ -32,7 +32,7 @@ public class CreateFaq
         }
     }
 
-    public class Handler : IRequestHandler<Command, CommandResponse>
+    public class Handler : IRequestHandler<Request, CommandResponse>
     {
         private readonly IFaqsService _faqsService;
 
@@ -41,7 +41,7 @@ public class CreateFaq
             _faqsService = faqsService;
         }
 
-        public async Task<CommandResponse> Handle(Command request, CancellationToken cancellation)
+        public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)
         {
             var faq = await _faqsService.CreateAsync(request.Identity.Tenant, request.Tag.ToLower(), request.Question, request.Answer, cancellation);
 

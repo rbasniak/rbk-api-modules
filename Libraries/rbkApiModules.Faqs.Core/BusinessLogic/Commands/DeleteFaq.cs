@@ -7,12 +7,12 @@ namespace rbkApiModules.Faqs.Core;
 
 public class DeleteFaq
 {
-    public class Command : AuthenticatedRequest, IRequest<CommandResponse>
+    public class Request : AuthenticatedRequest, IRequest<CommandResponse>
     {
         public Guid Id { get; set; }
     }
 
-    public class Validator : AbstractValidator<Command>
+    public class Validator : AbstractValidator<Request>
     {
         public Validator(IFaqsService faqsService, ILocalizationService localization) 
         {
@@ -22,7 +22,7 @@ public class DeleteFaq
         }
     }
 
-    public class Handler : IRequestHandler<Command, CommandResponse>
+    public class Handler : IRequestHandler<Request, CommandResponse>
     {
         private readonly IFaqsService _faqsService;
 
@@ -31,7 +31,7 @@ public class DeleteFaq
             _faqsService = faqsService;
         }
 
-        public async Task<CommandResponse> Handle(Command request, CancellationToken cancellation)
+        public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)
         {
             await _faqsService.DeleteAsync(request.Identity.Tenant, request.Id, cancellation);
 

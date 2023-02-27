@@ -7,13 +7,13 @@ namespace rbkApiModules.Identity.Core;
 
 public class RedefinePassword
 {
-    public class Command : IRequest<CommandResponse>
+    public class Request : IRequest<CommandResponse>
     {
         public string Code { get; set; }
         public string Password { get; set; }
     }
 
-    public class Validator : AbstractValidator<Command>
+    public class Validator : AbstractValidator<Request>
     {
         private readonly IAuthService _usersService;
 
@@ -33,13 +33,13 @@ public class RedefinePassword
                  });  
         }
 
-        public async Task<bool> ExistOnDatabaseAndIsValid(Command command, string code, CancellationToken cancelation)
+        public async Task<bool> ExistOnDatabaseAndIsValid(Request request, string code, CancellationToken cancelation)
         {
             return await _usersService.IsPasswordResetCodeValidAsync(code, cancelation);
         }
     }
 
-    public class Handler : IRequestHandler<Command, CommandResponse>
+    public class Handler : IRequestHandler<Request, CommandResponse>
     {
         private readonly IAuthenticationMailService _mailingService;
         private readonly IAuthService _usersService;
@@ -50,7 +50,7 @@ public class RedefinePassword
             _usersService = usersService;
         }
 
-        public async Task<CommandResponse> Handle(Command request, CancellationToken cancellation)
+        public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)
         {
             var user = await _usersService.RedefinePasswordAsync(request.Code, request.Password, cancellation);
 

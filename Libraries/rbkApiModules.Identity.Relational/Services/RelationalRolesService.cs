@@ -34,10 +34,12 @@ public class RelationalRolesService: IRolesService
 
     public async Task DeleteRolesFromTenant(string tenant, CancellationToken cancellation = default)
     {
+        tenant = tenant != null ? tenant.ToUpper() : null;
+
         var roles = await _context.Set<Role>()
             .Include(x => x.Users)
             .Include(x => x.Claims)
-            .Where(x => x.TenantId == tenant.ToUpper()).ToListAsync();
+            .Where(x => x.TenantId == tenant).ToListAsync();
 
         _context.RemoveRange(roles);
         

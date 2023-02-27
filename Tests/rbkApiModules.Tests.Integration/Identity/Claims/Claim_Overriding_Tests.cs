@@ -28,7 +28,7 @@ public class ClaimOverridingTests : SequentialTest, IClassFixture<ServerFixture>
         // Prepare
         var user = _serverFixture.Context.Set<User>().Include(x => x.Claims).First(x => x.Username == "john.doe" && x.TenantId == "BUZIOS");
 
-        var request = new AddClaimOverride.Command
+        var request = new AddClaimOverride.Request
         {
             Username = user.Username,
             AccessType = ClaimAccessType.Block,
@@ -52,7 +52,7 @@ public class ClaimOverridingTests : SequentialTest, IClassFixture<ServerFixture>
         var user = _serverFixture.Context.Set<User>().Include(x => x.Claims).First(x => x.Username == "tony.stark" && x.TenantId == "UN-BS"); // User exists, but in another tenant
         var claim = _serverFixture.Context.Set<Claim>().First(x => x.Identification == AuthenticationClaims.MANAGE_USERS);
 
-        var request = new AddClaimOverride.Command
+        var request = new AddClaimOverride.Request
         {
             Username = user.Username,
             AccessType = ClaimAccessType.Block,
@@ -76,7 +76,7 @@ public class ClaimOverridingTests : SequentialTest, IClassFixture<ServerFixture>
         var user = _serverFixture.Context.Set<User>().Include(x => x.Claims).First(x => x.Username == "john.doe" && x.TenantId == "BUZIOS");
         var claim = _serverFixture.Context.Set<Claim>().First(x => x.Identification == AuthenticationClaims.MANAGE_USERS);
 
-        var request = new AddClaimOverride.Command
+        var request = new AddClaimOverride.Request
         {
             Username = user.Username,
             AccessType = ClaimAccessType.Allow,
@@ -131,7 +131,7 @@ public class ClaimOverridingTests : SequentialTest, IClassFixture<ServerFixture>
 
         user.Claims.Single(x => x.ClaimId == claim.Id && x.UserId == user.Id).Access.ShouldBe(ClaimAccessType.Allow);
 
-        var request = new AddClaimOverride.Command
+        var request = new AddClaimOverride.Request
         {
             Username = user.Username,
             AccessType = ClaimAccessType.Block,
@@ -179,7 +179,7 @@ public class ClaimOverridingTests : SequentialTest, IClassFixture<ServerFixture>
         var user = _serverFixture.Context.Set<User>().Include(x => x.Claims).First(x => x.Username == "john.doe" && x.TenantId == "BUZIOS");
         var claim = _serverFixture.Context.Set<Claim>().First(x => x.Identification == AuthenticationClaims.MANAGE_USERS);
 
-        var request = new AddClaimOverride.Command
+        var request = new AddClaimOverride.Request
         {
             Username = user.Username,
             AccessType = ClaimAccessType.Allow,
@@ -201,7 +201,7 @@ public class ClaimOverridingTests : SequentialTest, IClassFixture<ServerFixture>
     public async Task Admin_Cannot_Remove_Overrided_Claim_That_Does_Not_Exist()
     {
         // Prepare
-        var request = new RemoveClaimOverride.Command
+        var request = new RemoveClaimOverride.Request
         {
             Username = "john.doe",
             ClaimId = Guid.NewGuid()
@@ -231,7 +231,7 @@ public class ClaimOverridingTests : SequentialTest, IClassFixture<ServerFixture>
 
         user.Claims.SingleOrDefault(x => x.ClaimId == claim.Id && x.UserId == user.Id).ShouldNotBeNull();
 
-        var request = new RemoveClaimOverride.Command
+        var request = new RemoveClaimOverride.Request
         {
             Username = user.Username,
             ClaimId = claim.Id
@@ -261,7 +261,7 @@ public class ClaimOverridingTests : SequentialTest, IClassFixture<ServerFixture>
 
         user.Claims.SingleOrDefault(x => x.ClaimId == claim.Id && x.UserId == user.Id).ShouldNotBeNull();
 
-        var request = new RemoveClaimOverride.Command
+        var request = new RemoveClaimOverride.Request
         {
             Username = user.Username,
             ClaimId = claim.Id
@@ -305,7 +305,7 @@ public class ClaimOverridingTests : SequentialTest, IClassFixture<ServerFixture>
         // Prepare
         var claim = _serverFixture.Context.Set<Claim>().First(x => x.Identification == AuthenticationClaims.MANAGE_USERS);
 
-        var request = new RemoveClaimOverride.Command
+        var request = new RemoveClaimOverride.Request
         {
             Username = "tony.stark",
             ClaimId = claim.Id
@@ -335,7 +335,7 @@ public class ClaimOverridingTests : SequentialTest, IClassFixture<ServerFixture>
 
         user.Claims.SingleOrDefault(x => x.ClaimId == claim.Id && x.UserId == user.Id).ShouldBeNull();
 
-        var request = new RemoveClaimOverride.Command
+        var request = new RemoveClaimOverride.Request
         {
             Username = user.Username,
             ClaimId = claim.Id

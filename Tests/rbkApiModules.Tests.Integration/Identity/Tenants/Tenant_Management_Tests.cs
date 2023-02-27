@@ -28,7 +28,7 @@ public class TenantManagementTests : SequentialTest, IClassFixture<ServerFixture
     public async Task Global_Admin_Cannot_Create_Tenant_If_Password_Does_Not_Fit_Policies()
     {
         // Prepare 
-        var request = new CreateTenant.Command
+        var request = new CreateTenant.Request
         {
             Alias = "Acme",
             Name = "Acme Inc.",
@@ -56,7 +56,7 @@ public class TenantManagementTests : SequentialTest, IClassFixture<ServerFixture
     public async Task Global_Admin_Can_Create_Tenant()
     {
         // Prepare 
-        var request = new CreateTenant.Command
+        var request = new CreateTenant.Request
         {
             Alias = "Acme",
             Name = "Acme Inc.",
@@ -90,7 +90,7 @@ public class TenantManagementTests : SequentialTest, IClassFixture<ServerFixture
         var metadata = JsonSerializer.Deserialize<JsonElement>(tenant.Metadata.ToString());
         metadata.GetProperty("city").GetString().ShouldBe("Aalborg");
 
-        var user = await _serverFixture.Context.Set<User>().Include(x => x.Claims).ThenInclude(x => x.Claim).FirstOrDefaultAsync(x => x.Username == "acme.admin" && x.TenantId == "acme");
+        var user = await _serverFixture.Context.Set<User>().Include(x => x.Claims).ThenInclude(x => x.Claim).FirstOrDefaultAsync(x => x.Username == "acme.admin" && x.TenantId == "ACME");
         user.ShouldNotBeNull();
         user.Claims.Count().ShouldBe(4);
         user.Claims.SingleOrDefault(x => x.Claim.Identification == AuthenticationClaims.MANAGE_USERS && x.Access == ClaimAccessType.Allow).ShouldNotBeNull();
@@ -108,7 +108,7 @@ public class TenantManagementTests : SequentialTest, IClassFixture<ServerFixture
     public async Task Global_Admin_Cannot_Create_Tenant_Without_Alias(string alias)
     {
         // Prepare 
-        var request = new CreateTenant.Command
+        var request = new CreateTenant.Request
         {
             Alias = alias,
             Name = "Acme Inc.",
@@ -138,7 +138,7 @@ public class TenantManagementTests : SequentialTest, IClassFixture<ServerFixture
     public async Task Global_Admin_Cannot_Create_Tenant_Without_Name(string name)
     {
         // Prepare 
-        var request = new CreateTenant.Command
+        var request = new CreateTenant.Request
         {
             Alias = "ALIAS",
             Name = name,
@@ -165,7 +165,7 @@ public class TenantManagementTests : SequentialTest, IClassFixture<ServerFixture
     public async Task Local_Admin_Can_Create_Tenant()
     {
         // Prepare 
-        var request = new CreateTenant.Command
+        var request = new CreateTenant.Request
         {
             Alias = "NOT ALLOWED",
             Name = "This wil not be created",
@@ -185,7 +185,7 @@ public class TenantManagementTests : SequentialTest, IClassFixture<ServerFixture
     public async Task Local_Admin_Cannot_Update_Tenant()
     {
         // Prepare
-        var request = new UpdateTenant.Command
+        var request = new UpdateTenant.Request
         {
             Alias = "AcmE",
             Name = "Acme Industries",
@@ -206,7 +206,7 @@ public class TenantManagementTests : SequentialTest, IClassFixture<ServerFixture
     public async Task Global_Admin_Can_Update_Tenant()
     {
         // Prepare
-        var request = new UpdateTenant.Command
+        var request = new UpdateTenant.Request
         {
             Alias = "AcmE",
             Name = "Acme Industries",
@@ -241,7 +241,7 @@ public class TenantManagementTests : SequentialTest, IClassFixture<ServerFixture
     public async Task Global_Admin_Cannot_Update_Tenant_With_Name_Used_By_Another()
     {
         // Prepare
-        var preRequest = new CreateTenant.Command
+        var preRequest = new CreateTenant.Request
         {
             Alias = "WAYNE INC",
             Name = "Temporary Name",
@@ -259,7 +259,7 @@ public class TenantManagementTests : SequentialTest, IClassFixture<ServerFixture
         var existingTenant = _serverFixture.Context.Set<Tenant>().SingleOrDefault(x => x.Alias == "WAYNE INC");
         existingTenant.ShouldNotBeNull();
 
-        var request = new UpdateTenant.Command
+        var request = new UpdateTenant.Request
         {
             Alias = "wayne inc",
             Name = "ACME INDUSTRIES",
@@ -279,7 +279,7 @@ public class TenantManagementTests : SequentialTest, IClassFixture<ServerFixture
     public async Task Global_Admin_Cannot_Create_Tenant_With_Duplicated_Name()
     {
         // Prepare
-        var request = new CreateTenant.Command
+        var request = new CreateTenant.Request
         {
             Alias = "AcmE2",
             Name = "ACME INDUSTRIES",
@@ -306,7 +306,7 @@ public class TenantManagementTests : SequentialTest, IClassFixture<ServerFixture
     public async Task Global_Admin_Cannot_Update_Tenant_That_Does_Not_Exist()
     {
         // Prepare
-        var request = new UpdateTenant.Command
+        var request = new UpdateTenant.Request
         {
             Alias = "STARK",
             Name = "Stark Industries",
@@ -329,7 +329,7 @@ public class TenantManagementTests : SequentialTest, IClassFixture<ServerFixture
     public async Task Global_Admin_Cannot_Update_Tenant_With_Empty_Or_Null_Name(string name)
     {
         // Prepare
-        var request = new UpdateTenant.Command
+        var request = new UpdateTenant.Request
         {
             Alias = "acme",
             Name = name,
@@ -352,7 +352,7 @@ public class TenantManagementTests : SequentialTest, IClassFixture<ServerFixture
     public async Task Global_Admin_Cannot_Update_Tenant_With_Empty_Or_Null_Alias(string alias)
     {
         // Prepare
-        var request = new UpdateTenant.Command
+        var request = new UpdateTenant.Request
         {
             Alias = alias,
             Name = "Acme Inc.",
@@ -373,7 +373,7 @@ public class TenantManagementTests : SequentialTest, IClassFixture<ServerFixture
     public async Task Global_Admin_Cannot_Create_Tenant_With_Duplicated_Id()
     {
         // Prepare
-        var request = new CreateTenant.Command
+        var request = new CreateTenant.Request
         {
             Alias = "acme",
             Name = "Acme Inc",
@@ -480,7 +480,7 @@ public class TenantManagementTests : SequentialTest, IClassFixture<ServerFixture
     public async Task Global_Admin_Can_Delete_Tenants_And_Related_Entities()
     {
         // Prepare
-        var createTenantRequest = new CreateTenant.Command
+        var createTenantRequest = new CreateTenant.Request
         {
             Alias = "Stark",
             Name = "Stark Industries",
@@ -499,7 +499,7 @@ public class TenantManagementTests : SequentialTest, IClassFixture<ServerFixture
         var roleNames = new[] { "Role1", "Role2" };
         foreach (var roleName in roleNames)
         {
-            var roleCreationResponse = await _serverFixture.PostAsync<Roles.Details>("api/authorization/roles", new CreateRole.Command { Name = roleName }, await _serverFixture.GetAccessTokenAsync("tony.admin", "12345", "Stark"));
+            var roleCreationResponse = await _serverFixture.PostAsync<Roles.Details>("api/authorization/roles", new CreateRole.Request { Name = roleName }, await _serverFixture.GetAccessTokenAsync("tony.admin", "12345", "Stark"));
             roleCreationResponse.ShouldBeSuccess();
         }
 
@@ -509,7 +509,7 @@ public class TenantManagementTests : SequentialTest, IClassFixture<ServerFixture
         context.Add(new User("STARK", "user3", "user3@stark-industries.com", "123", "", "username3"));
         context.SaveChanges();
 
-        var relationResponse1 = await _serverFixture.PostAsync<Roles.Details>("api/authorization/users/set-roles", new ReplaceUserRoles.Command 
+        var relationResponse1 = await _serverFixture.PostAsync<Roles.Details>("api/authorization/users/set-roles", new ReplaceUserRoles.Request 
         { 
             RoleIds = new[] 
             { 
@@ -520,7 +520,7 @@ public class TenantManagementTests : SequentialTest, IClassFixture<ServerFixture
         }, await _serverFixture.GetAccessTokenAsync("tony.admin", "12345", "Stark"));
         relationResponse1.ShouldBeSuccess();
 
-        var relationResponse2 = await _serverFixture.PostAsync<Roles.Details>("api/authorization/users/set-roles", new ReplaceUserRoles.Command
+        var relationResponse2 = await _serverFixture.PostAsync<Roles.Details>("api/authorization/users/set-roles", new ReplaceUserRoles.Request
         {
             RoleIds = new[]
             {
@@ -530,7 +530,7 @@ public class TenantManagementTests : SequentialTest, IClassFixture<ServerFixture
         }, await _serverFixture.GetAccessTokenAsync("tony.admin", "12345", "Stark"));
         relationResponse2.ShouldBeSuccess();
 
-        var claimRequest = new AddClaimOverride.Command { AccessType = ClaimAccessType.Allow, Username = "user1", ClaimId = _serverFixture.Context.Set<Claim>().First().Id };
+        var claimRequest = new AddClaimOverride.Request { AccessType = ClaimAccessType.Allow, Username = "user1", ClaimId = _serverFixture.Context.Set<Claim>().First().Id };
         var claimResponse = await _serverFixture.PostAsync<Claim[]>("api/authorization/users/add-claim", claimRequest, await _serverFixture.GetAccessTokenAsync("tony.admin", "12345", "Stark"));
         claimResponse.ShouldBeSuccess();
 

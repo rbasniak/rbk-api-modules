@@ -7,14 +7,14 @@ namespace rbkApiModules.Identity.Core;
 
 public class AddClaimOverride
 {
-    public class Command : AuthenticatedRequest, IRequest<CommandResponse>
+    public class Request : AuthenticatedRequest, IRequest<CommandResponse>
     {
         public string Username { get; set; }
         public Guid ClaimId { get; set; }
         public ClaimAccessType AccessType { get; set; }
     }
 
-    public class Validator : AbstractValidator<Command>
+    public class Validator : AbstractValidator<Request>
     {
         private readonly IAuthService _authService;
 
@@ -33,13 +33,13 @@ public class AddClaimOverride
                 });
         } 
 
-        private async Task<bool> UserExistInDatabaseUnderTheSameTenant(Command command, string username, CancellationToken cancelation)
+        private async Task<bool> UserExistInDatabaseUnderTheSameTenant(Request request, string username, CancellationToken cancelation)
         {
-            return await _authService.FindUserAsync(username, command.Identity.Tenant, cancelation) != null;
+            return await _authService.FindUserAsync(username, request.Identity.Tenant, cancelation) != null;
         } 
     }
 
-    public class Handler : IRequestHandler<Command, CommandResponse>
+    public class Handler : IRequestHandler<Request, CommandResponse>
     {
         private readonly IAuthService _authService;
         private readonly IClaimsService _claimsService;
@@ -50,7 +50,7 @@ public class AddClaimOverride
             _claimsService = claimsService;
         }
 
-        public async Task<CommandResponse> Handle(Command request, CancellationToken cancellation)
+        public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)
         {
             await _claimsService.AddClaimOverrideAsync(request.ClaimId, request.Username, request.Identity.Tenant, request.AccessType, cancellation);
 

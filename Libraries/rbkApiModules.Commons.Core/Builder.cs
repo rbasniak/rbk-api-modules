@@ -906,7 +906,7 @@ public static class CommonsCoreBuilder
 
         if (options._assembliesForMediatR.Count > 0)
         {
-            services.AddMediatR(options._assembliesForMediatR.ToArray());
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(options._assembliesForMediatR.ToArray()));
         }
 
         #endregion

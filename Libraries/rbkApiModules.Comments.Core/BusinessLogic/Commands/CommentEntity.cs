@@ -7,14 +7,14 @@ namespace rbkApiModules.Comments.Core;
 
 public class CommentEntity
 {
-    public class Command : AuthenticatedRequest, IRequest<CommandResponse>
+    public class Request : AuthenticatedRequest, IRequest<CommandResponse>
     {
         public Guid EntityId { get; set; }
         public Guid? ParentId { get; set; }
         public string Comment { get; set; }
     }
 
-    public class Validator: AbstractValidator<Command>  
+    public class Validator: AbstractValidator<Request>  
     {
         public Validator(ILocalizationService localization, ICommentsService commentsService)
         {
@@ -31,7 +31,7 @@ public class CommentEntity
         }
     }
 
-    public class Handler : IRequestHandler<Command, CommandResponse>
+    public class Handler : IRequestHandler<Request, CommandResponse>
     {
         private readonly ICommentsService _commentsService;
 
@@ -40,7 +40,7 @@ public class CommentEntity
             _commentsService = commentsService;
         }
 
-        public async Task<CommandResponse> Handle(Command request, CancellationToken cancellation)
+        public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)
         { 
             await _commentsService.CreateAsync(request.Identity.Tenant, request.Identity.Username, request.Comment, request.EntityId, request.ParentId, cancellation);
 

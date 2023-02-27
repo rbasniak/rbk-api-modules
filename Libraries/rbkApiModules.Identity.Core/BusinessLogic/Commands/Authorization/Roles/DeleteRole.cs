@@ -7,12 +7,12 @@ namespace rbkApiModules.Identity.Core;
 
 public class DeleteRole
 {
-    public class Command : AuthenticatedRequest, IRequest<CommandResponse>
+    public class Request : AuthenticatedRequest, IRequest<CommandResponse>
     {
         public Guid Id { get; set; }
     }
 
-    public class Validator : AbstractValidator<Command>
+    public class Validator : AbstractValidator<Request>
     {
         private readonly IRolesService _rolesService;
 
@@ -30,12 +30,12 @@ public class DeleteRole
                 .HasCorrectRoleManagementAccessRights(localization);
         } 
 
-        private async Task<bool> NotBeUsedInAnyUserUnlessThereIsAnAlternateRole(Command command, Guid id, CancellationToken cancellation)
+        private async Task<bool> NotBeUsedInAnyUserUnlessThereIsAnAlternateRole(Request request, Guid id, CancellationToken cancellation)
         {
             var isUsed = await _rolesService.IsUsedByAnyUsersAsync(id, cancellation);
 
             // If it is used and is a tenant role, look for an application role to replace it
-            if (isUsed && command.Identity.HasTenant)
+            if (isUsed && request.Identity.HasTenant)
             {
                 var role = await _rolesService.FindAsync(id, cancellation);
                 var roles = await _rolesService.FindByNameAsync(role.Name, cancellation);
@@ -51,7 +51,7 @@ public class DeleteRole
         } 
     }
 
-    public class Handler : IRequestHandler<Command, CommandResponse>
+    public class Handler : IRequestHandler<Request, CommandResponse>
     {
         private readonly IRolesService _rolesService;
         private readonly IAuthService _usersService;
@@ -62,7 +62,7 @@ public class DeleteRole
             _usersService = usersService;
         }
 
-        public async Task<CommandResponse> Handle(Command request, CancellationToken cancellation)
+        public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)
         {
             var tenantRole = await _rolesService.FindAsync(request.Id, cancellation);
 

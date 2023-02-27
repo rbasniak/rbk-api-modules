@@ -7,13 +7,13 @@ namespace rbkApiModules.Identity.Core;
 
 public class UpdateClaim
 {
-    public class Command : IRequest<CommandResponse>
+    public class Request : IRequest<CommandResponse>
     {
         public Guid Id { get; set; }
         public string Description { get; set; }
     }
 
-    public class Validator : AbstractValidator<Command>
+    public class Validator : AbstractValidator<Request>
     {
         private readonly IClaimsService _claimsService;
 
@@ -30,13 +30,13 @@ public class UpdateClaim
                 .WithName(localization.GetValue("Description"));
         }
 
-        private async Task<bool> NotExistsInDatabaseWithSameDescription(Command command, string identification, CancellationToken cancelation)
+        private async Task<bool> NotExistsInDatabaseWithSameDescription(Request request, string identification, CancellationToken cancelation)
         {
             return (await _claimsService.FindByDescriptionAsync(identification)) == null;
         }
     }
 
-    public class Handler : IRequestHandler<Command, CommandResponse>
+    public class Handler : IRequestHandler<Request, CommandResponse>
     {
         private readonly IClaimsService _claimsService;
 
@@ -45,7 +45,7 @@ public class UpdateClaim
             _claimsService = claimsService;
         }
 
-        public async Task<CommandResponse> Handle(Command request, CancellationToken cancellation)
+        public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)
         {
             await _claimsService.RenameAsync(request.Id, request.Description, cancellation);
 

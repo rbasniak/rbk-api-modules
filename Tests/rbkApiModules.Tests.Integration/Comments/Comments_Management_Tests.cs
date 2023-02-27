@@ -33,7 +33,7 @@ public class CommentsManagementTests : SequentialTest, IClassFixture<ServerFixtu
     public async Task User_Cannot_Create_Empty_Comment(string comment)
     {
         // Prepare
-        var request = new CommentEntity.Command
+        var request = new CommentEntity.Request
         {
             EntityId = Guid.NewGuid(),
             ParentId = null,
@@ -55,7 +55,7 @@ public class CommentsManagementTests : SequentialTest, IClassFixture<ServerFixtu
     public async Task User_Cannot_Create_Comment_Without_Being_Authenticated()
     {
         // Prepare
-        var request = new CommentEntity.Command
+        var request = new CommentEntity.Request
         {
             EntityId = Guid.NewGuid(),
             ParentId = null,
@@ -91,7 +91,7 @@ public class CommentsManagementTests : SequentialTest, IClassFixture<ServerFixtu
     public async Task User_Cannot_Create_Comment_Without_Non_Existant_Parent_Comment()
     {
         // Prepare
-        var request = new CommentEntity.Command
+        var request = new CommentEntity.Request
         {
             EntityId = Guid.NewGuid(),
             ParentId = Guid.NewGuid(),
@@ -121,7 +121,7 @@ public class CommentsManagementTests : SequentialTest, IClassFixture<ServerFixtu
 
         async Task<Comment> CreateComment(int id, Guid entityId, Guid? parentId, string accessToken)
         {
-            var request = new CommentEntity.Command
+            var request = new CommentEntity.Request
             {
                 EntityId = entityId,
                 ParentId = parentId,

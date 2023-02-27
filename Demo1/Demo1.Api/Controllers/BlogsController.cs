@@ -15,7 +15,7 @@ public class BlogsController : BaseController
     [HttpGet("blogs")]
     public async Task<ActionResult<Models.Read.Blog[]>> AllBlogs()
     {
-        var response = await Mediator.Send(new GetAllBlogs.Command());
+        var response = await Mediator.Send(new GetAllBlogs.Request());
 
         return HttpResponse(response);
     }
@@ -23,7 +23,7 @@ public class BlogsController : BaseController
     [HttpGet("authors")]
     public async Task<ActionResult<SimpleNamedEntity[]>> AllAuthors()
     {
-        var response = await Mediator.Send(new GetAllAuthors.Command());
+        var response = await Mediator.Send(new GetAllAuthors.Request());
 
         return HttpResponse<SimpleNamedEntity[]>(response);
     }
@@ -31,13 +31,13 @@ public class BlogsController : BaseController
     [HttpGet("posts")]
     public async Task<ActionResult<PostDetails[]>> AllPosts()
     {
-        var response = await Mediator.Send(new GetAllPosts.Command());
+        var response = await Mediator.Send(new GetAllPosts.Request());
 
         return HttpResponse<PostDetails[]>(response);
     }
 
     [HttpPost("posts")]
-    public async Task<ActionResult<PostDetails>> CreatePost(CreatePost.Command data)
+    public async Task<ActionResult<PostDetails>> CreatePost(CreatePost.Request data)
     {
         var response = await Mediator.Send(data);
 
@@ -45,7 +45,7 @@ public class BlogsController : BaseController
     }
 
     [HttpPut("posts")]
-    public async Task<ActionResult<PostDetails>> UpdatePost(UpdatePost.Command data)
+    public async Task<ActionResult<PostDetails>> UpdatePost(UpdatePost.Request data)
     {
         var response = await Mediator.Send(data);
 

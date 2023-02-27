@@ -7,7 +7,7 @@ namespace rbkApiModules.Identity.Core;
 
 public class ConfirmUserEmail
 {
-    public class Command : IRequest<CommandResponse>
+    public class Request : IRequest<CommandResponse>
     {
         private string _tenant;
 
@@ -24,7 +24,7 @@ public class ConfirmUserEmail
         public string ActivationCode { get; set; }
     }
 
-    public class Validator : AbstractValidator<Command>
+    public class Validator : AbstractValidator<Request>
     {
         private readonly IAuthService _usersService;
 
@@ -43,17 +43,17 @@ public class ConfirmUserEmail
                 .MustAsync(BeValidPair).WithMessage(localization.GetValue("Código de ativação inválido"));
         }
 
-        public async Task<bool> BeValidPair(Command command, string email, CancellationToken cancelation)
+        public async Task<bool> BeValidPair(Request request, string email, CancellationToken cancelation)
         {
-            var user = await _usersService.FindUserAsync(email, command.Tenant, cancelation);
+            var user = await _usersService.FindUserAsync(email, request.Tenant, cancelation);
 
             if (user == null) return false;
 
-            return user.ActivationCode == command.ActivationCode;
+            return user.ActivationCode == request.ActivationCode;
         }
     }
 
-    public class Handler : IRequestHandler<Command, CommandResponse>
+    public class Handler : IRequestHandler<Request, CommandResponse>
     {
         private readonly IAuthenticationMailService _mailingService;
         private readonly IAuthService _usersService;
@@ -64,7 +64,7 @@ public class ConfirmUserEmail
             _usersService = usersService;
         }
 
-        public async Task<CommandResponse> Handle(Command request, CancellationToken cancellation)
+        public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)
         {
             var user = await _usersService.FindUserAsync(request.Email, request.Tenant, cancellation);
 

@@ -9,7 +9,7 @@ namespace Demo1.Api.Controllers;
 public class MediatRController : BaseController
 { 
     [HttpPost("pipeline-validation-test")]
-    public async Task<ActionResult<BaseResponse>> PipelineValidationTest(PipelineValidationTest.Command data)
+    public async Task<ActionResult<BaseResponse>> PipelineValidationTest(PipelineValidationTest.Request data)
     {
         var response = await Mediator.Send(data);
 

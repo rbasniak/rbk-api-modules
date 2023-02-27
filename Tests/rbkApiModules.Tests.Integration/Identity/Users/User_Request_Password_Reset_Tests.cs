@@ -29,7 +29,7 @@ public class UserRequestPasswordResetTests : SequentialTest, IClassFixture<Serve
         user.ActivationCode.ShouldNotBe(null);
         user.ActivationCode.ShouldNotBe("");
 
-        var request = new RequestPasswordReset.Command
+        var request = new RequestPasswordReset.Request
         {
             Tenant = user.TenantId.ToLower(),
             Email = user.Email
@@ -55,7 +55,7 @@ public class UserRequestPasswordResetTests : SequentialTest, IClassFixture<Serve
         var user = _serverFixture.Context.Set<User>().First(x => x.Username == "admin1" && x.TenantId == "BUZIOS");
         user.IsConfirmed.ShouldBeTrue();
 
-        var request = new RequestPasswordReset.Command
+        var request = new RequestPasswordReset.Request
         {
             Tenant = tenant,
             Email = user.Email
@@ -76,7 +76,7 @@ public class UserRequestPasswordResetTests : SequentialTest, IClassFixture<Serve
     public async Task User_Cannot_Request_Password_Reset_If_It_Is_Not_Registered()
     {
         // Prepare
-        var request = new RequestPasswordReset.Command
+        var request = new RequestPasswordReset.Request
         {
             Tenant = "buzios",
             Email = "incognito@company.com"
@@ -100,7 +100,7 @@ public class UserRequestPasswordResetTests : SequentialTest, IClassFixture<Serve
         var user = _serverFixture.Context.Set<User>().First(x => x.Username == "admin1" && x.TenantId == "BUZIOS");
         user.IsConfirmed.ShouldBeTrue();
 
-        var request = new RequestPasswordReset.Command
+        var request = new RequestPasswordReset.Request
         {
             Tenant = "XXXX",
             Email = user.Email
@@ -126,7 +126,7 @@ public class UserRequestPasswordResetTests : SequentialTest, IClassFixture<Serve
         var user = _serverFixture.Context.Set<User>().First(x => x.Username == "admin1" && x.TenantId == "BUZIOS");
         user.IsConfirmed.ShouldBeTrue();
 
-        var request = new RequestPasswordReset.Command
+        var request = new RequestPasswordReset.Request
         {
             Tenant = user.TenantId,
             Email = email
@@ -150,7 +150,7 @@ public class UserRequestPasswordResetTests : SequentialTest, IClassFixture<Serve
         var user = _serverFixture.Context.Set<User>().First(x => x.Username == "admin1" && x.TenantId == "BUZIOS");
         user.IsConfirmed.ShouldBeTrue();
 
-        var request = new RequestPasswordReset.Command
+        var request = new RequestPasswordReset.Request
         {
             Tenant = user.TenantId,
             Email = user.Email

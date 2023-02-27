@@ -25,17 +25,17 @@ namespace Demo1.BusinessLogic.Commands;
 /// </summary>
 public class ScopeLogTest
 {
-    public class Command: IRequest<CommandResponse> 
+    public class Request: IRequest<CommandResponse> 
     {
 
     }
 
-    public class Validator: AbstractValidator<Command>
+    public class Validator: AbstractValidator<Request>
     {
         
     }
 
-    public class Handler : RequestHandler<Command, CommandResponse>
+    public class Handler : IRequestHandler<Request, CommandResponse>
     {
         private readonly ILogger<Handler> _logger;
         private readonly IService4 _service4;
@@ -46,7 +46,7 @@ public class ScopeLogTest
             _service4 = service4;
         }
 
-        protected override CommandResponse Handle(Command request)
+        public async Task<CommandResponse> Handle(Request request, CancellationToken cancellationToken)
         {
             var scope1 = _logger.BeginScope(new Dictionary<string, object>
             {
@@ -58,7 +58,7 @@ public class ScopeLogTest
                 ["InnerIsolatedProperty"] = "This should not spill to other entries",
             });
 
-            _logger.LogInformation($"Handling the request for ${typeof(Command).FullName}");
+            _logger.LogInformation($"Handling the request for ${typeof(Request).FullName}");
 
             scope1.Dispose();
 
@@ -66,9 +66,9 @@ public class ScopeLogTest
 
             _service4.Run();
 
-            _logger.LogInformation($"Finished the request for ${typeof(Command).FullName}");
+            _logger.LogInformation($"Finished the request for ${typeof(Request).FullName}");
 
-            return CommandResponse.Success();
+            return await Task.FromResult(CommandResponse.Success());
         }
     }
 }

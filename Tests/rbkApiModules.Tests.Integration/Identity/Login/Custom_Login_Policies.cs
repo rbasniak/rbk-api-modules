@@ -17,7 +17,7 @@ public class CustomLoginPoliciesTests : SequentialTest, IClassFixture<ServerFixt
     public async Task User_Cannot_Login_If_Custom_Policy_Did_Not_Allow_1()
     {
         // Prepare
-        var request = new UserLogin.Command
+        var request = new UserLogin.Request
         {
             Username = "forbidden",
             Password = "zzzzz"
@@ -37,7 +37,7 @@ public class CustomLoginPoliciesTests : SequentialTest, IClassFixture<ServerFixt
     public async Task User_Cannot_Login_If_Custom_Policy_Did_Not_Allow_2()
     {
         // Prepare
-        var request = new UserLogin.Command
+        var request = new UserLogin.Request
         {
             Tenant = "FORBIDDEN",
             Username = "admin1",

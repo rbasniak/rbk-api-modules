@@ -26,7 +26,7 @@ public class ClaimManagementDependentTests : SequentialTest, IClassFixture<Serve
     public async Task Global_Admin_Can_Create_Claim()
     {
         // Prepare
-        var request = new CreateClaim.Command
+        var request = new CreateClaim.Request
         {
             Identification = "CAN_MAnaGE_APPrOVALS",
             Description = "Can approval documents",
@@ -61,7 +61,7 @@ public class ClaimManagementDependentTests : SequentialTest, IClassFixture<Serve
     {
         // Prepare
         var existingClaim = _serverFixture.Context.Set<Claim>().FirstOrDefault(x => x.Identification == "CAN_MANAGE_APPROVALS");
-        var request = new UpdateClaim.Command
+        var request = new UpdateClaim.Request
         {
             Id = existingClaim.Id,
             Description = "Workflow approval",
@@ -95,7 +95,7 @@ public class ClaimManagementDependentTests : SequentialTest, IClassFixture<Serve
     public async Task Global_Admin_Cannot_Create_Claim_With_Same_Identification()
     {
         // Prepare
-        var request = new CreateClaim.Command
+        var request = new CreateClaim.Request
         {
             Identification = "CaN_MANAGE_aPPROVAlS",
             Description = "Workflow approval 2",
@@ -103,7 +103,7 @@ public class ClaimManagementDependentTests : SequentialTest, IClassFixture<Serve
 
         // Act
         var response = await _serverFixture.PostAsync<ClaimDetails>("api/authorization/claims", request, authenticated: true);
-
+        
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "There is already a claim with this identification");
     }
@@ -115,7 +115,7 @@ public class ClaimManagementDependentTests : SequentialTest, IClassFixture<Serve
     public async Task Global_Admin_Cannot_Create_Claim_With_Same_Description()
     {
         // Prepare
-        var request = new CreateClaim.Command
+        var request = new CreateClaim.Request
         {
             Identification = "CaN_MaNaGe_aPPRoOVaLS_2",
             Description = "WORKFLOW APPROVAL",
@@ -138,7 +138,7 @@ public class ClaimManagementDependentTests : SequentialTest, IClassFixture<Serve
         var existingClaim = _serverFixture.Context.Set<Claim>().SingleOrDefault(x => x.Identification == "CAN_MANAGE_APPROVALS");
         existingClaim.ShouldNotBeNull();
 
-        var request = new UpdateClaim.Command
+        var request = new UpdateClaim.Request
         {
             Id = existingClaim.Id,
             Description = "WORKFLOW APPROVAL",
@@ -161,7 +161,7 @@ public class ClaimManagementDependentTests : SequentialTest, IClassFixture<Serve
         var existingClaim = _serverFixture.Context.Set<Claim>().FirstOrDefault(x => x.Identification == "CAN_MANAGE_APPROVALS");
         existingClaim.IsProtected.ShouldBe(false);
 
-        var request = new ProtectClaim.Command
+        var request = new ProtectClaim.Request
         {
             Id = existingClaim.Id
         };
@@ -213,7 +213,7 @@ public class ClaimManagementDependentTests : SequentialTest, IClassFixture<Serve
         var existingClaim = _serverFixture.Context.Set<Claim>().FirstOrDefault(x => x.Identification == "CAN_MANAGE_APPROVALS");
         existingClaim.IsProtected.ShouldBe(true);
 
-        var request = new UnprotectClaim.Command
+        var request = new UnprotectClaim.Request
         {
             Id = existingClaim.Id
         };
@@ -306,7 +306,7 @@ public class ClaimManagementIndependentTests : SequentialTest, IClassFixture<Ser
     public async Task Global_Admin_Cannot_Protect_Claim_That_Doesnt_Exist()
     {
         // Prepare
-        var request = new ProtectClaim.Command
+        var request = new ProtectClaim.Request
         {
             Id = Guid.NewGuid()
         };
@@ -325,7 +325,7 @@ public class ClaimManagementIndependentTests : SequentialTest, IClassFixture<Ser
     public async Task Global_Admin_Cannot_Unprotect_Claim_That_Doesnt_Exist()
     {
         // Prepare
-        var request = new UnprotectClaim.Command
+        var request = new UnprotectClaim.Request
         {
             Id = Guid.NewGuid()
         };
@@ -357,7 +357,7 @@ public class ClaimManagementIndependentTests : SequentialTest, IClassFixture<Ser
     public async Task Local_Admin_Cannot_Create_Claim()
     {
         // Prepare
-        var request = new CreateClaim.Command
+        var request = new CreateClaim.Request
         {
             Identification = "CaN_MANAGE_aPPROVAlS",
             Description = "Workflow approval",
@@ -380,7 +380,7 @@ public class ClaimManagementIndependentTests : SequentialTest, IClassFixture<Ser
         var existingClaim = _serverFixture.Context.Set<Claim>().FirstOrDefault(x => x.Identification == "CAN_MANAGE_APPROVALS");
         existingClaim.ShouldNotBeNull();
 
-        var request = new CreateClaim.Command
+        var request = new CreateClaim.Request
         {
             Identification = existingClaim.Identification,
             Description = "Workflow approval 2",
@@ -403,7 +403,7 @@ public class ClaimManagementIndependentTests : SequentialTest, IClassFixture<Ser
         var existingClaim = _serverFixture.Context.Set<Claim>().FirstOrDefault(x => x.Identification == "CAN_MANAGE_APPROVALS");
         existingClaim.ShouldNotBeNull();
 
-        var request = new ProtectClaim.Command
+        var request = new ProtectClaim.Request
         {
             Id = existingClaim.Id
         };
@@ -425,7 +425,7 @@ public class ClaimManagementIndependentTests : SequentialTest, IClassFixture<Ser
         var existingClaim = _serverFixture.Context.Set<Claim>().FirstOrDefault(x => x.Identification == "CAN_MANAGE_APPROVALS");
         existingClaim.ShouldNotBeNull();
 
-        var request = new UnprotectClaim.Command
+        var request = new UnprotectClaim.Request
         {
             Id = existingClaim.Id
         };
@@ -446,7 +446,7 @@ public class ClaimManagementIndependentTests : SequentialTest, IClassFixture<Ser
     public async Task Global_Admin_Cannot_Create_Claim_Without_Identification(string identification)
     {
         // Prepare
-        var request = new CreateClaim.Command
+        var request = new CreateClaim.Request
         {
             Identification = identification,
             Description = "Workflow approval",
@@ -468,7 +468,7 @@ public class ClaimManagementIndependentTests : SequentialTest, IClassFixture<Ser
     public async Task Global_Admin_Cannot_Create_Claim_Without_Description(string description)
     {
         // Prepare
-        var request = new CreateClaim.Command
+        var request = new CreateClaim.Request
         {
             Identification = "VALID_IDENTIFICATION",
             Description = description,
@@ -488,7 +488,7 @@ public class ClaimManagementIndependentTests : SequentialTest, IClassFixture<Ser
     public async Task Global_Admin_Cannot_Update_Claim_That_Does_Not_Exist()
     {
         // Prepare
-        var request = new UpdateClaim.Command
+        var request = new UpdateClaim.Request
         {
             Id = Guid.NewGuid(),
             Description = "Workflow approval",
@@ -513,7 +513,7 @@ public class ClaimManagementIndependentTests : SequentialTest, IClassFixture<Ser
         var existingClaim = _serverFixture.Context.Set<Claim>().FirstOrDefault(x => x.Identification == "CAN_MANAGE_APPROVALS");
         existingClaim.ShouldNotBeNull();
 
-        var request = new UpdateClaim.Command
+        var request = new UpdateClaim.Request
         {
             Id = existingClaim.Id,
             Description = description,

@@ -7,7 +7,7 @@ namespace rbkApiModules.Identity.Core;
 
 public class DeleteTenant
 {
-    public class Command : IRequest<CommandResponse>
+    public class Request : IRequest<CommandResponse>
     {
         private string _alias;
 
@@ -24,7 +24,7 @@ public class DeleteTenant
         }
     }
 
-    public class Validator : AbstractValidator<Command>
+    public class Validator : AbstractValidator<Request>
     {
         private readonly ITenantsService _tenantsService;
 
@@ -38,13 +38,13 @@ public class DeleteTenant
                 .WithName(localization.GetValue("Alias"));
         }
 
-        private async Task<bool> ExistInDatabase(Command command, string alias, CancellationToken cancellation)
+        private async Task<bool> ExistInDatabase(Request request, string alias, CancellationToken cancellation)
         {
             return await _tenantsService.FindAsync(alias, cancellation) != null;
         }
     }
 
-    public class Handler : IRequestHandler<Command, CommandResponse>
+    public class Handler : IRequestHandler<Request, CommandResponse>
     {
         private readonly ITenantsService _tenantsService;
         private readonly IRolesService _rolesService;
@@ -57,7 +57,7 @@ public class DeleteTenant
             _authService = authService;
         }
 
-        public async Task<CommandResponse> Handle(Command request, CancellationToken cancellation)
+        public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)
         {
             await _authService.DeleteUsersFromTenant(request.Alias, cancellation);
 

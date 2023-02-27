@@ -6,7 +6,7 @@ using rbkApiModules.Commons.Core.Localization;
 namespace rbkApiModules.Identity.Core;
 public class RequestPasswordReset
 {
-    public class Command : IRequest<CommandResponse>
+    public class Request : IRequest<CommandResponse>
     {
         private string _tenant;
 
@@ -21,7 +21,7 @@ public class RequestPasswordReset
         public string Email { get; set; }
     }
 
-    public class Validator : AbstractValidator<Command>
+    public class Validator : AbstractValidator<Request>
     {
         private readonly IAuthService _authService;
 
@@ -44,20 +44,20 @@ public class RequestPasswordReset
 
         }
 
-        private async Task<bool> EmailBeRegistered(Command command, string email, CancellationToken cancelation = default)
+        private async Task<bool> EmailBeRegistered(Request request, string email, CancellationToken cancelation = default)
         {
-            return await _authService.IsUserRegisteredAsync(email, command.Tenant, cancelation);
+            return await _authService.IsUserRegisteredAsync(email, request.Tenant, cancelation);
         }
 
-        private async Task<bool> EmailBeConfirmed(Command command, string email, CancellationToken cancellation)
+        private async Task<bool> EmailBeConfirmed(Request request, string email, CancellationToken cancellation)
         {
-            var isConfirmed = await _authService.IsUserConfirmedAsync(email, command.Tenant, cancellation);
+            var isConfirmed = await _authService.IsUserConfirmedAsync(email, request.Tenant, cancellation);
 
             return isConfirmed;
         }
     }
 
-    public class Handler : IRequestHandler<Command, CommandResponse>
+    public class Handler : IRequestHandler<Request, CommandResponse>
     {
         private readonly IAuthenticationMailService _mailingService;
         private readonly IAuthService _authService;
@@ -68,7 +68,7 @@ public class RequestPasswordReset
             _authService = authService;
         }
 
-        public async Task<CommandResponse> Handle(Command request, CancellationToken cancellation)
+        public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)
         {
             await _authService.RequestPasswordResetAsync(request.Email, request.Tenant, cancellation);
 

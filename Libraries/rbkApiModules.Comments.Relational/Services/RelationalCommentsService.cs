@@ -26,11 +26,14 @@ public class RelationalCommentsService : ICommentsService
 
     public async Task<bool> ExistsAsync(string tenant, Guid id, CancellationToken cancellation = default)
     {
+        tenant = tenant != null ? tenant.ToUpper() : null;
         return await _context.Set<Comment>().AnyAsync(x => x.Id == id && x.TenantId == tenant, cancellation);
     }
 
     public async Task<Comment[]> GetAllAsync(string tenant, Guid entityId, CancellationToken cancellation = default)
     {
+        tenant = tenant != null ? tenant.ToUpper() : null;
+
         var comments = await _context.Set<Comment>()
            .Include(x => x.Parent)
            .Where(x => x.EntityId == entityId && x.TenantId == tenant)

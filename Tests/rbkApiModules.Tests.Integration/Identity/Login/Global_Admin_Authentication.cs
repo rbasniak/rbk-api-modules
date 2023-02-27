@@ -20,7 +20,7 @@ public class GlobalAdminLoginTests : SequentialTest, IClassFixture<ServerFixture
     public async Task Global_Admin_Cannot_Login_With_Wrong_Password()
     {
         // Prepare
-        var request = new UserLogin.Command
+        var request = new UserLogin.Request
         {
             Username = "superuser",
             Password = "zzzzz"
@@ -40,7 +40,7 @@ public class GlobalAdminLoginTests : SequentialTest, IClassFixture<ServerFixture
     public async Task Global_Admin_Can_Login_With_Username()
     {
         // Prepare
-        var request = new UserLogin.Command
+        var request = new UserLogin.Request
         {
             Username = "superuser",
             Password = "admin"
@@ -93,7 +93,7 @@ public class GlobalAdminLoginTests : SequentialTest, IClassFixture<ServerFixture
     public async Task Global_Admin_Cannot_Login_With_Tenant()
     {
         // Prepare 
-        var request = new UserLogin.Command
+        var request = new UserLogin.Request
         {
             Username = "superuser",
             Password = "admin",

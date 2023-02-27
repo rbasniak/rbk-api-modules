@@ -12,22 +12,22 @@ namespace Demo1.BusinessLogic.Commands;
 
 public class DeletePost
 {
-    public class Command : CreatePost.Command, IHasReadingModel<Models.Read.Post>
+    public class Request : CreatePost.Request, IHasReadingModel<Models.Read.Post>
     {
         public new OperationType Mode => OperationType.Remove;
 
         public Guid Id { get; set; }
     }
 
-    public class Validator: AbstractValidator<Command>
+    public class Validator: AbstractValidator<Request>
     {
         public Validator(DatabaseContext context, ILocalizationService localization)
         {
-            RuleFor(x => x.Id).MustExistInDatabase<Command, Post>(context, localization);
+            RuleFor(x => x.Id).MustExistInDatabase<Request, Post>(context, localization);
         }
     }
 
-    public class Handler : IRequestHandler<Command, AuditableCommandResponse>
+    public class Handler : IRequestHandler<Request, AuditableCommandResponse>
     {
         private readonly DatabaseContext _context;
 
@@ -36,10 +36,10 @@ public class DeletePost
             _context = context;
         }
 
-        public async Task<AuditableCommandResponse> Handle(Command command, CancellationToken cancellation)
+        public async Task<AuditableCommandResponse> Handle(Request request, CancellationToken cancellation)
         {
             var post = await _context.Posts
-                .FirstAsync(x => x.Id == command.Id);
+                .FirstAsync(x => x.Id == request.Id);
 
             _context.Remove(post);
 

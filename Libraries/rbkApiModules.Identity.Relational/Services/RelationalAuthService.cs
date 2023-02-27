@@ -32,6 +32,8 @@ public class RelationalAuthService: IAuthService
 
     public async Task<User> GetUserWithDependenciesAsync(string username, string tenant, CancellationToken cancellation = default)
     {
+        tenant = tenant != null ? tenant.ToUpper() : null;
+
         var user = await _context.Set<User>()
             .Include(x => x.Roles)
                 .ThenInclude(x => x.Role)
@@ -39,7 +41,7 @@ public class RelationalAuthService: IAuthService
                         .ThenInclude(x => x.Claim)
             .Include(x => x.Claims)
                 .ThenInclude(x => x.Claim)
-            .SingleAsync(x => (EF.Functions.Like(x.Username, username) || EF.Functions.Like(x.Email, username)) && x.TenantId == tenant, cancellation);
+            .SingleAsync(x => (x.Username.ToLower() == username.ToLower() || x.Email.ToLower() == username) && x.TenantId == tenant, cancellation);
 
         return user;
     }
@@ -63,7 +65,7 @@ public class RelationalAuthService: IAuthService
     {
         var user = await _context.Set<User>()
             .Include(x => x.PasswordRedefineCode)
-            .FirstOrDefaultAsync(x => EF.Functions.Like(x.PasswordRedefineCode.Hash, resetPasswordCode), cancellation);
+            .FirstOrDefaultAsync(x => x.PasswordRedefineCode.Hash == resetPasswordCode, cancellation);
 
         if (user == null) throw new SafeException("Could not find the user associate with that password reset code");
 
@@ -78,7 +80,7 @@ public class RelationalAuthService: IAuthService
     {
         var user = await _context.Set<User>()
             .Include(x => x.PasswordRedefineCode)
-            .SingleOrDefaultAsync(x => EF.Functions.Like(x.PasswordRedefineCode.Hash, code), cancellationToken: cancelation);
+            .SingleOrDefaultAsync(x => x.PasswordRedefineCode.Hash == code, cancellationToken: cancelation);
 
         return user != null
             && user.PasswordRedefineCode.CreationDate.HasValue
@@ -114,12 +116,16 @@ public class RelationalAuthService: IAuthService
 
     public async Task<bool> IsUserRegisteredAsync(string email, string tenant, CancellationToken cancellation = default)
     {
-        return await _context.Set<User>().AnyAsync(x => EF.Functions.Like(x.Email, email) && x.TenantId == tenant, cancellation);
+        tenant = tenant != null ? tenant.ToUpper() : null;
+
+        return await _context.Set<User>().AnyAsync(x => x.Email == email && x.TenantId == tenant, cancellation);
     }
 
     public async Task<bool> IsUserConfirmedAsync(string email, string tenant, CancellationToken cancellation = default)
     {
-        return await _context.Set<User>().AnyAsync(x => EF.Functions.Like(x.Email, email) && x.IsConfirmed && x.TenantId == tenant, cancellation);
+        tenant = tenant != null ? tenant.ToUpper() : null;
+
+        return await _context.Set<User>().AnyAsync(x => x.Email.ToLower() == email.ToLower() && x.IsConfirmed && x.TenantId == tenant, cancellation);
     }
 
     public async Task RequestPasswordResetAsync(string email, string tenant, CancellationToken cancellation = default)
@@ -142,11 +148,13 @@ public class RelationalAuthService: IAuthService
 
     public async Task<User[]> GetAllAsync(string tenant, CancellationToken cancellation = default)
     {
+        tenant = tenant != null ? tenant.ToUpper() : null;
+
         var users = await _context.Set<User>()
             .Include(x => x.Roles)
                 .ThenInclude(x => x.Role)
             .OrderBy(x => x.Username)
-            .Where(x => x.TenantId == tenant.ToUpper())
+            .Where(x => x.TenantId == tenant)
             .ToArrayAsync(cancellation);
 
         return users;

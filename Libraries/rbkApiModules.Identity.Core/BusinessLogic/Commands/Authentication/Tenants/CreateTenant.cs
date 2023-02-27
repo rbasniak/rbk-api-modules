@@ -7,7 +7,7 @@ namespace rbkApiModules.Identity.Core;
 
 public class CreateTenant
 {
-    public class Command : IRequest<CommandResponse>
+    public class Request : IRequest<CommandResponse>
     {
         private string _alias;
 
@@ -36,7 +36,7 @@ public class CreateTenant
         public string DisplayName { get; set; }
     }
 
-    public class Validator : AbstractValidator<Command>
+    public class Validator : AbstractValidator<Request>
     {
         private readonly ITenantsService _tenantsService;
 
@@ -75,20 +75,20 @@ public class CreateTenant
 
         }
 
-        private async Task<bool> NameBeUnique(Command command, string alias, CancellationToken cancellation)
+        private async Task<bool> NameBeUnique(Request request, string alias, CancellationToken cancellation)
         {
             return await _tenantsService.FindAsync(alias, cancellation) == null;
         }
 
-        private async Task<bool> NameNotBeingUsed(Command command, string name, CancellationToken cancellation)
+        private async Task<bool> NameNotBeingUsed(Request request, string name, CancellationToken cancellation)
         {
             var existingTenant = await _tenantsService.FindByNameAsync(name, cancellation);
 
-            return existingTenant == null || existingTenant.Alias == command.Alias;
+            return existingTenant == null || existingTenant.Alias == request.Alias;
         }
     }
 
-    public class Handler : IRequestHandler<Command, CommandResponse>
+    public class Handler : IRequestHandler<Request, CommandResponse>
     {
         private readonly ITenantsService _tenantsService;
         private readonly IClaimsService _claimsService;
@@ -101,7 +101,7 @@ public class CreateTenant
             _usersService = usersService;
         }
 
-        public async Task<CommandResponse> Handle(Command request, CancellationToken cancellation)
+        public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)
         {
             var tenant = new Tenant(request.Alias, request.Name, request.Metadata);
 

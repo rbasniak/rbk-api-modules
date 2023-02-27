@@ -6,12 +6,12 @@ namespace Demo1.BusinessLogic.Queries;
 
 public class GetAllBlogs
 {
-    public class Command: IRequest<QueryResponse> 
+    public class Request: IRequest<QueryResponse> 
     {
 
     } 
 
-    public class Handler : RequestHandler<Command, QueryResponse>
+    public class Handler : IRequestHandler<Request, QueryResponse>
     {
         private readonly IInMemoryDatabase<Blog> _context;
 
@@ -20,9 +20,9 @@ public class GetAllBlogs
         //    _context = context;
         //}
 
-        protected override QueryResponse Handle(Command request)
+        public async Task<QueryResponse> Handle(Request request, CancellationToken cancellationToken)
         {
-            return QueryResponse.Success( _context.All());
+            return await Task.FromResult(QueryResponse.Success( _context.All()));
         }
     }
 }

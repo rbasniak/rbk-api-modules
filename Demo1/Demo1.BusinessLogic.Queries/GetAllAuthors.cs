@@ -7,12 +7,12 @@ namespace Demo1.BusinessLogic.Queries;
 
 public class GetAllAuthors
 {
-    public class Command: IRequest<QueryResponse> 
+    public class Request: IRequest<QueryResponse> 
     {
 
     } 
 
-    public class Handler : IRequestHandler<Command, QueryResponse>
+    public class Handler : IRequestHandler<Request, QueryResponse>
     {
         private readonly DatabaseContext _context;
 
@@ -21,7 +21,7 @@ public class GetAllAuthors
             _context = context;
         }
 
-        public async Task<QueryResponse> Handle(Command request, CancellationToken cancellation)
+        public async Task<QueryResponse> Handle(Request request, CancellationToken cancellation)
         {
             return QueryResponse.Success(await _context.Authors.ToListAsync());
         }

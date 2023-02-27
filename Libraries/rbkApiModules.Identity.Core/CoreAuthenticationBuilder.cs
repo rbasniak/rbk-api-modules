@@ -230,7 +230,7 @@ public static class CoreAuthenticationBuilder
         services.AddScoped<IAuthenticationMailService, DefaultAuthenticationMailService>();
 
         AssemblyScanner
-            .FindValidatorsInAssembly(Assembly.GetAssembly(typeof(UserLogin.Command)))
+            .FindValidatorsInAssembly(Assembly.GetAssembly(typeof(UserLogin.Request)))
                 .ForEach(result => services.AddScoped(result.InterfaceType, result.ValidatorType));
 
         foreach (var type in GetClassesImplementingInterface(typeof(ICustomLoginPolicyValidator)))

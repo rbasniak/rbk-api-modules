@@ -7,12 +7,12 @@ namespace rbkApiModules.Identity.Core;
 
 public class UnprotectClaim
 {
-    public class Command : IRequest<CommandResponse>
+    public class Request : IRequest<CommandResponse>
     {
         public Guid Id { get; set; }
     }
 
-    public class Validator : AbstractValidator<Command>
+    public class Validator : AbstractValidator<Request>
     {
         public Validator(IClaimsService claimsService, ILocalizationService localization)
         {
@@ -21,7 +21,7 @@ public class UnprotectClaim
         }
     }
 
-    public class Handler : IRequestHandler<Command, CommandResponse>
+    public class Handler : IRequestHandler<Request, CommandResponse>
     {
         private readonly IClaimsService _claimsService;
 
@@ -30,7 +30,7 @@ public class UnprotectClaim
             _claimsService = claimsService;
         }
 
-        public async Task<CommandResponse> Handle(Command request, CancellationToken cancellation)
+        public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)
         {
             await _claimsService.UnprotectAsync(request.Id, cancellation);
 

@@ -7,13 +7,13 @@ namespace rbkApiModules.Identity.Core;
 
 public class ReplaceUserRoles
 {
-    public class Command : AuthenticatedRequest, IRequest<CommandResponse>
+    public class Request : AuthenticatedRequest, IRequest<CommandResponse>
     {
         public string Username { get; set; }
         public Guid[] RoleIds { get; set; }
     }
 
-    public class Validator : AbstractValidator<Command>
+    public class Validator : AbstractValidator<Request>
     {
         private readonly IAuthService _authService;
         private readonly IRolesService _rolesService;
@@ -40,20 +40,20 @@ public class ReplaceUserRoles
                 });
         }
 
-        private async Task<bool> RoleExistOnDatabase(Command command, Guid roleId, CancellationToken cancellation)
+        private async Task<bool> RoleExistOnDatabase(Request request, Guid roleId, CancellationToken cancellation)
         {
             var role = await _rolesService.FindAsync(roleId, cancellation);
 
             return role != null;
         }
 
-        private async Task<bool> UserExistInDatabaseUnderTheSameTenant(Command command, string username, CancellationToken cancellation)
+        private async Task<bool> UserExistInDatabaseUnderTheSameTenant(Request request, string username, CancellationToken cancellation)
         {
-            return await _authService.FindUserAsync(username, command.Identity.Tenant, cancellation) != null;
+            return await _authService.FindUserAsync(username, request.Identity.Tenant, cancellation) != null;
         }
     }
 
-    public class Handler : IRequestHandler<Command, CommandResponse>
+    public class Handler : IRequestHandler<Request, CommandResponse>
     {
         private readonly IAuthService _usersService;
 
@@ -62,7 +62,7 @@ public class ReplaceUserRoles
             _usersService = usersService;
         }
 
-        public async Task<CommandResponse> Handle(Command request, CancellationToken cancellation)
+        public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)
         {
             var user = await _usersService.ReplaceRoles(request.Username, request.Identity.Tenant, request.RoleIds, cancellation);
 

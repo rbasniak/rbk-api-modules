@@ -17,7 +17,7 @@ public class LocalUserCanLoginWithWindowsAuthenticatinIfEnabled : SequentialTest
     public async Task User_Can_Login_With_Windows_Authentication()
     {
         // Prepare
-        var request = new UserLogin.Command
+        var request = new UserLogin.Request
         {
             Tenant = "buzios"
         };

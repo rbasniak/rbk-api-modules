@@ -12,7 +12,7 @@ namespace Demo1.BusinessLogic.Commands;
 
 public class CreatePost
 {
-    public class Command : IRequest<AuditableCommandResponse>, IHasReadingModel<Models.Read.Post>
+    public class Request : IRequest<AuditableCommandResponse>, IHasReadingModel<Models.Read.Post>
     {
         [JsonIgnore]
         public OperationType Mode => OperationType.AddOrUpdate;
@@ -23,19 +23,19 @@ public class CreatePost
         public Guid AuthorId { get; set; }
     }
 
-    public class Validator: AbstractValidator<Command>
+    public class Validator: AbstractValidator<Request>
     {
         public Validator(DatabaseContext context, ILocalizationService localization)
         {
             RuleFor(x => x.BlogId)
-                .MustExistInDatabase<Command, Blog>(context, localization);
+                .MustExistInDatabase<Request, Blog>(context, localization);
 
             RuleFor(x => x.AuthorId)
-                .MustExistInDatabase<Command, Author>(context, localization);
+                .MustExistInDatabase<Request, Author>(context, localization);
         }
     }
 
-    public class Handler : IRequestHandler<Command, AuditableCommandResponse>
+    public class Handler : IRequestHandler<Request, AuditableCommandResponse>
     {
         private readonly DatabaseContext _context;
 
@@ -44,13 +44,13 @@ public class CreatePost
             _context = context;
         }
 
-        public async Task<AuditableCommandResponse>Handle(Command command, CancellationToken cancellation)
+        public async Task<AuditableCommandResponse>Handle(Request request, CancellationToken cancellation)
         {
-            var blog = await _context.Blogs.FindAsync(command.BlogId);
+            var blog = await _context.Blogs.FindAsync(request.BlogId);
             
-            var author = await _context.Authors.FindAsync(command.AuthorId);
+            var author = await _context.Authors.FindAsync(request.AuthorId);
 
-            var post = new Post(blog, author, command.Title, command.Body);
+            var post = new Post(blog, author, request.Title, request.Body);
 
             _context.Add(post);
 

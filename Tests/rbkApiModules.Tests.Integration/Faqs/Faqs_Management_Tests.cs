@@ -35,7 +35,7 @@ public class FaqsManagementTests : SequentialTest, IClassFixture<ServerFixture>
     public async Task Superuser_Can_Create_Global_Faq()
     {
         // Prepare
-        var request = new CreateFaq.Command
+        var request = new CreateFaq.Request
         {
             Tag = "SELLING-ORDERS",
             Question = "How to sell something?",
@@ -70,7 +70,7 @@ public class FaqsManagementTests : SequentialTest, IClassFixture<ServerFixture>
     public async Task User_Can_Create_Local_Faq()
     {
         // Prepare
-        var request = new CreateFaq.Command
+        var request = new CreateFaq.Request
         {
             Tag = "SELLING-ORDERS",
             Question = "How to convince the customer to buy something?",
@@ -108,7 +108,7 @@ public class FaqsManagementTests : SequentialTest, IClassFixture<ServerFixture>
         var faq = _serverFixture.Context.Set<Faq>().First(x => x.Question == "How to convince the customer to buy something?");
         faq.HasTenant.ShouldBeTrue();
 
-        var request = new UpdateFaq.Command
+        var request = new UpdateFaq.Request
         {
             Id = faq.Id,
             Question = "How to sell something for real?",
@@ -133,7 +133,7 @@ public class FaqsManagementTests : SequentialTest, IClassFixture<ServerFixture>
         var faq = _serverFixture.Context.Set<Faq>().First(x => x.Question == "How to sell something?");
         faq.HasNoTenant.ShouldBeTrue();
 
-        var request = new UpdateFaq.Command
+        var request = new UpdateFaq.Request
         {
             Id = faq.Id,
             Question = "How to convince the customer to buy something for real?",
@@ -212,7 +212,7 @@ public class FaqsManagementTests : SequentialTest, IClassFixture<ServerFixture>
         var faq = _serverFixture.Context.Set<Faq>().First(x => x.Question == "How to convince the customer to buy something?");
         faq.HasTenant.ShouldBeTrue();
 
-        var request = new UpdateFaq.Command
+        var request = new UpdateFaq.Request
         {
             Id = faq.Id,
             Question = "Question",
@@ -239,7 +239,7 @@ public class FaqsManagementTests : SequentialTest, IClassFixture<ServerFixture>
         var faq = _serverFixture.Context.Set<Faq>().First(x => x.Question == "How to convince the customer to buy something?");
         faq.HasTenant.ShouldBeTrue();
 
-        var request = new UpdateFaq.Command
+        var request = new UpdateFaq.Request
         {
             Id = faq.Id,
             Question = question,
@@ -266,7 +266,7 @@ public class FaqsManagementTests : SequentialTest, IClassFixture<ServerFixture>
         var faq = _serverFixture.Context.Set<Faq>().First(x => x.Question == "How to convince the customer to buy something?");
         faq.HasTenant.ShouldBeTrue();
 
-        var request = new UpdateFaq.Command
+        var request = new UpdateFaq.Request
         {
             Id = faq.Id,
             Question = "Question",
@@ -290,7 +290,7 @@ public class FaqsManagementTests : SequentialTest, IClassFixture<ServerFixture>
         // Prepare
         var faq = _serverFixture.Context.Set<Faq>().First(x => x.Question == "How to sell something?");
 
-        var request = new UpdateFaq.Command
+        var request = new UpdateFaq.Request
         {
             Id = faq.Id,
             Question = "How to sell something for real?",
@@ -327,7 +327,7 @@ public class FaqsManagementTests : SequentialTest, IClassFixture<ServerFixture>
         // Prepare
         var faq = _serverFixture.Context.Set<Faq>().First(x => x.Question == "How to convince the customer to buy something?");
 
-        var request = new UpdateFaq.Command
+        var request = new UpdateFaq.Request
         {
             Id = faq.Id,
             Question = "How to convince the customer to buy something for real?",
@@ -409,7 +409,7 @@ public class FaqsManagementTests : SequentialTest, IClassFixture<ServerFixture>
     public async Task Superuser_Cannot_Create_Global_Faq_With_Empty_Tag(string tag)
     {
         // Prepare
-        var request = new CreateFaq.Command
+        var request = new CreateFaq.Request
         {
             Tag = tag,
             Question = "Question",
@@ -433,7 +433,7 @@ public class FaqsManagementTests : SequentialTest, IClassFixture<ServerFixture>
     public async Task Superuser_Cannot_Create_Global_Faq_With_Empty_Question(string question)
     {
         // Prepare
-        var request = new CreateFaq.Command
+        var request = new CreateFaq.Request
         {
             Tag = "tag",
             Question = question,
@@ -457,7 +457,7 @@ public class FaqsManagementTests : SequentialTest, IClassFixture<ServerFixture>
     public async Task Superuser_Cannot_Create_Global_Faq_With_Empty_Answer(string answer)
     {
         // Prepare
-        var request = new CreateFaq.Command
+        var request = new CreateFaq.Request
         {
             Tag = "tag",
             Question = "Question",

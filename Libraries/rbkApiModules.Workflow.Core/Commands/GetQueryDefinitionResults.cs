@@ -7,12 +7,12 @@ namespace rbkApiModules.Workflow.Core;
 
 public class GetQueryDefinitionResults
 {
-    public class Command : IRequest<QueryResponse>
+    public class Request : IRequest<QueryResponse>
     {
         public Guid[] QueryIds { get; set; }
     }
 
-    public class Validator : AbstractValidator<Command>
+    public class Validator : AbstractValidator<Request>
     {
         public Validator(IStatesService statesService)
         {
@@ -25,7 +25,7 @@ public class GetQueryDefinitionResults
         }
     }
 
-    public abstract class BaseGetQueryDefinitionResultsHandler : IRequestHandler<Command, QueryResponse>
+    public abstract class BaseGetQueryDefinitionResultsHandler : IRequestHandler<Request, QueryResponse>
     {
         protected readonly IStatesService _statesService;
         protected readonly IMapper _mapper;
@@ -36,7 +36,7 @@ public class GetQueryDefinitionResults
             _mapper = mapper;
         }
 
-        public async Task<QueryResponse> Handle(Command request, CancellationToken cancellation)
+        public async Task<QueryResponse> Handle(Request request, CancellationToken cancellation)
         {
             var queries = await _statesService.GetQueries(request.QueryIds, cancellation);
 

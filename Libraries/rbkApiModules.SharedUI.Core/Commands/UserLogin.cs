@@ -10,13 +10,13 @@ namespace rbkApiModules.SharedUI.Core;
 
 public class UserLogin
 {
-    public class Command : IRequest<CommandResponse> 
+    public class Request : IRequest<CommandResponse> 
     {
         public string Username { get; set; }
         public string Password { get; set; }
     }
 
-    public class Handler : RequestHandler<Command, CommandResponse>
+    public class Handler : IRequestHandler<Request, CommandResponse>
     {
         private readonly RbkSharedUIAuthentication _sharedUIAuthentication;
 
@@ -25,7 +25,7 @@ public class UserLogin
             _sharedUIAuthentication = sharedUIAuthentication.Value;
         }
 
-        protected override CommandResponse Handle(Command request)
+        public async Task<CommandResponse> Handle(Request request, CancellationToken cancellationToken)
         {
             if (String.IsNullOrEmpty(_sharedUIAuthentication.Username))
             {
@@ -46,7 +46,7 @@ public class UserLogin
                 AccessToken = GenerateEncodedToken(username, claims),
             };
 
-            return CommandResponse.Success(response);
+            return await Task.FromResult(CommandResponse.Success(response));
         }
 
         private string GenerateEncodedToken(string username, Dictionary<string, string[]> roles)

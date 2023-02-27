@@ -8,12 +8,12 @@ namespace rbkApiModules.Workflow.Core;
 
 public class GetStatesDotCode
 {
-    public class Command : IRequest<QueryResponse>
+    public class Request : IRequest<QueryResponse>
     {
         public Guid GroupId { get; set; }
     }
 
-    public class Validator : AbstractValidator<Command>
+    public class Validator : AbstractValidator<Request>
     {
         public Validator(IStatesService statesService, ILocalizationService localization)
         {
@@ -22,7 +22,7 @@ public class GetStatesDotCode
         }
     }
 
-    public class Handler: IRequestHandler<Command, QueryResponse>
+    public class Handler: IRequestHandler<Request, QueryResponse>
     {
         protected readonly IMapper _mapper;
         protected readonly IStatesService _statesService;
@@ -33,7 +33,7 @@ public class GetStatesDotCode
             _statesService = statesService;
         }
 
-        public async Task<QueryResponse> Handle(Command request, CancellationToken cancellationToken)
+        public async Task<QueryResponse> Handle(Request request, CancellationToken cancellationToken)
         {
             var states = await _statesService.GetStates(cancellationToken);
 

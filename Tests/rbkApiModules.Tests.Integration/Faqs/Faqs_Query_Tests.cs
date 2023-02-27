@@ -33,16 +33,16 @@ public class FaqsQueryTests : SequentialTest, IClassFixture<ServerFixture>
     [FriendlyNamedFact("IT-000"), Priority(-1)]
     public async Task Prepare()
     {
-        var request1 = new CreateFaq.Command { Answer = "A1G", Question = "Q1G", Tag = "TAG1" };
-        var request2 = new CreateFaq.Command { Answer = "A2G", Question = "Q2G", Tag = "TAG1" };
-        var request3 = new CreateFaq.Command { Answer = "A1T1", Question = "Q1T1", Tag = "TAG1" };
-        var request4 = new CreateFaq.Command { Answer = "A2T1", Question = "Q2T1", Tag = "TAG1" };
-        var request5 = new CreateFaq.Command { Answer = "A1T2", Question = "Q1T2", Tag = "TAG1" };
-        var request6 = new CreateFaq.Command { Answer = "A2T2", Question = "Q2T2", Tag = "TAG1" };
-        var request7 = new CreateFaq.Command { Answer = "A3T2", Question = "Q3T2", Tag = "TAG1" };
-        var request8 = new CreateFaq.Command { Answer = "Answer", Question = "Question", Tag = "TAG2" };
+        var request1 = new CreateFaq.Request { Answer = "A1G", Question = "Q1G", Tag = "TAG1" };
+        var request2 = new CreateFaq.Request { Answer = "A2G", Question = "Q2G", Tag = "TAG1" };
+        var request3 = new CreateFaq.Request { Answer = "A1T1", Question = "Q1T1", Tag = "TAG1" };
+        var request4 = new CreateFaq.Request { Answer = "A2T1", Question = "Q2T1", Tag = "TAG1" };
+        var request5 = new CreateFaq.Request { Answer = "A1T2", Question = "Q1T2", Tag = "TAG1" };
+        var request6 = new CreateFaq.Request { Answer = "A2T2", Question = "Q2T2", Tag = "TAG1" };
+        var request7 = new CreateFaq.Request { Answer = "A3T2", Question = "Q3T2", Tag = "TAG1" };
+        var request8 = new CreateFaq.Request { Answer = "Answer", Question = "Question", Tag = "TAG2" };
 
-        async Task CreateFaq(CreateFaq.Command request, string token)
+        async Task CreateFaq(CreateFaq.Request request, string token)
         {
             var response = await _serverFixture.PostAsync<FaqDetails>("api/faqs", request, token);
             response.ShouldBeSuccess();

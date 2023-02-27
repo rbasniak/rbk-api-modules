@@ -7,13 +7,13 @@ namespace rbkApiModules.Identity.Core;
 
 public class CreateClaim
 {
-    public class Command : IRequest<CommandResponse>
+    public class Request : IRequest<CommandResponse>
     {
         public required string Identification { get; set; }
         public required string Description { get; set; }
     }
 
-    public class Validator : AbstractValidator<Command>
+    public class Validator : AbstractValidator<Request>
     {
         private readonly IClaimsService _claimsService;
 
@@ -32,18 +32,18 @@ public class CreateClaim
                 .WithName(localization.GetValue("Description"));
         }
 
-        private async Task<bool> NotExistsInDatabaseWithSameIdentification(Command command, string identification, CancellationToken cancelation)
+        private async Task<bool> NotExistsInDatabaseWithSameIdentification(Request request, string identification, CancellationToken cancelation)
         {
             return (await _claimsService.FindByIdentificationAsync(identification)) == null;
         }
 
-        private async Task<bool> NotExistsInDatabaseWithSameDescription(Command command, string identification, CancellationToken cancelation)
+        private async Task<bool> NotExistsInDatabaseWithSameDescription(Request request, string identification, CancellationToken cancelation)
         {
             return (await _claimsService.FindByDescriptionAsync(identification)) == null;
         }
     }
 
-    public class Handler : IRequestHandler<Command, CommandResponse>
+    public class Handler : IRequestHandler<Request, CommandResponse>
     {
         private readonly IClaimsService _claimsService;
 
@@ -52,7 +52,7 @@ public class CreateClaim
             _claimsService = claimsService;
         }
 
-        public async Task<CommandResponse> Handle(Command request, CancellationToken cancellation)
+        public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)
         {
             var claim = new Claim(request.Identification, request.Description);
 

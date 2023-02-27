@@ -41,7 +41,7 @@ public class ApplicationRolesBasicDependentTests : SequentialTest, IClassFixture
     public async Task Global_Admin_Can_Create_Application_Role()
     {
         // Prepare 
-        var request = new CreateRole.Command
+        var request = new CreateRole.Request
         {
             Name = "General",
         };
@@ -117,7 +117,7 @@ public class ApplicationRolesBasicDependentTests : SequentialTest, IClassFixture
         // Prepare
         var role = _serverFixture.Context.Set<Role>().First(x => x.Name == "General");
 
-        var request = new RenameRole.Command
+        var request = new RenameRole.Request
         {
             Id = role.Id,
             Name = "General User"
@@ -163,7 +163,7 @@ public class ApplicationRolesBasicDependentTests : SequentialTest, IClassFixture
     public async Task Global_Admin_Cannot_Create_Application_Role_With_Duplicated_Name()
     {
         // Prepare
-        var request = new CreateRole.Command
+        var request = new CreateRole.Request
         {
             Name = "GENERAL USER",
         };
@@ -195,7 +195,7 @@ public class ApplicationRolesBasicDependentTests : SequentialTest, IClassFixture
         var preExistingRole = _serverFixture.Context.Set<Role>().Single(x => x.Name == "General User");
         preExistingRole.ShouldNotBeNull();
 
-        var request = new RenameRole.Command
+        var request = new RenameRole.Request
         {
             Name = "RENAMED GENERAL USER",
         };
@@ -225,7 +225,7 @@ public class ApplicationRolesBasicDependentTests : SequentialTest, IClassFixture
     public async Task Global_Admin_Can_Query_Application_Roles()
     {
         // Prepare
-        var body = new CreateRole.Command
+        var body = new CreateRole.Request
         {
             Name = "Tenant Role"
         };
@@ -273,7 +273,7 @@ public class ApplicationRolesBasicDependentTests : SequentialTest, IClassFixture
         // Prepare
         var role = _serverFixture.Context.Set<Role>().First(x => x.Name == "General User");
 
-        var request = new RenameRole.Command
+        var request = new RenameRole.Request
         {
             Id = role.Id,
             Name = name,
@@ -307,7 +307,7 @@ public class ApplicationRolesBasicDependentTests : SequentialTest, IClassFixture
         // Prepare 
         var preExistingRole = _serverFixture.Context.Set<Role>().First(x => x.Name == "Tenant Role");
 
-        var request = new CreateRole.Command
+        var request = new CreateRole.Request
         {
             Name = "Tenant Role",
         };
@@ -357,7 +357,7 @@ public class ApplicationRolesBasicDependentTests : SequentialTest, IClassFixture
         var role1 = _serverFixture.Context.Set<Role>().Single(x => x.Name == "General User" && x.TenantId == null);
         var role2 = _serverFixture.Context.Set<Role>().Single(x => x.Name == "Tenant Role" && x.TenantId == null);
 
-        var renameCommand = new RenameRole.Command
+        var renameCommand = new RenameRole.Request
         {
             Id = role2.Id,
             Name = "GENERAL USER"
@@ -432,7 +432,7 @@ public class ApplicationRolesBasicDependentTests : SequentialTest, IClassFixture
 
         // *** Test 1 *** Rename to something else
         {
-            var renameCommand = new RenameRole.Command
+            var renameCommand = new RenameRole.Request
             {
                 Id = applicationRole.Id,
                 Name = "Renamed Tenant Role"
@@ -452,7 +452,7 @@ public class ApplicationRolesBasicDependentTests : SequentialTest, IClassFixture
 
         // *** Test 2 *** Rename back to the original name
         {
-            var renameCommand = new RenameRole.Command
+            var renameCommand = new RenameRole.Request
             {
                 Id = applicationRole.Id,
                 Name = "Tenant Role"
@@ -572,7 +572,7 @@ public class ApplicationRolesBasicIndependentTests : SequentialTest, IClassFixtu
     public async Task Global_Admin_Cannot_Rename_Role_That_Does_Not_Exist()
     {
         // Prepare
-        var request = new RenameRole.Command
+        var request = new RenameRole.Request
         {
             Id = Guid.NewGuid(),
             Name = "New fake name",
@@ -609,7 +609,7 @@ public class ApplicationRolesBasicIndependentTests : SequentialTest, IClassFixtu
     public async Task Global_Admin_Cannot_Create_Application_Role_Without_Name(string name)
     {
         // Prepare 
-        var request = new CreateRole.Command
+        var request = new CreateRole.Request
         {
             Name = name,
         };

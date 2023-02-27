@@ -7,13 +7,13 @@ namespace rbkApiModules.Identity.Core;
 
 public class RemoveClaimOverride
 {
-    public class Command : AuthenticatedRequest, IRequest<CommandResponse>
+    public class Request : AuthenticatedRequest, IRequest<CommandResponse>
     {
         public string Username { get; set; }
         public Guid ClaimId { get; set; }
     }
 
-    public class Validator : AbstractValidator<Command>
+    public class Validator : AbstractValidator<Request>
     {
         private readonly IAuthService _authService;
 
@@ -34,20 +34,20 @@ public class RemoveClaimOverride
                 });
         }
 
-        private async Task<bool> ClaimIsOverrideInUser(Command command, Guid claimId, CancellationToken cancellation)
+        private async Task<bool> ClaimIsOverrideInUser(Request request, Guid claimId, CancellationToken cancellation)
         {
-            var user = await _authService.GetUserWithDependenciesAsync(command.Username, command.Identity.Tenant);
+            var user = await _authService.GetUserWithDependenciesAsync(request.Username, request.Identity.Tenant);
 
             return user.Claims.Any(x => x.ClaimId == claimId);
         }
 
-        private async Task<bool> UserExistInDatabaseUnderTheSameTenant(Command command, string username, CancellationToken cancelation)
+        private async Task<bool> UserExistInDatabaseUnderTheSameTenant(Request request, string username, CancellationToken cancelation)
         {
-            return await _authService.FindUserAsync(username, command.Identity.Tenant, cancelation) != null;
+            return await _authService.FindUserAsync(username, request.Identity.Tenant, cancelation) != null;
         } 
     }
 
-    public class Handler : IRequestHandler<Command, CommandResponse>
+    public class Handler : IRequestHandler<Request, CommandResponse>
     {
         private readonly IAuthService _authService;
         private readonly IClaimsService _claimsService;
@@ -58,7 +58,7 @@ public class RemoveClaimOverride
             _claimsService = claimsService;
         }
 
-        public async Task<CommandResponse> Handle(Command request, CancellationToken cancellation)
+        public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)
         {
             await _claimsService.RemoveClaimOverrideAsync(request.ClaimId, request.Username, request.Identity.Tenant, cancellation);
 

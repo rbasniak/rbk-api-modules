@@ -9,12 +9,12 @@ namespace Demo1.BusinessLogic.Commands;
 
 public class SeedPerformanceTables
 {
-    public class Command : IRequest<CommandResponse>
+    public class Request : IRequest<CommandResponse>
     {
         public int Size { get; set; }
     }
 
-    public class Handler : RequestHandler<Command, CommandResponse>
+    public class Handler : IRequestHandler<Request, CommandResponse>
     {
         private readonly ReadDatabaseContext _context;
 
@@ -23,7 +23,7 @@ public class SeedPerformanceTables
             _context = context;
         }
 
-        protected override CommandResponse Handle(Command command)
+        public async Task<CommandResponse> Handle(Request request, CancellationToken cancellationToken)
         {
             var random = new Random();
 
@@ -31,7 +31,7 @@ public class SeedPerformanceTables
 
             var result = new Result();
 
-            int size = command.Size;
+            int size = request.Size;
 
             var entities1 = new PerformanceTest1[size];
             var entities2 = new PerformanceTest2[size];
@@ -150,7 +150,7 @@ public class SeedPerformanceTables
 
             _context.ChangeTracker.Clear();
 
-            return CommandResponse.Success(result);
+            return await Task.FromResult(CommandResponse.Success(result));
         } 
     }
 

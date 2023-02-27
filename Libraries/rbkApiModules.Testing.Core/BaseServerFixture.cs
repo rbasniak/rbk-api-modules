@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Identity.Core;
 using rbkApiModules.Commons.Relational.CQRS;
 using rbkApiModules.Commons.Relational;
+using Serilog;
 
 namespace rbkApiModules.Testing.Core;
 
@@ -29,7 +30,8 @@ public class BaseServerFixture : IDisposable
                 .AddJsonFile("appsettings.Testing.json")
                 .Build()
             )
-            .UseStartup(startupClassType));
+            .UseStartup(startupClassType)
+            .UseSerilog());
     }
 
     public TestServer Server { get; private set; }
@@ -63,7 +65,7 @@ public class BaseServerFixture : IDisposable
         {
             using (var httpClient = Server.CreateClient())
             {
-                var body = new UserLogin.Command
+                var body = new UserLogin.Request
                 {
                     Username = username,
                     Password = password,

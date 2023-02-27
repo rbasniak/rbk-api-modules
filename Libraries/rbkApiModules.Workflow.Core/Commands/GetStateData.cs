@@ -5,11 +5,11 @@ namespace rbkApiModules.Workflow.Core;
 
 public class GetStateData
 {
-    public class Command : IRequest<QueryResponse>
+    public class Request : IRequest<QueryResponse>
     {
     } 
 
-    public class Handler : IRequestHandler<Command, QueryResponse>
+    public class Handler : IRequestHandler<Request, QueryResponse>
     {
         private readonly IStatesService _statesService;
 
@@ -18,7 +18,7 @@ public class GetStateData
             _statesService = statesService;
         }
 
-        public async Task<QueryResponse> Handle(Command request, CancellationToken cancellation)
+        public async Task<QueryResponse> Handle(Request request, CancellationToken cancellation)
         {
             var result = await _statesService.GetGroups(cancellation);
 

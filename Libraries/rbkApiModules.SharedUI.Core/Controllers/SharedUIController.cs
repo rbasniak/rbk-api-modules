@@ -25,7 +25,7 @@ public class SharedUIController : BaseController
 
     [HttpPost]
     [Route("auth")]
-    public async Task<ActionResult<JwtResponse>> Login(UserLogin.Command data)
+    public async Task<ActionResult<JwtResponse>> Login(UserLogin.Request data)
     {
         var result = await Mediator.Send(data);
 

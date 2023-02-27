@@ -22,7 +22,7 @@ public class UserPasswordChangeTests : SequentialTest, IClassFixture<ServerFixtu
     public async Task User_Cannot_Reset_Password_Without_Reset_Code(string code)
     {
         // Prepare
-        var request = new RedefinePassword.Command
+        var request = new RedefinePassword.Request
         {
             Code = code,
             Password = "xyz"
@@ -43,7 +43,7 @@ public class UserPasswordChangeTests : SequentialTest, IClassFixture<ServerFixtu
     public async Task User_Cannot_Reset_Password_With_Invalid_Reset_Code()
     {
         // Prepare
-        var request = new RedefinePassword.Command
+        var request = new RedefinePassword.Request
         {
             Code = "xxxxxxxxxxxxxxxxxxxxxxxxx",
             Password = "xyz"
@@ -71,7 +71,7 @@ public class UserPasswordChangeTests : SequentialTest, IClassFixture<ServerFixtu
 
         // Prepare
         var user = GetUser();
-        var resetRequest = new RequestPasswordReset.Command
+        var resetRequest = new RequestPasswordReset.Request
         {
             Email = user.Email,
             Tenant = user.TenantId.ToLower()
@@ -83,7 +83,7 @@ public class UserPasswordChangeTests : SequentialTest, IClassFixture<ServerFixtu
         user.PasswordRedefineCode.ShouldNotBeNull();
         String.IsNullOrEmpty(user.PasswordRedefineCode.Hash).ShouldBeFalse();
 
-        var request = new RedefinePassword.Command
+        var request = new RedefinePassword.Request
         {
             Code = user.PasswordRedefineCode.Hash,
             Password = ""
@@ -107,7 +107,7 @@ public class UserPasswordChangeTests : SequentialTest, IClassFixture<ServerFixtu
         var user = _serverFixture.Context.Set<User>().Single(x => x.Username == "admin1" && x.TenantId == "BUZIOS");
         user.PasswordRedefineCode.ShouldNotBeNull();
 
-        var request = new UserLogin.Command
+        var request = new UserLogin.Request
         {
             Username = "admin1",
             Password = "123",
@@ -140,7 +140,7 @@ public class UserPasswordChangeTests : SequentialTest, IClassFixture<ServerFixtu
 
         // Prepare
         var user = GetUser();
-        var resetRequest = new RequestPasswordReset.Command
+        var resetRequest = new RequestPasswordReset.Request
         {
             Email = user.Email,
             Tenant = user.TenantId.ToLower()
@@ -152,7 +152,7 @@ public class UserPasswordChangeTests : SequentialTest, IClassFixture<ServerFixtu
         user.PasswordRedefineCode.ShouldNotBeNull();
         String.IsNullOrEmpty(user.PasswordRedefineCode.Hash).ShouldBeFalse();
 
-        var request = new RedefinePassword.Command
+        var request = new RedefinePassword.Request
         {
             Code = user.PasswordRedefineCode.Hash,
             Password = "xyz"
@@ -185,7 +185,7 @@ public class UserPasswordChangeTests : SequentialTest, IClassFixture<ServerFixtu
     public async Task User_Cannot_Login_With_Old_Password()
     {
         // Prepare
-        var request = new UserLogin.Command
+        var request = new UserLogin.Request
         {
             Username = "admin1",
             Password = "123",
@@ -207,7 +207,7 @@ public class UserPasswordChangeTests : SequentialTest, IClassFixture<ServerFixtu
     public async Task User_Can_Login_With_New_Password()
     {
         // Prepare
-        var request = new UserLogin.Command
+        var request = new UserLogin.Request
         {
             Username = "admin1",
             Password = "xyz",

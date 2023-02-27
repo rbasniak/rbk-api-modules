@@ -55,7 +55,7 @@ namespace Demo1.BusinessLogic.Commands;
 /// </summary>
 public class PipelineValidationTest
 {
-    public class Command: IRequest<BaseResponse>, IProductCode, IQuantity
+    public class Request: IRequest<BaseResponse>, IProductCode, IQuantity
     {
         public string Name { get; set; }
         public string Description { get; set; }
@@ -63,7 +63,7 @@ public class PipelineValidationTest
         public int Quantity { get; set; }
     }
 
-    public class Validator: AbstractValidator<Command>
+    public class Validator: AbstractValidator<Request>
     {
         public Validator()
         {
@@ -79,9 +79,9 @@ public class PipelineValidationTest
         }
     }
 
-    public class Handler : IRequestHandler<Command, BaseResponse>
+    public class Handler : IRequestHandler<Request, BaseResponse>
     {
-        public async Task<BaseResponse> Handle(Command request, CancellationToken cancellation)
+        public async Task<BaseResponse> Handle(Request request, CancellationToken cancellation)
         {
             return await Task.FromResult(new BaseResponse() { Result = new 
             { 

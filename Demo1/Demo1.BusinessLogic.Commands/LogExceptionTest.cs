@@ -21,26 +21,26 @@ namespace Demo1.BusinessLogic.Commands;
 /// </summary>
 public class LogExceptionTest
 {
-    public class Command: IRequest<CommandResponse> 
+    public class Request: IRequest<CommandResponse> 
     {
 
     }
 
-    public class Validator: AbstractValidator<Command>
+    public class Validator: AbstractValidator<Request>
     {
         
     }
 
-    public class Handler : RequestHandler<Command, CommandResponse>
+    public class Handler : IRequestHandler<Request, CommandResponse>
     {
         private readonly ILogger<Handler> _logger;
 
         public Handler(ILogger<Handler> logger)
         {
             _logger = logger;
-        } 
+        }
 
-        protected override CommandResponse Handle(Command request)
+        public async Task<CommandResponse> Handle(Request request, CancellationToken cancellationToken)
         {
             try
             {
@@ -58,7 +58,7 @@ public class LogExceptionTest
                 _logger.LogCritical(ex, "Test with lots of inner exceptions");
             }
 
-            return CommandResponse.Success();
+            return await Task.FromResult(CommandResponse.Success());
         }
     }
 }

@@ -5,12 +5,12 @@ namespace rbkApiModules.Workflow.Core;
 
 public class GetStateChangedEvents
 {
-    public class Command : IRequest<QueryResponse>
+    public class Request : IRequest<QueryResponse>
     {
         public Guid Id { get; set; }
     }
 
-    public class Handler : IRequestHandler<Command, QueryResponse>
+    public class Handler : IRequestHandler<Request, QueryResponse>
     {
         protected readonly IStatesService _statesService;
 
@@ -19,7 +19,7 @@ public class GetStateChangedEvents
             _statesService = statesService;
         }
 
-        public async Task<QueryResponse> Handle(Command request, CancellationToken cancellation)
+        public async Task<QueryResponse> Handle(Request request, CancellationToken cancellation)
         {
             var results = await _statesService.GetEntityHistory(request.Id, cancellation);
 

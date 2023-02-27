@@ -8,13 +8,13 @@ namespace rbkApiModules.Identity.Core;
 
 public class RenameRole
 {
-    public class Command : AuthenticatedRequest, IRequest<CommandResponse>
+    public class Request : AuthenticatedRequest, IRequest<CommandResponse>
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
     }
 
-    public class Validator : AbstractValidator<Command>
+    public class Validator : AbstractValidator<Request>
     {
         private readonly IRolesService _rolesService;
 
@@ -35,21 +35,21 @@ public class RenameRole
                 .HasCorrectRoleManagementAccessRights(localization);
         }
 
-        private async Task<bool> NameBeUnique(Command command, string name, CancellationToken cancellation)
+        private async Task<bool> NameBeUnique(Request request, string name, CancellationToken cancellation)
         {
             var existingRoles = await _rolesService.FindByNameAsync(name, cancellation);
 
             if (existingRoles.Count() == 0) return true;
 
-            var usedRoles = existingRoles.Where(x => x.TenantId == command.Identity.Tenant || (x.HasNoTenant && command.Identity.HasNoTenant)).ToList();
+            var usedRoles = existingRoles.Where(x => x.TenantId == request.Identity.Tenant || (x.HasNoTenant && request.Identity.HasNoTenant)).ToList();
 
             Debug.Assert(usedRoles.Count() <= 1);
 
-            return usedRoles.Count == 0 || usedRoles.First().Id == command.Id;
+            return usedRoles.Count == 0 || usedRoles.First().Id == request.Id;
         }
     }
 
-    public class Handler : IRequestHandler<Command, CommandResponse>
+    public class Handler : IRequestHandler<Request, CommandResponse>
     {
         private readonly IRolesService _rolesService;
 
@@ -58,7 +58,7 @@ public class RenameRole
             _rolesService = rolesService;
         }
 
-        public async Task<CommandResponse> Handle(Command request, CancellationToken cancellation)
+        public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)
         {
             await _rolesService.RenameAsync(request.Id, request.Name, cancellation);
 

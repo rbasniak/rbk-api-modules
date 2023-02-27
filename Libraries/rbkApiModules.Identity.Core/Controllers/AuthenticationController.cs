@@ -23,7 +23,7 @@ public class AuthenticationController : BaseController
     [AllowAnonymous]
     [IgnoreOnCodeGeneration]
     [HttpPost("login")]
-    public async Task<ActionResult<JwtResponse>> Login(UserLogin.Command data, CancellationToken cancellation)
+    public async Task<ActionResult<JwtResponse>> Login(UserLogin.Request data, CancellationToken cancellation)
     {
         var usingNtlm = HttpContext.Request.Headers.Authorization.ToString().ToUpper().StartsWith("NTLM");
         var isAuthenticated = HttpContext.User.Identity.IsAuthenticated;
@@ -68,7 +68,7 @@ public class AuthenticationController : BaseController
     [AllowAnonymous]
     [IgnoreOnCodeGeneration]
     [HttpPost("refresh-token")]
-    public async Task<ActionResult<JwtResponse>> RefreshToken(RenewAccessToken.Command data, CancellationToken cancellation)
+    public async Task<ActionResult<JwtResponse>> RefreshToken(RenewAccessToken.Request data, CancellationToken cancellation)
     {
         var result = await Mediator.Send(data, cancellation);
 
@@ -89,7 +89,7 @@ public class AuthenticationController : BaseController
     [AllowAnonymous]
     [HttpPost]
     [Route("reset-password")]
-    public async Task<ActionResult> SendResetPasswordEmail(RequestPasswordReset.Command data, CancellationToken cancellation)
+    public async Task<ActionResult> SendResetPasswordEmail(RequestPasswordReset.Request data, CancellationToken cancellation)
     {
         return HttpResponse(await Mediator.Send(data, cancellation));
     }
@@ -97,7 +97,7 @@ public class AuthenticationController : BaseController
     [AllowAnonymous]
     [HttpPost]
     [Route("redefine-password")]
-    public async Task<ActionResult> RedefinePassword(RedefinePassword.Command data, CancellationToken cancellation)
+    public async Task<ActionResult> RedefinePassword(RedefinePassword.Request data, CancellationToken cancellation)
     {
         return HttpResponse(await Mediator.Send(data, cancellation));
     }
@@ -105,7 +105,7 @@ public class AuthenticationController : BaseController
     [AllowAnonymous]
     [HttpPost("resend-confirmation")]
     [RbkAuthorize(AuthenticationClaims.MANAGE_USERS)]
-    public async Task<ActionResult> ResendEmailConfirmation(ResendEmailConfirmation.Command data, CancellationToken cancellation)
+    public async Task<ActionResult> ResendEmailConfirmation(ResendEmailConfirmation.Request data, CancellationToken cancellation)
     {
         return HttpResponse(await Mediator.Send(data, cancellation));
     }
@@ -115,7 +115,7 @@ public class AuthenticationController : BaseController
     [HttpGet("confirm-email")]
     public async Task<ActionResult> ConfirmEmail(string email, string code, string tenant, CancellationToken cancellation)
     {
-        var response = await Mediator.Send(new ConfirmUserEmail.Command() { Email = email, ActivationCode = code, Tenant = tenant }, cancellation);
+        var response = await Mediator.Send(new ConfirmUserEmail.Request() { Email = email, ActivationCode = code, Tenant = tenant }, cancellation);
 
         if (response.IsValid)
         {

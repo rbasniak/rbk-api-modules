@@ -10,7 +10,7 @@ namespace rbkApiModules.Identity.Core;
 
 public class UserLogin
 {
-    public class Command : IRequest<CommandResponse>, ILoginData
+    public class Request : IRequest<CommandResponse>, ILoginData
     {
         private string _tenant;
 
@@ -29,7 +29,7 @@ public class UserLogin
         public AuthenticationMode AuthenticationMode { get; set; }
     }
 
-    public class Validator : AbstractValidator<Command>
+    public class Validator : AbstractValidator<Request>
     {
         private readonly IAuthService _userService;
 
@@ -60,30 +60,30 @@ public class UserLogin
                 });
         } 
 
-        public async Task<bool> ExistOnDatabase(Command command, string username, CancellationToken cancellation)
+        public async Task<bool> ExistOnDatabase(Request request, string username, CancellationToken cancellation)
         {
-            var user = await _userService.FindUserAsync(username, command.Tenant, cancellation);
+            var user = await _userService.FindUserAsync(username, request.Tenant, cancellation);
 
             return user != null;
         }
 
-        public async Task<bool> BeConfirmed(Command command, string username, CancellationToken cancellation)
+        public async Task<bool> BeConfirmed(Request request, string username, CancellationToken cancellation)
         {
-            var user = await _userService.FindUserAsync(username, command.Tenant, cancellation);
+            var user = await _userService.FindUserAsync(username, request.Tenant, cancellation);
 
             return user.IsConfirmed;
         }
 
 
-        public async Task<bool> MatchPassword(Command command, string password, CancellationToken cancellation)
+        public async Task<bool> MatchPassword(Request request, string password, CancellationToken cancellation)
         {
-            var user = await _userService.FindUserAsync(command.Username, command.Tenant, cancellation);
+            var user = await _userService.FindUserAsync(request.Username, request.Tenant, cancellation);
 
             return PasswordHasher.VerifyPassword(password, user.Password);
         }
     }
 
-    public class Handler : IRequestHandler<Command, CommandResponse>
+    public class Handler : IRequestHandler<Request, CommandResponse>
     {
         private readonly IAuthService _authService;
         private readonly IJwtFactory _jwtFactory;
@@ -98,7 +98,7 @@ public class UserLogin
             _claimHandlers = claimHandlers;
         }
 
-        public async Task<CommandResponse> Handle(Command request, CancellationToken cancellation)
+        public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)
         {
             var user = await _authService.FindUserAsync(request.Username, request.Tenant, cancellation);
 

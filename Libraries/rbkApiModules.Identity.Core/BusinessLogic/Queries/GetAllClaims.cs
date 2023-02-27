@@ -5,11 +5,11 @@ namespace rbkApiModules.Identity.Core;
 
 public class GetAllClaims
 {
-    public class Command : IRequest<QueryResponse>
+    public class Request : IRequest<QueryResponse>
     {
     }
 
-    public class Handler : IRequestHandler<Command, QueryResponse>
+    public class Handler : IRequestHandler<Request, QueryResponse>
     {
         private readonly IClaimsService _claimsService;
 
@@ -18,7 +18,7 @@ public class GetAllClaims
             _claimsService = context;
         }
 
-        public async Task<QueryResponse> Handle(Command request, CancellationToken cancellation)
+        public async Task<QueryResponse> Handle(Request request, CancellationToken cancellation)
         {
             var results = await _claimsService.GetAllAsync();
 

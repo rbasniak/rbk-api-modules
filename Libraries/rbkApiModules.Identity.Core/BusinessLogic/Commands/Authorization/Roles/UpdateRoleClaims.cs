@@ -7,13 +7,13 @@ namespace rbkApiModules.Identity.Core;
 
 public class UpdateRoleClaims
 {
-    public class Command : AuthenticatedRequest, IRequest<CommandResponse>
+    public class Request : AuthenticatedRequest, IRequest<CommandResponse>
     {
         public Guid Id { get; set; }
         public Guid[] ClaimsIds { get; set; }
     }
 
-    public class Validator : AbstractValidator<Command>
+    public class Validator : AbstractValidator<Request>
     {
         private readonly IRolesService _rolesService;
         private readonly IClaimsService _claimsService;
@@ -37,13 +37,13 @@ public class UpdateRoleClaims
                 .HasCorrectRoleManagementAccessRights(localization);
         }  
 
-        private async Task<bool> ClaimExistInDatabase(Command command, Guid id, CancellationToken cancelation)
+        private async Task<bool> ClaimExistInDatabase(Request request, Guid id, CancellationToken cancelation)
         {
             return await _claimsService.FindAsync(id) != null;
         }
     }
 
-    public class Handler : IRequestHandler<Command, CommandResponse>
+    public class Handler : IRequestHandler<Request, CommandResponse>
     {
         private readonly IRolesService _rolesService;
 
@@ -52,7 +52,7 @@ public class UpdateRoleClaims
             _rolesService = rolesService;
         }
 
-        public async Task<CommandResponse> Handle(Command request, CancellationToken cancellation)
+        public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)
         {
             await _rolesService.UpdateRoleClaims(request.Id, request.ClaimsIds, cancellation);
 

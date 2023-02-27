@@ -18,7 +18,7 @@ public class AuthorizationController : BaseController
     [RbkAuthorize(AuthenticationClaims.MANAGE_CLAIMS)]
     public async Task<ActionResult<ClaimDetails[]>> GetAllClaims(CancellationToken cancellation)
     {
-        return HttpResponse<ClaimDetails[]>(await Mediator.Send(new GetAllClaims.Command(), cancellation));
+        return HttpResponse<ClaimDetails[]>(await Mediator.Send(new GetAllClaims.Request(), cancellation));
     }
 
     /// <summary>
@@ -26,7 +26,7 @@ public class AuthorizationController : BaseController
     /// </summary>
     [HttpPost("claims")]
     [RbkAuthorize(AuthenticationClaims.MANAGE_CLAIMS)]
-    public async Task<ActionResult<ClaimDetails>> CreateClaim(CreateClaim.Command data, CancellationToken cancellation)
+    public async Task<ActionResult<ClaimDetails>> CreateClaim(CreateClaim.Request data, CancellationToken cancellation)
     {
         var result = await Mediator.Send(data, cancellation);
 
@@ -38,7 +38,7 @@ public class AuthorizationController : BaseController
     /// </summary>
     [HttpPut("claims")]
     [RbkAuthorize(AuthenticationClaims.MANAGE_CLAIMS)]
-    public async Task<ActionResult<ClaimDetails>> UpdateClaim(UpdateClaim.Command data, CancellationToken cancellation)
+    public async Task<ActionResult<ClaimDetails>> UpdateClaim(UpdateClaim.Request data, CancellationToken cancellation)
     {
         return HttpResponse<ClaimDetails>(await Mediator.Send(data, cancellation));
     }
@@ -50,7 +50,7 @@ public class AuthorizationController : BaseController
     [RbkAuthorize(AuthenticationClaims.MANAGE_CLAIMS)]
     public async Task<ActionResult> DeleteClaim(Guid id, CancellationToken cancellation)
     {
-        return HttpResponse(await Mediator.Send(new DeleteClaim.Command { Id = id }, cancellation));
+        return HttpResponse(await Mediator.Send(new DeleteClaim.Request { Id = id }, cancellation));
     }
 
     /// <summary>
@@ -58,7 +58,7 @@ public class AuthorizationController : BaseController
     /// </summary>
     [HttpPost("claims/protect")]
     [RbkAuthorize(AuthenticationClaims.CHANGE_CLAIM_PROTECTION)]
-    public async Task<ActionResult<ClaimDetails>> ProtectClaim(ProtectClaim.Command data, CancellationToken cancellation)
+    public async Task<ActionResult<ClaimDetails>> ProtectClaim(ProtectClaim.Request data, CancellationToken cancellation)
     {
         return HttpResponse<ClaimDetails>(await Mediator.Send(data, cancellation));
     }
@@ -68,7 +68,7 @@ public class AuthorizationController : BaseController
     /// </summary>
     [HttpPost("claims/unprotect")]
     [RbkAuthorize(AuthenticationClaims.CHANGE_CLAIM_PROTECTION)]
-    public async Task<ActionResult<ClaimDetails>> UnprotectClaim(UnprotectClaim.Command data, CancellationToken cancellation)
+    public async Task<ActionResult<ClaimDetails>> UnprotectClaim(UnprotectClaim.Request data, CancellationToken cancellation)
     {
         return HttpResponse<ClaimDetails>(await Mediator.Send(data, cancellation));
     }
@@ -80,11 +80,11 @@ public class AuthorizationController : BaseController
     [HttpGet("roles")]
     public async Task<ActionResult<Roles.Details[]>> All(CancellationToken cancellation)
     {
-        return HttpResponse<Roles.Details[]>(await Mediator.Send(new GetAllRoles.Command(), cancellation));
+        return HttpResponse<Roles.Details[]>(await Mediator.Send(new GetAllRoles.Request(), cancellation));
     }
 
     [HttpPost("roles")]
-    public async Task<ActionResult<Roles.Details>> Create(CreateRole.Command data, CancellationToken cancellation)
+    public async Task<ActionResult<Roles.Details>> Create(CreateRole.Request data, CancellationToken cancellation)
     {
         var result = await Mediator.Send(data, cancellation);
 
@@ -92,7 +92,7 @@ public class AuthorizationController : BaseController
     }
 
     [HttpPut("roles")]
-    public async Task<ActionResult<Roles.Details>> Update(RenameRole.Command data, CancellationToken cancellation)
+    public async Task<ActionResult<Roles.Details>> Update(RenameRole.Request data, CancellationToken cancellation)
     {
         return HttpResponse<Roles.Details>(await Mediator.Send(data, cancellation));
     }
@@ -100,11 +100,11 @@ public class AuthorizationController : BaseController
     [HttpDelete("roles/{id}")]
     public async Task<ActionResult> Delete(Guid id, CancellationToken cancellation)
     {
-        return HttpResponse(await Mediator.Send(new DeleteRole.Command { Id = id }, cancellation));
+        return HttpResponse(await Mediator.Send(new DeleteRole.Request { Id = id }, cancellation));
     }
 
     [HttpPost("roles/update-claims")]
-    public async Task<ActionResult<Roles.Details>> UpdateRoleClaims(UpdateRoleClaims.Command data, CancellationToken cancellation)
+    public async Task<ActionResult<Roles.Details>> UpdateRoleClaims(UpdateRoleClaims.Request data, CancellationToken cancellation)
     {
         var result = await Mediator.Send(data, cancellation);
 
@@ -117,7 +117,7 @@ public class AuthorizationController : BaseController
 
     [RbkAuthorize(AuthenticationClaims.MANAGE_USER_ROLES)]
     [HttpPost("users/set-roles")]
-    public async Task<ActionResult<UserDetails>> UpdateUserRoles(ReplaceUserRoles.Command data, CancellationToken cancellation)
+    public async Task<ActionResult<UserDetails>> UpdateUserRoles(ReplaceUserRoles.Request data, CancellationToken cancellation)
     {
         var result = await Mediator.Send(data, cancellation);
 
@@ -126,7 +126,7 @@ public class AuthorizationController : BaseController
 
     [RbkAuthorize(AuthenticationClaims.OVERRIDE_USER_CLAIMS)]
     [HttpPost("users/add-claim")]
-    public async Task<ActionResult<ClaimOverride[]>> AddClaimToUser(AddClaimOverride.Command data, CancellationToken cancellation)
+    public async Task<ActionResult<ClaimOverride[]>> AddClaimToUser(AddClaimOverride.Request data, CancellationToken cancellation)
     {
         var result = await Mediator.Send(data, cancellation);
 
@@ -135,7 +135,7 @@ public class AuthorizationController : BaseController
 
     [RbkAuthorize(AuthenticationClaims.OVERRIDE_USER_CLAIMS)]
     [HttpPost("users/remove-claim")]
-    public async Task<ActionResult<ClaimOverride[]>> RemoveClaimFromUser(RemoveClaimOverride.Command data, CancellationToken cancellation)
+    public async Task<ActionResult<ClaimOverride[]>> RemoveClaimFromUser(RemoveClaimOverride.Request data, CancellationToken cancellation)
     {
         var result = await Mediator.Send(data, cancellation);
 
@@ -150,12 +150,12 @@ public class AuthorizationController : BaseController
     [RbkAuthorize(AuthenticationClaims.MANAGE_TENANTS)]
     public async Task<ActionResult<TenantDetails[]>> GetAllTenants(CancellationToken cancellation)
     {
-        return HttpResponse<TenantDetails[]>(await Mediator.Send(new GetAllTenants.Command(), cancellation));
+        return HttpResponse<TenantDetails[]>(await Mediator.Send(new GetAllTenants.Request(), cancellation));
     }
 
     [HttpPost("tenants")]
     [RbkAuthorize(AuthenticationClaims.MANAGE_TENANTS)]
-    public async Task<ActionResult<TenantDetails>> CreateTenant(CreateTenant.Command data, CancellationToken cancellation)
+    public async Task<ActionResult<TenantDetails>> CreateTenant(CreateTenant.Request data, CancellationToken cancellation)
     {
         var result = await Mediator.Send(data, cancellation);
 
@@ -164,7 +164,7 @@ public class AuthorizationController : BaseController
 
     [HttpPut("tenants")]
     [RbkAuthorize(AuthenticationClaims.MANAGE_TENANTS)]
-    public async Task<ActionResult<TenantDetails>> UpdateTenant(UpdateTenant.Command data, CancellationToken cancellation)
+    public async Task<ActionResult<TenantDetails>> UpdateTenant(UpdateTenant.Request data, CancellationToken cancellation)
     {
         return HttpResponse<TenantDetails>(await Mediator.Send(data, cancellation));
     }
@@ -173,7 +173,7 @@ public class AuthorizationController : BaseController
     [RbkAuthorize(AuthenticationClaims.MANAGE_TENANTS)]
     public async Task<ActionResult> DeleteTenant(string id, CancellationToken cancellation)
     {
-        return HttpResponse(await Mediator.Send(new DeleteTenant.Command { Alias = id }, cancellation));
+        return HttpResponse(await Mediator.Send(new DeleteTenant.Request { Alias = id }, cancellation));
     }
 
     #endregion
@@ -184,7 +184,7 @@ public class AuthorizationController : BaseController
     [RbkAuthorize(AuthenticationClaims.MANAGE_USERS)]
     public async Task<ActionResult<UserDetails[]>> GetAllUsers(CancellationToken cancellation)
     {
-        return HttpResponse<UserDetails[]>(await Mediator.Send(new GetAllUsers.Command(), cancellation));
+        return HttpResponse<UserDetails[]>(await Mediator.Send(new GetAllUsers.Request(), cancellation));
     }
 
     #endregion

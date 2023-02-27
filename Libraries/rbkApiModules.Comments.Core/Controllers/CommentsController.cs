@@ -9,7 +9,7 @@ public class CommentsController : BaseController
 {
 
     [HttpPost]
-    public async Task<ActionResult<TreeNode[]>> CreateComment([FromBody] CommentEntity.Command data, CancellationToken cancellation)
+    public async Task<ActionResult<TreeNode[]>> CreateComment([FromBody] CommentEntity.Request data, CancellationToken cancellation)
     {
         return HttpResponse<TreeNode[]>(await Mediator.Send(data, cancellation));
     }
@@ -18,6 +18,6 @@ public class CommentsController : BaseController
     [Route("{id}")]
     public async Task<ActionResult<TreeNode[]>> AllComments(Guid id, CancellationToken cancellation)
     {
-        return HttpResponse<TreeNode[]>(await Mediator.Send(new GetComments.Command { EntityId = id }, cancellation));
+        return HttpResponse<TreeNode[]>(await Mediator.Send(new GetComments.Request { EntityId = id }, cancellation));
     }
 }

@@ -9,11 +9,11 @@ namespace Demo1.BusinessLogic.Commands;
 
 public class TestReadSpeed
 {
-    public class Command : IRequest<CommandResponse>
+    public class Request : IRequest<CommandResponse>
     {
     }
 
-    public class Handler : RequestHandler<Command, CommandResponse>
+    public class Handler : IRequestHandler<Request, CommandResponse>
     {
         private readonly ReadDatabaseContext _context;
 
@@ -22,7 +22,7 @@ public class TestReadSpeed
             _context = context;
         }
 
-        protected override CommandResponse Handle(Command command)
+        public async Task<CommandResponse> Handle(Request request, CancellationToken cancellationToken)
         {
             var result = new Result();
 
@@ -89,7 +89,7 @@ public class TestReadSpeed
 
             _context.ChangeTracker.Clear();
 
-            return CommandResponse.Success(result);
+            return await Task.FromResult(CommandResponse.Success(result));
         }
     }
 

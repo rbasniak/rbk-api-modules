@@ -9,7 +9,7 @@ public static class Builder
     public static void AddRbkFaqs(this IServiceCollection services)
     {
         AssemblyScanner
-            .FindValidatorsInAssembly(Assembly.GetAssembly(typeof(CreateFaq.Command)))
+            .FindValidatorsInAssembly(Assembly.GetAssembly(typeof(CreateFaq.Request)))
                 .ForEach(result => services.AddScoped(result.InterfaceType, result.ValidatorType));
     }
 }

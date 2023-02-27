@@ -51,9 +51,9 @@ public class TenantRolesClaimAssociationTests : SequentialTest, IClassFixture<Se
 
         var createClaimCommands = new[]
         {
-            new CreateClaim.Command { Identification = "CAN_FILL_TIMESHEETS", Description = "CAN_FILL_TIMESHEETS" },
-            new CreateClaim.Command { Identification = "CAN_REQUEST_MATERIALS", Description = "CAN_REQUEST_MATERIALS" },
-            new CreateClaim.Command { Identification = "CAN_SEND_EMAILS", Description = "CAN_SEND_EMAILS" },
+            new CreateClaim.Request { Identification = "CAN_FILL_TIMESHEETS", Description = "CAN_FILL_TIMESHEETS" },
+            new CreateClaim.Request { Identification = "CAN_REQUEST_MATERIALS", Description = "CAN_REQUEST_MATERIALS" },
+            new CreateClaim.Request { Identification = "CAN_SEND_EMAILS", Description = "CAN_SEND_EMAILS" },
         };
 
         foreach (var command in createClaimCommands) 
@@ -62,10 +62,10 @@ public class TenantRolesClaimAssociationTests : SequentialTest, IClassFixture<Se
             response.ShouldBeSuccess();
         } 
 
-        var response1 = await _serverFixture.PostAsync<Roles.Details>("api/authorization/roles", new CreateRole.Command { Name = "Administrator" }, await _serverFixture.GetAccessTokenAsync("superuser", "admin", null));
-        var response2 = await _serverFixture.PostAsync<Roles.Details>("api/authorization/roles", new CreateRole.Command { Name = "General User" }, await _serverFixture.GetAccessTokenAsync("superuser", "admin", null));
-        var response3 = await _serverFixture.PostAsync<Roles.Details>("api/authorization/roles", new CreateRole.Command { Name = "General User" }, await _serverFixture.GetAccessTokenAsync("admin1", "123", "Buzios"));
-        var response4 = await _serverFixture.PostAsync<Roles.Details>("api/authorization/roles", new CreateRole.Command { Name = "General User" }, await _serverFixture.GetAccessTokenAsync("admin1", "123", "un-BS"));
+        var response1 = await _serverFixture.PostAsync<Roles.Details>("api/authorization/roles", new CreateRole.Request { Name = "Administrator" }, await _serverFixture.GetAccessTokenAsync("superuser", "admin", null));
+        var response2 = await _serverFixture.PostAsync<Roles.Details>("api/authorization/roles", new CreateRole.Request { Name = "General User" }, await _serverFixture.GetAccessTokenAsync("superuser", "admin", null));
+        var response3 = await _serverFixture.PostAsync<Roles.Details>("api/authorization/roles", new CreateRole.Request { Name = "General User" }, await _serverFixture.GetAccessTokenAsync("admin1", "123", "Buzios"));
+        var response4 = await _serverFixture.PostAsync<Roles.Details>("api/authorization/roles", new CreateRole.Request { Name = "General User" }, await _serverFixture.GetAccessTokenAsync("admin1", "123", "un-BS"));
 
         response1.ShouldBeSuccess();
         response2.ShouldBeSuccess();
@@ -89,7 +89,7 @@ public class TenantRolesClaimAssociationTests : SequentialTest, IClassFixture<Se
         var role = GetRole("Administrator");
         role.TenantId.ShouldBeNull();
 
-        var request = new UpdateRoleClaims.Command
+        var request = new UpdateRoleClaims.Request
         {
             Id = role.Id,
             ClaimsIds = new[]
@@ -123,7 +123,7 @@ public class TenantRolesClaimAssociationTests : SequentialTest, IClassFixture<Se
     public async Task Local_Admin_Cannot_Change_Claims_Of_Role_That_Does_Not_Exist_At_All()
     {
         // Prepare 
-        var request = new UpdateRoleClaims.Command
+        var request = new UpdateRoleClaims.Request
         {
             Id = Guid.NewGuid(),
             ClaimsIds = new[]
@@ -151,7 +151,7 @@ public class TenantRolesClaimAssociationTests : SequentialTest, IClassFixture<Se
         var role = GetRole("General User", "BUZIOS");
         role.TenantId.ShouldBe("BUZIOS");
 
-        var request = new UpdateRoleClaims.Command
+        var request = new UpdateRoleClaims.Request
         {
             Id = role.Id,
             ClaimsIds = null
@@ -188,7 +188,7 @@ public class TenantRolesClaimAssociationTests : SequentialTest, IClassFixture<Se
         var role = GetRole("General User", "BUZIOS");
         role.TenantId.ShouldBe("BUZIOS");
 
-        var request = new UpdateRoleClaims.Command
+        var request = new UpdateRoleClaims.Request
         {
             Id = role.Id,
             ClaimsIds = new[]
@@ -276,7 +276,7 @@ public class TenantRolesClaimAssociationTests : SequentialTest, IClassFixture<Se
         role.Claims.FirstOrDefault(x => x.Claim.Identification == "CAN_FILL_TIMESHEETS").ShouldNotBeNull();
 
         // Prepare 
-        var request = new UpdateRoleClaims.Command
+        var request = new UpdateRoleClaims.Request
         {
             Id = role.Id,
             ClaimsIds = new[]
@@ -352,7 +352,7 @@ public class TenantRolesClaimAssociationTests : SequentialTest, IClassFixture<Se
         var role = GetRole("General User", "BUZIOS");
         role.TenantId.ShouldBe("BUZIOS");
 
-        var request = new UpdateRoleClaims.Command
+        var request = new UpdateRoleClaims.Request
         {
             Id = role.Id,
             ClaimsIds = new[]
@@ -415,7 +415,7 @@ public class TenantRolesClaimAssociationTests : SequentialTest, IClassFixture<Se
         role.TenantId.ShouldBe("BUZIOS");
         role.Claims.Count().ShouldBe(2);
 
-        var request = new UpdateRoleClaims.Command
+        var request = new UpdateRoleClaims.Request
         {
             Id = role.Id,
             ClaimsIds = new Guid[0]

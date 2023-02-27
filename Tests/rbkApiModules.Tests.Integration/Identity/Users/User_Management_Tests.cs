@@ -77,7 +77,7 @@ public class UserManagementTests : SequentialTest, IClassFixture<ServerFixture>
         var role1 = _serverFixture.Context.Set<Role>().Single(x => x.Name == "Employee" && x.TenantId == null);
         var role2 = _serverFixture.Context.Set<Role>().Single(x => x.Name == "Manager" && x.TenantId == null);
 
-        var request = new ReplaceUserRoles.Command 
+        var request = new ReplaceUserRoles.Request 
         { 
             RoleIds = new[] { role1.Id, role2.Id } ,
             Username = user.Username
@@ -114,7 +114,7 @@ public class UserManagementTests : SequentialTest, IClassFixture<ServerFixture>
         user.ShouldNotBeNull();
         user.Roles.ToList().Count().ShouldBe(2);
 
-        var request = new ReplaceUserRoles.Command
+        var request = new ReplaceUserRoles.Request
         {
             RoleIds = new Guid[0],
             Username = user.Username
@@ -148,7 +148,7 @@ public class UserManagementTests : SequentialTest, IClassFixture<ServerFixture>
         var role1 = _serverFixture.Context.Set<Role>().Single(x => x.Name == "Employee" && x.TenantId == null);
         var role2 = _serverFixture.Context.Set<Role>().Single(x => x.Name == "Manager" && x.TenantId == null);
 
-        var request = new ReplaceUserRoles.Command
+        var request = new ReplaceUserRoles.Request
         {
             RoleIds = new[] { role1.Id, role2.Id },
             Username = username
@@ -172,7 +172,7 @@ public class UserManagementTests : SequentialTest, IClassFixture<ServerFixture>
         var role1 = _serverFixture.Context.Set<Role>().Single(x => x.Name == "Employee" && x.TenantId == null);
         var role2 = _serverFixture.Context.Set<Role>().Single(x => x.Name == "Manager" && x.TenantId == null);
 
-        var request = new ReplaceUserRoles.Command
+        var request = new ReplaceUserRoles.Request
         {
             RoleIds = new[] { role1.Id, role2.Id },
             Username = "tony.stark"
@@ -197,7 +197,7 @@ public class UserManagementTests : SequentialTest, IClassFixture<ServerFixture>
         user.ShouldNotBeNull();
         user.Roles.ToList().Count().ShouldBe(0);
 
-        var request = new ReplaceUserRoles.Command
+        var request = new ReplaceUserRoles.Request
         {
             RoleIds = new[] { Guid.NewGuid() },
             Username = user.Username
@@ -222,7 +222,7 @@ public class UserManagementTests : SequentialTest, IClassFixture<ServerFixture>
         user.ShouldNotBeNull();
         user.Roles.ToList().Count().ShouldBe(0);
 
-        var request = new ReplaceUserRoles.Command
+        var request = new ReplaceUserRoles.Request
         {
             RoleIds = null,
             Username = user.Username

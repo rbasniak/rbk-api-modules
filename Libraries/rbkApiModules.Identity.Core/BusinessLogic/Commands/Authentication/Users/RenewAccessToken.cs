@@ -7,12 +7,12 @@ namespace rbkApiModules.Identity.Core;
 
 public class RenewAccessToken
 {
-    public class Command : IRequest<CommandResponse>
+    public class Request : IRequest<CommandResponse>
     {
         public string RefreshToken { get; set; }
     }
 
-    public class Validator : AbstractValidator<Command>
+    public class Validator : AbstractValidator<Request>
     {
         private readonly IAuthService _usersService;
 
@@ -27,18 +27,18 @@ public class RenewAccessToken
                 .WithName(localization.GetValue("RefreshToken"));
         }
 
-        public async Task<bool> TokenMustBeWithinValidity(Command comman, string refreshToken, CancellationToken cancelation)
+        public async Task<bool> TokenMustBeWithinValidity(Request comman, string refreshToken, CancellationToken cancelation)
         {
             return await _usersService.IsRefreshTokenValidAsync(refreshToken);
         }
 
-        public async Task<bool> RefreshTokenExistOnDatabase(Command command, string refreshToken, CancellationToken cancelation)
+        public async Task<bool> RefreshTokenExistOnDatabase(Request request, string refreshToken, CancellationToken cancelation)
         {
             return await _usersService.RefreshTokenExistsOnDatabaseAsync(refreshToken);
         }
     }
 
-    public class Handler : IRequestHandler<Command, CommandResponse>
+    public class Handler : IRequestHandler<Request, CommandResponse>
     {
         private readonly IJwtFactory _jwtFactory;
         private readonly IAuthService _usersService;
@@ -51,7 +51,7 @@ public class RenewAccessToken
             _claimHandlers = claimHandlers;
         }
 
-        public async Task<CommandResponse> Handle(Command request, CancellationToken cancellation)
+        public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)
         {
             var user = await _usersService.GetUserFromRefreshtokenAsync(request.RefreshToken);
 

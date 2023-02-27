@@ -5,11 +5,11 @@ namespace rbkApiModules.Identity.Core;
 
 public class GetAllUsers
 {
-    public class Command : AuthenticatedRequest, IRequest<QueryResponse>
+    public class Request : AuthenticatedRequest, IRequest<QueryResponse>
     {
     }
 
-    public class Handler : IRequestHandler<Command, QueryResponse>
+    public class Handler : IRequestHandler<Request, QueryResponse>
     {
         private readonly IAuthService _usersService;
 
@@ -18,7 +18,7 @@ public class GetAllUsers
             _usersService = usersService;
         }
 
-        public async Task<QueryResponse> Handle(Command request, CancellationToken cancellation)
+        public async Task<QueryResponse> Handle(Request request, CancellationToken cancellation)
         {
             var users = await _usersService.GetAllAsync(request.Identity.Tenant);
 

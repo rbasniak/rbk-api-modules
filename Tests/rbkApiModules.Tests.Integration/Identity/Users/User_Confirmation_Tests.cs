@@ -149,7 +149,7 @@ public class UserConfirmationTests : SequentialTest, IClassFixture<ServerFixture
         user.ActivationCode.ShouldNotBe(null);
         user.ActivationCode.ShouldNotBe("");
 
-        var request = new ResendEmailConfirmation.Command
+        var request = new ResendEmailConfirmation.Request
         {
             Email = user.Email,
         };
@@ -209,7 +209,7 @@ public class UserConfirmationTests : SequentialTest, IClassFixture<ServerFixture
         user.IsConfirmed.ShouldBeTrue();
         user.ActivationCode.ShouldBeNull();
 
-        var request = new ResendEmailConfirmation.Command
+        var request = new ResendEmailConfirmation.Request
         {
             Email = user.Email,
         };
@@ -228,7 +228,7 @@ public class UserConfirmationTests : SequentialTest, IClassFixture<ServerFixture
     public async Task User_Cannot_Receive_Confirmation_Email_If_Email_Does_Not_Exist()
     {
         // Act
-        var request = new ResendEmailConfirmation.Command
+        var request = new ResendEmailConfirmation.Request
         {
             Email = "incognito@company.com",
         };

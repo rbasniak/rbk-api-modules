@@ -18,7 +18,7 @@ public class CqrsPerformanceTextController : BaseController
     [HttpPost("seed-tables")]
     public async Task<ActionResult<SeedPerformanceTables.Result>> SeedPerformanceTables(int size = 10000)
     {
-        var response = await Mediator.Send(new SeedPerformanceTables.Command { Size = size });
+        var response = await Mediator.Send(new SeedPerformanceTables.Request { Size = size });
 
         return HttpResponse(response);
     }
@@ -29,7 +29,7 @@ public class CqrsPerformanceTextController : BaseController
     [HttpPost("test-read-performance")]
     public async Task<ActionResult<TestReadSpeed.Result>> TestReadSpeed()
     {
-        var response = await Mediator.Send(new TestReadSpeed.Command());
+        var response = await Mediator.Send(new TestReadSpeed.Request());
 
         return HttpResponse(response);
     }

@@ -41,7 +41,7 @@ public class TenantRolesBasicDependentTests : SequentialTest, IClassFixture<Serv
     public async Task Local_Admin_Can_Create_Tenant_Role()
     {
         // Prepare 
-        var request = new CreateRole.Command
+        var request = new CreateRole.Request
         {
             Name = "Tenant Role",
         };
@@ -87,7 +87,7 @@ public class TenantRolesBasicDependentTests : SequentialTest, IClassFixture<Serv
     public async Task Local_Admin_Can_Create_Tenant_Role_Even_If_There_Is_Another_With_Same_Name_In_Another_Tenant()
     {
         // Prepare 
-        var request = new CreateRole.Command
+        var request = new CreateRole.Request
         {
             Name = "Tenant Role",
         };
@@ -139,7 +139,7 @@ public class TenantRolesBasicDependentTests : SequentialTest, IClassFixture<Serv
         // Prepare
         var role = _serverFixture.Context.Set<Role>().First(x => x.Name == "Tenant Role");
 
-        var request = new RenameRole.Command
+        var request = new RenameRole.Request
         {
             Id = role.Id,
             Name = "Renamed Tenant Role"
@@ -190,7 +190,7 @@ public class TenantRolesBasicDependentTests : SequentialTest, IClassFixture<Serv
         // Prepare
         var role = _serverFixture.Context.Set<Role>().First(x => x.Name == "Renamed Tenant Role");
 
-        var request = new RenameRole.Command
+        var request = new RenameRole.Request
         {
             Id = role.Id,
             Name = name,
@@ -221,7 +221,7 @@ public class TenantRolesBasicDependentTests : SequentialTest, IClassFixture<Serv
     public async Task Local_Admin_Cannot_Create_Tenant_Role_With_Duplicated_Name()
     {
         // Prepare
-        var request = new CreateRole.Command
+        var request = new CreateRole.Request
         {
             Name = "Renamed Tenant Role",
         };
@@ -254,21 +254,21 @@ public class TenantRolesBasicDependentTests : SequentialTest, IClassFixture<Serv
     public async Task Local_Admin_Can_Query_Application_Roles_And_Overwritten_Tenant_Roles()
     {
         // Prepare
-        var body1 = new CreateRole.Command
+        var body1 = new CreateRole.Request
         { 
             Name = "Application Wide Role To Be Overwritten"
         };
         var preResponse1 = await _serverFixture.PostAsync<Roles.Details>("api/authorization/roles", body1, await _serverFixture.GetAccessTokenAsync("superuser", "admin", null));
         preResponse1.ShouldBeSuccess();
 
-        var body2 = new CreateRole.Command
+        var body2 = new CreateRole.Request
         {
             Name = "Application Wide Role To Be Overwritten"
         };
         var preResponse2 = await _serverFixture.PostAsync<Roles.Details>("api/authorization/roles", body2, await _serverFixture.GetAccessTokenAsync("admin1", "123", "Buzios"));
         preResponse2.ShouldBeSuccess();
 
-        var body3 = new CreateRole.Command
+        var body3 = new CreateRole.Request
         {
             Name = "Trully Application Wide Role"
         };
@@ -392,7 +392,7 @@ public class TenantRolesBasicDependentTests : SequentialTest, IClassFixture<Serv
     public async Task Local_Admin_Can_Delete_Tenant_Role_That_Does_Exist_For_Him_And_Others()
     {
         // Prepare
-        var request = new CreateRole.Command
+        var request = new CreateRole.Request
         {
             Name = "Tenant Role"
         };
@@ -478,7 +478,7 @@ public class TenantRolesBasicDependentTests : SequentialTest, IClassFixture<Serv
         var tenantRole = _serverFixture.Context.Set<Role>().Single(x => x.Name == "Tenant Role" && x.TenantId == "UN-BS");
         tenantRole.ShouldNotBeNull();
 
-        var request = new RenameRole.Command 
+        var request = new RenameRole.Request 
         { 
             Id = tenantRole.Id,
             Name = "New name"
@@ -515,7 +515,7 @@ public class TenantRolesBasicDependentTests : SequentialTest, IClassFixture<Serv
     public async Task Global_Admin_Cannot_Rename_Tenant_Role_Even_If_It_Exists_As_Application_Role()
     {
         // Prepare
-        var createRequest = new CreateRole.Command
+        var createRequest = new CreateRole.Request
         {
             Name = "Tenant Role"
         };
@@ -527,7 +527,7 @@ public class TenantRolesBasicDependentTests : SequentialTest, IClassFixture<Serv
         applicationRole.ShouldNotBeNull();
         tenantRole.ShouldNotBeNull();
 
-        var request = new RenameRole.Command
+        var request = new RenameRole.Request
         {
             Id = tenantRole.Id,
             Name = "New name"
@@ -568,10 +568,10 @@ public class TenantRolesBasicDependentTests : SequentialTest, IClassFixture<Serv
         // Prepare
         async Task<(Role OtherTenantRole, Role CurrentTenantRole, Role RoleToBeRenamed)> fetchData()
         {
-            var createRequest1 = new CreateRole.Command { Name = "Tenant Role" };
+            var createRequest1 = new CreateRole.Request { Name = "Tenant Role" };
             var createResponse1 = await _serverFixture.PostAsync<Roles.Details>($"api/authorization/roles", createRequest1, true);
 
-            var createRequest2 = new CreateRole.Command { Name = "Role to be Renamed" };
+            var createRequest2 = new CreateRole.Request { Name = "Role to be Renamed" };
             var createResponse2 = await _serverFixture.PostAsync<Roles.Details>($"api/authorization/roles", createRequest2, true);
 
             var otherTenantRole = _serverFixture.Context.Set<Role>().SingleOrDefault(x => x.Name == "Tenant Role" && x.TenantId == "UN-BS");
@@ -587,7 +587,7 @@ public class TenantRolesBasicDependentTests : SequentialTest, IClassFixture<Serv
         entitiesBefore.CurrentTenantRole.ShouldNotBeNull();
         entitiesBefore.RoleToBeRenamed.ShouldNotBeNull();
 
-        var request = new RenameRole.Command
+        var request = new RenameRole.Request
         {
             Id = entitiesBefore.RoleToBeRenamed.Id,
             Name = "tENANT rOLE"
@@ -634,7 +634,7 @@ public class TenantRolesBasicDependentTests : SequentialTest, IClassFixture<Serv
         applicationRole.ShouldNotBeNull();
         roleToBeRenamed.ShouldNotBeNull();
 
-        var request = new RenameRole.Command
+        var request = new RenameRole.Request
         {
             Id = roleToBeRenamed.Id,
             Name = "Trully Application Wide Role"
@@ -692,7 +692,7 @@ public class TenantRolesBasicDependentTests : SequentialTest, IClassFixture<Serv
         // Now we have the CEO role as an application wide role, but overwritted in the tenant.
         // Two tenant users using it and one user from another tenant
 
-        var request = new CreateRole.Command
+        var request = new CreateRole.Request
         {
             Name = "CEO"
         };
@@ -784,7 +784,7 @@ public class TenantRolesBasicIndependentTests : SequentialTest, IClassFixture<Se
     public async Task Local_Admin_Cannot_Create_Tenant_Role_Without_Proper_Name(string name)
     {
         // Prepare 
-        var request = new CreateRole.Command
+        var request = new CreateRole.Request
         {
             Name = name,
         };
@@ -804,7 +804,7 @@ public class TenantRolesBasicIndependentTests : SequentialTest, IClassFixture<Se
     public async Task Local_Admin_Cannot_Rename_Role_That_Does_Not_Exist()
     {
         // Prepare
-        var request = new RenameRole.Command
+        var request = new RenameRole.Request
         {
             Id = Guid.NewGuid(),
             Name = "New fake name",

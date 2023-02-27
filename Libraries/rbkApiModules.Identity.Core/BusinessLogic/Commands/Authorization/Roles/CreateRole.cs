@@ -7,12 +7,12 @@ namespace rbkApiModules.Identity.Core;
 
 public class CreateRole
 {
-    public class Command : AuthenticatedRequest, IRequest<CommandResponse>
+    public class Request : AuthenticatedRequest, IRequest<CommandResponse>
     {
         public string Name { get; set; }
     }
 
-    public class Validator : AbstractValidator<Command>
+    public class Validator : AbstractValidator<Request>
     {
         private readonly IRolesService _rolesService;
 
@@ -30,19 +30,19 @@ public class CreateRole
                 .HasCorrectRoleManagementAccessRights(localization);
         }  
 
-        private async Task<bool> NameBeUnique(Command command, string name, CancellationToken cancellation)
+        private async Task<bool> NameBeUnique(Request request, string name, CancellationToken cancellation)
         {
             var roles = await _rolesService.FindByNameAsync(name, cancellation);
 
             if (roles.Count() == 0) return true;
 
-            var usedRoles = roles.Where(x => x.TenantId == command.Identity.Tenant || (x.HasNoTenant && command.Identity.HasNoTenant)).ToList();
+            var usedRoles = roles.Where(x => x.TenantId == request.Identity.Tenant || (x.HasNoTenant && request.Identity.HasNoTenant)).ToList();
 
             return usedRoles.Count == 0;
         }
     }
 
-    public class Handler : IRequestHandler<Command, CommandResponse>
+    public class Handler : IRequestHandler<Request, CommandResponse>
     {
         private readonly IRolesService _rolesService;
         private readonly IAuthService _usersService;
@@ -53,7 +53,7 @@ public class CreateRole
             _usersService = usersService;
         }
 
-        public async Task<CommandResponse> Handle(Command request, CancellationToken cancellation)
+        public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)
         {
             var tenantRole = new Role(request.Identity.Tenant, request.Name);
 

@@ -46,7 +46,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
     public async Task User_Cannot_Login_With_Wrong_Password()
     {
         // Prepare
-        var request = new UserLogin.Command
+        var request = new UserLogin.Request
         {
             Username = "john.doe",
             Password = "321",
@@ -67,7 +67,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
     public async Task User_Cannot_Login_With_Wrong_Tenant()
     {
         // Prepare
-        var request = new UserLogin.Command
+        var request = new UserLogin.Request
         {
             Username = "john.doe",
             Password = "123",
@@ -90,7 +90,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
     public async Task User_Cannot_Login_With_Right_Credentials_But_Wrong_Tenant()
     {
         // Prepare 
-        var request = new UserLogin.Command
+        var request = new UserLogin.Request
         {
             Username = "john.doe",
             Password = "123",
@@ -117,7 +117,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
         user.LastLogin.ShouldBeNull();
 
         // Prepare
-        var request = new UserLogin.Command
+        var request = new UserLogin.Request
         {
             Username = "john.doe",
             Password = "123",
@@ -174,7 +174,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
     public async Task User1_Can_Login_With_Username()
     {
         // Prepare
-        var request = new UserLogin.Command
+        var request = new UserLogin.Request
         {
             Username = "john.doe",
             Password = "123",
@@ -218,7 +218,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
     public async Task User2_Can_Login_With_Username()
     {
         // Prepare
-        var request = new UserLogin.Command
+        var request = new UserLogin.Request
         {
             Username = "jane.doe",
             Password = "123",
@@ -262,7 +262,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
     public async Task User3_Can_Login_With_Username()
     {
         // Prepare
-        var request = new UserLogin.Command
+        var request = new UserLogin.Request
         {
             Username = "john.doe",
             Password = "abc",
@@ -306,7 +306,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
     public async Task User4_Can_Login_With_Username()
     {
         // Prepare
-        var request = new UserLogin.Command
+        var request = new UserLogin.Request
         {
             Username = "jane.doe",
             Password = "abc",
@@ -351,7 +351,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
     public async Task User_Cannot_Refresh_Token_With_Empty_Data(string refreshToken)
     {
         // Act
-        var request = new RenewAccessToken.Command
+        var request = new RenewAccessToken.Request
         {
             RefreshToken = refreshToken
         };
@@ -370,7 +370,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
     public async Task User_Cannot_Refresh_Token_With_Non_Existent_Token()
     {
         // Act
-        var request = new RenewAccessToken.Command
+        var request = new RenewAccessToken.Request
         {
             RefreshToken = "non-existent-token"
         };
@@ -389,7 +389,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
     public async Task User_Can_Refresh_Token_With_Valid_Data()
     {
         // Prepare
-        var loginRequest = new UserLogin.Command
+        var loginRequest = new UserLogin.Request
         {
             Username = "jane.doe",
             Password = "abc",
@@ -403,7 +403,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
         Thread.Sleep(1500);
 
         // Act
-        var request = new RenewAccessToken.Command
+        var request = new RenewAccessToken.Request
         {
             RefreshToken = authDataResponse.Data.RefreshToken
         };
@@ -437,7 +437,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
         var user = _serverFixture.Context.Set<User>().Single(x => x.Username == "john.doe" && x.TenantId == "BUZIOS");
 
         // Prepare
-        var loginRequest = new UserLogin.Command
+        var loginRequest = new UserLogin.Request
         {
             Username = "john.doe",
             Password = "123",
@@ -451,7 +451,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
         user.RefreshTokenValidity.ShouldBeLessThan(DateTime.UtcNow);
 
         // Act 
-        var request = new RenewAccessToken.Command
+        var request = new RenewAccessToken.Request
         {
             RefreshToken = user.RefreshToken
         };

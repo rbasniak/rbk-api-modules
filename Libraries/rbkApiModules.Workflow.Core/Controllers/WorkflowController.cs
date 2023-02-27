@@ -11,7 +11,7 @@ public abstract class WorkflowController : BaseController
     [HttpGet("general/dot-code/{groupId}")]
     public async Task<ActionResult<GetStatesDotCode.Response>> GenerateDotCode(Guid groupId)
     {
-        var response = await Mediator.Send(new GetStatesDotCode.Command { GroupId = groupId });
+        var response = await Mediator.Send(new GetStatesDotCode.Request { GroupId = groupId });
 
         return HttpResponse(response);
     }
@@ -22,7 +22,7 @@ public abstract class WorkflowController : BaseController
     [HttpGet("general/all")]
     public async Task<ActionResult<StateGroupDetails[]>> All()
     {
-        var response = await Mediator.Send(new GetStateData.Command());
+        var response = await Mediator.Send(new GetStateData.Request());
 
         return HttpResponse<StateGroupDetails[]>(response);
     }
@@ -31,7 +31,7 @@ public abstract class WorkflowController : BaseController
     /// Executes a group of query definitions and return their results
     /// </summary>
     [HttpPost("queries")]
-    public async Task<ActionResult<QueryDefinitionResults<StateEntityDetails>[]>> ExecuteQueries(GetQueryDefinitionResults.Command data)
+    public async Task<ActionResult<QueryDefinitionResults<StateEntityDetails>[]>> ExecuteQueries(GetQueryDefinitionResults.Request data)
     {
         var response = await Mediator.Send(data);
 
@@ -44,7 +44,7 @@ public abstract class WorkflowController : BaseController
     [HttpGet("events/history/{entityId}")]
     public async Task<ActionResult<StateChangedEventDetails[]>> GetEntityHistory(Guid entityId)
     {
-        var response = await Mediator.Send(new GetStateChangedEvents.Command { Id = entityId });
+        var response = await Mediator.Send(new GetStateChangedEvents.Request { Id = entityId });
 
         return HttpResponse<StateChangedEventDetails[]>(response);
     }

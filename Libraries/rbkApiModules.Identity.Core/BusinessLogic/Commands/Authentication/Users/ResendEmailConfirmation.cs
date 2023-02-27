@@ -7,14 +7,12 @@ namespace rbkApiModules.Identity.Core;
 
 public class ResendEmailConfirmation
 {
-    public class Command : AuthenticatedRequest, IRequest<CommandResponse>
+    public class Request : AuthenticatedRequest, IRequest<CommandResponse>
     {
-        private string _tenant;
-
         public string Email { get; set; }
     }
 
-    public class Validator : AbstractValidator<Command>
+    public class Validator : AbstractValidator<Request>
     {
         private readonly IAuthService _authService;
 
@@ -29,20 +27,20 @@ public class ResendEmailConfirmation
                 .MustAsync(EmailBeUnconfirmed).WithMessage(localization.GetValue("E-mail já confirmado"));
         }
 
-        private async Task<bool> EmailBeRegistered(Command command, string email, CancellationToken cancellation)
+        private async Task<bool> EmailBeRegistered(Request request, string email, CancellationToken cancellation)
         {
-            return await _authService.IsUserRegisteredAsync(email, command.Identity.Tenant, cancellation);
+            return await _authService.IsUserRegisteredAsync(email, request.Identity.Tenant, cancellation);
         }
 
-        private async Task<bool> EmailBeUnconfirmed(Command command, string email, CancellationToken cancellation)
+        private async Task<bool> EmailBeUnconfirmed(Request request, string email, CancellationToken cancellation)
         {
-            var isConfirmed = await _authService.IsUserConfirmedAsync(email, command.Identity.Tenant, cancellation);
+            var isConfirmed = await _authService.IsUserConfirmedAsync(email, request.Identity.Tenant, cancellation);
 
             return !isConfirmed;
         }
     }
 
-    public class Handler : IRequestHandler<Command, CommandResponse>
+    public class Handler : IRequestHandler<Request, CommandResponse>
     {
         private readonly IAuthenticationMailService _mailingService;
         private readonly IAuthService _authService;
@@ -53,7 +51,7 @@ public class ResendEmailConfirmation
             _authService = authService;
         }
 
-        public async Task<CommandResponse> Handle(Command request, CancellationToken cancellation)
+        public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)
         {
             var user = await _authService.FindUserAsync(request.Email, request.Identity.Tenant);
 

@@ -12,20 +12,20 @@ namespace Demo1.BusinessLogic.Commands;
 
 public class UpdatePost
 {
-    public class Command : CreatePost.Command, IHasReadingModel<Models.Read.Post>
+    public class Request : CreatePost.Request, IHasReadingModel<Models.Read.Post>
     {
         public Guid Id { get; set; }
     }
 
-    public class Validator: AbstractValidator<Command>
+    public class Validator: AbstractValidator<Request>
     {
         public Validator(DbContext context, ILocalizationService localization)
         {
-            RuleFor(x => x.Id).MustExistInDatabase<Command, Post>(context, localization);
+            RuleFor(x => x.Id).MustExistInDatabase<Request, Post>(context, localization);
         }
     }
 
-    public class Handler : IRequestHandler<Command, AuditableCommandResponse>
+    public class Handler : IRequestHandler<Request, AuditableCommandResponse>
     {
         private readonly DatabaseContext _context;
 
@@ -34,14 +34,14 @@ public class UpdatePost
             _context = context;
         }
 
-        public async Task<AuditableCommandResponse> Handle(Command command, CancellationToken cancellation)
+        public async Task<AuditableCommandResponse> Handle(Request request, CancellationToken cancellation)
         {
             var post = await _context.Posts
                 .Include(x => x.Blog)
                 .Include(x => x.Author)
-                .FirstAsync(x => x.Id == command.Id);
+                .FirstAsync(x => x.Id == request.Id);
 
-            post.Update(command.Title, command.Body);
+            post.Update(request.Title, request.Body);
 
             await _context.SaveChangesAsync();
 

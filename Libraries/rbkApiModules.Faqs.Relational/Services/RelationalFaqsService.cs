@@ -16,7 +16,7 @@ public class RelationalFaqsService : IFaqsService
 
     public async Task<Faq[]> GetAllAsync(string tenant, string tag, CancellationToken cancellation = default)
     {
-        var temp = await _context.Set<Faq>().ToListAsync();
+        tenant = tenant != null ? tenant.ToUpper() : null;
 
         if (String.IsNullOrEmpty(tenant))
         {

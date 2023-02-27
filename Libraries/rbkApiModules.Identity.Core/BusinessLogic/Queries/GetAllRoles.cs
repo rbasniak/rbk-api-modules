@@ -5,11 +5,11 @@ namespace rbkApiModules.Identity.Core;
 
 public class GetAllRoles
 {
-    public class Command : AuthenticatedRequest, IRequest<QueryResponse>
+    public class Request : AuthenticatedRequest, IRequest<QueryResponse>
     {
     }
 
-    public class Handler : IRequestHandler<Command, QueryResponse>
+    public class Handler : IRequestHandler<Request, QueryResponse>
     {
         private readonly IRolesService _rolesService;
 
@@ -18,7 +18,7 @@ public class GetAllRoles
             _rolesService = context;
         }
 
-        public async Task<QueryResponse> Handle(Command request, CancellationToken cancellation)
+        public async Task<QueryResponse> Handle(Request request, CancellationToken cancellation)
         {
             var roles = await _rolesService.GetAllAsync();
 
