@@ -44,7 +44,7 @@ public class TypeInfo
         }
         else
         {
-            Name = Type.FullName.Split('.').Last().Replace("[]", "").Replace("+Command", "").Replace("+", "");
+            Name = Type.FullName.Split('.').Last().Replace("[]", "").Replace("+Request", "").Replace("+", "");
         }
     }
 

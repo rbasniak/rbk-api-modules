@@ -48,7 +48,7 @@ public class EndpointInfo
 
         foreach (var parameter in parameters)
         {
-            if (parameter.ParameterType.FullName.EndsWith("+Command"))
+            if (parameter.ParameterType.FullName.EndsWith("+Request"))
             {
                 InputType = new TypeInfo(parameter.ParameterType);
             }
