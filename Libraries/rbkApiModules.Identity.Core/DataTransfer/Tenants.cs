@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 
-namespace rbkApiModules.Identity.Core;
+namespace rbkApiModules.Identity.Core.DataTransfer.Tenants;
 
 public class TenantDetails 
 {

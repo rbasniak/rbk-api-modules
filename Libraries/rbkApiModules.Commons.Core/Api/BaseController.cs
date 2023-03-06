@@ -3,7 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Logging;
+using Serilog;
 using System.Net;
 using System.Text.Json;
 
@@ -15,15 +15,16 @@ public class BaseController : ControllerBase
     private IMapper _mapper;
     private IMemoryCache _cache;
     private IMediator _mediator;
-    private ILogger<BaseController> _logger;
+    private ILogger _logger;
 
     protected IMediator Mediator => _mediator ??= HttpContext.RequestServices.GetService(typeof(IMediator)) as IMediator;
     protected IMapper Mapper => _mapper ??= HttpContext.RequestServices.GetService(typeof(IMapper)) as IMapper;
     protected IMemoryCache Cache => _cache ??= HttpContext.RequestServices.GetService(typeof(IMemoryCache)) as IMemoryCache;
-    protected ILogger<BaseController> Logger => _logger ??= HttpContext.RequestServices.GetService(typeof(ILogger<BaseController>)) as ILogger<BaseController>;
+    protected ILogger Logger => _logger;
 
     public BaseController()
     {
+        _logger = Log.Logger.ForContext(this.GetType());
     }
 
     protected ActionResult<T> HttpResponse<T>(BaseResponse response, string cacheId = null)
@@ -53,7 +54,7 @@ public class BaseController : ControllerBase
 
                         if (safeException1.ShouldBeLogged)
                         {
-                            _logger.LogInformation(ex, "Minor exception while mapping results in an endpoint");
+                            _logger.Information(ex, "Minor exception while mapping results in an endpoint");
                         }
 
                         return HttpErrorResponse(response);
@@ -68,7 +69,7 @@ public class BaseController : ControllerBase
 
                                 if (safeException2.ShouldBeLogged)
                                 {
-                                    _logger.LogInformation(ex, "Minor exception while mapping results in an endpoint");
+                                    _logger.Information(ex, "Minor exception while mapping results in an endpoint");
                                 }
 
                                 return HttpErrorResponse(response);
@@ -79,13 +80,13 @@ public class BaseController : ControllerBase
 
                 response.AddUnhandledError(ex.Message);
 
-                _logger.LogCritical(ex, "AutoMapper exception was thrown while mapping results in an endpoint");
+                _logger.Fatal(ex, "AutoMapper exception was thrown while mapping results in an endpoint");
 
                 return HttpErrorResponse(response);
             }
             catch (Exception ex)
             {
-                _logger.LogCritical(ex, "Exception was thrown while mapping results in an endpoint");
+                _logger.Fatal(ex, "Exception was thrown while mapping results in an endpoint");
 
                 response.AddUnhandledError(ex.Message);
                 

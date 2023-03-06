@@ -105,9 +105,9 @@ public class User : TenantEntity
     /// Método que processa as roles e claims de um usuário 
     /// e retorma uma lista compilada apenas do que do usuário tem acesso
     /// </summary>
-    public virtual List<string> GetAccessClaims()
+    public virtual Claim[] GetAccessClaims()
     {
-        var claims = new HashSet<string>();
+        var claims = new HashSet<Claim>();
 
         if (_roles == null) throw new ApplicationException("O usuário precisa estar carregado completamente do banco para verificar as regras de acesso.");
 
@@ -117,7 +117,7 @@ public class User : TenantEntity
 
             foreach (var claim in role.Role.Claims)
             {
-                claims.Add(claim.Claim.Identification);
+                claims.Add(claim.Claim);
             }
         }
 
@@ -127,15 +127,15 @@ public class User : TenantEntity
         {
             if (overridedClaim.Access == ClaimAccessType.Allow)
             {
-                claims.Add(overridedClaim.Claim.Identification);
+                claims.Add(overridedClaim.Claim);
             }
             else
             {
-                claims.Remove(overridedClaim.Claim.Identification);
+                claims.Remove(overridedClaim.Claim);
             }
         }
 
-        return claims.ToList().OrderBy(x => x).ToList();
+        return claims.OrderBy(x => x.Description).ToArray();
     }
 
     /// <summary>

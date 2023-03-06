@@ -1,4 +1,6 @@
-﻿namespace rbkApiModules.Tests.Integration.Identity;
+﻿using rbkApiModules.Identity.Core.DataTransfer.Users;
+
+namespace rbkApiModules.Tests.Integration.Identity;
 
 [TestCaseOrderer(PriorityOrderer.Name, PriorityOrderer.Assembly)]
 public class UserManagementTests : SequentialTest, IClassFixture<ServerFixture>

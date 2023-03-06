@@ -12,6 +12,7 @@ public class RbkAuthenticationOptions
     public bool _disablePasswordAuthentication = false;
     public bool _useAssymetricEncryptationKey = false;
     public bool _useSymetricEncryptationKey = false;
+    public bool _allowAnonymousTenantAccess = false;
     public Type _tenantPostCreationActionType = null;
     public NtlmMode _ntlmMode = NtlmMode.None;
 
@@ -67,6 +68,13 @@ public class RbkAuthenticationOptions
     public RbkAuthenticationOptions UseTenantPostCreationAction(Type type)
     {
         _tenantPostCreationActionType = type;
+
+        return this;
+    }
+
+    public RbkAuthenticationOptions AllowAnonymousAccessToTenants()
+    {
+        _allowAnonymousTenantAccess = true;
 
         return this;
     }

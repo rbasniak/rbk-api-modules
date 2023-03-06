@@ -1,4 +1,7 @@
-﻿namespace rbkApiModules.Tests.Integration.Identity;
+﻿using rbkApiModules.Identity.Core.DataTransfer.Claims;
+using rbkApiModules.Identity.Core.DataTransfer.Roles;
+
+namespace rbkApiModules.Tests.Integration.Identity;
 
 /// <summary>
 /// In general, the global admin can only manage roles that are application wide,
@@ -62,10 +65,10 @@ public class TenantRolesClaimAssociationTests : SequentialTest, IClassFixture<Se
             response.ShouldBeSuccess();
         } 
 
-        var response1 = await _serverFixture.PostAsync<Roles.Details>("api/authorization/roles", new CreateRole.Request { Name = "Administrator" }, await _serverFixture.GetAccessTokenAsync("superuser", "admin", null));
-        var response2 = await _serverFixture.PostAsync<Roles.Details>("api/authorization/roles", new CreateRole.Request { Name = "General User" }, await _serverFixture.GetAccessTokenAsync("superuser", "admin", null));
-        var response3 = await _serverFixture.PostAsync<Roles.Details>("api/authorization/roles", new CreateRole.Request { Name = "General User" }, await _serverFixture.GetAccessTokenAsync("admin1", "123", "Buzios"));
-        var response4 = await _serverFixture.PostAsync<Roles.Details>("api/authorization/roles", new CreateRole.Request { Name = "General User" }, await _serverFixture.GetAccessTokenAsync("admin1", "123", "un-BS"));
+        var response1 = await _serverFixture.PostAsync<RoleDetails>("api/authorization/roles", new CreateRole.Request { Name = "Administrator" }, await _serverFixture.GetAccessTokenAsync("superuser", "admin", null));
+        var response2 = await _serverFixture.PostAsync<RoleDetails>("api/authorization/roles", new CreateRole.Request { Name = "General User" }, await _serverFixture.GetAccessTokenAsync("superuser", "admin", null));
+        var response3 = await _serverFixture.PostAsync<RoleDetails>("api/authorization/roles", new CreateRole.Request { Name = "General User" }, await _serverFixture.GetAccessTokenAsync("admin1", "123", "Buzios"));
+        var response4 = await _serverFixture.PostAsync<RoleDetails>("api/authorization/roles", new CreateRole.Request { Name = "General User" }, await _serverFixture.GetAccessTokenAsync("admin1", "123", "un-BS"));
 
         response1.ShouldBeSuccess();
         response2.ShouldBeSuccess();
@@ -100,7 +103,7 @@ public class TenantRolesClaimAssociationTests : SequentialTest, IClassFixture<Se
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<Roles.Details>("api/authorization/roles/update-claims", request, true);
+        var response = await _serverFixture.PostAsync<RoleDetails>("api/authorization/roles/update-claims", request, true);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Role not found");
@@ -134,7 +137,7 @@ public class TenantRolesClaimAssociationTests : SequentialTest, IClassFixture<Se
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<Roles.Details>("api/authorization/roles/update-claims", request, true);
+        var response = await _serverFixture.PostAsync<RoleDetails>("api/authorization/roles/update-claims", request, true);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Role not found");
@@ -158,7 +161,7 @@ public class TenantRolesClaimAssociationTests : SequentialTest, IClassFixture<Se
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<Roles.Details>("api/authorization/roles/update-claims", request, true);
+        var response = await _serverFixture.PostAsync<RoleDetails>("api/authorization/roles/update-claims", request, true);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The list of claims must be provided");
@@ -199,7 +202,7 @@ public class TenantRolesClaimAssociationTests : SequentialTest, IClassFixture<Se
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<Roles.Details>("api/authorization/roles/update-claims", request, true);
+        var response = await _serverFixture.PostAsync<RoleDetails>("api/authorization/roles/update-claims", request, true);
 
         // Assert the response
         response.ShouldBeSuccess();
@@ -227,7 +230,7 @@ public class TenantRolesClaimAssociationTests : SequentialTest, IClassFixture<Se
         role.Claims.FirstOrDefault(x => x.Claim.Identification == "CAN_FILL_TIMESHEETS").ShouldNotBeNull();
 
         // Assert the list endpoint
-        var check2 = await _serverFixture.GetAsync<Roles.Details[]>("api/authorization/roles", true);
+        var check2 = await _serverFixture.GetAsync<RoleDetails[]>("api/authorization/roles", true);
         check2.ShouldBeSuccess();
         check2.Data.ShouldNotBeNull();
         var roleToCheck = check2.Data.SingleOrDefault(x => x.Id == role.Id.ToString());
@@ -287,7 +290,7 @@ public class TenantRolesClaimAssociationTests : SequentialTest, IClassFixture<Se
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<Roles.Details>("api/authorization/roles/update-claims", request, true);
+        var response = await _serverFixture.PostAsync<RoleDetails>("api/authorization/roles/update-claims", request, true);
 
         // Assert the response
         response.ShouldBeSuccess();
@@ -315,7 +318,7 @@ public class TenantRolesClaimAssociationTests : SequentialTest, IClassFixture<Se
         role.Claims.FirstOrDefault(x => x.Claim.Identification == "CAN_FILL_TIMESHEETS").ShouldNotBeNull();
 
         // Assert the list endpoint
-        var check2 = await _serverFixture.GetAsync<Roles.Details[]>("api/authorization/roles", true);
+        var check2 = await _serverFixture.GetAsync<RoleDetails[]>("api/authorization/roles", true);
         check2.ShouldBeSuccess();
         check2.Data.ShouldNotBeNull();
         var roleToCheck = check2.Data.SingleOrDefault(x => x.Id == role.Id.ToString());
@@ -365,7 +368,7 @@ public class TenantRolesClaimAssociationTests : SequentialTest, IClassFixture<Se
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<Roles.Details>("api/authorization/roles/update-claims", request, true);
+        var response = await _serverFixture.PostAsync<RoleDetails>("api/authorization/roles/update-claims", request, true);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Unknown claim in the list");
@@ -422,7 +425,7 @@ public class TenantRolesClaimAssociationTests : SequentialTest, IClassFixture<Se
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<Roles.Details>("api/authorization/roles/update-claims", request, true);
+        var response = await _serverFixture.PostAsync<RoleDetails>("api/authorization/roles/update-claims", request, true);
 
         // Assert the response
         response.ShouldBeSuccess();
@@ -443,7 +446,7 @@ public class TenantRolesClaimAssociationTests : SequentialTest, IClassFixture<Se
         role.Claims.Count().ShouldBe(0);
 
         // Assert the list endpoint
-        var check2 = await _serverFixture.GetAsync<Roles.Details[]>("api/authorization/roles", true);
+        var check2 = await _serverFixture.GetAsync<RoleDetails[]>("api/authorization/roles", true);
         check2.ShouldBeSuccess();
         check2.Data.ShouldNotBeNull();
         var roleToCheck = check2.Data.SingleOrDefault(x => x.Id == role.Id.ToString());

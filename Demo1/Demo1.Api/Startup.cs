@@ -25,6 +25,15 @@ using Demo1.BusinessLogic.Queries;
 using rbkApiModules.Commons.Relational.CQRS;
 using Serilog;
 using rbkApiModules.Commons.Core.Pipelines;
+using rbkApiModules.Identity.Core.DataTransfer.Tenants;
+using Microsoft.Extensions.Configuration;
+using System;
+using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
 namespace Demo1.Api;
 
@@ -133,6 +142,7 @@ public class Startup
 
         services.AddRbkRelationalAuthentication(options => options
             .UseSymetricEncryptationKey()
+            // .AllowAnonymousAccessToTenants()
             // .EnableWindowsAuthentication(NtlmMode.LoginOnly)
             //.DisableEmailConfirmation()
             //.DisablePasswordReset()
@@ -169,9 +179,9 @@ public class Startup
                     // invalid data will be kept in the context and EF will tries to save it again
                     using (var scope = scopeFactory.CreateScope())
                     {
-                        var logger = scope.ServiceProvider.GetService<Microsoft.Extensions.Logging.ILogger>();
+                        var logger = scope.ServiceProvider.GetService<Serilog.ILogger>();
 
-                        logger.LogCritical(errorHandler.Error, "Exception caught by the global exception handler");
+                        logger.Fatal(errorHandler.Error, "Exception caught by the global exception handler");
                     }
 
                     await context.Response.WriteAsync(

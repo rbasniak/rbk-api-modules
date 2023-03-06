@@ -150,9 +150,13 @@ public class RelationalAuthService: IAuthService
     {
         tenant = tenant != null ? tenant.ToUpper() : null;
 
+        var claims = await _context.Set<Claim>().ToListAsync();
+        var roles = await _context.Set<Role>().Include(x => x.Claims).ThenInclude(x => x.Claim).ToListAsync();
+
         var users = await _context.Set<User>()
             .Include(x => x.Roles)
                 .ThenInclude(x => x.Role)
+            .Include(x => x.Claims)
             .OrderBy(x => x.Username)
             .Where(x => x.TenantId == tenant)
             .ToArrayAsync(cancellation);
@@ -196,7 +200,7 @@ public class RelationalAuthService: IAuthService
 
         foreach (var roleId in roleIds)
         {
-            var role = await _context.Set<Role>().SingleAsync(c => c.Id == roleId);
+            var role = await _context.Set<Role>().Include(x => x.Claims).ThenInclude(x => x.Claim).SingleAsync(c => c.Id == roleId);
             user.AddRole(role);
         }
 

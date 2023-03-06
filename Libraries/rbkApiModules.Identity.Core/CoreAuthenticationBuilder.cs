@@ -47,6 +47,11 @@ public static class CoreAuthenticationBuilder
                 o.Filters.Add(new NtlmFilter());
             }
 
+            if (options._allowAnonymousTenantAccess)
+            {
+                CustomTenantListAuthorizeAttribute.AllowAnonymous = true;
+            }
+
             o.Conventions.Add(new RemoveActionConvention(data.ToArray()));
         });
 

@@ -10,6 +10,8 @@ public class Role : TenantEntity
 {
     private HashSet<RoleToClaim> _claims;
     private HashSet<UserToRole> _users;
+    
+    private bool? _isOverwritten = false;
 
     protected Role()
     {
@@ -53,6 +55,16 @@ public class Role : TenantEntity
     public void Rename(string name)
     {
         Name = name;
+    }
+
+    public void SetMode(bool isOverwritten)
+    {
+        _isOverwritten = isOverwritten;
+    }
+
+    public bool? GetMode()
+    {
+        return _isOverwritten;
     }
 
     public override string ToString()
