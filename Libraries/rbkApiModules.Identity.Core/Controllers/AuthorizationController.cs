@@ -82,13 +82,13 @@ public class AuthorizationController : BaseController
     #region roles 
 
     [HttpGet("roles")]
-    public async Task<ActionResult<RolesDetails[]>> GetAllRoles(CancellationToken cancellation)
+    public async Task<ActionResult<RoleDetails[]>> GetAllRoles(CancellationToken cancellation)
     {
         return HttpResponse<RoleDetails[]>(await Mediator.Send(new GetAllRoles.Request(), cancellation));
     }
 
     [HttpPost("roles")]
-    public async Task<ActionResult<RolesDetails>> CreateRole(CreateRole.Request data, CancellationToken cancellation)
+    public async Task<ActionResult<RoleDetails>> CreateRole(CreateRole.Request data, CancellationToken cancellation)
     {
         var result = await Mediator.Send(data, cancellation);
 
@@ -96,7 +96,7 @@ public class AuthorizationController : BaseController
     }
 
     [HttpPut("roles")]
-    public async Task<ActionResult<RolesDetails>> UpdateRole(RenameRole.Request data, CancellationToken cancellation)
+    public async Task<ActionResult<RoleDetails>> UpdateRole(RenameRole.Request data, CancellationToken cancellation)
     {
         return HttpResponse<RoleDetails>(await Mediator.Send(data, cancellation));
     }
