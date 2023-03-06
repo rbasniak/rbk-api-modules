@@ -82,13 +82,13 @@ public class AuthorizationController : BaseController
     #region roles 
 
     [HttpGet("roles")]
-    public async Task<ActionResult<RoleDetails[]>> All(CancellationToken cancellation)
+    public async Task<ActionResult<RolesDetails[]>> GetAllRoles(CancellationToken cancellation)
     {
         return HttpResponse<RoleDetails[]>(await Mediator.Send(new GetAllRoles.Request(), cancellation));
     }
 
     [HttpPost("roles")]
-    public async Task<ActionResult<RoleDetails>> Create(CreateRole.Request data, CancellationToken cancellation)
+    public async Task<ActionResult<RolesDetails>> CreateRole(CreateRole.Request data, CancellationToken cancellation)
     {
         var result = await Mediator.Send(data, cancellation);
 
@@ -96,13 +96,13 @@ public class AuthorizationController : BaseController
     }
 
     [HttpPut("roles")]
-    public async Task<ActionResult<RoleDetails>> Update(RenameRole.Request data, CancellationToken cancellation)
+    public async Task<ActionResult<RolesDetails>> UpdateRole(RenameRole.Request data, CancellationToken cancellation)
     {
         return HttpResponse<RoleDetails>(await Mediator.Send(data, cancellation));
     }
 
     [HttpDelete("roles/{id}")]
-    public async Task<ActionResult> Delete(Guid id, CancellationToken cancellation)
+    public async Task<ActionResult> DeleteRole(Guid id, CancellationToken cancellation)
     {
         return HttpResponse(await Mediator.Send(new DeleteRole.Request { Id = id }, cancellation));
     }
@@ -118,6 +118,13 @@ public class AuthorizationController : BaseController
     #endregion
 
     #region users 
+
+    [HttpGet("users")]
+    [RbkAuthorize(AuthenticationClaims.MANAGE_USERS)]
+    public async Task<ActionResult<UserDetails[]>> GetAllUsers(CancellationToken cancellation)
+    {
+        return HttpResponse<UserDetails[]>(await Mediator.Send(new GetAllUsers.Request(), cancellation));
+    }
 
     [RbkAuthorize(AuthenticationClaims.MANAGE_USER_ROLES)]
     [HttpPost("users/set-roles")]
@@ -180,16 +187,5 @@ public class AuthorizationController : BaseController
         return HttpResponse(await Mediator.Send(new DeleteTenant.Request { Alias = id }, cancellation));
     }
 
-    #endregion
-
-    #region users 
-
-    [HttpGet("users")]
-    [RbkAuthorize(AuthenticationClaims.MANAGE_USERS)]
-    public async Task<ActionResult<UserDetails[]>> GetAllUsers(CancellationToken cancellation)
-    {
-        return HttpResponse<UserDetails[]>(await Mediator.Send(new GetAllUsers.Request(), cancellation));
-    }
-
-    #endregion
+    #endregion 
 }
