@@ -9,7 +9,6 @@ using System.Text.Json;
 
 namespace rbkApiModules.Commons.Core;
 
-[Authorize]
 public class BaseController : ControllerBase
 {
     private IMapper _mapper;

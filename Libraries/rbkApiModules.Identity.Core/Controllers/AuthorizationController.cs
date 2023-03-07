@@ -158,8 +158,14 @@ public class AuthorizationController : BaseController
     #region tenants 
 
     [HttpGet("tenants")]
-    [CustomTenantListAuthorize(AuthenticationClaims.MANAGE_TENANTS)]
-    public async Task<ActionResult<TenantDetails[]>> GetAllTenants(CancellationToken cancellation)
+    [RbkAuthorize(AuthenticationClaims.MANAGE_TENANTS)]
+    public async Task<ActionResult<TenantDetails[]>> GetAllTenantsAuthenticated(CancellationToken cancellation)
+    {
+        return HttpResponse<TenantDetails[]>(await Mediator.Send(new GetAllTenants.Request(), cancellation));
+    }
+
+    [HttpGet("tenants")]
+    public async Task<ActionResult<TenantDetails[]>> GetAllTenantsAnonymous(CancellationToken cancellation)
     {
         return HttpResponse<TenantDetails[]>(await Mediator.Send(new GetAllTenants.Request(), cancellation));
     }

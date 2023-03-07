@@ -41,16 +41,20 @@ public static class CoreAuthenticationBuilder
             {
                 data.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.RefreshToken)));
             }
+            
+            if (options._allowAnonymousTenantAccess)
+            {
+                data.Add(new Tuple<Type, string>(typeof(AuthorizationController), nameof(AuthorizationController.GetAllTenantsAuthenticated)));
+            }
+            else
+            {
+                data.Add(new Tuple<Type, string>(typeof(AuthorizationController), nameof(AuthorizationController.GetAllTenantsAnonymous)));
+            }
 
             if (options._ntlmMode == NtlmMode.LoginOnly)
             {
                 o.Filters.Add(new NtlmFilter());
-            }
-
-            if (options._allowAnonymousTenantAccess)
-            {
-                CustomTenantListAuthorizeAttribute.AllowAnonymous = true;
-            }
+            } 
 
             o.Conventions.Add(new RemoveActionConvention(data.ToArray()));
         });

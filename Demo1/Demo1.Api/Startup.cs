@@ -144,8 +144,8 @@ public class Startup
             .UseSymetricEncryptationKey()
             // .AllowAnonymousAccessToTenants()
             // .EnableWindowsAuthentication(NtlmMode.LoginOnly)
-            //.DisableEmailConfirmation()
-            //.DisablePasswordReset()
+            // .DisableEmailConfirmation()
+            // .DisablePasswordReset()
         );
 
         services.AddRbkUIDefinitions(AssembliesForUiDefinitions);
