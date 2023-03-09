@@ -167,8 +167,10 @@ public class AuthorizationController : BaseController
     }
 
     [HttpGet("tenants")]
+    [AllowAnonymous]
     public async Task<ActionResult<TenantDetails[]>> GetAllTenantsAnonymous(CancellationToken cancellation)
     {
+        var temp = HttpContext.User.Identity.Name;
         return HttpResponse<TenantDetails[]>(await Mediator.Send(new GetAllTenants.Request(), cancellation));
     }
 

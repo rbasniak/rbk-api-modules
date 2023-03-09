@@ -142,7 +142,7 @@ public class Startup
 
         services.AddRbkRelationalAuthentication(options => options
             .UseSymetricEncryptationKey()
-            // .AllowAnonymousAccessToTenants()
+            .AllowAnonymousAccessToTenants()
             // .EnableWindowsAuthentication(NtlmMode.LoginOnly)
             // .DisableEmailConfirmation()
             // .DisablePasswordReset()
