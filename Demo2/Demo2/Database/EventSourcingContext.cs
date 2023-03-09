@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace Demo2.Domain.Events.MyImplementation.Database;
 
-public class ESDatabaseContext: DbContext
+public class EventSourcingContext: DbContext
 {
-    public ESDatabaseContext(DbContextOptions<ESDatabaseContext> options) : base(options)
+    public EventSourcingContext(DbContextOptions<EventSourcingContext> options) : base(options)
     {
     }
 
@@ -22,11 +22,11 @@ public class ESDatabaseContext: DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ESDatabaseContext).Assembly);
+        modelBuilder.ApplyConfiguration(new DomainEventDataObjectConfig());
+
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(SeedHistory).Assembly);
 
         modelBuilder.AddJsonFields();
-        modelBuilder.SetupTenants();
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)

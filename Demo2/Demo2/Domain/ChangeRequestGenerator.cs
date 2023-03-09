@@ -1,5 +1,5 @@
 ﻿using Demo2.Domain.Events.Repositories;
-using Demo2.Domain.Models;
+using Demo2.Domain.Models.EventSourcing;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Demo2.Domain

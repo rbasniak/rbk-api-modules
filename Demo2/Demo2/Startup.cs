@@ -40,9 +40,6 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        var writeConnection = Environment.OSVersion.Platform == PlatformID.Unix ? "DockerWriteConnection" : "DefaultWriteConnection";
-        var readConnection = Environment.OSVersion.Platform == PlatformID.Unix ? "DockerReadConnection" : "DefaultReadConnection";
-
         //services.AddDbContext<ReadDatabaseContext>((scope, options) => options
         //    .UseSqlServer(
         //        _configuration.GetConnectionString(readConnection).Replace("**CONTEXT**", "Database.Read"))
@@ -52,17 +49,26 @@ public class Startup
         //    .EnableSensitiveDataLogging()
         //);
 
-        services.AddDbContext<ESDatabaseContext>((scope, options) => options
+        services.AddDbContext<EventSourcingContext>((scope, options) => options
             .UseSqlServer(
-                _configuration.GetConnectionString(writeConnection).Replace("**CONTEXT**", "Database.Write"))
+                _configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Database.EventSourcing"))
             //.AddInterceptors(scope.GetRequiredService<DatabaseAnalyticsInterceptor>())
             //.AddInterceptors(scope.GetRequiredService<DatabaseDiagnosticsInterceptor>())
             .EnableDetailedErrors()
             .EnableSensitiveDataLogging()
         );
 
-        services.AddScoped<DbContext, ESDatabaseContext>();
-        //services.AddScoped<DbContext, ReadDatabaseContext>();
+        services.AddDbContext<RelationalContext>((scope, options) => options
+            .UseSqlServer(
+                _configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Database.Relational"))
+            //.AddInterceptors(scope.GetRequiredService<DatabaseAnalyticsInterceptor>())
+            //.AddInterceptors(scope.GetRequiredService<DatabaseDiagnosticsInterceptor>())
+            .EnableDetailedErrors()
+            .EnableSensitiveDataLogging()
+        );
+
+        services.AddScoped<DbContext, EventSourcingContext>();
+        services.AddScoped<DbContext, RelationalContext>();
 
         services.AddRbkApiRelationalSetup(options => options
             .EnableBasicAuthenticationHandler()
@@ -134,7 +140,7 @@ public class Startup
 
         app.UseRbkApiCoreSetup();
 
-        app.SetupDatabase<ESDatabaseContext>(options => options
+        app.SetupDatabase<EventSourcingContext>(options => options
             .MigrateOnStartup()
             .ResetOnStartup(_isInTestMode)
         );

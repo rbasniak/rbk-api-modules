@@ -3,30 +3,33 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GCAB.Models.Domain
+namespace Demo2.Relational;
+
+public class Un : BaseEntity
 {
-    public class Un : BaseEntity
+    private HashSet<Platform> _platforms;
+
+    public Un()
     {
-        private HashSet<Platform> _platforms;
 
-        public Un(string name, string description, string domain, string repository = null)
-        {
-            _platforms = new HashSet<Platform>();
-
-            Name = name;
-            Description = description;
-            Domain = domain;
-            Repository = repository;
-        }
-
-        public virtual string Name { get; private set; }
-
-        public virtual string Description { get; private set; }
-
-        public virtual string Domain { get; private set; }
-
-        public virtual string Repository { get; private set; }
-
-        public virtual IEnumerable<Platform> Platforms => _platforms?.ToList();
     }
+    public Un(string name, string description, string domain, string repository = null)
+    {
+        _platforms = new HashSet<Platform>();
+
+        Name = name;
+        Description = description;
+        Domain = domain;
+        Repository = repository;
+    }
+
+    public virtual string Name { get; private set; }
+
+    public virtual string Description { get; private set; }
+
+    public virtual string Domain { get; private set; }
+
+    public virtual string Repository { get; private set; }
+
+    public virtual IEnumerable<Platform> Platforms => _platforms?.ToList();
 }

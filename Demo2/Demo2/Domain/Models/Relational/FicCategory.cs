@@ -2,21 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GCAB.Models.Domain
+namespace Demo2.Relational;
+
+public class FicCategory: BaseEntity
 {
-    public class FicCategory: BaseEntity
+    private readonly HashSet<Fic> _fics;
+
+    public FicCategory()
     {
-        private readonly HashSet<Fic> _fics;
 
-        public FicCategory(string name)
-        {
-            _fics = new HashSet<Fic>();
-
-            Name = name;
-        }
-
-        public virtual string Name { get; set; }
-
-        public virtual IEnumerable<Fic> Fics => _fics.ToList();
     }
+    public FicCategory(string name)
+    {
+        _fics = new HashSet<Fic>();
+
+        Name = name;
+    }
+
+    public virtual string Name { get; set; }
+
+    public virtual IEnumerable<Fic> Fics => _fics.ToList();
 }

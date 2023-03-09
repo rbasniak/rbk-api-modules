@@ -9,14 +9,14 @@ using System.Threading.Tasks;
 
 namespace Demo2.Domain.Events.MyImplementation.Database;
 
-public class DatabaseSeed : DatabaseSeedManager<ESDatabaseContext>, IDatabaseSeeder
+public class DatabaseSeed : DatabaseSeedManager<EventSourcingContext>, IDatabaseSeeder
 {
     public DatabaseSeed()
     {
-        AddSeed("2023-02-07: Initial seed", new SeedInfo<ESDatabaseContext>(context => InitialSeed(context), useInProduction: true));
+        AddSeed("2023-02-07: Initial seed", new SeedInfo<EventSourcingContext>(context => InitialSeed(context), useInProduction: true));
     }
 
-    public static void InitialSeed(ESDatabaseContext context)
+    public static void InitialSeed(EventSourcingContext context)
     {
         
     }

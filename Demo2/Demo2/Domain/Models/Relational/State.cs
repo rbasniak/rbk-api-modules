@@ -4,19 +4,22 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GCAB.Models.States
+namespace Demo2.Relational;
+
+public class State : BaseEntity
 {
-    public class State : BaseEntity
+    private HashSet<ChangeRequest> _items;
+
+    public State()
     {
-        private HashSet<ChangeRequest> _items;
 
-        public State(string name)
-        {
-            _items = new HashSet<ChangeRequest>();
-
-            Name = name; 
-        }
-
-        public virtual string Name { get; private set; }
     }
+    public State(string name)
+    {
+        _items = new HashSet<ChangeRequest>();
+
+        Name = name; 
+    }
+
+    public virtual string Name { get; private set; }
 }

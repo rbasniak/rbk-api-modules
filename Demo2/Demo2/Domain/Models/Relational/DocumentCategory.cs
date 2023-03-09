@@ -2,21 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GCAB.Models.Domain
+namespace Demo2.Relational;
+
+public class DocumentCategory: BaseEntity
 {
-    public class DocumentCategory: BaseEntity
+    private readonly HashSet<Document> _documents;
+    public DocumentCategory()
     {
-        private readonly HashSet<Document> _documents;
 
-        public DocumentCategory(string name)
-        {
-            _documents = new HashSet<Document>();
-
-            Name = name;
-        }
-
-        public virtual string Name  { get; set; }
-
-        public virtual IEnumerable<Document> Documents => _documents.ToList();
     }
+    public DocumentCategory(string name)
+    {
+        _documents = new HashSet<Document>();
+
+        Name = name;
+    }
+
+    public virtual string Name  { get; set; }
+
+    public virtual IEnumerable<Document> Documents => _documents.ToList();
 }

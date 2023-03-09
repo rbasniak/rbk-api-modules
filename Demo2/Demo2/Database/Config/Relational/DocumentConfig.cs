@@ -1,0 +1,30 @@
+﻿using GCAB.Models;
+using GCAB.Models.Domain;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Diagnostics.CodeAnalysis;
+
+namespace Demo2.Database.Config.Relational
+{
+    [ExcludeFromCodeCoverage]
+    public class DocumentConfig : IEntityTypeConfiguration<Document>
+    {
+        public void Configure(EntityTypeBuilder<Document> entity)
+        {
+            entity.ToTable("Documents");
+
+            entity.Property(c => c.Name)
+                .IsRequired();
+
+            entity.HasOne(x => x.ChangeRequest)
+                .WithMany(x => x.Documents)
+                .HasForeignKey(x => x.ChangeRequestId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(x => x.Category)
+                .WithMany(x => x.Documents)
+                .HasForeignKey(x => x.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
+    }
+}

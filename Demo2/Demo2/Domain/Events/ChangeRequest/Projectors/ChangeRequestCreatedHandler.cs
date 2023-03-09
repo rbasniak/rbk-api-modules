@@ -1,6 +1,6 @@
 ﻿using Demo2.Database.Repositories;
 using Demo2.Domain.Events.Repositories;
-using Demo2.Domain.Models;
+using Demo2.Domain.Models.EventSourcing;
 using MediatR;
 
 namespace Demo2.Domain.Events.ChangeRequests.Projectors

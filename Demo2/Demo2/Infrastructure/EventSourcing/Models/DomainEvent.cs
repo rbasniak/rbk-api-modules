@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Newtonsoft.Json;
 
 namespace Demo2.Domain.Events;
 
@@ -9,12 +10,13 @@ public abstract class DomainEvent : IDomainEvent
     }
 
 
-    protected DomainEvent(Guid aggregateId)
+    protected DomainEvent(string username, Guid aggregateId)
     {
+        Version = 1;
+        CreatedBy = username;
         EventId = Guid.NewGuid();
         AggregateId = aggregateId;
         CreatedAt = DateTime.UtcNow;
-        Version = 1;
     }
 
     public Guid EventId { get; }
@@ -24,8 +26,11 @@ public abstract class DomainEvent : IDomainEvent
     public int Version { get; private set; }
 
     public DateTime CreatedAt { get; private set; }
-    
-    public abstract string Description { get; } 
+
+    public string CreatedBy { get; private set; }
+
+    [JsonIgnore]
+    public virtual EventSummary Summary { get; } 
 }
 
 public interface IDomainEvent: INotification
@@ -34,4 +39,11 @@ public interface IDomainEvent: INotification
     Guid AggregateId { get; }
     int Version { get; }
     DateTime CreatedAt { get; }
+    EventSummary Summary { get; }
+}
+
+public class EventSummary
+{
+    public string Description { get; set; }
+    public Dictionary<string, string> ChangedProperties { get; set; }
 }

@@ -2,21 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GCAB.Models.Domain
+namespace Demo2.Relational;
+
+public class ChangeRequestSource: BaseEntity
 {
-    public class ChangeRequestSource: BaseEntity
+    private readonly HashSet<ChangeRequest> _changeRequests;
+    public ChangeRequestSource()
     {
-        private readonly HashSet<ChangeRequest> _changeRequests;
 
-        public ChangeRequestSource(string name)
-        {
-            _changeRequests = new HashSet<ChangeRequest>();
-
-            Name = name;
-        }
-
-        public virtual string Name  { get; set; }
-
-        public virtual IEnumerable<ChangeRequest> ChangeRequests => _changeRequests.ToList();
     }
+    public ChangeRequestSource(string name)
+    {
+        _changeRequests = new HashSet<ChangeRequest>();
+
+        Name = name;
+    }
+
+    public virtual string Name  { get; set; }
+
+    public virtual IEnumerable<ChangeRequest> ChangeRequests => _changeRequests.ToList();
 }
