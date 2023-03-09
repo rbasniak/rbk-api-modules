@@ -139,20 +139,20 @@ public class AuthorizationController : BaseController
 
     [RbkAuthorize(AuthenticationClaims.OVERRIDE_USER_CLAIMS)]
     [HttpPost("users/add-claim")]
-    public async Task<ActionResult<DataTransfer.Claims.ClaimOverride[]>> AddClaimToUser(AddClaimOverride.Request data, CancellationToken cancellation)
+    public async Task<ActionResult<UserDetails>> AddClaimToUser(AddClaimOverride.Request data, CancellationToken cancellation)
     {
         var result = await Mediator.Send(data, cancellation);
 
-        return HttpResponse<DataTransfer.Claims.ClaimOverride[]>(result);
+        return HttpResponse<UserDetails>(result);
     }
 
     [RbkAuthorize(AuthenticationClaims.OVERRIDE_USER_CLAIMS)]
     [HttpPost("users/remove-claim")]
-    public async Task<ActionResult<DataTransfer.Claims.ClaimOverride[]>> RemoveClaimFromUser(RemoveClaimOverride.Request data, CancellationToken cancellation)
+    public async Task<ActionResult<UserDetails>> RemoveClaimFromUser(RemoveClaimOverride.Request data, CancellationToken cancellation)
     {
         var result = await Mediator.Send(data, cancellation);
 
-        return HttpResponse<DataTransfer.Claims.ClaimOverride[]>(result);
+        return HttpResponse<UserDetails>(result);
     }
 
     #endregion

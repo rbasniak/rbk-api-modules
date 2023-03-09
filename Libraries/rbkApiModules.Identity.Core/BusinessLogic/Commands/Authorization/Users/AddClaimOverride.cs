@@ -66,7 +66,7 @@ public class AddClaimOverride
 
             var user = await _authService.GetUserWithDependenciesAsync(request.Username, request.Identity.Tenant, cancellation);
 
-            return CommandResponse.Success(user.Claims);
+            return CommandResponse.Success(user);
         }
     }
 }
