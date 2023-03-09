@@ -532,7 +532,7 @@ public class TenantManagementTests : SequentialTest, IClassFixture<ServerFixture
         }, await _serverFixture.GetAccessTokenAsync("tony.admin", "12345", "Stark"));
         relationResponse2.ShouldBeSuccess();
 
-        var claimRequest = new AddClaimOverride.Request { AccessType = ClaimAccessType.Allow, Username = "user1", ClaimId = _serverFixture.Context.Set<Claim>().First().Id };
+        var claimRequest = new AddClaimOverride.Request { AccessType = ClaimAccessType.Allow, Username = "user1", ClaimIds = new[] { _serverFixture.Context.Set<Claim>().First().Id } };
         var claimResponse = await _serverFixture.PostAsync<Claim[]>("api/authorization/users/add-claim", claimRequest, await _serverFixture.GetAccessTokenAsync("tony.admin", "12345", "Stark"));
         claimResponse.ShouldBeSuccess();
 

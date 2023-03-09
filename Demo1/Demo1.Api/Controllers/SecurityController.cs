@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Demo1.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class SecurityController : BaseController

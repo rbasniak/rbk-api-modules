@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using rbkApiModules.Commons.Core;
 
 namespace rbkApiModules.Comments.Core;
 
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class CommentsController : BaseController

@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using rbkApiModules.Commons.Core;
 
 namespace rbkApiModules.Faqs.Core;
 
+[Authorize]
 [Route("api/faqs")]
 [ApiController]
 public class FaqsController : BaseController

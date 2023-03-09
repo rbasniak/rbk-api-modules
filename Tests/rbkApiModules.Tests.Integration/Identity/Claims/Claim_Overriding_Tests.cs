@@ -34,7 +34,7 @@ public class ClaimOverridingTests : SequentialTest, IClassFixture<ServerFixture>
         {
             Username = user.Username,
             AccessType = ClaimAccessType.Block,
-            ClaimId = Guid.NewGuid()
+            ClaimIds = new[] { Guid.NewGuid() }
         };
 
         // Act
@@ -58,7 +58,7 @@ public class ClaimOverridingTests : SequentialTest, IClassFixture<ServerFixture>
         {
             Username = user.Username,
             AccessType = ClaimAccessType.Block,
-            ClaimId = claim.Id
+            ClaimIds = new[] { claim.Id }
         };
 
         // Act
@@ -82,7 +82,7 @@ public class ClaimOverridingTests : SequentialTest, IClassFixture<ServerFixture>
         {
             Username = user.Username,
             AccessType = ClaimAccessType.Allow,
-            ClaimId = claim.Id
+            ClaimIds = new[] { claim.Id }
         };
 
         // Act
@@ -137,7 +137,7 @@ public class ClaimOverridingTests : SequentialTest, IClassFixture<ServerFixture>
         {
             Username = user.Username,
             AccessType = ClaimAccessType.Block,
-            ClaimId = claim.Id
+            ClaimIds = new[] { claim.Id }
         };
 
         // Act
@@ -185,7 +185,7 @@ public class ClaimOverridingTests : SequentialTest, IClassFixture<ServerFixture>
         {
             Username = user.Username,
             AccessType = ClaimAccessType.Allow,
-            ClaimId = claim.Id
+            ClaimIds = new[] { claim.Id }
         };
 
         // Act
@@ -206,7 +206,7 @@ public class ClaimOverridingTests : SequentialTest, IClassFixture<ServerFixture>
         var request = new RemoveClaimOverride.Request
         {
             Username = "john.doe",
-            ClaimId = Guid.NewGuid()
+            ClaimIds = new[] { Guid.NewGuid() }
         };
 
         // Act
@@ -236,7 +236,7 @@ public class ClaimOverridingTests : SequentialTest, IClassFixture<ServerFixture>
         var request = new RemoveClaimOverride.Request
         {
             Username = user.Username,
-            ClaimId = claim.Id
+            ClaimIds = new[] { claim.Id }
         };
 
         // Act
@@ -266,7 +266,7 @@ public class ClaimOverridingTests : SequentialTest, IClassFixture<ServerFixture>
         var request = new RemoveClaimOverride.Request
         {
             Username = user.Username,
-            ClaimId = claim.Id
+            ClaimIds = new[] { claim.Id }
         };
 
         // Act
@@ -310,7 +310,7 @@ public class ClaimOverridingTests : SequentialTest, IClassFixture<ServerFixture>
         var request = new RemoveClaimOverride.Request
         {
             Username = "tony.stark",
-            ClaimId = claim.Id
+            ClaimIds = new[] { claim.Id }
         };
 
         // Act
@@ -340,7 +340,7 @@ public class ClaimOverridingTests : SequentialTest, IClassFixture<ServerFixture>
         var request = new RemoveClaimOverride.Request
         {
             Username = user.Username,
-            ClaimId = claim.Id
+            ClaimIds = new[] { claim.Id }
         };
 
         // Act

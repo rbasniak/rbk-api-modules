@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.CodeGeneration;
 using rbkApiModules.Identity.Core.DataTransfer.Claims;
@@ -8,6 +9,7 @@ using rbkApiModules.Identity.Core.DataTransfer.Users;
 
 namespace rbkApiModules.Identity.Core;
 
+[Authorize]
 [IgnoreOnCodeGeneration]
 [ApiController]
 [Route("api/[controller]")]

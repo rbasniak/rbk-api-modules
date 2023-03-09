@@ -1,8 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using rbkApiModules.Commons.Core;
 
 namespace rbkApiModules.Workflow.Core;
 
+[Authorize]
+[ApiController]
+[Route("api/[controller]")]
 public abstract class WorkflowController : BaseController
 {
     /// <summary>

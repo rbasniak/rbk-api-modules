@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using Demo1.BusinessLogic.Commands;
 using rbkApiModules.Commons.Core;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Demo1.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class MediatRController : BaseController

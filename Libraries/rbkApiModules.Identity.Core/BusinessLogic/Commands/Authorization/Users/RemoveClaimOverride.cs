@@ -10,7 +10,7 @@ public class RemoveClaimOverride
     public class Request : AuthenticatedRequest, IRequest<CommandResponse>
     {
         public string Username { get; set; }
-        public Guid ClaimId { get; set; }
+        public Guid[] ClaimIds { get; set; }
     }
 
     public class Validator : AbstractValidator<Request>
@@ -27,10 +27,15 @@ public class RemoveClaimOverride
                 .WithName(localization.GetValue("User"))
                 .DependentRules(() =>
                 {
-                    RuleFor(a => a.ClaimId)
-                        .ClaimExistOnDatabase(claimsService, localization)
-                        .MustAsync(ClaimIsOverrideInUser).WithMessage(localization.GetValue("Claim is not overrided in the user"))
-                        .WithName(localization.GetValue("Claim"));
+                    RuleFor(a => a.ClaimIds)
+                        .Must(HaveAtLeastOneItem).WithMessage(localization.GetValue("The list of claims must have at least one item"))
+                        .DependentRules(() =>
+                        {
+                            RuleForEach(x => x.ClaimIds)
+                                .ClaimExistOnDatabase(claimsService, localization)
+                                .MustAsync(ClaimIsOverrideInUser).WithMessage(localization.GetValue("Claim is not overrided in the user"))
+                                .WithName(localization.GetValue("Claim"));
+                        });
                 });
         }
 
@@ -44,7 +49,12 @@ public class RemoveClaimOverride
         private async Task<bool> UserExistInDatabaseUnderTheSameTenant(Request request, string username, CancellationToken cancelation)
         {
             return await _authService.FindUserAsync(username, request.Identity.Tenant, cancelation) != null;
-        } 
+        }
+
+        private bool HaveAtLeastOneItem(Guid[] claimIds)
+        {
+            return claimIds != null && claimIds.Any();
+        }
     }
 
     public class Handler : IRequestHandler<Request, CommandResponse>
@@ -60,7 +70,7 @@ public class RemoveClaimOverride
 
         public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)
         {
-            await _claimsService.RemoveClaimOverrideAsync(request.ClaimId, request.Username, request.Identity.Tenant, cancellation);
+            await _claimsService.RemoveClaimOverridesAsync(request.ClaimIds, request.Username, request.Identity.Tenant, cancellation);
 
             var user = await _authService.GetUserWithDependenciesAsync(request.Username, request.Identity.Tenant, cancellation);
 

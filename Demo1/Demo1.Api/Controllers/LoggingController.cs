@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Demo1.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class LoggingController : BaseController
