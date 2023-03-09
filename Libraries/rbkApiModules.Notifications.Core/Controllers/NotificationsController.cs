@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using rbkApiModules.Commons.Core;
 
 namespace rbkApiModules.Notifications.Core;
 
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class NotificationsController : BaseController

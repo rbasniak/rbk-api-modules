@@ -1,4 +1,6 @@
-﻿namespace rbkApiModules.Tests.Integration.Identity;
+﻿using rbkApiModules.Identity.Core.DataTransfer.Roles;
+
+namespace rbkApiModules.Tests.Integration.Identity;
 
 /// <summary>
 /// In general, the local admin can only manage roles that are tenant wide,
@@ -47,7 +49,7 @@ public class TenantRolesBasicDependentTests : SequentialTest, IClassFixture<Serv
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<Roles.Details>("api/authorization/roles", request, authenticated: true);
+        var response = await _serverFixture.PostAsync<RoleDetails>("api/authorization/roles", request, authenticated: true);
 
         // Assert the response
         response.ShouldBeSuccess();
@@ -95,7 +97,7 @@ public class TenantRolesBasicDependentTests : SequentialTest, IClassFixture<Serv
         var token = await _serverFixture.GetAccessTokenAsync("admin1", "123", "un-bs");
 
         // Act
-        var response = await _serverFixture.PostAsync<Roles.Details>("api/authorization/roles", request, token);
+        var response = await _serverFixture.PostAsync<RoleDetails>("api/authorization/roles", request, token);
 
         // Assert the response
         response.ShouldBeSuccess();
@@ -146,7 +148,7 @@ public class TenantRolesBasicDependentTests : SequentialTest, IClassFixture<Serv
         };
 
         // Act
-        var response = await _serverFixture.PutAsync<Roles.Details>("api/authorization/roles", request, authenticated: true);
+        var response = await _serverFixture.PutAsync<RoleDetails>("api/authorization/roles", request, authenticated: true);
 
         // Assert the response
         response.ShouldBeSuccess();
@@ -197,7 +199,7 @@ public class TenantRolesBasicDependentTests : SequentialTest, IClassFixture<Serv
         };
 
         // Act
-        var response = await _serverFixture.PutAsync<Roles.Details>("api/authorization/roles", request, authenticated: true);
+        var response = await _serverFixture.PutAsync<RoleDetails>("api/authorization/roles", request, authenticated: true);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "O campo 'Name' não pode ser vazio");
@@ -227,7 +229,7 @@ public class TenantRolesBasicDependentTests : SequentialTest, IClassFixture<Serv
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<Roles.Details>("api/authorization/roles", request, authenticated: true);
+        var response = await _serverFixture.PostAsync<RoleDetails>("api/authorization/roles", request, authenticated: true);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Name already used");
@@ -258,25 +260,25 @@ public class TenantRolesBasicDependentTests : SequentialTest, IClassFixture<Serv
         { 
             Name = "Application Wide Role To Be Overwritten"
         };
-        var preResponse1 = await _serverFixture.PostAsync<Roles.Details>("api/authorization/roles", body1, await _serverFixture.GetAccessTokenAsync("superuser", "admin", null));
+        var preResponse1 = await _serverFixture.PostAsync<RoleDetails>("api/authorization/roles", body1, await _serverFixture.GetAccessTokenAsync("superuser", "admin", null));
         preResponse1.ShouldBeSuccess();
 
         var body2 = new CreateRole.Request
         {
             Name = "Application Wide Role To Be Overwritten"
         };
-        var preResponse2 = await _serverFixture.PostAsync<Roles.Details>("api/authorization/roles", body2, await _serverFixture.GetAccessTokenAsync("admin1", "123", "Buzios"));
+        var preResponse2 = await _serverFixture.PostAsync<RoleDetails>("api/authorization/roles", body2, await _serverFixture.GetAccessTokenAsync("admin1", "123", "Buzios"));
         preResponse2.ShouldBeSuccess();
 
         var body3 = new CreateRole.Request
         {
             Name = "Trully Application Wide Role"
         };
-        var preResponse3 = await _serverFixture.PostAsync<Roles.Details>("api/authorization/roles", body3, await _serverFixture.GetAccessTokenAsync("superuser", "admin", null));
+        var preResponse3 = await _serverFixture.PostAsync<RoleDetails>("api/authorization/roles", body3, await _serverFixture.GetAccessTokenAsync("superuser", "admin", null));
         preResponse3.ShouldBeSuccess();
 
         // Act
-        var response = await _serverFixture.GetAsync<Roles.Details[]>("api/authorization/roles", true);
+        var response = await _serverFixture.GetAsync<RoleDetails[]>("api/authorization/roles", true);
 
         // Assert the response
         response.ShouldBeSuccess();
@@ -286,18 +288,18 @@ public class TenantRolesBasicDependentTests : SequentialTest, IClassFixture<Serv
         
         // Find the entity created within these tests and assert it
         var role1 = response.Data.SingleOrDefault(x => x.Name == "Renamed Tenant Role");
-        role1.IsApplicationWide.ShouldBeFalse();
+        role1.Source.ShouldBe(RoleSource.Local);
         role1.ShouldNotBeNull();
 
         // Find the entity created in this tests and assert it, ensuring it's not the application wide one
         var role2 = response.Data.SingleOrDefault(x => x.Name == "Application Wide Role To Be Overwritten");
-        role2.IsApplicationWide.ShouldBeFalse();
+        role2.Source.ShouldBe(RoleSource.Local);
         role2.ShouldNotBeNull();
         role2.Id.ShouldNotBe(preResponse1.Data.Id);
 
         // Find the application wide entity created in this tests and assert it
         var role3 = response.Data.SingleOrDefault(x => x.Name == "Trully Application Wide Role");
-        role3.IsApplicationWide.ShouldBeTrue();
+        role3.Source.ShouldBe(RoleSource.Global);
         role3.ShouldNotBeNull();
         role3.Id.ShouldBe(preResponse3.Data.Id);
     }
@@ -397,7 +399,7 @@ public class TenantRolesBasicDependentTests : SequentialTest, IClassFixture<Serv
             Name = "Tenant Role"
         };
 
-        var createResponse = await _serverFixture.PostAsync<Roles.Details>("api/authorization/roles", request, await _serverFixture.GetAccessTokenAsync("admin1", "123", "buzios"));
+        var createResponse = await _serverFixture.PostAsync<RoleDetails>("api/authorization/roles", request, await _serverFixture.GetAccessTokenAsync("admin1", "123", "buzios"));
         createResponse.ShouldBeSuccess();
 
         var role1 = _serverFixture.Context.Set<Role>().Single(x => x.Name == "Tenant Role" && x.TenantId == "UN-BS");
@@ -485,7 +487,7 @@ public class TenantRolesBasicDependentTests : SequentialTest, IClassFixture<Serv
         };
 
         // Act
-        var response = await _serverFixture.PutAsync<Roles.Details>($"api/authorization/roles/", request, await _serverFixture.GetAccessTokenAsync("superuser", "admin", null));
+        var response = await _serverFixture.PutAsync<RoleDetails>($"api/authorization/roles/", request, await _serverFixture.GetAccessTokenAsync("superuser", "admin", null));
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Role not found");
@@ -520,7 +522,7 @@ public class TenantRolesBasicDependentTests : SequentialTest, IClassFixture<Serv
             Name = "Tenant Role"
         };
 
-        var createResponse = await _serverFixture.PostAsync<Roles.Details>($"api/authorization/roles/", createRequest, await _serverFixture.GetAccessTokenAsync("superuser", "admin", null));
+        var createResponse = await _serverFixture.PostAsync<RoleDetails>($"api/authorization/roles/", createRequest, await _serverFixture.GetAccessTokenAsync("superuser", "admin", null));
 
         var applicationRole = _serverFixture.Context.Set<Role>().Single(x => x.Name == "Tenant Role" && x.TenantId == null);
         var tenantRole = _serverFixture.Context.Set<Role>().Single(x => x.Name == "Tenant Role" && x.TenantId == "UN-BS");
@@ -534,7 +536,7 @@ public class TenantRolesBasicDependentTests : SequentialTest, IClassFixture<Serv
         };
 
         // Act
-        var response = await _serverFixture.PutAsync<Roles.Details>($"api/authorization/roles/", request, await _serverFixture.GetAccessTokenAsync("superuser", "admin", null));
+        var response = await _serverFixture.PutAsync<RoleDetails>($"api/authorization/roles/", request, await _serverFixture.GetAccessTokenAsync("superuser", "admin", null));
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Role not found");
@@ -569,10 +571,10 @@ public class TenantRolesBasicDependentTests : SequentialTest, IClassFixture<Serv
         async Task<(Role OtherTenantRole, Role CurrentTenantRole, Role RoleToBeRenamed)> fetchData()
         {
             var createRequest1 = new CreateRole.Request { Name = "Tenant Role" };
-            var createResponse1 = await _serverFixture.PostAsync<Roles.Details>($"api/authorization/roles", createRequest1, true);
+            var createResponse1 = await _serverFixture.PostAsync<RoleDetails>($"api/authorization/roles", createRequest1, true);
 
             var createRequest2 = new CreateRole.Request { Name = "Role to be Renamed" };
-            var createResponse2 = await _serverFixture.PostAsync<Roles.Details>($"api/authorization/roles", createRequest2, true);
+            var createResponse2 = await _serverFixture.PostAsync<RoleDetails>($"api/authorization/roles", createRequest2, true);
 
             var otherTenantRole = _serverFixture.Context.Set<Role>().SingleOrDefault(x => x.Name == "Tenant Role" && x.TenantId == "UN-BS");
             var currentTenantRole = _serverFixture.Context.Set<Role>().SingleOrDefault(x => x.Name == "Tenant Role" && x.TenantId == "BUZIOS");
@@ -594,7 +596,7 @@ public class TenantRolesBasicDependentTests : SequentialTest, IClassFixture<Serv
         };
 
         // Act
-        var response = await _serverFixture.PutAsync<Roles.Details>($"api/authorization/roles", request, true);
+        var response = await _serverFixture.PutAsync<RoleDetails>($"api/authorization/roles", request, true);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Name already used");
@@ -641,7 +643,7 @@ public class TenantRolesBasicDependentTests : SequentialTest, IClassFixture<Serv
         };
 
         // Act
-        var response = await _serverFixture.PutAsync<Roles.Details>($"api/authorization/roles", request, true);
+        var response = await _serverFixture.PutAsync<RoleDetails>($"api/authorization/roles", request, true);
 
         // Assert the response
         response.ShouldBeSuccess();
@@ -698,7 +700,7 @@ public class TenantRolesBasicDependentTests : SequentialTest, IClassFixture<Serv
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<Roles.Details>($"api/authorization/roles", request, await _serverFixture.GetAccessTokenAsync("admin1", "123", "buzios"));
+        var response = await _serverFixture.PostAsync<RoleDetails>($"api/authorization/roles", request, await _serverFixture.GetAccessTokenAsync("admin1", "123", "buzios"));
 
         // Assert the response
         response.ShouldBeSuccess();
@@ -790,7 +792,7 @@ public class TenantRolesBasicIndependentTests : SequentialTest, IClassFixture<Se
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<Roles.Details>("api/authorization/roles", request, authenticated: true);
+        var response = await _serverFixture.PostAsync<RoleDetails>("api/authorization/roles", request, authenticated: true);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "O campo 'Role' não pode ser vazio");
@@ -811,7 +813,7 @@ public class TenantRolesBasicIndependentTests : SequentialTest, IClassFixture<Se
         };
 
         // Act
-        var response = await _serverFixture.PutAsync<Roles.Details>("api/authorization/roles", request, authenticated: true);
+        var response = await _serverFixture.PutAsync<RoleDetails>("api/authorization/roles", request, authenticated: true);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Role not found");

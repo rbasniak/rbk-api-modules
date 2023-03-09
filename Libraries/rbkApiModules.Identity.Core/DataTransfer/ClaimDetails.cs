@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using rbkApiModules.Commons.Core;
 
-namespace rbkApiModules.Identity.Core;
+namespace rbkApiModules.Identity.Core.DataTransfer.Claims;
 
 public class ClaimDetails : BaseDataTransferObject
 {

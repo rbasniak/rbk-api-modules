@@ -12,7 +12,7 @@ public interface IClaimsService
     Task UnprotectAsync(Guid id, CancellationToken cancellation = default);
     Task DeleteAsync(Guid id, CancellationToken cancellation = default);
     Task RenameAsync(Guid id, string description, CancellationToken cancellation = default);
-    Task AddClaimOverrideAsync(Guid claimId, string username, string tenant, ClaimAccessType mode, CancellationToken cancellation = default);
-    Task RemoveClaimOverrideAsync(Guid claimId, string username, string tenant, CancellationToken cancellation = default);
+    Task AddClaimOverridesAsync(Guid[] claimIds, string username, string tenant, ClaimAccessType mode, CancellationToken cancellation = default);
+    Task RemoveClaimOverridesAsync(Guid[] claimIds, string username, string tenant, CancellationToken cancellation = default);
     Task<Claim> FindByDescriptionAsync(string description);
 }

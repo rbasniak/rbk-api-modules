@@ -1,4 +1,7 @@
-﻿namespace rbkApiModules.Tests.Integration.Identity;
+﻿using rbkApiModules.Identity.Core.DataTransfer.Claims;
+using rbkApiModules.Identity.Core.DataTransfer.Users;
+
+namespace rbkApiModules.Tests.Integration.Identity;
 
 [TestCaseOrderer(PriorityOrderer.Name, PriorityOrderer.Assembly)]
 public class ClaimOverridingTests : SequentialTest, IClassFixture<ServerFixture>
@@ -32,11 +35,11 @@ public class ClaimOverridingTests : SequentialTest, IClassFixture<ServerFixture>
         {
             Username = user.Username,
             AccessType = ClaimAccessType.Block,
-            ClaimId = Guid.NewGuid()
+            ClaimIds = new[] { Guid.NewGuid() }
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<ClaimOverride[]>("api/authorization/users/add-claim", request, await _serverFixture.GetAccessTokenAsync("admin1", "123", "buzios"));
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authorization/users/add-claim", request, await _serverFixture.GetAccessTokenAsync("admin1", "123", "buzios"));
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Claim not found");
@@ -56,11 +59,11 @@ public class ClaimOverridingTests : SequentialTest, IClassFixture<ServerFixture>
         {
             Username = user.Username,
             AccessType = ClaimAccessType.Block,
-            ClaimId = claim.Id
+            ClaimIds = new[] { claim.Id }
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<ClaimOverride[]>("api/authorization/users/add-claim", request, await _serverFixture.GetAccessTokenAsync("admin1", "123", "buzios"));
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authorization/users/add-claim", request, await _serverFixture.GetAccessTokenAsync("admin1", "123", "buzios"));
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "User not found.");
@@ -80,19 +83,19 @@ public class ClaimOverridingTests : SequentialTest, IClassFixture<ServerFixture>
         {
             Username = user.Username,
             AccessType = ClaimAccessType.Allow,
-            ClaimId = claim.Id
+            ClaimIds = new[] { claim.Id }
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<ClaimOverride[]>("api/authorization/users/add-claim", request, await _serverFixture.GetAccessTokenAsync("admin1", "123", "buzios"));
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authorization/users/add-claim", request, await _serverFixture.GetAccessTokenAsync("admin1", "123", "buzios"));
 
         // Assert the response
         response.ShouldBeSuccess();
         response.Data.ShouldNotBeNull();
-        var overrideClaim = response.Data.FirstOrDefault(x => x.Identification == claim.Identification);
+        var overrideClaim = response.Data.OverridedClaims.FirstOrDefault(x => x.Claim.Id == claim.Identification);
         overrideClaim.ShouldNotBeNull();
         overrideClaim.Access.Id.ShouldBe((int)ClaimAccessType.Allow);
-        overrideClaim.Claim.Id.ShouldBe(claim.Id.ToString());
+        overrideClaim.Claim.Id.ShouldBe(claim.Identification);
 
         // Assert the database
         user = _serverFixture.Context.Set<User>()
@@ -135,19 +138,19 @@ public class ClaimOverridingTests : SequentialTest, IClassFixture<ServerFixture>
         {
             Username = user.Username,
             AccessType = ClaimAccessType.Block,
-            ClaimId = claim.Id
+            ClaimIds = new[] { claim.Id }
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<ClaimOverride[]>("api/authorization/users/add-claim", request, await _serverFixture.GetAccessTokenAsync("admin1", "123", "buzios"));
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authorization/users/add-claim", request, await _serverFixture.GetAccessTokenAsync("admin1", "123", "buzios"));
 
         // Assert the response
         response.ShouldBeSuccess();
         response.Data.ShouldNotBeNull();
-        var overrideClaim = response.Data.FirstOrDefault(x => x.Identification == claim.Identification);
+        var overrideClaim = response.Data.OverridedClaims.FirstOrDefault(x => x.Claim.Id == claim.Identification);
         overrideClaim.ShouldNotBeNull();
         overrideClaim.Access.Id.ShouldBe((int)ClaimAccessType.Block);
-        overrideClaim.Claim.Id.ShouldBe(claim.Id.ToString());
+        overrideClaim.Claim.Id.ShouldBe(claim.Identification);
 
         // Assert the database
         user = _serverFixture.Context.Set<User>()
@@ -183,11 +186,11 @@ public class ClaimOverridingTests : SequentialTest, IClassFixture<ServerFixture>
         {
             Username = user.Username,
             AccessType = ClaimAccessType.Allow,
-            ClaimId = claim.Id
+            ClaimIds = new[] { claim.Id }
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<ClaimOverride[]>("api/authorization/users/add-claim", request, await _serverFixture.GetAccessTokenAsync("superuser", "admin", null));
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authorization/users/add-claim", request, await _serverFixture.GetAccessTokenAsync("superuser", "admin", null));
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.Forbidden);
@@ -204,11 +207,11 @@ public class ClaimOverridingTests : SequentialTest, IClassFixture<ServerFixture>
         var request = new RemoveClaimOverride.Request
         {
             Username = "john.doe",
-            ClaimId = Guid.NewGuid()
+            ClaimIds = new[] { Guid.NewGuid() }
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<ClaimOverride[]>("api/authorization/users/remove-claim", request, await _serverFixture.GetAccessTokenAsync("admin1", "123", "buzios"));
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authorization/users/remove-claim", request, await _serverFixture.GetAccessTokenAsync("admin1", "123", "buzios"));
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Claim not found"); 
@@ -234,11 +237,11 @@ public class ClaimOverridingTests : SequentialTest, IClassFixture<ServerFixture>
         var request = new RemoveClaimOverride.Request
         {
             Username = user.Username,
-            ClaimId = claim.Id
+            ClaimIds = new[] { claim.Id }
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<ClaimOverride[]>("api/authorization/users/remove-claim", request, await _serverFixture.GetAccessTokenAsync("superuser", "admin", null));
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authorization/users/remove-claim", request, await _serverFixture.GetAccessTokenAsync("superuser", "admin", null));
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.Forbidden);
@@ -264,16 +267,16 @@ public class ClaimOverridingTests : SequentialTest, IClassFixture<ServerFixture>
         var request = new RemoveClaimOverride.Request
         {
             Username = user.Username,
-            ClaimId = claim.Id
+            ClaimIds = new[] { claim.Id }
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<ClaimOverride[]>("api/authorization/users/remove-claim", request, await _serverFixture.GetAccessTokenAsync("admin1", "123", "buzios"));
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authorization/users/remove-claim", request, await _serverFixture.GetAccessTokenAsync("admin1", "123", "buzios"));
 
         // Assert the response
         response.ShouldBeSuccess();
         response.Data.ShouldNotBeNull();
-        var overrideClaim = response.Data.FirstOrDefault(x => x.Identification == claim.Identification);
+        var overrideClaim = response.Data.OverridedClaims.FirstOrDefault(x => x.Claim.Id == claim.Identification);
         overrideClaim.ShouldBeNull();
 
         // Assert the database
@@ -308,11 +311,11 @@ public class ClaimOverridingTests : SequentialTest, IClassFixture<ServerFixture>
         var request = new RemoveClaimOverride.Request
         {
             Username = "tony.stark",
-            ClaimId = claim.Id
+            ClaimIds = new[] { claim.Id }
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<ClaimOverride[]>("api/authorization/users/remove-claim", request, await _serverFixture.GetAccessTokenAsync("admin1", "123", "buzios"));
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authorization/users/remove-claim", request, await _serverFixture.GetAccessTokenAsync("admin1", "123", "buzios"));
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "User not found.");
@@ -338,11 +341,11 @@ public class ClaimOverridingTests : SequentialTest, IClassFixture<ServerFixture>
         var request = new RemoveClaimOverride.Request
         {
             Username = user.Username,
-            ClaimId = claim.Id
+            ClaimIds = new[] { claim.Id }
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<ClaimOverride[]>("api/authorization/users/remove-claim", request, await _serverFixture.GetAccessTokenAsync("admin1", "123", "buzios"));
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authorization/users/remove-claim", request, await _serverFixture.GetAccessTokenAsync("admin1", "123", "buzios"));
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Claim is not overrided in the user");

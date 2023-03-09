@@ -3,11 +3,14 @@ using Demo1.BusinessLogic.Commands;
 using Demo1.DataTransfer;
 using rbkApiModules.Commons.Core;
 using Demo1.BusinessLogic.Queries;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Demo1.Api.Controllers;
 
 // All blogs/posts/author are centralized in this controller to make swagger clean
 // This is not how this would behave in a real world application
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class BlogsController : BaseController

@@ -1,4 +1,7 @@
-﻿using System.Text.Json;
+﻿using rbkApiModules.Identity.Core.DataTransfer.Roles;
+using rbkApiModules.Identity.Core.DataTransfer.Tenants;
+using rbkApiModules.Identity.Core.DataTransfer.Users;
+using System.Text.Json;
 
 namespace rbkApiModules.Tests.Integration.Identity;
 
@@ -499,7 +502,7 @@ public class TenantManagementTests : SequentialTest, IClassFixture<ServerFixture
         var roleNames = new[] { "Role1", "Role2" };
         foreach (var roleName in roleNames)
         {
-            var roleCreationResponse = await _serverFixture.PostAsync<Roles.Details>("api/authorization/roles", new CreateRole.Request { Name = roleName }, await _serverFixture.GetAccessTokenAsync("tony.admin", "12345", "Stark"));
+            var roleCreationResponse = await _serverFixture.PostAsync<RoleDetails>("api/authorization/roles", new CreateRole.Request { Name = roleName }, await _serverFixture.GetAccessTokenAsync("tony.admin", "12345", "Stark"));
             roleCreationResponse.ShouldBeSuccess();
         }
 
@@ -509,7 +512,7 @@ public class TenantManagementTests : SequentialTest, IClassFixture<ServerFixture
         context.Add(new User("STARK", "user3", "user3@stark-industries.com", "123", "", "username3"));
         context.SaveChanges();
 
-        var relationResponse1 = await _serverFixture.PostAsync<Roles.Details>("api/authorization/users/set-roles", new ReplaceUserRoles.Request 
+        var relationResponse1 = await _serverFixture.PostAsync<UserDetails>("api/authorization/users/set-roles", new ReplaceUserRoles.Request 
         { 
             RoleIds = new[] 
             { 
@@ -520,7 +523,7 @@ public class TenantManagementTests : SequentialTest, IClassFixture<ServerFixture
         }, await _serverFixture.GetAccessTokenAsync("tony.admin", "12345", "Stark"));
         relationResponse1.ShouldBeSuccess();
 
-        var relationResponse2 = await _serverFixture.PostAsync<Roles.Details>("api/authorization/users/set-roles", new ReplaceUserRoles.Request
+        var relationResponse2 = await _serverFixture.PostAsync<UserDetails>("api/authorization/users/set-roles", new ReplaceUserRoles.Request
         {
             RoleIds = new[]
             {
@@ -530,8 +533,8 @@ public class TenantManagementTests : SequentialTest, IClassFixture<ServerFixture
         }, await _serverFixture.GetAccessTokenAsync("tony.admin", "12345", "Stark"));
         relationResponse2.ShouldBeSuccess();
 
-        var claimRequest = new AddClaimOverride.Request { AccessType = ClaimAccessType.Allow, Username = "user1", ClaimId = _serverFixture.Context.Set<Claim>().First().Id };
-        var claimResponse = await _serverFixture.PostAsync<Claim[]>("api/authorization/users/add-claim", claimRequest, await _serverFixture.GetAccessTokenAsync("tony.admin", "12345", "Stark"));
+        var claimRequest = new AddClaimOverride.Request { AccessType = ClaimAccessType.Allow, Username = "user1", ClaimIds = new[] { _serverFixture.Context.Set<Claim>().First().Id } };
+        var claimResponse = await _serverFixture.PostAsync<UserDetails>("api/authorization/users/add-claim", claimRequest, await _serverFixture.GetAccessTokenAsync("tony.admin", "12345", "Stark"));
         claimResponse.ShouldBeSuccess();
 
         var user1 = _serverFixture.Context.Set<User>().Include(x => x.Roles).Include(x => x.Claims).First(x => x.Username == "user1" && x.TenantId == "STARK");

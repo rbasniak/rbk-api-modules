@@ -120,10 +120,14 @@ public class CreateTenant
 
             var claims = await _claimsService.GetAllAsync();
 
-            await _claimsService.AddClaimOverrideAsync(claims.First(x => x.Identification == AuthenticationClaims.MANAGE_USERS).Id, request.AdminInfo.Username, tenant.Alias, ClaimAccessType.Allow, cancellation);
-            await _claimsService.AddClaimOverrideAsync(claims.First(x => x.Identification == AuthenticationClaims.MANAGE_USER_ROLES).Id, request.AdminInfo.Username, tenant.Alias, ClaimAccessType.Allow, cancellation);
-            await _claimsService.AddClaimOverrideAsync(claims.First(x => x.Identification == AuthenticationClaims.OVERRIDE_USER_CLAIMS).Id, request.AdminInfo.Username, tenant.Alias, ClaimAccessType.Allow, cancellation);
-            await _claimsService.AddClaimOverrideAsync(claims.First(x => x.Identification == AuthenticationClaims.MANAGE_TENANT_SPECIFIC_ROLES).Id, request.AdminInfo.Username, tenant.Alias, ClaimAccessType.Allow, cancellation);
+            var desiredClaims = new List<Guid>();
+
+            desiredClaims.Add(claims.First(x => x.Identification == AuthenticationClaims.MANAGE_USERS).Id);
+            desiredClaims.Add(claims.First(x => x.Identification == AuthenticationClaims.MANAGE_USER_ROLES).Id);
+            desiredClaims.Add(claims.First(x => x.Identification == AuthenticationClaims.OVERRIDE_USER_CLAIMS).Id);
+            desiredClaims.Add(claims.First(x => x.Identification == AuthenticationClaims.MANAGE_TENANT_SPECIFIC_ROLES).Id);
+
+            await _claimsService.AddClaimOverridesAsync(desiredClaims.ToArray(), request.AdminInfo.Username, tenant.Alias, ClaimAccessType.Allow, cancellation);
 
             return CommandResponse.Success(tenant);
         }

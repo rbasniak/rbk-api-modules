@@ -2,6 +2,10 @@ using Serilog.Events;
 using Serilog;
 using Serilog.Formatting.Json;
 using Serilog.Exceptions;
+using System.IO;
+using System;
+using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Demo1.Api;
 
@@ -11,7 +15,7 @@ public class Program
     {
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Verbose()
-            .Enrich.FromLogContext()
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
             .Enrich.WithExceptionDetails()
 
             .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Error)
@@ -35,7 +39,7 @@ public class Program
             Host.CreateDefaultBuilder(args)
                 .UseSerilog((context, services, configuration) =>
                 {
-                    var temp1 = context.Configuration.GetValue<string>("Log:SQLite");
+                    // var temp1 = context.Configuration.GetValue<string>("Log:SQLite");
 
                     configuration
                         .ReadFrom.Configuration(context.Configuration)
@@ -71,7 +75,7 @@ public class Program
 
                         .WriteTo.Seq("http://localhost:5341/")
                         ;
-                })
+                }, writeToProviders: true)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();

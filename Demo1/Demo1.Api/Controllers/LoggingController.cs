@@ -2,12 +2,15 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Demo1.BusinessLogic.Commands;
 using rbkApiModules.Commons.Core;
-using Serilog;
 using Microsoft.AspNetCore.Authorization;
 using LiteDB;
+using System.Threading.Tasks;
+using System;
+using Microsoft.Extensions.Logging;
 
 namespace Demo1.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class LoggingController : BaseController
@@ -15,7 +18,7 @@ public class LoggingController : BaseController
     [HttpPost("log-exception-test")]
     public async Task<ActionResult<BaseResponse>> LogExceptionTest(LogExceptionTest.Request data)
     {
-        Logger.LogTrace("request to {Method} {Url}", HttpContext.Request.Method.ToString(), HttpContext.Request.GetDisplayUrl());
+        Logger.Verbose("request to {Method} {Url}", HttpContext.Request.Method.ToString(), HttpContext.Request.GetDisplayUrl());
 
         var response = await Mediator.Send(data);
 
@@ -25,11 +28,11 @@ public class LoggingController : BaseController
     [HttpPost("scoped-log-test")]
     public async Task<ActionResult<BaseResponse>> ScopeLogTest(ScopeLogTest.Request data)
     {
-        Logger.LogTrace("request to {Method} {Url}", HttpContext.Request.Method.ToString(), HttpContext.Request.GetDisplayUrl());
+        Logger.Verbose("request to {Method} {Url}", HttpContext.Request.Method.ToString(), HttpContext.Request.GetDisplayUrl());
 
         var response = await Mediator.Send(data);
 
-        Logger.LogTrace("request to {Method} {Url} handled with success", HttpContext.Request.Method.ToString(), HttpContext.Request.GetDisplayUrl());
+        Logger.Verbose("request to {Method} {Url} handled with success", HttpContext.Request.Method.ToString(), HttpContext.Request.GetDisplayUrl());
 
         return Ok(response);
     }
@@ -38,10 +41,10 @@ public class LoggingController : BaseController
     [HttpPost("log-levels-test")]
     public ActionResult LogLevelsTest([FromServices] ILogger<LoggingController> logger)
     {
-        Logger.LogDebug("DEBUG DATA 1");
-        Logger.LogInformation("INFORMATION DATA 1");
-        Logger.LogWarning("WARNING DATA 1");
-        Logger.LogError("ERROR DATA 1");
+        Logger.Debug("DEBUG DATA 1");
+        Logger.Information("INFORMATION DATA 1");
+        Logger.Warning("WARNING DATA 1");
+        Logger.Error("ERROR DATA 1");
 
         try
         {
@@ -49,7 +52,7 @@ public class LoggingController : BaseController
         }
         catch (Exception ex)
         {
-            Logger.LogCritical(ex, "FATAL DATA 1");
+            Logger.Fatal(ex, "FATAL DATA 1");
         }
 
         logger.LogDebug("DEBUG DATA 2");

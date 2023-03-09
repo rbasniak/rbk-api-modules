@@ -17,6 +17,7 @@ using Demo2.Domain.Events.Infrastructure;
 using rbkApiModules.Commons.Core.Pipelines;
 using Demo2.Infrastructure.EventSourcing.Database.Repositories;
 using Demo2.Domain.Events.MyImplementation.Database;
+using rbkApiModules.Identity.Core.DataTransfer.Tenants;
 
 namespace Demo2.Api;
 

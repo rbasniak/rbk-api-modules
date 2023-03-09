@@ -1,18 +1,35 @@
 ﻿using AutoMapper;
 using rbkApiModules.Commons.Core;
+using System.ComponentModel;
 using System.Diagnostics;
 
-namespace rbkApiModules.Identity.Core;
+namespace rbkApiModules.Identity.Core.DataTransfer.Roles;
 
-public class Roles
+[DebuggerDisplay("{Name}")]
+public class RoleDetails : BaseDataTransferObject
 {
-    [DebuggerDisplay("{Name}")]
-    public class Details : BaseDataTransferObject
-    {
-        public string Name { get; set; }
-        public SimpleNamedEntity[] Claims { get; set; }
-        public bool IsApplicationWide { get; set; }
-    }
+    public string Name { get; set; }
+    public SimpleNamedEntity[] Claims { get; set; }
+    public RoleMode Mode { get; set; }
+    public RoleSource Source { get; set; }
+}
+
+public enum RoleMode
+{
+    [Description("Normal")]
+    Normal = 1,
+
+    [Description("Sobrescrita")]
+    Overwritten = 2
+}
+
+public enum RoleSource
+{
+    [Description("Global")]
+    Global = 1,
+
+    [Description("Local")]
+    Local = 2
 }
 
 public class RoleMappings : Profile
@@ -21,7 +38,9 @@ public class RoleMappings : Profile
     {
         CreateMap<Role, SimpleNamedEntity>();
 
-        CreateMap<Role, Roles.Details>();
+        CreateMap<Role, RoleDetails>()
+            .ForMember(dto => dto.Source, map => map.MapFrom(entity => entity.IsApplicationWide ? RoleSource.Global : RoleSource.Local))
+            .ForMember(dto => dto.Mode, map => map.MapFrom(entity => entity.HasTenant ? RoleMode.Overwritten : RoleMode.Normal));
 
         CreateMap<RoleToClaim, SimpleNamedEntity>()
             .ForMember(dto => dto.Id, map => map.MapFrom(entity => entity.Claim.Id))

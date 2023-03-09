@@ -101,42 +101,47 @@ public class RelationalClaimsService : IClaimsService
         await _context.SaveChangesAsync(cancellation);
     }
 
-    public async Task AddClaimOverrideAsync(Guid claimId, string username, string tenant, ClaimAccessType mode, CancellationToken cancellation = default)
+    public async Task AddClaimOverridesAsync(Guid[] claimIds, string username, string tenant, ClaimAccessType mode, CancellationToken cancellation = default)
     {
-        var claim = await _context.Set<Claim>().FindAsync(claimId, cancellation);
+        var claims = await _context.Set<Claim>().Where(claim => claimIds.Any(id => claim.Id == id)).ToListAsync(cancellation);
         var user = await _authService.FindUserAsync(username, tenant, cancellation);
 
         await _context.Entry(user).Collection(x => x.Claims).LoadAsync(cancellation);
 
-        var existingAssociation = user.Claims.FirstOrDefault(x => x.ClaimId == claimId);
+        foreach (var claim in claims)
+        {
+            var existingAssociation = user.Claims.FirstOrDefault(x => x.ClaimId == claim.Id);
 
-        if (existingAssociation != null)
-        {
-            existingAssociation.SetAccessType(mode);
-        }
-        else
-        {
-            user.AddClaim(claim, mode);
+            if (existingAssociation != null)
+            {
+                existingAssociation.SetAccessType(mode);
+            }
+            else
+            {
+                user.AddClaim(claim, mode);
+            }
         }
 
         await _context.SaveChangesAsync(cancellation);
     }
 
-    public async Task RemoveClaimOverrideAsync(Guid claimId, string username, string tenant, CancellationToken cancellation = default)
+    public async Task RemoveClaimOverridesAsync(Guid[] claimIds, string username, string tenant, CancellationToken cancellation = default)
     {
-        var claim = await _context.Set<Claim>().FindAsync(claimId, cancellation);
         var user = await _authService.FindUserAsync(username, tenant, cancellation);
 
         await _context.Entry(user).Collection(x => x.Claims).LoadAsync(cancellation);
 
-        var existingAssociation = user.Claims.FirstOrDefault(x => x.ClaimId == claimId);
-
-        if (existingAssociation != null)
+        foreach (var claimId in claimIds)
         {
-            _context.Remove(existingAssociation);
-            
-            await _context.SaveChangesAsync(cancellation);
+            var existingAssociation = user.Claims.FirstOrDefault(x => x.ClaimId == claimId);
+
+            if (existingAssociation != null)
+            {
+                _context.Remove(existingAssociation);
+            }
         }
+
+        await _context.SaveChangesAsync(cancellation);
     }
 
     public async Task<Claim> FindByDescriptionAsync(string description)

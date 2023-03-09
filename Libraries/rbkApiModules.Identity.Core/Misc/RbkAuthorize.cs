@@ -15,7 +15,7 @@ public class RbkAuthorizeAttribute : AuthorizeAttribute, IAuthorizationFilter
 
     public string Claim { get; set; }
 
-    public void OnAuthorization(AuthorizationFilterContext context)
+    public virtual void OnAuthorization(AuthorizationFilterContext context)
     {
         if (string.IsNullOrEmpty(Claim))
         {

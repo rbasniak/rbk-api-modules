@@ -10,7 +10,7 @@ public class AddClaimOverride
     public class Request : AuthenticatedRequest, IRequest<CommandResponse>
     {
         public string Username { get; set; }
-        public Guid ClaimId { get; set; }
+        public Guid[] ClaimIds { get; set; }
         public ClaimAccessType AccessType { get; set; }
     }
 
@@ -28,15 +28,25 @@ public class AddClaimOverride
                 .WithName(localization.GetValue("User"))
                 .DependentRules(() =>
                 {
-                    RuleFor(a => a.ClaimId)
-                        .ClaimExistOnDatabase(claimsService, localization);
+                    RuleFor(a => a.ClaimIds)
+                   .Must(HaveAtLeastOneItem).WithMessage(localization.GetValue("The list of claims must have at least one item"))
+                   .DependentRules(() =>
+                   {
+                       RuleForEach(x => x.ClaimIds)
+                           .ClaimExistOnDatabase(claimsService, localization);
+                   });
                 });
         } 
 
         private async Task<bool> UserExistInDatabaseUnderTheSameTenant(Request request, string username, CancellationToken cancelation)
         {
             return await _authService.FindUserAsync(username, request.Identity.Tenant, cancelation) != null;
-        } 
+        }
+
+        private bool HaveAtLeastOneItem(Guid[] claimIds)
+        {
+            return claimIds != null && claimIds.Any();
+        }
     }
 
     public class Handler : IRequestHandler<Request, CommandResponse>
@@ -52,11 +62,11 @@ public class AddClaimOverride
 
         public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)
         {
-            await _claimsService.AddClaimOverrideAsync(request.ClaimId, request.Username, request.Identity.Tenant, request.AccessType, cancellation);
+            await _claimsService.AddClaimOverridesAsync(request.ClaimIds, request.Username, request.Identity.Tenant, request.AccessType, cancellation);
 
             var user = await _authService.GetUserWithDependenciesAsync(request.Username, request.Identity.Tenant, cancellation);
 
-            return CommandResponse.Success(user.Claims);
+            return CommandResponse.Success(user);
         }
     }
 }

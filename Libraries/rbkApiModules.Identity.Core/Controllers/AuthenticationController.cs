@@ -8,6 +8,7 @@ using rbkApiModules.Commons.Core.CodeGeneration;
 
 namespace rbkApiModules.Identity.Core;
 
+[Authorize]
 [IgnoreOnCodeGeneration]
 [ApiController]
 [Route("api/[controller]")]

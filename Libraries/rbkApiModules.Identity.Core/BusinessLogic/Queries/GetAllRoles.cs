@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using AutoMapper.Configuration.Annotations;
+using MediatR;
 using rbkApiModules.Commons.Core;
 
 namespace rbkApiModules.Identity.Core;
@@ -30,9 +31,16 @@ public class GetAllRoles
 
                 foreach (var role in roles.Where(x => x.HasNoTenant))
                 {
-                    if (!results.Any(x => x.Name.ToUpper() == role.Name.ToUpper()))
+                    var roleAlreadyInResults = results.FirstOrDefault(x => x.Name.ToUpper() == role.Name.ToUpper());
+
+                    if (roleAlreadyInResults == null)
                     {
+                        role.SetMode(isOverwritten: false);
                         results.Add(role);
+                    }
+                    else
+                    {
+                        role.SetMode(isOverwritten: true);
                     }
                 }
 
@@ -41,6 +49,11 @@ public class GetAllRoles
             else
             {
                 results = roles.Where(x => x.HasNoTenant).ToList();
+
+                foreach (var role in results)
+                {
+                    role.SetMode(isOverwritten: false);
+                }
             }
 
             return QueryResponse.Success(results);
