@@ -8,7 +8,6 @@ using rbkApiModules.Commons.Core.CodeGeneration;
 
 namespace rbkApiModules.Identity.Core;
 
-[Authorize]
 [IgnoreOnCodeGeneration]
 [ApiController]
 [Route("api/[controller]")]
@@ -21,23 +20,15 @@ public class AuthenticationController : BaseController
         _authEmailOptions = config.Value;
     }
 
-    [AllowAnonymous]
+    [Authorize]
     [IgnoreOnCodeGeneration]
     [HttpPost("login")]
-    public async Task<ActionResult<JwtResponse>> Login(UserLogin.Request data, CancellationToken cancellation)
+    public async Task<ActionResult<JwtResponse>> LoginWithNegotiate(UserLogin.Request data, CancellationToken cancellation)
     {
-        var usingNtlm = HttpContext.Request.Headers.Authorization.ToString().ToUpper().StartsWith("NTLM");
         var isAuthenticated = HttpContext.User.Identity.IsAuthenticated;
 
-        if (data != null && String.IsNullOrEmpty(data.Username) && usingNtlm && isAuthenticated)
-        {
-            data.Username = HttpContext.User.Identity.Name.Split('\\').Last().ToLower();
-            data.AuthenticationMode = AuthenticationMode.Windows;
-        }
-        else
-        {
-            data.AuthenticationMode = AuthenticationMode.Credentials;
-        }
+        data.Username = HttpContext.User.Identity.Name.Split('\\').Last().ToLower();
+        data.AuthenticationMode = AuthenticationMode.Windows;
 
         try
         {
@@ -52,7 +43,7 @@ public class AuthenticationController : BaseController
                 return new ContentResult()
                 {
                     Content = JsonSerializer.Serialize(result.Errors.Select(x => x.Message)),
-                    StatusCode = (int)HttpStatusCode.Unauthorized
+                    StatusCode = (int)HttpStatusCode.BadRequest
                 };
             };
         }
@@ -61,7 +52,41 @@ public class AuthenticationController : BaseController
             return new ContentResult()
             {
                 Content = JsonSerializer.Serialize(new[] { ex.Message }),
-                StatusCode = (int)HttpStatusCode.Unauthorized
+                StatusCode = (int)HttpStatusCode.InternalServerError
+            };
+        }
+    }
+
+    [AllowAnonymous]
+    [IgnoreOnCodeGeneration]
+    [HttpPost("login")]
+    public async Task<ActionResult<JwtResponse>> LoginWithCredentials(UserLogin.Request data, CancellationToken cancellation)
+    {
+        data.AuthenticationMode = AuthenticationMode.Credentials;
+
+        try
+        {
+            var result = await Mediator.Send(data, cancellation);
+
+            if (result.IsValid)
+            {
+                return HttpResponse<JwtResponse>(result);
+            }
+            else
+            {
+                return new ContentResult()
+                {
+                    Content = JsonSerializer.Serialize(result.Errors.Select(x => x.Message)),
+                    StatusCode = (int)HttpStatusCode.BadRequest
+                };
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ContentResult()
+            {
+                Content = JsonSerializer.Serialize(new[] { ex.Message }),
+                StatusCode = (int)HttpStatusCode.InternalServerError
             };
         }
     }
@@ -82,7 +107,7 @@ public class AuthenticationController : BaseController
             return new ContentResult()
             {
                 Content = JsonSerializer.Serialize(result.Errors.Select(x => x.Message)),
-                StatusCode = (int)HttpStatusCode.Unauthorized
+                StatusCode = (int)HttpStatusCode.BadRequest
             };
         };
     }

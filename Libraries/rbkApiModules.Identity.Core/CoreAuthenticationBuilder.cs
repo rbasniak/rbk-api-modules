@@ -18,45 +18,45 @@ public static class CoreAuthenticationBuilder
     {
         services.AddMvc(o =>
         {
-            var data = new List<Tuple<Type, string>>();
+            var actionsToRemove = new List<Tuple<Type, string>>();
 
             if (options._disablePasswordReset)
             {
-                data.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.RedefinePassword)));
-                data.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.SendResetPasswordEmail)));
+                actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.RedefinePassword)));
+                actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.SendResetPasswordEmail)));
             }
 
             if (options._disableEmailConfirmation)
             {
-                data.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.ConfirmEmail)));
-                data.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.ResendEmailConfirmation)));
-            }
-
-            if (options._disablePasswordAuthentication)
-            {
-                data.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.Login)));
+                actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.ConfirmEmail)));
+                actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.ResendEmailConfirmation)));
             }
 
             if (options._disableRefreshToken)
             {
-                data.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.RefreshToken)));
+                actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.RefreshToken)));
             }
             
             if (options._allowAnonymousTenantAccess)
             {
-                data.Add(new Tuple<Type, string>(typeof(AuthorizationController), nameof(AuthorizationController.GetAllTenantsAuthenticated)));
+                actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthorizationController), nameof(AuthorizationController.GetAllTenantsAuthenticated)));
             }
             else
             {
-                data.Add(new Tuple<Type, string>(typeof(AuthorizationController), nameof(AuthorizationController.GetAllTenantsAnonymous)));
+                actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthorizationController), nameof(AuthorizationController.GetAllTenantsAnonymous)));
             }
 
-            if (options._ntlmMode == NtlmMode.LoginOnly)
+            if (options._loginMode == LoginMode.WindowsAuthentication)
             {
-                o.Filters.Add(new NtlmFilter());
+                actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.LoginWithCredentials)));
+                o.Filters.Add(new WindowsAuthenticationFilter());
             } 
+            else if (options._loginMode == LoginMode.Credentials)
+            {
+                actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.LoginWithNegotiate)));
+            }
 
-            o.Conventions.Add(new RemoveActionConvention(data.ToArray()));
+            o.Conventions.Add(new RemoveActionConvention(actionsToRemove.ToArray()));
         });
 
 
@@ -123,17 +123,6 @@ public static class CoreAuthenticationBuilder
             configureOptions.TokenValidationParameters = tokenValidationParameters;
             configureOptions.SaveToken = true;
         });
-
-        if (options._ntlmMode != NtlmMode.None)
-        {
-            services.AddAuthentication(NegotiateDefaults.AuthenticationScheme).AddNegotiate();
-
-            // TODO: Check whether this is really needed
-            //services.AddAuthorization(options =>
-            //{
-            //    options.FallbackPolicy = options.DefaultPolicy;
-            //});
-        }
 
         services.RegisterApplicationServices(Assembly.GetAssembly(typeof(IJwtFactory)));
 
@@ -280,9 +269,8 @@ public static class CoreAuthenticationBuilder
     }
 }
 
-public enum NtlmMode
+public enum LoginMode
 {
-    LoginOnly,
-    All,
-    None
+    Credentials,
+    WindowsAuthentication
 }

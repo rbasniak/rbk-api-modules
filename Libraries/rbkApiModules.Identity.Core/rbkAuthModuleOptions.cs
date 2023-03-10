@@ -9,12 +9,11 @@ public class RbkAuthenticationOptions
     public bool _disablePasswordReset = false;
     public bool _disableEmailConfirmation = false;
     public bool _disableRefreshToken = false;
-    public bool _disablePasswordAuthentication = false;
     public bool _useAssymetricEncryptationKey = false;
     public bool _useSymetricEncryptationKey = false;
     public bool _allowAnonymousTenantAccess = false;
     public Type _tenantPostCreationActionType = null;
-    public NtlmMode _ntlmMode = NtlmMode.None;
+    public LoginMode _loginMode = LoginMode.Credentials;
 
     public RbkAuthenticationOptions DisablePasswordReset()
     {
@@ -37,16 +36,9 @@ public class RbkAuthenticationOptions
         return this;
     }
 
-    public RbkAuthenticationOptions DisablePasswordAuthentication()
+    public RbkAuthenticationOptions UseLoginWithWindowsAuthentication()
     {
-        _disablePasswordAuthentication = true;
-
-        return this;
-    }
-
-    public RbkAuthenticationOptions EnableWindowsAuthentication(NtlmMode mode)
-    {
-        _ntlmMode = mode;
+        _loginMode = LoginMode.WindowsAuthentication;
 
         return this;
     }

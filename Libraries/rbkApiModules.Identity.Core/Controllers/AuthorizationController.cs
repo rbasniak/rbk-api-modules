@@ -81,7 +81,7 @@ public class AuthorizationController : BaseController
 
     #endregion
 
-    #region roles 
+    #region roles
 
     [HttpGet("roles")]
     public async Task<ActionResult<RoleDetails[]>> GetAllRoles(CancellationToken cancellation)
@@ -119,7 +119,7 @@ public class AuthorizationController : BaseController
 
     #endregion
 
-    #region users 
+    #region users
 
     [HttpGet("users")]
     [RbkAuthorize(AuthenticationClaims.MANAGE_USERS)]
@@ -157,7 +157,7 @@ public class AuthorizationController : BaseController
 
     #endregion
 
-    #region tenants 
+    #region tenants
 
     [HttpGet("tenants")]
     [RbkAuthorize(AuthenticationClaims.MANAGE_TENANTS)]
@@ -197,5 +197,5 @@ public class AuthorizationController : BaseController
         return HttpResponse(await Mediator.Send(new DeleteTenant.Request { Alias = id }, cancellation));
     }
 
-    #endregion 
+    #endregion
 }

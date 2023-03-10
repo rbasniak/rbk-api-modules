@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace rbkApiModules.Identity.Core;
 
-public class NtlmFilter : IActionFilter
+public class WindowsAuthenticationFilter : IActionFilter
 {
     public void OnActionExecuted(ActionExecutedContext filterContext)
     {

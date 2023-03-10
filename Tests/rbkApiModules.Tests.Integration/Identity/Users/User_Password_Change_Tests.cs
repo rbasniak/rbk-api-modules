@@ -196,7 +196,7 @@ public class UserPasswordChangeTests : SequentialTest, IClassFixture<ServerFixtu
         var response = await _serverFixture.PostAsync($"api/authentication/login", request, token: null);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.Unauthorized, "Invalid credentials");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Invalid credentials");
     }
 
     /// <summary>

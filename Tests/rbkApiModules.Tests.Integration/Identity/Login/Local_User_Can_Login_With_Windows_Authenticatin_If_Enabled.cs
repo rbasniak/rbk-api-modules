@@ -31,7 +31,7 @@ public class LocalUserCanLoginWithWindowsAuthenticatinIfEnabled : SequentialTest
         var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", request, token: null, additionalHeaders);
 
         // Assert
-        response.ShouldHaveErrors(HttpStatusCode.Unauthorized, "Invalid credentials");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Invalid credentials");
     }
 }
 

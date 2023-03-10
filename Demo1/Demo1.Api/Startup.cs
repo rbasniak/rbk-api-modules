@@ -34,6 +34,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 
 namespace Demo1.Api;
 
@@ -111,6 +112,16 @@ public class Startup
             .UseDefaultAutoMapper()
             .UseDefaultCompression()
             .UseDefaultCors()
+            //.UseCustomCors("_proteusPolicy", options =>
+            //        options.AddPolicy(name: "_proteusPolicy",
+            //                      builder =>
+            //                      {
+            //                          builder.AllowAnyMethod()
+            //                          .AllowAnyHeader()
+            //                          .WithOrigins("http://localhost:4107")
+            //                          .AllowCredentials()
+            //                          .WithExposedHeaders("Content-Disposition");
+            //                      }))
             .UseDefaultHsts(_environment.IsDevelopment())
             .UseDefaultHttpsRedirection(_isInTestMode)
             .UseDefaultMemoryCache()
@@ -142,8 +153,8 @@ public class Startup
 
         services.AddRbkRelationalAuthentication(options => options
             .UseSymetricEncryptationKey()
-            // .AllowAnonymousAccessToTenants()
-            // .EnableWindowsAuthentication(NtlmMode.LoginOnly)
+            //.AllowAnonymousAccessToTenants()
+            //.UseLoginWithWindowsAuthentication()
             // .DisableEmailConfirmation()
             // .DisablePasswordReset()
         );
@@ -155,7 +166,7 @@ public class Startup
         );
 
         services.AddRbkRelationalNotifications();
-        
+
         services.AddRbkRelationalFaqs();
     }
 
@@ -260,7 +271,7 @@ public class Startup
         Assembly.GetAssembly(typeof(IService1))
     };
 
-    // TODO: Add a simple example filter 
+    // TODO: Add a simple example filter
     private static IActionFilter[] MvcFilters => new IActionFilter[0];
 }
 

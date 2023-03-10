@@ -57,7 +57,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
         var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", request, token: null);
 
         // Assert
-        response.ShouldHaveErrors(HttpStatusCode.Unauthorized, "Invalid credentials");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Invalid credentials");
     }
 
     /// <summary>
@@ -78,7 +78,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
         var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", request, token: null);
 
         // Assert
-        response.ShouldHaveErrors(HttpStatusCode.Unauthorized, "Invalid credentials");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Invalid credentials");
     }
 
     /// <summary>
@@ -101,7 +101,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
         var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", request, token: null);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.Unauthorized, "Invalid credentials");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Invalid credentials");
     }
 
     /// <summary>
@@ -360,7 +360,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
         var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/refresh-token", request, token: null);
 
         // Assert
-        response.ShouldHaveErrors(HttpStatusCode.Unauthorized, "O campo 'RefreshToken' não pode ser vazio");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "O campo 'RefreshToken' não pode ser vazio");
     }
 
     /// <summary>
@@ -379,7 +379,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
         var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/refresh-token", request, token: null);
 
         // Assert
-        response.ShouldHaveErrors(HttpStatusCode.Unauthorized, "Refresh token does not exist anymore");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Refresh token does not exist anymore");
     }
 
     /// <summary>
@@ -458,7 +458,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
         var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/refresh-token", request, token: null);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.Unauthorized, "Refresh token expired");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Refresh token expired");
     }
 }
 
