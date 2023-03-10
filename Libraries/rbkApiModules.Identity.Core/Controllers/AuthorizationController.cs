@@ -138,7 +138,7 @@ public class AuthorizationController : BaseController
     }
 
     [RbkAuthorize(AuthenticationClaims.OVERRIDE_USER_CLAIMS)]
-    [HttpPost("users/add-claim")]
+    [HttpPost("users/add-claims")]
     public async Task<ActionResult<UserDetails>> AddClaimToUser(AddClaimOverride.Request data, CancellationToken cancellation)
     {
         var result = await Mediator.Send(data, cancellation);
@@ -147,7 +147,7 @@ public class AuthorizationController : BaseController
     }
 
     [RbkAuthorize(AuthenticationClaims.OVERRIDE_USER_CLAIMS)]
-    [HttpPost("users/remove-claim")]
+    [HttpPost("users/remove-claims")]
     public async Task<ActionResult<UserDetails>> RemoveClaimFromUser(RemoveClaimOverride.Request data, CancellationToken cancellation)
     {
         var result = await Mediator.Send(data, cancellation);
