@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using Serilog;
+using System.Reflection;
+using System.Text;
 
 namespace rbkApiModules.Commons.Core.CodeGeneration;
 
@@ -42,6 +44,8 @@ public class FrontendModel
     {
         foreach (var model in Models.Where(x => x.Filepath != null))
         {
+            Log.Information("Generating TypeScript model: {model}", model.Name);
+
             var filename = Path.Combine(_basePath, model.Filepath);
             Directory.CreateDirectory(Path.GetDirectoryName(filename));
 
@@ -53,6 +57,8 @@ public class FrontendModel
     {
         foreach (var service in Services)
         {
+            Log.Information("Generating TypeScript service: {model}", service.Name);
+
             var filename = Path.Combine(_basePath, service.Filepath);
             Directory.CreateDirectory(Path.GetDirectoryName(filename));
 
@@ -64,6 +70,8 @@ public class FrontendModel
     {
         foreach (var store in Stores)
         {
+            Log.Information("Generating NGXS store: {store}", store.Name);
+
             if (!store.Actions.Items.Any(x => x.Type == ActionType.LoadAll)) continue;
 
             var actionFilename = Path.Combine(_basePath, "state", "database", CodeGenerationUtilities.ToTypeScriptFileCase(store.Name), store.ActionsFilepath) + ".ts";

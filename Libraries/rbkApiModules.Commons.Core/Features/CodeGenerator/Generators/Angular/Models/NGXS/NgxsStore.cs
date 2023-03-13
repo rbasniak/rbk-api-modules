@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using Serilog;
+using System.Text;
 
 namespace rbkApiModules.Commons.Core.CodeGeneration;
 
@@ -17,6 +18,8 @@ public class NgxsStore
 
     private void GenerateActions()
     {
+        Log.Information("Generating actions for store: {stpre}", Name);
+
         Actions = new NgxsFile<NgxsAction>();
 
         NgxsAction clearAction = null;
@@ -24,6 +27,11 @@ public class NgxsStore
         var listEndpoint = Controller.Endpoints.FirstOrDefault(x => String.IsNullOrEmpty(x.Route) && x.Method == HttpMethod.Get);
         if (listEndpoint != null && listEndpoint.IncludeInStatesGenertation)
         {
+            if (listEndpoint.InputType == null)
+            {
+                Log.Information("Trying to add null model to action models: {method} {action} ({name})", listEndpoint.Method, listEndpoint.Route, listEndpoint.Name);
+            }
+
             Actions.Items.Add(new NgxsAction(Controller.Name, ActionType.LoadAll, listEndpoint.InputType, listEndpoint));
             clearAction = new NgxsAction(Controller.Name, ActionType.Clear, null, null);
         }
@@ -31,6 +39,11 @@ public class NgxsStore
         var createEndpoint = Controller.Endpoints.FirstOrDefault(x => String.IsNullOrEmpty(x.Route) && x.Method == HttpMethod.Post);
         if (createEndpoint != null && createEndpoint.IncludeInStatesGenertation)
         {
+            if (createEndpoint.InputType == null)
+            {
+                Log.Information("Trying to add null model to action models: {method} {action} ({name})", createEndpoint.Method, createEndpoint.Route, createEndpoint.Name);
+            }
+
             Actions.ModelsToImport.Add(createEndpoint.InputType);
             Actions.Items.Add(new NgxsAction(Controller.Name, ActionType.Create, createEndpoint.InputType, createEndpoint));
         }
@@ -38,6 +51,11 @@ public class NgxsStore
         var updateEndpoint = Controller.Endpoints.FirstOrDefault(x => String.IsNullOrEmpty(x.Route) && x.Method == HttpMethod.Put);
         if (updateEndpoint != null && updateEndpoint.IncludeInStatesGenertation)
         {
+            if (updateEndpoint.InputType == null)
+            {
+                Log.Information("Trying to add null model to action models: {method} {action} ({name})", updateEndpoint.Method, updateEndpoint.Route, updateEndpoint.Name);
+            }
+
             Actions.ModelsToImport.Add(updateEndpoint.InputType);
             Actions.Items.Add(new NgxsAction(Controller.Name, ActionType.Update, updateEndpoint.InputType, updateEndpoint));
         }

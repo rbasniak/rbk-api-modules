@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Serilog;
+using Serilog.Core;
 using System.Reflection;
 using System.Text;
 
@@ -11,16 +13,61 @@ public class AngularCodeGenerator
 
     public AngularCodeGenerator(string projectId, string basePath)
     {
+        Log.Information("Code generator initialized for {project} in {path}", projectId, basePath);
+
         _basePath = basePath;
         _projectId = projectId;
     }
 
     public void Generate()
     {
+        Log.Information("Begining code generation");
+
         var servicesFolder = Path.Combine(_basePath, "services", "api");
         Directory.CreateDirectory(servicesFolder);
 
         var controllers = GetControllers(_projectId);
+
+        Log.Information("Found {amount} controllers", controllers.Length);
+
+        foreach ( var controller in controllers)
+        {
+            Log.Information("CONTROLLER: {controller} ROUTE: {route}", controller.Name, controller.Route);
+
+            foreach (var action in controller.Endpoints)
+            {
+                Log.Information("  ENDPOINT: {endpoint} ROUTE: {route} GENERATE STATE: {generateState} IGNORE MODE: {ignoreMode} STATE BEHAVIOR: {stateBehavior}",
+                    action.Name, action.Route, action.IncludeInStatesGenertation, action.IgnoreMode, action.StoreBehavior);
+
+                if (action.InputType != null)
+                {
+                    Log.Information("    INPUT: {inputName} ({inputType})", action.InputType.Name, action.InputType.Type.FullName);
+                }
+                else
+                {
+                    Log.Information("    INPUT: none");
+                }
+
+                if (action.ReturnType != null)
+                {
+                    Log.Information("    OUTPUT: {outputName} ({outputType})", action.ReturnType.Name, action.ReturnType.Type.FullName);
+                }
+                else
+                {
+                    Log.Information("    OUTPUT: none");
+                }
+
+                if (action.UrlParameters != null)
+                {
+                    Log.Information("    PARAMETERS: ");
+                }
+
+                foreach (var parameter in action.UrlParameters)
+                {
+                    Log.Information("      NAME: {paramName} TYPE: {paramType} ({paramFullType})", parameter.Name, parameter.Type.Name, parameter.Type.Type.FullName);
+                }
+            }
+        }
 
         var models = GetForcedTypescriptModels(_projectId);
 

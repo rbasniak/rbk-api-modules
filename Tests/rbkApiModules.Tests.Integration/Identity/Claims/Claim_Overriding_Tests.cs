@@ -92,10 +92,10 @@ public class ClaimOverridingTests : SequentialTest, IClassFixture<ServerFixture>
         // Assert the response
         response.ShouldBeSuccess();
         response.Data.ShouldNotBeNull();
-        var overrideClaim = response.Data.OverridedClaims.FirstOrDefault(x => x.Claim.Id == claim.Identification);
+        var overrideClaim = response.Data.OverridedClaims.FirstOrDefault(x => x.Claim.Id == claim.Id.ToString());
         overrideClaim.ShouldNotBeNull();
         overrideClaim.Access.Id.ShouldBe((int)ClaimAccessType.Allow);
-        overrideClaim.Claim.Id.ShouldBe(claim.Identification);
+        overrideClaim.Claim.Id.ShouldBe(claim.Id.ToString());
 
         // Assert the database
         user = _serverFixture.Context.Set<User>()
@@ -147,10 +147,10 @@ public class ClaimOverridingTests : SequentialTest, IClassFixture<ServerFixture>
         // Assert the response
         response.ShouldBeSuccess();
         response.Data.ShouldNotBeNull();
-        var overrideClaim = response.Data.OverridedClaims.FirstOrDefault(x => x.Claim.Id == claim.Identification);
+        var overrideClaim = response.Data.OverridedClaims.FirstOrDefault(x => x.Claim.Id == claim.Id.ToString());
         overrideClaim.ShouldNotBeNull();
         overrideClaim.Access.Id.ShouldBe((int)ClaimAccessType.Block);
-        overrideClaim.Claim.Id.ShouldBe(claim.Identification);
+        overrideClaim.Claim.Id.ShouldBe(claim.Id.ToString());
 
         // Assert the database
         user = _serverFixture.Context.Set<User>()
@@ -276,7 +276,7 @@ public class ClaimOverridingTests : SequentialTest, IClassFixture<ServerFixture>
         // Assert the response
         response.ShouldBeSuccess();
         response.Data.ShouldNotBeNull();
-        var overrideClaim = response.Data.OverridedClaims.FirstOrDefault(x => x.Claim.Id == claim.Identification);
+        var overrideClaim = response.Data.OverridedClaims.FirstOrDefault(x => x.Claim.Id == claim.Id.ToString());
         overrideClaim.ShouldBeNull();
 
         // Assert the database

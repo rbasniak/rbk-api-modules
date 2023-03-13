@@ -1,5 +1,7 @@
-﻿using System.ComponentModel;
+﻿using Serilog;
+using System.ComponentModel;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace rbkApiModules.Commons.Core.CodeGeneration;
 
@@ -7,6 +9,8 @@ public class TypescriptModel
 {
     public TypescriptModel(TypeInfo type)
     {
+        Log.Information("Instantiating TypeScript model for type: {type}", type.Type.FullName);
+
         OriginalType = type.Type;
         // if (type.Name.Contains("Tree")) Debugger.Break();
 
@@ -32,7 +36,7 @@ public class TypescriptModel
 
         Properties = new List<TypescriptProperty>();
 
-        foreach (var property in type.Type.GetProperties())
+        foreach (var property in type.Type.GetProperties().Where(x => x.GetAttribute<JsonIgnoreAttribute>() == null))
         {
             Properties.Add(new TypescriptProperty(property.Name, new TypeInfo(property.PropertyType), false));
         }
