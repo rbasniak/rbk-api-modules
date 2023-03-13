@@ -1,5 +1,5 @@
 ﻿using Demo2.Domain.Events.Infrastructure;
-using Demo2.Domain.Models.EventSourcing;
+using Demo2.EventSourcing;
 using Demo2.Infrastructure.EventSourcing.Database.Repositories;
 using MediatR;
 using System;

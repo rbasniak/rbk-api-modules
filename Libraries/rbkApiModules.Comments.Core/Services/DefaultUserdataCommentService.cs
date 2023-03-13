@@ -1,18 +1,21 @@
 ﻿using Microsoft.AspNetCore.Http;
-using rbkApiModules.Identity.Core;
 using rbkApiModules.Commons.Core;
 
 namespace rbkApiModules.Comments.Core;
 
 public class DefaultUserdataCommentService : IUserdataCommentService
 {
-    private readonly IAuthService _usersService;
+    // TODO: how to fix this without creating a dependency to the Identity.Core project? Move the interface to Commons.Core?
+
+    // private readonly IAuthService _usersService;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly Dictionary<string, UserData> _userdata = new();
 
-    public DefaultUserdataCommentService(IAuthService usersService, IHttpContextAccessor httpContextAccessor)
+    public DefaultUserdataCommentService(
+        // IAuthService usersService, 
+        IHttpContextAccessor httpContextAccessor)
     {
-        _usersService = usersService;
+        // _usersService = usersService;
         _httpContextAccessor = httpContextAccessor;
     }
 
@@ -32,7 +35,12 @@ public class DefaultUserdataCommentService : IUserdataCommentService
             }
             else
             {
-                var user = await _usersService.FindUserAsync(comment.Username, _httpContextAccessor.GetTenant(), cancellation);
+                // var user = await _usersService.FindUserAsync(comment.Username, _httpContextAccessor.GetTenant(), cancellation);
+                var user = new 
+                { 
+                    DisplayName = comment.Username,
+                    Avatar = "",
+                };
 
                 if (user != null)
                 {

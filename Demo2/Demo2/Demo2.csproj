@@ -25,12 +25,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\rbkApiModules.Commons.Relational\rbkApiModules.Commons.Relational.csproj" />
+    <Folder Include="Database\Config\EventSourcing\" />
+    <Folder Include="Logs\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Database\Config\EventSourcing\" />
-    <Folder Include="Logs\" />
+    <ProjectReference Include="..\..\Libraries\rbkApiModules.Commons.Relational\rbkApiModules.Commons.Relational.csproj" />
   </ItemGroup>
 
 </Project>

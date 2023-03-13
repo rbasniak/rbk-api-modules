@@ -1,4 +1,4 @@
-﻿using Demo2.Domain.Models.EventSourcing;
+﻿using Demo2.EventSourcing;
 
 namespace Demo2.Database.Repositories
 {

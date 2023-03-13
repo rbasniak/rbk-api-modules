@@ -20,31 +20,11 @@ public class ChangeRequest :  AggregateRoot
     {
     }
 
-     ChangeRequest(Platform platform, ChangeRequestType type, ChangeRequestPriority priority,
-        ChangeRequestSource source, ChangeRequestState state, string description, string justification,
-        string createdBy, string requestedBy, string currentOwner, string sourceNumber, DateTime? desiredDate)
+    public ChangeRequest(IEnumerable<IDomainEvent> events): base(events)
     {
-        _fics = new HashSet<Fic>();
-        _documents = new HashSet<Document>();
-        _attachments = new HashSet<Attachment>();
-        _evidenceAttachments = new HashSet<EvidenceAttachment>();
 
-        PlatformId = platform.Id;
-        Type = type;
-        Priority = priority;
-        Source = source;
-        Description = description;
-        Justification = justification;
-        CreationDate = DateTime.Now;
-        DesiredDate = desiredDate ?? DateTime.Now.AddDays(180);
-        State = state;
-        SourceNumber = sourceNumber;
-        RequestedBy = requestedBy;
-        CreatedBy = createdBy;
-        CurrentOwner = currentOwner;
-
-        Prioritization = new GutMatrix(0, 0, 0);
     }
+      
     public override Guid Id { get; protected set; }
 
 
@@ -98,11 +78,12 @@ public class ChangeRequest :  AggregateRoot
 
     public static ChangeRequest CreateByGeneralUser(string requestedBy, string createdBy, string description, string title)
     {
-        var @event = new ChangeRequestCreatedByGeneralUser.V1(Guid.NewGuid(), requestedBy, createdBy, description, title);
-        var changeRequest = new ChangeRequest();
-        changeRequest.Apply(@event);
+        //var @event = new ChangeRequestCreatedByGeneralUser.V1("user", Guid.NewGuid(), requestedBy, createdBy, description, title);
+        //var changeRequest = new ChangeRequest();
+        //changeRequest.Apply(@event);
 
-        return changeRequest;
+        //return changeRequest;
+        return null;
     }
 
     public void On(ChangeRequestCreatedByGeneralUser.V1 @event)
@@ -110,19 +91,18 @@ public class ChangeRequest :  AggregateRoot
         Id = @event.AggregateId;
         RequestedBy = @event.RequestedBy;
         CreatedBy = @event.CreatedBy;
-        Description = @event.Description2;
     }
 
-    public void On(FicAddedtoChangeRequest.V1 @event)
+    public void On(FicAddedToChangeRequest.V1 @event)
     {
-        var fic = new Fic(@event.Number, @event.Name, @event.Source);
-        _fics.Add(fic);
+        //var fic = new Fic(@event.Number, @event.Name, @event.Source);
+        //_fics.Add(fic);
     }
 
     public void On(DocumentAddedToChangeRequest.V1 @event)
     {
-        var document = new Document(@event.Number, @event.Name, @event.Source);
-        _documents.Add(document);
+        //var document = new Document(@event.Number, @event.Name, @event.Source);
+        //_documents.Add(document);
     }
 
     public void On(FicRemovedFromChangeRequest.V1 @event)
@@ -132,20 +112,20 @@ public class ChangeRequest :  AggregateRoot
 
     internal void AddFic(string name, string number, string source)
     {
-        var @event = new FicAddedtoChangeRequest.V1(Id, name, number, source);
-        Apply(@event);
+        //var @event = new FicAddedToChangeRequest.V1(Id, name, number, source);
+        //Apply(@event);
     }
 
     internal void AddDocument(string name, string number, string source)
     {
-        var @event = new DocumentAddedToChangeRequest.V1(Id, name, number, source);
-        Apply(@event);
+        //var @event = new DocumentAddedToChangeRequest.V1(Id, name, number, source);
+        //Apply(@event);
     }
 
     internal void RemoveFic(Guid ficId)
     {
-        var @event = new FicRemovedFromChangeRequest.V1(Id, ficId);
-        Apply(@event);
+        //var @event = new FicRemovedFromChangeRequest.V1(Id, ficId);
+        //Apply(@event);
     }
 }
 

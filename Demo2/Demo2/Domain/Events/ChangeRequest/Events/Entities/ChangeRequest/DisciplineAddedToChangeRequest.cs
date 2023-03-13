@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Demo2.Domain.Events;
 
-public class AddedDisciplineToChangeRequest
+public class DisciplineAddedToChangeRequest
 {
     public class V1 : DomainEvent
     {

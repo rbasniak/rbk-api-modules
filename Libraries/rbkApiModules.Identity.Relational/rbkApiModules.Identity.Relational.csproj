@@ -23,6 +23,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\rbkApiModules.Commons.Relational\rbkApiModules.Commons.Relational.csproj" />
+		<ProjectReference Include="..\rbkApiModules.Identity.Core\rbkApiModules.Identity.Core.csproj" />
 	</ItemGroup>
 
 

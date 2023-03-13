@@ -1,5 +1,4 @@
-﻿using GCAB.Models.States;
-using rbkApiModules.Commons.Core;
+﻿using rbkApiModules.Commons.Core;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -20,7 +19,7 @@ public class ChangeRequest : BaseEntity
     {
     }
 
-    private ChangeRequest(Platform platform, ChangeRequestType type, ChangeRequestPriority priority,
+    public ChangeRequest(Platform platform, ChangeRequestType type, ChangeRequestPriority priority,
         ChangeRequestSource source, State state, string description, string justification,
         string createdBy, string requestedBy, string currentOwner, string sourceNumber, DateTime? desiredDate, bool isInTesting = false)
     {
@@ -80,7 +79,7 @@ public class ChangeRequest : BaseEntity
     public virtual double Complexity { get; private set; }
 
     public virtual GutMatrix Prioritization { get; private set; }
-    
+
     public virtual string Resource { get; private set; }
     public virtual string CreatedBy { get; private set; }
     public virtual string CheckedBy { get; private set; }
@@ -102,4 +101,52 @@ public class ChangeRequest : BaseEntity
     public virtual IEnumerable<EvidenceAttachment> EvidenceAttachments => _evidenceAttachments?.ToList();
 
     public virtual IEnumerable<StateChangeEvent> Events => _events?.OrderBy(x => x.Date).ToList();
+
+    internal void AddFic(Fic fic)
+    {
+        _fics.Add(fic);
+    }
+
+    internal void AddDocument(Document document)
+    {
+        _documents.Add(document);
+    }
+
+    internal void AddAttchment(Attachment attachment)
+    {
+        _attachments.Add(attachment);
+    }
+
+    internal void AddEvidenceAttchment(EvidenceAttachment attachment)
+    {
+        _evidenceAttachments.Add(attachment);
+    }
+
+    internal void AddDiscipline(Discipline discipline)
+    {
+        if (_disciplines.None(x => x.Discipline == discipline))
+        {
+            _disciplines.Add(new ChangeRequestToDiscipline(this, discipline));
+        }
+    }
+
+    internal void SetComplexity(int complexity)
+    {
+        Complexity = complexity;
+    }
+
+    internal void SetPrioritization(GutMatrix prioritization)
+    {
+        Prioritization = prioritization;
+    }
+
+    internal void SetComments(string comments)
+    {
+        Comments = comments;
+    }
+
+    internal void SetSgmStatus(string sgmStatus)
+    {
+        StatusSgm = sgmStatus;
+    }
 }

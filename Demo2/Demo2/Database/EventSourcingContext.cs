@@ -1,6 +1,7 @@
 ﻿using Demo2.Domain.Events.Domain;
 using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Commons.Relational;
+using rbkApiModules.Commons.Relational.EventSourcing;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Demo2.Domain.Events.MyImplementation.Database;
 
-public class EventSourcingContext: DbContext
+public class EventSourcingContext: DbContext, IEventStoreContext
 {
     public EventSourcingContext(DbContextOptions<EventSourcingContext> options) : base(options)
     {

@@ -1,4 +1,4 @@
-﻿using GCAB.Models.Domain;
+﻿using Demo2.Relational;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.Diagnostics.CodeAnalysis;

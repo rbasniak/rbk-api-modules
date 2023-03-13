@@ -1,5 +1,4 @@
-﻿using GCAB.Models.Domain;
-using rbkApiModules.Commons.Core;
+﻿using rbkApiModules.Commons.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;

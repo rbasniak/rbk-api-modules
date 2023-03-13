@@ -1,6 +1,5 @@
 ﻿using Demo2.Database.Config.Relational;
 using Demo2.Domain.Events.Domain;
-using GCAB.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Commons.Relational;
 using System;

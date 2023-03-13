@@ -1,6 +1,5 @@
 ﻿using Demo2.Domain.Events.Infrastructure;
 using Demo2.Domain.Events.Repositories;
-using Demo2.Domain.Models;
 using Demo2.Infrastructure.EventSourcing.Database.Repositories;
 using FluentValidation;
 using MediatR;

@@ -1,5 +1,4 @@
-﻿using GCAB.Models;
-using GCAB.Models.States;
+﻿using Demo2.Relational;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.Diagnostics.CodeAnalysis;

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Demo2.Domain.Events.Repositories;
 using Demo2.Domain;
 using System.Diagnostics;
+using Demo2.Domain.Events.MyImplementation.Database;
 
 namespace Demo2.Controllers;
 
@@ -41,17 +42,13 @@ public class ChangeRequestController: BaseController
 
     [AllowAnonymous]
     [HttpGet("seed/{amount}")]
-    public async Task<ActionResult> Seed([FromServices] IChangeRequestRepository repository, int amount)
+    public async Task<ActionResult> Seed([FromServices] IChangeRequestRepository repository, [FromServices] RelationalContext rlContext, int amount)
     {
         try
         {
-            var sw = Stopwatch.StartNew();
+            var result = ChangeRequestGenerator.Generate(rlContext, amount);
 
-            var temp = await ChangeRequestGenerator.GenerateAsync(amount);
-
-            sw.Stop();
-
-            return Ok($"Done in {sw.Elapsed.TotalSeconds:0.00}s!");
+            return Ok(result);
         }
         catch (Exception ex)
         {

@@ -7,17 +7,13 @@ using System.Text.Json;
 using rbkApiModules.Commons.Core.UiDefinitions;
 using AutoMapper;
 using rbkApiModules.Commons.Relational;
-using rbkApiModules.Identity.Core;
 using rbkApiModules.Commons.Core.CQRS;
-using rbkApiModules.Comments.Core;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Relational.CQRS;
-using Demo2.Domain.Models;
 using Demo2.Domain.Events.Infrastructure;
 using rbkApiModules.Commons.Core.Pipelines;
 using Demo2.Infrastructure.EventSourcing.Database.Repositories;
 using Demo2.Domain.Events.MyImplementation.Database;
-using rbkApiModules.Identity.Core.DataTransfer.Tenants;
 
 namespace Demo2.Api;
 
@@ -97,13 +93,6 @@ public class Startup
 
         services.AddTransient<IEventStore, RelationalEventStore>();
 
-        //services.AddRbkRelationalAuthentication(options => options
-        //    .UseSymetricEncryptationKey()
-        ////.DisableWindowsAuthentication()
-        ////.DisableEmailConfirmation()
-        ////.DisablePasswordReset()
-        //);
-
         services.AddRbkUIDefinitions(AssembliesForUiDefinitions);
     }
 
@@ -125,9 +114,9 @@ public class Startup
                     // invalid data will be kept in the context and EF will tries to save it again
                     using (var scope = scopeFactory.CreateScope())
                     {
-                        var logger = scope.ServiceProvider.GetService<Microsoft.Extensions.Logging.ILogger>();
+                        var logger = scope.ServiceProvider.GetService<Serilog.ILogger>();
 
-                        logger.LogCritical(errorHandler.Error, "Exception caught by the global exception handler");
+                        logger.Fatal(errorHandler.Error, "Exception caught by the global exception handler");
                     }
 
                     await context.Response.WriteAsync(
@@ -142,6 +131,11 @@ public class Startup
         app.UseRbkApiCoreSetup();
 
         app.SetupDatabase<EventSourcingContext>(options => options
+            .MigrateOnStartup()
+            .ResetOnStartup(_isInTestMode)
+        );
+
+        app.SetupDatabase<RelationalContext>(options => options
             .MigrateOnStartup()
             .ResetOnStartup(_isInTestMode)
         );
@@ -172,11 +166,7 @@ public class Startup
         //app.SeedDatabase<DatabaseSeed>();
     }
 
-    private static Assembly[] AssembliesForAutoMapper => new[]
-    {
-        Assembly.GetAssembly(typeof(TenantMappings)),
-        Assembly.GetAssembly(typeof(CommentsMappings)),
-    };
+    private static Assembly[] AssembliesForAutoMapper => new Assembly[0];
 
     private static Assembly[] AssembliesForMediatR => new[] 
     {
