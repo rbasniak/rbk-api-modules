@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Database\Config\EventSourcing\" />
+    <Folder Include="Database\Relational\Config\EventSourcing\" />
     <Folder Include="Logs\" />
   </ItemGroup>
 

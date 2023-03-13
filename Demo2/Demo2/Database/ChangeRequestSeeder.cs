@@ -1,15 +1,16 @@
 ﻿using Demo2.Domain.Events.MyImplementation.Database;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using rbkApiModules.Commons.Core;
 using System.Diagnostics;
 
 namespace Demo2.Domain
 {
-    public static class ChangeRequestGenerator
+    public static class ChangeRequestSeeder
     {
         private static Random _random = new Random(19001);
 
-        static ChangeRequestGenerator()
+        static ChangeRequestSeeder()
         {
 
         }
@@ -122,6 +123,21 @@ namespace Demo2.Domain
                 new Relational.State("State 5"),
             };
 
+            if (rlContext.Set<Relational.Platform>().None())
+            {
+                rlContext.AddRange(platforms);
+                rlContext.AddRange(crPriorities);
+                rlContext.AddRange(crSources);
+                rlContext.AddRange(crDisciplines);
+                rlContext.AddRange(crTypes);
+                rlContext.AddRange(crDocCategories);
+                rlContext.AddRange(crFicCategories);
+                rlContext.AddRange(crAttachmentTypes);
+                rlContext.AddRange(crStates);
+
+                rlContext.SaveChanges();
+            }
+
             for (int i = 0; i < amount; i++)
             {
                 var amountOfDocuments = _random.Next(1, 10);
@@ -204,8 +220,11 @@ namespace Demo2.Domain
             var generationElapsed = sw.Elapsed.TotalSeconds;
             sw.Restart();
 
-            rlContext.AddRange(rlResults);
-            rlContext.SaveChanges();
+            if (rlContext.Set<Relational.ChangeRequest>().None())
+            {
+                rlContext.AddRange(rlResults);
+                rlContext.SaveChanges();
+            }
 
             var rlSaveElapsed = sw.Elapsed.TotalSeconds;
 
