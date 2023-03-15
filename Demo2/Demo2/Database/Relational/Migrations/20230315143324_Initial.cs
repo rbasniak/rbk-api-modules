@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Demo2.Migrations.Relational
+namespace Demo2.Database.Relational.Migrations
 {
     /// <inheritdoc />
     public partial class Initial : Migration
@@ -209,19 +209,19 @@ namespace Demo2.Migrations.Relational
                         column: x => x.SourceId,
                         principalTable: "ChageRequestSources",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_ChangeRequests_ChangeRequestPriorities_PriorityId",
                         column: x => x.PriorityId,
                         principalTable: "ChangeRequestPriorities",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_ChangeRequests_ChangeRequestTypes_TypeId",
                         column: x => x.TypeId,
                         principalTable: "ChangeRequestTypes",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_ChangeRequests_Platforms_PlatformId",
                         column: x => x.PlatformId,
@@ -246,7 +246,8 @@ namespace Demo2.Migrations.Relational
                     ChangeRequestId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Size = table.Column<long>(type: "bigint", nullable: false),
                     Path = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Filename = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Filename = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ChangeRequestId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -256,13 +257,18 @@ namespace Demo2.Migrations.Relational
                         column: x => x.TypeId,
                         principalTable: "AttachmentTypes",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Attachments_ChangeRequests_ChangeRequestId",
                         column: x => x.ChangeRequestId,
                         principalTable: "ChangeRequests",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Attachments_ChangeRequests_ChangeRequestId1",
+                        column: x => x.ChangeRequestId1,
+                        principalTable: "ChangeRequests",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -270,7 +276,8 @@ namespace Demo2.Migrations.Relational
                 columns: table => new
                 {
                     ChangeRequestId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DisciplineId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    DisciplineId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ChangeRequestId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -282,11 +289,16 @@ namespace Demo2.Migrations.Relational
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
+                        name: "FK_ChangeRequestToDisciplines_ChangeRequests_ChangeRequestId1",
+                        column: x => x.ChangeRequestId1,
+                        principalTable: "ChangeRequests",
+                        principalColumn: "Id");
+                    table.ForeignKey(
                         name: "FK_ChangeRequestToDisciplines_Disciplines_DisciplineId",
                         column: x => x.DisciplineId,
                         principalTable: "Disciplines",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -313,7 +325,7 @@ namespace Demo2.Migrations.Relational
                         column: x => x.CategoryId,
                         principalTable: "DocumentCategories",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -338,7 +350,7 @@ namespace Demo2.Migrations.Relational
                         column: x => x.TypeId,
                         principalTable: "AttachmentTypes",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_EvidenceAttachments_ChangeRequests_ChangeRequestId",
                         column: x => x.ChangeRequestId,
@@ -404,6 +416,11 @@ namespace Demo2.Migrations.Relational
                 column: "ChangeRequestId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Attachments_ChangeRequestId1",
+                table: "Attachments",
+                column: "ChangeRequestId1");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Attachments_TypeId",
                 table: "Attachments",
                 column: "TypeId");
@@ -432,6 +449,11 @@ namespace Demo2.Migrations.Relational
                 name: "IX_ChangeRequests_TypeId",
                 table: "ChangeRequests",
                 column: "TypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ChangeRequestToDisciplines_ChangeRequestId1",
+                table: "ChangeRequestToDisciplines",
+                column: "ChangeRequestId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ChangeRequestToDisciplines_DisciplineId",

@@ -45,12 +45,27 @@ public class ChangeRequestController: BaseController
     [HttpGet("list/relational")]
     public async Task<ActionResult> ListRelational()
     {
-        if (!_listOfValues.IsInitialized)
-        {
-            InitializeLoV();
-        }
+        var sw = Stopwatch.StartNew();
 
-        return Ok(_listOfValues);
+        var entities = _rlContext.Set<ChangeRequest>()
+            .Include(x => x.Priority)
+            .Include(x => x.Source)
+            .Include(x => x.Type)
+            .Include(x => x.Disciplines).ThenInclude(x => x.Discipline)
+            .Include(x => x.Platform)
+
+            .Include(x => x.Documents).ThenInclude(x=> x.Category)
+            .Include(x => x.Fics).ThenInclude(x => x.Category)
+            .Include(x => x.Attachments).ThenInclude(x => x.Type)
+            .Include(x => x.EvidenceAttachments).ThenInclude(x => x.Type)
+
+            .ToList();
+
+        sw.Stop();
+
+        var rate = entities.Count / sw.Elapsed.TotalMilliseconds;
+
+        return Ok($"Loaded {entities.Count} entities from relational store in {sw.Elapsed.TotalSeconds:0.00}s ({rate:0.0}ms per entity)");
     }
 
     [HttpGet("list/event-sourcing")]
@@ -61,7 +76,15 @@ public class ChangeRequestController: BaseController
             InitializeLoV();
         }
 
-        return Ok(_listOfValues);
+        var sw = Stopwatch.StartNew();
+
+        var entities = new List<string>();
+
+        sw.Stop();
+
+        var rate = entities.Count / sw.Elapsed.TotalMilliseconds;
+
+        return Ok($"Loaded {entities.Count} entities from relational store in {sw.Elapsed.TotalSeconds:0.00}s ({rate:0.0}ms per entity)");
     }
 
     private void InitializeLoV()

@@ -9,10 +9,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Demo2.Migrations.Relational
+namespace Demo2.Database.Relational.Migrations
 {
     [DbContext(typeof(RelationalContext))]
-    [Migration("20230302110308_Initial")]
+    [Migration("20230315143324_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -51,13 +51,16 @@ namespace Demo2.Migrations.Relational
                     b.ToTable("Events");
                 });
 
-            modelBuilder.Entity("GCAB.Models.Domain.Attachment", b =>
+            modelBuilder.Entity("Demo2.Relational.Attachment", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("ChangeRequestId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ChangeRequestId1")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Filename")
@@ -80,12 +83,14 @@ namespace Demo2.Migrations.Relational
 
                     b.HasIndex("ChangeRequestId");
 
+                    b.HasIndex("ChangeRequestId1");
+
                     b.HasIndex("TypeId");
 
                     b.ToTable("Attachments", (string)null);
                 });
 
-            modelBuilder.Entity("GCAB.Models.Domain.AttachmentType", b =>
+            modelBuilder.Entity("Demo2.Relational.AttachmentType", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -103,7 +108,7 @@ namespace Demo2.Migrations.Relational
                     b.ToTable("AttachmentTypes", (string)null);
                 });
 
-            modelBuilder.Entity("GCAB.Models.Domain.ChangeRequest", b =>
+            modelBuilder.Entity("Demo2.Relational.ChangeRequest", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -185,7 +190,7 @@ namespace Demo2.Migrations.Relational
                     b.ToTable("ChangeRequests", (string)null);
                 });
 
-            modelBuilder.Entity("GCAB.Models.Domain.ChangeRequestPriority", b =>
+            modelBuilder.Entity("Demo2.Relational.ChangeRequestPriority", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -207,7 +212,7 @@ namespace Demo2.Migrations.Relational
                     b.ToTable("ChangeRequestPriorities", (string)null);
                 });
 
-            modelBuilder.Entity("GCAB.Models.Domain.ChangeRequestSource", b =>
+            modelBuilder.Entity("Demo2.Relational.ChangeRequestSource", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -222,7 +227,7 @@ namespace Demo2.Migrations.Relational
                     b.ToTable("ChageRequestSources", (string)null);
                 });
 
-            modelBuilder.Entity("GCAB.Models.Domain.ChangeRequestToDiscipline", b =>
+            modelBuilder.Entity("Demo2.Relational.ChangeRequestToDiscipline", b =>
                 {
                     b.Property<Guid>("ChangeRequestId")
                         .HasColumnType("uniqueidentifier");
@@ -230,14 +235,19 @@ namespace Demo2.Migrations.Relational
                     b.Property<Guid>("DisciplineId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("ChangeRequestId1")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("ChangeRequestId", "DisciplineId");
+
+                    b.HasIndex("ChangeRequestId1");
 
                     b.HasIndex("DisciplineId");
 
                     b.ToTable("ChangeRequestToDisciplines", (string)null);
                 });
 
-            modelBuilder.Entity("GCAB.Models.Domain.ChangeRequestType", b =>
+            modelBuilder.Entity("Demo2.Relational.ChangeRequestType", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -252,7 +262,7 @@ namespace Demo2.Migrations.Relational
                     b.ToTable("ChangeRequestTypes", (string)null);
                 });
 
-            modelBuilder.Entity("GCAB.Models.Domain.Discipline", b =>
+            modelBuilder.Entity("Demo2.Relational.Discipline", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -267,7 +277,7 @@ namespace Demo2.Migrations.Relational
                     b.ToTable("Disciplines", (string)null);
                 });
 
-            modelBuilder.Entity("GCAB.Models.Domain.Document", b =>
+            modelBuilder.Entity("Demo2.Relational.Document", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -295,7 +305,7 @@ namespace Demo2.Migrations.Relational
                     b.ToTable("Documents", (string)null);
                 });
 
-            modelBuilder.Entity("GCAB.Models.Domain.DocumentCategory", b =>
+            modelBuilder.Entity("Demo2.Relational.DocumentCategory", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -310,7 +320,7 @@ namespace Demo2.Migrations.Relational
                     b.ToTable("DocumentCategories", (string)null);
                 });
 
-            modelBuilder.Entity("GCAB.Models.Domain.EvidenceAttachment", b =>
+            modelBuilder.Entity("Demo2.Relational.EvidenceAttachment", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -350,7 +360,7 @@ namespace Demo2.Migrations.Relational
                     b.ToTable("EvidenceAttachments", (string)null);
                 });
 
-            modelBuilder.Entity("GCAB.Models.Domain.Fic", b =>
+            modelBuilder.Entity("Demo2.Relational.Fic", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -374,7 +384,7 @@ namespace Demo2.Migrations.Relational
                     b.ToTable("Fic");
                 });
 
-            modelBuilder.Entity("GCAB.Models.Domain.FicCategory", b =>
+            modelBuilder.Entity("Demo2.Relational.FicCategory", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -389,7 +399,7 @@ namespace Demo2.Migrations.Relational
                     b.ToTable("FicCategories", (string)null);
                 });
 
-            modelBuilder.Entity("GCAB.Models.Domain.Platform", b =>
+            modelBuilder.Entity("Demo2.Relational.Platform", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -408,32 +418,7 @@ namespace Demo2.Migrations.Relational
                     b.ToTable("Platforms", (string)null);
                 });
 
-            modelBuilder.Entity("GCAB.Models.Domain.Un", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Domain")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Repository")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Uns", (string)null);
-                });
-
-            modelBuilder.Entity("GCAB.Models.States.State", b =>
+            modelBuilder.Entity("Demo2.Relational.State", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -448,7 +433,7 @@ namespace Demo2.Migrations.Relational
                     b.ToTable("States", (string)null);
                 });
 
-            modelBuilder.Entity("GCAB.Models.States.StateChangeEvent", b =>
+            modelBuilder.Entity("Demo2.Relational.StateChangeEvent", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -485,6 +470,31 @@ namespace Demo2.Migrations.Relational
                     b.ToTable("StateChangeEvent");
                 });
 
+            modelBuilder.Entity("Demo2.Relational.Un", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Domain")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Repository")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Uns", (string)null);
+                });
+
             modelBuilder.Entity("rbkApiModules.Commons.Relational.SeedHistory", b =>
                 {
                     b.Property<string>("Id")
@@ -498,18 +508,22 @@ namespace Demo2.Migrations.Relational
                     b.ToTable("__SeedHistory", (string)null);
                 });
 
-            modelBuilder.Entity("GCAB.Models.Domain.Attachment", b =>
+            modelBuilder.Entity("Demo2.Relational.Attachment", b =>
                 {
-                    b.HasOne("GCAB.Models.Domain.ChangeRequest", "ChangeRequest")
-                        .WithMany("Attachments")
+                    b.HasOne("Demo2.Relational.ChangeRequest", "ChangeRequest")
+                        .WithMany()
                         .HasForeignKey("ChangeRequestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GCAB.Models.Domain.AttachmentType", "Type")
+                    b.HasOne("Demo2.Relational.ChangeRequest", null)
                         .WithMany("Attachments")
+                        .HasForeignKey("ChangeRequestId1");
+
+                    b.HasOne("Demo2.Relational.AttachmentType", "Type")
+                        .WithMany()
                         .HasForeignKey("TypeId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("ChangeRequest");
@@ -517,39 +531,39 @@ namespace Demo2.Migrations.Relational
                     b.Navigation("Type");
                 });
 
-            modelBuilder.Entity("GCAB.Models.Domain.ChangeRequest", b =>
+            modelBuilder.Entity("Demo2.Relational.ChangeRequest", b =>
                 {
-                    b.HasOne("GCAB.Models.Domain.Platform", "Platform")
-                        .WithMany("ChangeRequests")
+                    b.HasOne("Demo2.Relational.Platform", "Platform")
+                        .WithMany()
                         .HasForeignKey("PlatformId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GCAB.Models.Domain.ChangeRequestPriority", "Priority")
-                        .WithMany("ChangeRequests")
+                    b.HasOne("Demo2.Relational.ChangeRequestPriority", "Priority")
+                        .WithMany()
                         .HasForeignKey("PriorityId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GCAB.Models.Domain.ChangeRequestSource", "Source")
-                        .WithMany("ChangeRequests")
+                    b.HasOne("Demo2.Relational.ChangeRequestSource", "Source")
+                        .WithMany()
                         .HasForeignKey("SourceId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GCAB.Models.States.State", "State")
+                    b.HasOne("Demo2.Relational.State", "State")
                         .WithMany()
                         .HasForeignKey("StateId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("GCAB.Models.Domain.ChangeRequestType", "Type")
-                        .WithMany("ChangeRequests")
+                    b.HasOne("Demo2.Relational.ChangeRequestType", "Type")
+                        .WithMany()
                         .HasForeignKey("TypeId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("GCAB.Models.Domain.GutMatrix", "Prioritization", b1 =>
+                    b.OwnsOne("Demo2.Relational.GutMatrix", "Prioritization", b1 =>
                         {
                             b1.Property<Guid>("ChangeRequestId")
                                 .HasColumnType("uniqueidentifier");
@@ -584,18 +598,22 @@ namespace Demo2.Migrations.Relational
                     b.Navigation("Type");
                 });
 
-            modelBuilder.Entity("GCAB.Models.Domain.ChangeRequestToDiscipline", b =>
+            modelBuilder.Entity("Demo2.Relational.ChangeRequestToDiscipline", b =>
                 {
-                    b.HasOne("GCAB.Models.Domain.ChangeRequest", "ChangeRequest")
-                        .WithMany("Disciplines")
+                    b.HasOne("Demo2.Relational.ChangeRequest", "ChangeRequest")
+                        .WithMany()
                         .HasForeignKey("ChangeRequestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GCAB.Models.Domain.Discipline", "Discipline")
-                        .WithMany("ChangeRequests")
+                    b.HasOne("Demo2.Relational.ChangeRequest", null)
+                        .WithMany("Disciplines")
+                        .HasForeignKey("ChangeRequestId1");
+
+                    b.HasOne("Demo2.Relational.Discipline", "Discipline")
+                        .WithMany()
                         .HasForeignKey("DisciplineId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("ChangeRequest");
@@ -603,15 +621,15 @@ namespace Demo2.Migrations.Relational
                     b.Navigation("Discipline");
                 });
 
-            modelBuilder.Entity("GCAB.Models.Domain.Document", b =>
+            modelBuilder.Entity("Demo2.Relational.Document", b =>
                 {
-                    b.HasOne("GCAB.Models.Domain.DocumentCategory", "Category")
-                        .WithMany("Documents")
+                    b.HasOne("Demo2.Relational.DocumentCategory", "Category")
+                        .WithMany()
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GCAB.Models.Domain.ChangeRequest", "ChangeRequest")
+                    b.HasOne("Demo2.Relational.ChangeRequest", "ChangeRequest")
                         .WithMany("Documents")
                         .HasForeignKey("ChangeRequestId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -622,18 +640,18 @@ namespace Demo2.Migrations.Relational
                     b.Navigation("ChangeRequest");
                 });
 
-            modelBuilder.Entity("GCAB.Models.Domain.EvidenceAttachment", b =>
+            modelBuilder.Entity("Demo2.Relational.EvidenceAttachment", b =>
                 {
-                    b.HasOne("GCAB.Models.Domain.ChangeRequest", "ChangeRequest")
+                    b.HasOne("Demo2.Relational.ChangeRequest", "ChangeRequest")
                         .WithMany("EvidenceAttachments")
                         .HasForeignKey("ChangeRequestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GCAB.Models.Domain.AttachmentType", "Type")
-                        .WithMany("EvidenceAttachments")
+                    b.HasOne("Demo2.Relational.AttachmentType", "Type")
+                        .WithMany()
                         .HasForeignKey("TypeId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("ChangeRequest");
@@ -641,15 +659,15 @@ namespace Demo2.Migrations.Relational
                     b.Navigation("Type");
                 });
 
-            modelBuilder.Entity("GCAB.Models.Domain.Fic", b =>
+            modelBuilder.Entity("Demo2.Relational.Fic", b =>
                 {
-                    b.HasOne("GCAB.Models.Domain.FicCategory", "Category")
-                        .WithMany("Fics")
+                    b.HasOne("Demo2.Relational.FicCategory", "Category")
+                        .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GCAB.Models.Domain.ChangeRequest", "ChangeRequest")
+                    b.HasOne("Demo2.Relational.ChangeRequest", "ChangeRequest")
                         .WithMany("Fics")
                         .HasForeignKey("ChangeRequestId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -660,10 +678,10 @@ namespace Demo2.Migrations.Relational
                     b.Navigation("ChangeRequest");
                 });
 
-            modelBuilder.Entity("GCAB.Models.Domain.Platform", b =>
+            modelBuilder.Entity("Demo2.Relational.Platform", b =>
                 {
-                    b.HasOne("GCAB.Models.Domain.Un", "Un")
-                        .WithMany("Platforms")
+                    b.HasOne("Demo2.Relational.Un", "Un")
+                        .WithMany()
                         .HasForeignKey("UnId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -671,9 +689,9 @@ namespace Demo2.Migrations.Relational
                     b.Navigation("Un");
                 });
 
-            modelBuilder.Entity("GCAB.Models.States.StateChangeEvent", b =>
+            modelBuilder.Entity("Demo2.Relational.StateChangeEvent", b =>
                 {
-                    b.HasOne("GCAB.Models.Domain.ChangeRequest", "ChangeRequest")
+                    b.HasOne("Demo2.Relational.ChangeRequest", "ChangeRequest")
                         .WithMany("Events")
                         .HasForeignKey("ChangeRequestId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -682,14 +700,7 @@ namespace Demo2.Migrations.Relational
                     b.Navigation("ChangeRequest");
                 });
 
-            modelBuilder.Entity("GCAB.Models.Domain.AttachmentType", b =>
-                {
-                    b.Navigation("Attachments");
-
-                    b.Navigation("EvidenceAttachments");
-                });
-
-            modelBuilder.Entity("GCAB.Models.Domain.ChangeRequest", b =>
+            modelBuilder.Entity("Demo2.Relational.ChangeRequest", b =>
                 {
                     b.Navigation("Attachments");
 
@@ -702,46 +713,6 @@ namespace Demo2.Migrations.Relational
                     b.Navigation("EvidenceAttachments");
 
                     b.Navigation("Fics");
-                });
-
-            modelBuilder.Entity("GCAB.Models.Domain.ChangeRequestPriority", b =>
-                {
-                    b.Navigation("ChangeRequests");
-                });
-
-            modelBuilder.Entity("GCAB.Models.Domain.ChangeRequestSource", b =>
-                {
-                    b.Navigation("ChangeRequests");
-                });
-
-            modelBuilder.Entity("GCAB.Models.Domain.ChangeRequestType", b =>
-                {
-                    b.Navigation("ChangeRequests");
-                });
-
-            modelBuilder.Entity("GCAB.Models.Domain.Discipline", b =>
-                {
-                    b.Navigation("ChangeRequests");
-                });
-
-            modelBuilder.Entity("GCAB.Models.Domain.DocumentCategory", b =>
-                {
-                    b.Navigation("Documents");
-                });
-
-            modelBuilder.Entity("GCAB.Models.Domain.FicCategory", b =>
-                {
-                    b.Navigation("Fics");
-                });
-
-            modelBuilder.Entity("GCAB.Models.Domain.Platform", b =>
-                {
-                    b.Navigation("ChangeRequests");
-                });
-
-            modelBuilder.Entity("GCAB.Models.Domain.Un", b =>
-                {
-                    b.Navigation("Platforms");
                 });
 #pragma warning restore 612, 618
         }
