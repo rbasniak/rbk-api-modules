@@ -15,10 +15,7 @@ namespace Demo2.Database.Config.Relational
             entity.Property(c => c.Name)
                 .IsRequired();
 
-            entity.HasOne(x => x.Category)
-                .WithMany(x => x.Fics)
-                .HasForeignKey(x => x.CategoryId)
-                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(x => x.Category).WithMany();
 
             entity.HasOne(x => x.ChangeRequest)
                 .WithMany(x => x.Fics)

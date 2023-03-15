@@ -13,9 +13,7 @@ namespace Demo2.Database.Config.Relational
             entity.ToTable("Platforms");
 
             entity.HasOne(platform => platform.Un)
-              .WithMany(un => un.Platforms)
-              .HasForeignKey(platform => platform.UnId)
-              .OnDelete(DeleteBehavior.Cascade);
+             .WithMany();
         }
     }
 }

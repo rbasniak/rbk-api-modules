@@ -12,7 +12,7 @@ namespace Demo2.Domain.Events.Infrastructure
         /// Id defines entity uniqueness and is used for Equality
         /// comparisons and hash code generation.
         /// </summary>
-        public abstract Guid Id { get; protected set; }
+        public abstract Guid Id { get; internal set; }
 
         public override bool Equals(object obj)
         {

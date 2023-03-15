@@ -1,4 +1,5 @@
-﻿using rbkApiModules.Commons.Core;
+﻿using Demo2.Domain.Events.Infrastructure;
+using rbkApiModules.Commons.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;

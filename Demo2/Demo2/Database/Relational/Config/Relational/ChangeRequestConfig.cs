@@ -30,29 +30,19 @@ namespace Demo2.Database.Config.Relational
                 .OnDelete(DeleteBehavior.Restrict);
 
             entity.HasOne(x => x.Platform)
-                .WithMany(x => x.ChangeRequests)
-                .HasForeignKey(x => x.PlatformId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .WithMany();
 
             entity.HasOne(x => x.Priority)
-                .WithMany(x => x.ChangeRequests)
-                .HasForeignKey(x => x.PriorityId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .WithMany();
 
             entity.HasOne(x => x.Type)
-                .WithMany(x => x.ChangeRequests)
-                .HasForeignKey(x => x.TypeId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .WithMany();
 
             entity.HasOne(x => x.Source)
-                .WithMany(x => x.ChangeRequests)
-                .HasForeignKey(x => x.SourceId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .WithMany();
 
             entity.HasOne(x => x.Priority)
-                .WithMany(x => x.ChangeRequests)
-                .HasForeignKey(x => x.PriorityId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .WithMany();
 
         }
     }

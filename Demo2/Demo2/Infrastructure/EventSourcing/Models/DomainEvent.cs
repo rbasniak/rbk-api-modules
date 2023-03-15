@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Demo2.Domain.Events;
 
-public abstract class DomainEvent : IDomainEvent
+public abstract class DomainEvent  
 {
     protected DomainEvent()
     {
@@ -23,7 +23,7 @@ public abstract class DomainEvent : IDomainEvent
 
     public Guid AggregateId { get; }
 
-    public int Version { get; private set; }
+    public int Version { get; set; }
 
     public DateTime CreatedAt { get; private set; }
 
@@ -31,15 +31,6 @@ public abstract class DomainEvent : IDomainEvent
 
     [JsonIgnore]
     public virtual EventSummary Summary { get; } 
-}
-
-public interface IDomainEvent: INotification
-{
-    Guid EventId { get; }
-    Guid AggregateId { get; }
-    int Version { get; }
-    DateTime CreatedAt { get; }
-    EventSummary Summary { get; }
 }
 
 public class EventSummary

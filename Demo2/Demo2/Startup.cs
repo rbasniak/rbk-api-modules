@@ -14,6 +14,7 @@ using Demo2.Domain.Events.Infrastructure;
 using rbkApiModules.Commons.Core.Pipelines;
 using Demo2.Infrastructure.EventSourcing.Database.Repositories;
 using Demo2.Domain.Events.MyImplementation.Database;
+using Demo2.Domain.Eventsourcing.Projectors;
 
 namespace Demo2.Api;
 
@@ -90,6 +91,8 @@ public class Startup
             .UseHttpContextAccessor()
             .UseStaticFiles()
         );
+
+        services.AddSingleton(new ListOfValuesRepository());
 
         services.AddTransient<IEventStore, RelationalEventStore>();
 

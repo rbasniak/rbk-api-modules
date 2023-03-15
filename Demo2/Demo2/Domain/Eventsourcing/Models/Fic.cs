@@ -11,39 +11,16 @@ public class Fic
     {
 
     }
-    public Fic(Guid id, string name, FicCategory category)
+    public Fic(Guid id, string name, Guid categoryId)
     {
         Id = id;
         Name = name;
-        Category = category;
+        CategoryId = categoryId;
     }
 
-    public virtual Guid Id { get; set; }
-    public virtual string Name { get; set; }
-    public virtual FicCategory Category { get; set; }
+    public virtual Guid Id { get; internal set; }
+    public virtual string Name { get; internal set; }
+    public virtual Guid CategoryId { get; internal set; }
 }
 
-
-public enum FicCategory
-{
-    [Description("FicCategory 1")]
-    FicCategory1 = 1,
-
-    [Description("FicCategory 2")]
-    FicCategory2 = 2,
-
-    [Description("FicCategory 3")]
-    FicCategory3 = 3,
-
-    [Description("FicCategory 4")]
-    FicCategory4 = 4,
-
-    [Description("FicCategory 5")]
-    FicCategory5 = 5,
-
-    [Description("FicCategory 6")]
-    FicCategory6 = 6,
-
-    [Description("FicCategory 7")]
-    FicCategory7 = 7,
-}
+ 

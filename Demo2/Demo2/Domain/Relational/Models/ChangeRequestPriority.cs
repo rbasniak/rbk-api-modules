@@ -6,7 +6,6 @@ namespace Demo2.Relational;
 
 public class ChangeRequestPriority: BaseEntity
 {
-    private readonly HashSet<ChangeRequest> _changeRequests;
     public ChangeRequestPriority()
     {
 
@@ -15,8 +14,6 @@ public class ChangeRequestPriority: BaseEntity
     {
         Name = name;
         Color = color;
-
-        _changeRequests = new HashSet<ChangeRequest>();
     }
 
     public virtual string Name { get; set; }
@@ -25,5 +22,4 @@ public class ChangeRequestPriority: BaseEntity
 
     public virtual string Color { get; set; }
 
-    public virtual IEnumerable<ChangeRequest> ChangeRequests => _changeRequests.ToList(); 
 }

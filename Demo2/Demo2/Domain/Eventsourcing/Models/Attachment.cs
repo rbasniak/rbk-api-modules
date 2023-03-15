@@ -11,23 +11,23 @@ public class Attachment : BaseEntity
     {
     }
 
-    public Attachment(string name, AttachmentType type, long size, string path, string filename)
+    public Attachment(string name, Guid typeId, long size, string path, string filename)
     {
         Name = name;
-        Type = type;
+        TypeId = typeId;
         Size = size;
         Path = path;
         Filename = filename;
     }
 
 
-    public virtual string Name { get; set; }
+    public virtual string Name { get; internal set; }
 
-    public virtual AttachmentType Type { get; set; }
+    public virtual Guid TypeId { get; internal set; }
 
-    public virtual long Size { get; set; }
+    public virtual long Size { get; internal set; }
 
-    public virtual string Path { get; set; }
+    public virtual string Path { get; internal set; }
 
-    public virtual string Filename { get; set; }
+    public virtual string Filename { get; internal set; }
 }

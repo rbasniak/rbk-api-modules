@@ -1,4 +1,5 @@
-﻿using rbkApiModules.Commons.Core;
+﻿using Demo2.Relational;
+using rbkApiModules.Commons.Core;
 using System;
 using System.ComponentModel.DataAnnotations;
 
@@ -10,10 +11,10 @@ public class EvidenceAttachment : BaseEntity
     {
 
     }
-    public EvidenceAttachment(string name, AttachmentType type, long size, string path, string filename, string commentary)
+    public EvidenceAttachment(string name, Guid typeId, long size, string path, string filename, string commentary)
     {
         Name = name;
-        Type = type;
+        TypeId = typeId;
         Size = size;
         Path = path;
         Filename = filename;
@@ -21,18 +22,18 @@ public class EvidenceAttachment : BaseEntity
         AdditionDate = DateTime.Now;
     }
 
-    public virtual string Name { get; set; }
+    public virtual string Name { get; internal set; }
 
-    public virtual Guid TypeId { get; set; }
-    public virtual AttachmentType Type { get; set; }
+    public virtual Guid TypeId { get; internal set; }
+    public virtual AttachmentType Type { get; internal set; }
 
-    public virtual long Size { get; set; }
+    public virtual long Size { get; internal set; }
 
-    public virtual DateTime AdditionDate { get; set; }
+    public virtual DateTime AdditionDate { get; internal set; }
 
-    public virtual string Path { get; set; }
+    public virtual string Path { get; internal set; }
 
-    public virtual string Filename { get; set; }
+    public virtual string Filename { get; internal set; }
 
-    public virtual string Commentary { get; set; }
+    public virtual string Commentary { get; internal set; }
 }

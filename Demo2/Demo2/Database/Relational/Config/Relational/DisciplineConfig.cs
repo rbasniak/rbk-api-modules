@@ -14,10 +14,6 @@ namespace Demo2.Database.Config.Relational
 
             entity.Property(c => c.Name)
                 .IsRequired();
-
-            entity.Metadata
-                .FindNavigation(nameof(Discipline.ChangeRequests))
-                .SetPropertyAccessMode(PropertyAccessMode.Field);
         }
     }
 }

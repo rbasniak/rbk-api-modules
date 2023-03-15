@@ -20,14 +20,11 @@ namespace Demo2.Database.Config.Relational
             entity.Property(x => x.Size);
 
             entity.HasOne(x => x.Type)
-                .WithMany(x => x.EvidenceAttachments)
-                .HasForeignKey(x => x.TypeId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .WithMany();
 
             entity.HasOne(x => x.ChangeRequest)
                 .WithMany(x => x.EvidenceAttachments)
-                .HasForeignKey(x => x.ChangeRequestId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(x => x.ChangeRequestId) ;
         }
     }
 }

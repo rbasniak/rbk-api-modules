@@ -11,34 +11,15 @@ public class Document
     {
 
     }
-    public Document(Guid id, string name, DocumentCategory category)
+    public Document(Guid id, string name, Guid categoryId)
     {
         Id = id;
         Name = name;
-        Category = category;
+        CategoryId = categoryId;
     }
 
-    public virtual Guid Id { get; set; }
-    public virtual string Name { get; set; }
-
-    public virtual DocumentCategory Category { get; set; }
+    public virtual Guid Id { get; internal set; }
+    public virtual string Name { get; internal set; }
+    public virtual Guid CategoryId { get; internal set; }
 }
 
-
-public enum DocumentCategory
-{
-    [Description("Category 1")]
-    Category1 = 1,
-
-    [Description("Category 2")]
-    Category2 = 2,
-
-    [Description("Category 3")]
-    Category3 = 3,
-
-    [Description("Category 4")]
-    Category4 = 4,
-
-    [Description("Category 5")]
-    Category5 = 5,
-}

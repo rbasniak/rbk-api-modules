@@ -21,9 +21,7 @@ namespace Demo2.Database.Config.Relational
                 .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasOne(x => x.Category)
-                .WithMany(x => x.Documents)
-                .HasForeignKey(x => x.CategoryId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .WithMany();
         }
     }
 }

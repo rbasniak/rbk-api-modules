@@ -12,7 +12,6 @@ namespace Demo2.Domain.Events.Repositories;
 
 public interface IChangeRequestRepository
 {
-    Task<Guid> CreateAsync(string requestedBy, string createdBy, string description, string title);
     Task<ChangeRequest> FindAsync(Guid id);
     Task SaveAsync(ChangeRequest changeRequest);
 }
@@ -28,30 +27,21 @@ public class ChangeRequestRepository: IChangeRequestRepository
         _mediator = mediator;
     }
 
-    public async Task<Guid> CreateAsync(string requestedBy, string createdBy, string description, string title)
-    {
-        var request = ChangeRequest.CreateByGeneralUser(requestedBy, createdBy, description, title);
-
-        await _eventStore.SaveAsync(request.Id, 0, request.DomainEvents);
-
-        return request.Id;
-    }
-
     public async Task<ChangeRequest> FindAsync(Guid id)
     {
         var events = await _eventStore.LoadAsync(id);
 
-        return events.Count > 0 ? new ChangeRequest(events) : null;
+        return events.Count() > 0 ? new ChangeRequest(events.Select(x => (IDomainEvent<ChangeRequest>)x)) : null;
     }
 
     public async Task SaveAsync(ChangeRequest changeRequest)
     {
-        await _eventStore.SaveAsync(changeRequest.Id, changeRequest.Version, changeRequest.DomainEvents);
+        //await _eventStore.SaveAsync(changeRequest.Id, changeRequest.Version, changeRequest.DomainEvents);
 
-        foreach (var @event in changeRequest.DomainEvents)
-        {
-            await _mediator.Send(@event);
-        }
+        //foreach (var @event in changeRequest.DomainEvents)
+        //{
+        //    await _mediator.Send(@event);
+        //}
     }
 
     //public async Task<ChangeRequestId> SaveAsync(ChangeRequest person)

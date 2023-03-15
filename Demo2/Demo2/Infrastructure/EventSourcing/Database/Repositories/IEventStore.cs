@@ -1,5 +1,6 @@
 ﻿using Demo2.Domain.Events;
 using Demo2.Domain.Events.Domain;
+using Demo2.Domain.Events.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Commons.Relational;
 using rbkApiModules.Commons.Relational.CQRS;
@@ -9,10 +10,10 @@ namespace Demo2.Infrastructure.EventSourcing.Database.Repositories;
 
 public interface IEventStore
 {
-    Task SaveAsync(Guid aggregateId, int originatingVersion, IReadOnlyCollection<IDomainEvent> events);
-    Task SaveAsync(Guid aggregateId, int originatingVersion, IDomainEvent @event);
+    Task SaveAsync(IEnumerable<IDomainEvent> events);
+    Task SaveAsync(IDomainEvent @event);
 
-    Task<IReadOnlyCollection<IDomainEvent>> LoadAsync(Guid aggregateRootId);
+    Task<IEnumerable<IDomainEvent>> LoadAsync(Guid aggregateRootId);
 }
 
 public class RelationalEventStore : IEventStore
@@ -24,7 +25,7 @@ public class RelationalEventStore : IEventStore
         _context = contexts.GetEventStoreContext();
     }
 
-    public async Task<IReadOnlyCollection<IDomainEvent>> LoadAsync(Guid aggregateRootId)
+    public async Task<IEnumerable<IDomainEvent>> LoadAsync(Guid aggregateRootId)
     {
         var results = new List<IDomainEvent>();
 
@@ -55,14 +56,14 @@ public class RelationalEventStore : IEventStore
         return results.AsReadOnly();
     }
 
-    public async Task SaveAsync(Guid aggregateId, int originatingVersion, IReadOnlyCollection<IDomainEvent> events)
+    public async Task SaveAsync(IEnumerable<IDomainEvent> events)
     {
         await _context.AddRangeAsync(events.Select(x => new DomainEventDataObject(x)));
         await _context.SaveChangesAsync();
     }
 
-    public async Task SaveAsync(Guid aggregateId, int originatingVersion, IDomainEvent @event)
+    public async Task SaveAsync(IDomainEvent @event)
     {
-        await SaveAsync(aggregateId, originatingVersion, new List<IDomainEvent> { @event });
+        await SaveAsync(new List<IDomainEvent> { @event });
     }
 }

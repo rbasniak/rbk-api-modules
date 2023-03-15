@@ -7,16 +7,12 @@ namespace Demo2.Relational;
 
 public class Un : BaseEntity
 {
-    private HashSet<Platform> _platforms;
-
     public Un()
     {
 
     }
     public Un(string name, string description, string domain, string repository = null)
     {
-        _platforms = new HashSet<Platform>();
-
         Name = name;
         Description = description;
         Domain = domain;
@@ -30,6 +26,4 @@ public class Un : BaseEntity
     public virtual string Domain { get; private set; }
 
     public virtual string Repository { get; private set; }
-
-    public virtual IEnumerable<Platform> Platforms => _platforms?.ToList();
 }

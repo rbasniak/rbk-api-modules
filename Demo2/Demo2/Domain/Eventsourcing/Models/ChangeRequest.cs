@@ -1,6 +1,7 @@
 ﻿using Demo2.Domain.Events;
 using Demo2.Domain.Events.Infrastructure;
 using Demo2.EventSourcing;
+using Demo2.Relational;
 using rbkApiModules.Commons.Core;
 using System;
 using System.Collections.Generic;
@@ -9,138 +10,154 @@ using System.Linq;
 
 namespace Demo2.EventSourcing;
 
-public class ChangeRequest :  AggregateRoot
+public class ChangeRequest : AggregateRoot<ChangeRequest>
 {
-     HashSet<Fic> _fics;
-     HashSet<Document> _documents;
-     HashSet<Attachment> _attachments;
-     HashSet<EvidenceAttachment> _evidenceAttachments;
+    HashSet<Fic> _fics = new();
+    HashSet<Guid> _disciplines = new();
+    HashSet<Document> _documents = new();
+    HashSet<Attachment> _attachments = new();
+    HashSet<EvidenceAttachment> _evidenceAttachments = new();
 
-    protected ChangeRequest()
+    public ChangeRequest()
     {
+        Prioritization = new GutMatrix(0, 0, 0);
+        DesiredDate = DateTime.Now.AddDays(180);
+        CreationDate = DateTime.Now;
     }
 
-    public ChangeRequest(IEnumerable<IDomainEvent> events): base(events)
+    public ChangeRequest(IEnumerable<IDomainEvent<ChangeRequest>> events) : base(events)
     {
-
+        Prioritization = new GutMatrix(0, 0, 0);
+        DesiredDate = DateTime.Now.AddDays(180);
+        CreationDate = DateTime.Now;
     }
-      
-    public override Guid Id { get; protected set; }
 
+    public override Guid Id { get; internal set; }
 
-    public virtual Guid PlatformId { get;  set; } 
+    public virtual Guid PlatformId { get; internal set; }
 
-    public virtual ChangeRequestType Type { get;  set; }
+    public virtual Guid TypeId { get; internal set; }
 
-    public virtual ChangeRequestSource Source { get;  set; }
+    public virtual Guid SourceId { get; internal set; }
 
-    public virtual string SourceNumber { get;  set; }
+    public virtual string SourceNumber { get; internal set; }
 
-    public virtual string RequestedBy { get;  set; }
+    public virtual string RequestedBy { get; internal set; }
 
-    public virtual List<Discipline> Disciplines { get;  set; }
+    public virtual IEnumerable<Guid> Disciplines => _disciplines?.ToList();
 
-    public virtual string Description { get;  set; }
+    public virtual string Description { get; internal set; }
 
-    public virtual ChangeRequestPriority Priority { get;  set; }
+    public virtual Guid PriorityId { get; internal set; }
 
-    public virtual string Justification { get;  set; }
+    public virtual string Justification { get; internal set; }
 
-    public virtual ChangeRequestState State { get;  set; }
+    public virtual Guid StateId { get; internal set; }
 
-    public virtual string StatusSgm { get;  set; }
+    public virtual string StatusSgm { get; internal set; }
 
-    public virtual string Comments { get;  set; }
+    public virtual string Comments { get; internal set; }
 
-    public virtual double Complexity { get;  set; }
+    public virtual double Complexity { get; internal set; }
 
-    public virtual GutMatrix Prioritization { get;  set; }
+    public virtual GutMatrix Prioritization { get; internal set; }
 
-    public virtual string Resource { get;  set; }
-    public virtual string CreatedBy { get;  set; }
-    public virtual string CheckedBy { get;  set; }
-    public virtual string CurrentOwner { get;  set; }
-    public virtual DateTime CreationDate { get;  set; }
+    public virtual string Resource { get; internal set; }
+    public virtual string CreatedBy { get; internal set; }
+    public virtual string CheckedBy { get; internal set; }
+    public virtual string CurrentOwner { get; internal set; }
+    public virtual DateTime CreationDate { get; internal set; }
 
-    public virtual DateTime? DesiredDate { get;  set; }
+    public virtual DateTime? DesiredDate { get; internal set; }
 
-    public virtual long InternalNumber { get;  set; }
+    public virtual long InternalNumber { get; internal set; }
 
     public virtual string FormattedInternalNumber => $"AB-{InternalNumber.ToString("00000")}";
 
-    public virtual List<Fic> Fics { get;  set; }
+    public virtual IEnumerable<Fic> Fics => _fics?.ToList();
 
-    public virtual List<Document> Documents { get;  set; }
+    public virtual IEnumerable<Document> Documents => _documents?.ToList();
 
-    public virtual List<Attachment> Attachments { get;  set; }
+    public virtual IEnumerable<Attachment> Attachments => _attachments?.ToList();
 
-    public virtual List<EvidenceAttachment> EvidenceAttachments { get;  set; }
+    public virtual IEnumerable<EvidenceAttachment> EvidenceAttachments => _evidenceAttachments?.ToList();
 
-    public static ChangeRequest CreateByGeneralUser(string requestedBy, string createdBy, string description, string title)
+    internal void RemoveDiscipline(Guid disciplineId)
     {
-        //var @event = new ChangeRequestCreatedByGeneralUser.V1("user", Guid.NewGuid(), requestedBy, createdBy, description, title);
-        //var changeRequest = new ChangeRequest();
-        //changeRequest.Apply(@event);
-
-        //return changeRequest;
-        return null;
+        _disciplines.Remove(disciplineId);
     }
 
-    public void On(ChangeRequestCreatedByGeneralUser.V1 @event)
+    internal void AddDiscipline(Guid disciplineId)
     {
-        Id = @event.AggregateId;
-        RequestedBy = @event.RequestedBy;
-        CreatedBy = @event.CreatedBy;
+        _disciplines.Add(disciplineId);
     }
 
-    public void On(FicAddedToChangeRequest.V1 @event)
+    internal void AddFic(Guid categoryId, string name)
     {
-        //var fic = new Fic(@event.Number, @event.Name, @event.Source);
-        //_fics.Add(fic);
-    }
-
-    public void On(DocumentAddedToChangeRequest.V1 @event)
-    {
-        //var document = new Document(@event.Number, @event.Name, @event.Source);
-        //_documents.Add(document);
-    }
-
-    public void On(FicRemovedFromChangeRequest.V1 @event)
-    {
-        _fics.Remove(_fics.First(x => x.Id == @event.EventId));
-    }
-
-    internal void AddFic(string name, string number, string source)
-    {
-        //var @event = new FicAddedToChangeRequest.V1(Id, name, number, source);
-        //Apply(@event);
-    }
-
-    internal void AddDocument(string name, string number, string source)
-    {
-        //var @event = new DocumentAddedToChangeRequest.V1(Id, name, number, source);
-        //Apply(@event);
+        _fics.Add(new Fic(Guid.NewGuid(), name, categoryId));
     }
 
     internal void RemoveFic(Guid ficId)
     {
-        //var @event = new FicRemovedFromChangeRequest.V1(Id, ficId);
-        //Apply(@event);
+        _fics.Remove(_fics.First(x => x.Id == ficId));
+    }
+
+    internal void UpdateFicName(Guid ficId, string name)
+    {
+        var fic = _fics.First(x => x.Id == ficId);
+
+        fic.Name = name;
+    }
+
+    internal void UpdateFicCategory(Guid ficId, Guid categoryId)
+    {
+        var fic = _fics.First(x => x.Id == ficId);
+
+        fic.CategoryId = categoryId;
+    }
+
+    internal void AddDocument(Guid categoryId, string name)
+    {
+        _documents.Add(new Document(Guid.NewGuid(), name, categoryId));
+    }
+
+    internal void RemoveDocument(Guid documentId)
+    {
+        _documents.Remove(_documents.First(x => x.Id == documentId));
+    }
+
+    internal void UpdateDocumentName(Guid documentId, string name)
+    {
+        var document = _documents.First(x => x.Id == documentId);
+
+        document.Name = name;
+    }
+
+    internal void UpdateDocumentCategory(Guid documentId, Guid categoryId)
+    {
+        var document = _documents.First(x => x.Id == documentId);
+
+        document.CategoryId = categoryId;
+    }
+
+    internal void AddAttachment(string name, Guid typeId, int size, string path, string filename)
+    {
+        _attachments.Add(new Attachment(name, typeId, size, path, filename));
+    }
+
+    internal void RemoveAttachment(Guid attachmentId)
+    {
+        _attachments.Remove(_attachments.First(x => x.Id == attachmentId));
+    }
+
+    internal void AddEvidenceAttachment(string name, Guid typeId, int size, string path, string filename, string comment)
+    {
+        _evidenceAttachments.Add(new EvidenceAttachment(name, typeId, size, path, filename, comment));
+    }
+
+    internal void RemoveEvidenceAttachment(Guid attachmentId)
+    {
+        _evidenceAttachments.Remove(_evidenceAttachments.First(x => x.Id == attachmentId));
     }
 }
-
-
-public enum ChangeRequestState
-{
-
-}
-
-public enum ChangeRequestSource
-{
-
-}
-
-public enum Discipline
-{
-
-}
+ 
