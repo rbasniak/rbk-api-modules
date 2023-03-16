@@ -36,8 +36,8 @@ public class ChangeRequest : BaseEntity
         Source = source;
         Description = description;
         Justification = justification;
-        CreationDate = DateTime.Now;
-        DesiredDate = desiredDate ?? DateTime.Now.AddDays(180);
+        CreationDate = DateTime.UtcNow;
+        DesiredDate = desiredDate ?? DateTime.UtcNow.AddDays(180);
         State = state;
         SourceNumber = sourceNumber;
         RequestedBy = requestedBy;

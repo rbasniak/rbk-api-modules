@@ -14,7 +14,7 @@ public class StateChangeEvent : BaseEntity
     {
         ChangeRequest = changeRequest;
         User = user;
-        Date = DateTime.Now;
+        Date = DateTime.UtcNow;
         StatusHistory = history;
         StatusId = status.Id;
         StatusName = status.Name;

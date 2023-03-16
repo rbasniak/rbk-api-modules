@@ -6,6 +6,7 @@ using FluentValidation;
 using MediatR;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.CQRS;
+using System.Diagnostics;
 using System.Diagnostics.Tracing;
 using System.Text.Json.Serialization;
 
@@ -42,6 +43,10 @@ public class UpdateChangeRequestGeneralDetails
             if (SourceNumber != entity.SourceNumber) results.Add(new ChangeRequestSourceNumberUpdated.V1(Identity.Username, ChangeRequestId, SourceNumber));
             if (RequestedBy != entity.CurrentOwner) results.Add(new ChangeRequestCurrentOwnerUpdated.V1(Identity.Username, ChangeRequestId, RequestedBy));
             if (DesiredDate != entity.DesiredDate) results.Add(new ChangeRequestDesiredDateUpdated.V1(Identity.Username, ChangeRequestId, DesiredDate));
+
+            var temp = results.Single(x => x is ChangeRequestTypeUpdated.V1);
+            var temp1 = (ChangeRequestTypeUpdated.V1)temp;
+            if (temp1.TypeId == Guid.Empty) Debugger.Break();
 
             return results;
         } 

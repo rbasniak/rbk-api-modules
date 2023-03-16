@@ -19,6 +19,16 @@ public class EventSourcingContext: DbContext, IEventStoreContext
 
     public DbSet<DomainEventDataObject> Events { get; set; }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        base.OnConfiguring(optionsBuilder);
+
+        //optionsBuilder.UseLoggerFactory(LoggerFactory.Create(builder =>
+        //{
+        //    builder.AddFilter(_ => false);
+        //}));
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

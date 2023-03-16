@@ -8,12 +8,16 @@ public class ChangeRequestDescriptionUpdated
 {
     public class V1 : DomainEvent, IDomainEvent<ChangeRequest>
     {
-        public V1(string username, Guid changeRequestId, string description) : base(username, changeRequestId)
+        public V1()
+        {
+
+        }
+        public V1(string username, Guid aggregateId, string description) : base(username, aggregateId)
         {
             Description = description;
         }
 
-        public string Description { get; protected set; }
+        public string Description { get; set; }
 
         public void ApplyTo(ChangeRequest entity)
         {

@@ -19,15 +19,15 @@ public abstract class DomainEvent
         CreatedAt = DateTime.UtcNow;
     }
 
-    public Guid EventId { get; }
+    public Guid EventId { get; set; }
 
-    public Guid AggregateId { get; }
+    public Guid AggregateId { get; set; }
 
     public int Version { get; set; }
 
-    public DateTime CreatedAt { get; private set; }
+    public DateTime CreatedAt { get; set; }
 
-    public string CreatedBy { get; private set; }
+    public string CreatedBy { get; set; }
 
     [JsonIgnore]
     public virtual EventSummary Summary { get; } 

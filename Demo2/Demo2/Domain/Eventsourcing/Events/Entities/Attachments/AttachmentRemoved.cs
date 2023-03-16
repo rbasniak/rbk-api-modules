@@ -8,12 +8,16 @@ public class AttachmentRemovedFromChangeRequest
 {
     public class V1 : DomainEvent, IDomainEvent<ChangeRequest>
     {
-        public V1(string username, Guid changeRequestId, Guid attachmentId) : base(username, changeRequestId)
+        public V1()
+        {
+
+        }
+        public V1(string username, Guid aggregateId, Guid attachmentId) : base(username, aggregateId)
         {
             AttachmentId = attachmentId;
         }
 
-        public Guid AttachmentId { get; protected set; }
+        public Guid AttachmentId { get; set; }
 
         public void ApplyTo(ChangeRequest entity)
         {

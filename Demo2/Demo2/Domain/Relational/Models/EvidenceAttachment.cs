@@ -19,7 +19,7 @@ public class EvidenceAttachment : BaseEntity
         Filename = filename;
         Commentary = commentary;
         ChangeRequest = changeRequest;
-        AdditionDate = DateTime.Now;
+        AdditionDate = DateTime.UtcNow;
     }
 
     public virtual string Name { get; set; }

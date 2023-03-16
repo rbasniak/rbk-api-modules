@@ -4,7 +4,7 @@ public class RequestedMoreInfoDuringChangeRequestInitialAnalysis
 {
     public class V1 : DomainEvent
     {
-        public V1(string username, Guid changeRequestId) : base(username, changeRequestId)
+        public V1(string username, Guid aggregateId) : base(username, aggregateId)
         {
 
         }

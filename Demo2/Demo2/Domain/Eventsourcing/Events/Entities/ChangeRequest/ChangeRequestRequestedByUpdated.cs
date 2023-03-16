@@ -8,12 +8,16 @@ public class ChangeRequestRequestedByUpdated
 {
     public class V1 : DomainEvent, IDomainEvent<ChangeRequest>
     {
-        public V1(string username, Guid changeRequestId, string requestedBy) : base(username, changeRequestId)
+        public V1()
+        {
+
+        }
+        public V1(string username, Guid aggregateId, string requestedBy) : base(username, aggregateId)
         {
             RequestedBy = requestedBy;
         }
 
-        public string RequestedBy { get; protected set; }
+        public string RequestedBy { get; set; }
 
         public void ApplyTo(ChangeRequest entity)
         {

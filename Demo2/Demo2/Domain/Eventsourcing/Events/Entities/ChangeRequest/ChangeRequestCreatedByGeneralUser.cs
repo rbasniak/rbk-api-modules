@@ -8,7 +8,11 @@ public class ChangeRequestCreatedByGeneralUser
 {
     public class V1 : DomainEvent, IDomainEvent<ChangeRequest>
     {
-        public V1(string username, Guid changeRequestId) : base(username, changeRequestId)
+        public V1()
+        {
+
+        }
+        public V1(string username, Guid aggregateId) : base(username, aggregateId)
         {
         }
 

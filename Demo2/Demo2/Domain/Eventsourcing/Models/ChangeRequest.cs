@@ -21,15 +21,15 @@ public class ChangeRequest : AggregateRoot<ChangeRequest>
     public ChangeRequest()
     {
         Prioritization = new GutMatrix(0, 0, 0);
-        DesiredDate = DateTime.Now.AddDays(180);
-        CreationDate = DateTime.Now;
+        DesiredDate = DateTime.UtcNow.AddDays(180);
+        CreationDate = DateTime.UtcNow;
     }
 
     public ChangeRequest(IEnumerable<IDomainEvent<ChangeRequest>> events) : base(events)
     {
         Prioritization = new GutMatrix(0, 0, 0);
-        DesiredDate = DateTime.Now.AddDays(180);
-        CreationDate = DateTime.Now;
+        DesiredDate = DateTime.UtcNow.AddDays(180);
+        CreationDate = DateTime.UtcNow;
     }
 
     public override Guid Id { get; internal set; }

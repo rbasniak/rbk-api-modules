@@ -19,12 +19,18 @@ namespace Demo2.Controllers;
 public class ChangeRequestController: BaseController
 {
     private readonly RelationalContext _rlContext;
+    private readonly EventSourcingContext _esContext;
     private readonly ListOfValuesRepository _listOfValues;
+    private readonly IChangeRequestDomainModelRepository _domainChnageRequestRepository;
 
-    public ChangeRequestController([FromServices] RelationalContext rlContext, ListOfValuesRepository listOfValues)
+    public ChangeRequestController(RelationalContext rlContext, EventSourcingContext esContext,
+        ListOfValuesRepository listOfValues, IChangeRequestDomainModelRepository domainChnageRequestRepository)
     {
         _rlContext = rlContext;
+        _esContext = esContext;
         _listOfValues = listOfValues;
+        _domainChnageRequestRepository = domainChnageRequestRepository;
+
     }
 
     [HttpGet("seed/{amount}")]
@@ -42,8 +48,8 @@ public class ChangeRequestController: BaseController
         }
     }
 
-    [HttpGet("list/relational")]
-    public async Task<ActionResult> ListRelational()
+    [HttpGet("list/relational/all")]
+    public ActionResult ListRelational()
     {
         var sw = Stopwatch.StartNew();
 
@@ -63,12 +69,12 @@ public class ChangeRequestController: BaseController
 
         sw.Stop();
 
-        var rate = entities.Count / sw.Elapsed.TotalMilliseconds;
+        var rate = sw.Elapsed.TotalMilliseconds/ entities.Count;
 
         return Ok($"Loaded {entities.Count} entities from relational store in {sw.Elapsed.TotalSeconds:0.00}s ({rate:0.0}ms per entity)");
     }
 
-    [HttpGet("list/event-sourcing")]
+    [HttpGet("list/event-sourcing/all")]
     public async Task<ActionResult> ListEventSourcing()
     {
         if (!_listOfValues.IsInitialized)
@@ -78,25 +84,100 @@ public class ChangeRequestController: BaseController
 
         var sw = Stopwatch.StartNew();
 
-        var entities = new List<string>();
+        var entities = await _domainChnageRequestRepository.GetAll();
 
         sw.Stop();
 
-        var rate = entities.Count / sw.Elapsed.TotalMilliseconds;
+        var rate = sw.Elapsed.TotalMilliseconds / entities.Count();
 
-        return Ok($"Loaded {entities.Count} entities from relational store in {sw.Elapsed.TotalSeconds:0.00}s ({rate:0.0}ms per entity)");
+        return Ok($"Loaded {entities.Count()} entities from event store in {sw.Elapsed.TotalSeconds:0.00}s ({rate:0.0}ms per entity)");
+    }
+
+    [HttpGet("list/relational/one-by-one")]
+    public ActionResult ListRelationalIndividual()
+    {
+        var ids = _rlContext.Set<ChangeRequest>().Select(x => x.Id).ToArray();
+
+        var sw = Stopwatch.StartNew();
+
+        foreach (var id in ids)
+        {
+            var entity = _rlContext.Set<ChangeRequest>()
+                .Include(x => x.Priority)
+                .Include(x => x.Source)
+                .Include(x => x.Type)
+                .Include(x => x.Disciplines)
+                    .ThenInclude(x => x.Discipline)
+                .Include(x => x.Platform)
+
+                .Include(x => x.Documents)
+                    .ThenInclude(x => x.Category)
+                .Include(x => x.Fics)
+                    .ThenInclude(x => x.Category)
+                .Include(x => x.Attachments)
+                    .ThenInclude(x => x.Type)
+                .Include(x => x.EvidenceAttachments)
+                    .ThenInclude(x => x.Type)
+
+                .First(x => x.Id == id);
+        }
+
+        sw.Stop();
+
+        var rate = sw.Elapsed.TotalMilliseconds / ids.Length;
+
+        return Ok($"Loaded {ids.Length} entities from relational store in {sw.Elapsed.TotalSeconds:0.00}s ({rate:0.0}ms per entity)");
+    }
+
+    [HttpGet("list/event-sourcing/one-by-one")]
+    public async Task<ActionResult> ListEventSourcingIndividual()
+    {
+        if (!_listOfValues.IsInitialized)
+        {
+            InitializeLoV();
+        }
+
+        var ids = _esContext.Events.Select(x => x.AggregateId).Distinct().ToArray();
+
+        var sw = Stopwatch.StartNew();
+
+        foreach (var id in ids)
+        {
+            var entity = await _domainChnageRequestRepository.FindAsync(id);
+        }
+
+        sw.Stop();
+
+        var rate = sw.Elapsed.TotalMilliseconds / ids.Length;
+
+        return Ok($"Loaded {ids.Length} entities from event store store in {sw.Elapsed.TotalSeconds:0.00}s ({rate:0.0}ms per entity)");
     }
 
     private void InitializeLoV()
     {
-        _listOfValues.ChangeRequestPriorities = _rlContext.Set<ChangeRequestPriority>().AsNoTracking().ToList();
-        _listOfValues.ChangeRequestSources = _rlContext.Set<ChangeRequestSource>().AsNoTracking().ToList();
-        _listOfValues.ChangeRequestTypes = _rlContext.Set<ChangeRequestType>().AsNoTracking().ToList();
-        _listOfValues.DocumentCategories = _rlContext.Set<DocumentCategory>().AsNoTracking().ToList();
-        _listOfValues.AttachmentTypes = _rlContext.Set<AttachmentType>().AsNoTracking().ToList();
-        _listOfValues.FicCategories = _rlContext.Set<FicCategory>().AsNoTracking().ToList();
-        _listOfValues.Disciplines = _rlContext.Set<Discipline>().AsNoTracking().ToList();
-        _listOfValues.Platforms = _rlContext.Set<Platform>().AsNoTracking().ToList();
-        _listOfValues.Uns = _rlContext.Set<Un>().AsNoTracking().ToList();
+        _listOfValues.ChangeRequestPriorities = _rlContext.Set<ChangeRequestPriority>().AsNoTracking().ToDictionary();
+        _listOfValues.ChangeRequestSources = _rlContext.Set<ChangeRequestSource>().AsNoTracking().ToDictionary();
+        _listOfValues.ChangeRequestTypes = _rlContext.Set<ChangeRequestType>().AsNoTracking().ToDictionary();
+        _listOfValues.DocumentCategories = _rlContext.Set<DocumentCategory>().AsNoTracking().ToDictionary();
+        _listOfValues.AttachmentTypes = _rlContext.Set<AttachmentType>().AsNoTracking().ToDictionary();
+        _listOfValues.FicCategories = _rlContext.Set<FicCategory>().AsNoTracking().ToDictionary();
+        _listOfValues.Disciplines = _rlContext.Set<Discipline>().AsNoTracking().ToDictionary();
+        _listOfValues.Platforms = _rlContext.Set<Platform>().AsNoTracking().ToDictionary();
+        _listOfValues.Uns = _rlContext.Set<Un>().AsNoTracking().ToDictionary();
+    }
+}
+
+public static class Extensions
+{
+    public static Dictionary<Guid, T> ToDictionary<T>(this IEnumerable<T> items) where T : BaseEntity
+    {
+        var results = new Dictionary<Guid, T>();
+
+        foreach (var item in items)
+        {
+            results.Add(item.Id, item);
+        }
+
+        return results;
     }
 }
