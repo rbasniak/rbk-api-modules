@@ -8,12 +8,16 @@ public class ChangeRequestComplexityUpdated
 {
     public class V1 : DomainEvent, IDomainEvent<ChangeRequest>
     {
-        public V1(string username, Guid changeRequestId, double complexity) : base(username, changeRequestId)
+        public V1()
+        {
+
+        }
+        public V1(string username, Guid aggregateId, double complexity) : base(username, aggregateId)
         {
             Complexity = complexity;
         }
 
-        public double Complexity { get; protected set; }
+        public double Complexity { get; set; }
 
         public void ApplyTo(ChangeRequest entity)
         {

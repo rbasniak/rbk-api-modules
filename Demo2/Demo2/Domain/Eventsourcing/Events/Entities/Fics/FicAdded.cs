@@ -8,14 +8,18 @@ public class FicAddedToChangeRequest
 {
     public class V1 : DomainEvent, IDomainEvent<ChangeRequest>
     {
-        public V1(string username, Guid changeRequestId, string name, Guid categoryId) : base(username, changeRequestId)
+        public V1()
+        {
+
+        }
+        public V1(string username, Guid aggregateId, string name, Guid categoryId) : base(username, aggregateId)
         {
             Name = name;
             CategoryId = categoryId;
         }
 
-        public Guid CategoryId { get; protected set; }
-        public string Name { get; protected set; }
+        public Guid CategoryId { get; set; }
+        public string Name { get; set; }
 
         public void ApplyTo(ChangeRequest entity)
         {

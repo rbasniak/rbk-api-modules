@@ -8,12 +8,16 @@ public class ChangeRequestSourceUpdated
 {
     public class V1 : DomainEvent, IDomainEvent<ChangeRequest>
     {
-        public V1(string username, Guid changeRequestId, Guid sourceId) : base(username, changeRequestId)
+        public V1()
+        {
+
+        }
+        public V1(string username, Guid aggregateId, Guid sourceId) : base(username, aggregateId)
         {
             SourceId = sourceId;
         }
 
-        public Guid SourceId { get; protected set; }
+        public Guid SourceId { get; set; }
 
         public void ApplyTo(ChangeRequest entity)
         {

@@ -8,12 +8,16 @@ public class ChangeRequestPlatformUpdated
 {
     public class V1 : DomainEvent, IDomainEvent<ChangeRequest>
     {
-        public V1(string username, Guid changeRequestId, Guid platformId) : base(username, changeRequestId)
+        public V1()
+        {
+
+        }
+        public V1(string username, Guid aggregateId, Guid platformId) : base(username, aggregateId)
         {
             PlatformId = platformId;
         }
 
-        public Guid PlatformId { get; protected set; }
+        public Guid PlatformId { get; set; }
 
         public void ApplyTo(ChangeRequest entity)
         {

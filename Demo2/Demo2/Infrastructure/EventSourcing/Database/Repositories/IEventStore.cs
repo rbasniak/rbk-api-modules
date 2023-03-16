@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Commons.Relational;
 using rbkApiModules.Commons.Relational.CQRS;
 using System.Text.Json;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Demo2.Infrastructure.EventSourcing.Database.Repositories;
 
@@ -14,6 +15,7 @@ public interface IEventStore
     Task SaveAsync(IDomainEvent @event);
 
     Task<IEnumerable<IDomainEvent>> LoadAsync(Guid aggregateRootId);
+    Task<IEnumerable<IDomainEvent>> LoadAllAsync(Type type);
 }
 
 public class RelationalEventStore : IEventStore
@@ -25,14 +27,45 @@ public class RelationalEventStore : IEventStore
         _context = contexts.GetEventStoreContext();
     }
 
+    public async Task<IEnumerable<IDomainEvent>> LoadAllAsync(Type aggregateType)
+    {
+        var events = await _context.Set<DomainEventDataObject>()
+            // TODO: salvar o tipo do agregado na store 
+            // .Where(x => x.Type == type.FullName)
+            .ToListAsync();
+
+        var results = new List<IDomainEvent>();
+
+        foreach (var item in events)
+        {
+            var type = Type.GetType(item.Type);
+
+            if (type is null)
+            {
+                throw new InvalidCastException($"Cannot find the type '{item.Type}' for an event");
+            }
+
+            var @event = JsonSerializer.Deserialize(item.Data, type);
+
+            if (@event is null)
+            {
+                throw new InvalidCastException($"Cannot deserialize the event '{item.Id}' to the type '{item.Type}'");
+            }
+
+            results.Add((IDomainEvent)@event);
+        }
+
+        return results.AsReadOnly();
+    }
+
     public async Task<IEnumerable<IDomainEvent>> LoadAsync(Guid aggregateRootId)
     {
         var results = new List<IDomainEvent>();
 
-        var data = await _context.Set<DomainEventDataObject>()
+        var data = _context.Set<DomainEventDataObject>()
             .Where(x => x.AggregateId == aggregateRootId)
             .OrderBy(x => x.Version)
-            .ToListAsync();
+            .ToList();
 
         foreach (var item in data)
         {

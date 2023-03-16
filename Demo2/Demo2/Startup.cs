@@ -48,21 +48,21 @@ public class Startup
         //);
 
         services.AddDbContext<EventSourcingContext>((scope, options) => options
-            .UseSqlServer(
+            .UseNpgsql(
                 _configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Database.EventSourcing"))
             //.AddInterceptors(scope.GetRequiredService<DatabaseAnalyticsInterceptor>())
             //.AddInterceptors(scope.GetRequiredService<DatabaseDiagnosticsInterceptor>())
-            .EnableDetailedErrors()
-            .EnableSensitiveDataLogging()
+            //.EnableDetailedErrors()
+            //.EnableSensitiveDataLogging()
         );
 
         services.AddDbContext<RelationalContext>((scope, options) => options
-            .UseSqlServer(
+            .UseNpgsql(
                 _configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Database.Relational"))
             //.AddInterceptors(scope.GetRequiredService<DatabaseAnalyticsInterceptor>())
             //.AddInterceptors(scope.GetRequiredService<DatabaseDiagnosticsInterceptor>())
-            .EnableDetailedErrors()
-            .EnableSensitiveDataLogging()
+            //.EnableDetailedErrors()
+            //.EnableSensitiveDataLogging()
         );
 
         services.AddScoped<DbContext, EventSourcingContext>();

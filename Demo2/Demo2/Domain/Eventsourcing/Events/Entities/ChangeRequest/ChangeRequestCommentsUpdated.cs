@@ -8,12 +8,16 @@ public class ChangeRequestCommentsUpdated
 {
     public class V1 : DomainEvent, IDomainEvent<ChangeRequest>
     {
-        public V1(string username, Guid changeRequestId, string comments) : base(username, changeRequestId)
+        public V1()
+        {
+
+        }
+        public V1(string username, Guid aggregateId, string comments) : base(username, aggregateId)
         {
             Comments = comments;
         }
 
-        public string Comments { get; protected set; }
+        public string Comments { get; set; }
 
         public void ApplyTo(ChangeRequest entity)
         {

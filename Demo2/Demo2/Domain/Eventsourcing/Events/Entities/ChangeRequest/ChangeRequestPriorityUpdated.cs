@@ -8,12 +8,16 @@ public class ChangeRequestPriorityUpdated
 {
     public class V1 : DomainEvent, IDomainEvent<ChangeRequest>
     {
-        public V1(string username, Guid changeRequestId, Guid priorityId) : base(username, changeRequestId)
+        public V1()
+        {
+
+        }
+        public V1(string username, Guid aggregateId, Guid priorityId) : base(username, aggregateId)
         {
             PriorityId = priorityId;
         }
 
-        public Guid PriorityId { get; protected set; }
+        public Guid PriorityId { get; set; }
 
         public void ApplyTo(ChangeRequest entity)
         {

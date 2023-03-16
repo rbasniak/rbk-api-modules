@@ -8,12 +8,16 @@ public class ChangeRequestDesiredDateUpdated
 {
     public class V1 : DomainEvent, IDomainEvent<ChangeRequest>
     {
-        public V1(string username, Guid changeRequestId, DateTime? desiredDate) : base(username, changeRequestId)
+        public V1()
+        {
+
+        }
+        public V1(string username, Guid aggregateId, DateTime? desiredDate) : base(username, aggregateId)
         {
             DesiredDate = desiredDate;
         }
 
-        public DateTime? DesiredDate { get; protected set; }
+        public DateTime? DesiredDate { get; set; }
 
         public void ApplyTo(ChangeRequest entity)
         {

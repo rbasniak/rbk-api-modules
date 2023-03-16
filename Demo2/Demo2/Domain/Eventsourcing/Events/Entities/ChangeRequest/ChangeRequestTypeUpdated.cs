@@ -1,5 +1,6 @@
 ﻿using Demo2.Domain.Events.Infrastructure;
 using Demo2.EventSourcing;
+using System.Diagnostics;
 using System.Text.Json.Serialization;
 
 namespace Demo2.Domain.Events;
@@ -8,16 +9,21 @@ public class ChangeRequestTypeUpdated
 {
     public class V1 : DomainEvent, IDomainEvent<ChangeRequest>
     {
-        public V1(string username, Guid changeRequestId, Guid typeId) : base(username, changeRequestId)
+        public V1()
+        {
+
+        }
+        public V1(string username, Guid aggregateId, Guid typeId) : base(username, aggregateId)
         {
             TypeId = typeId;
+            if (TypeId == Guid.Empty) Debugger.Break();
         }
 
-        public Guid TypeId { get; protected set; }
+        public Guid TypeId { get; set; }
 
         public void ApplyTo(ChangeRequest entity)
         {
-            TypeId = entity.TypeId;
+            entity.TypeId = TypeId;
         }
     }
 }

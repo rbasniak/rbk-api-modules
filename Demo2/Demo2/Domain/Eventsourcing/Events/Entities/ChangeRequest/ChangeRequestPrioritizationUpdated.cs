@@ -8,7 +8,11 @@ public class ChangeRequestPrioritizationUpdated
 {
     public class V1 : DomainEvent, IDomainEvent<ChangeRequest>
     {
-        public V1(string username, Guid changeRequestId, int gravity, int urgency, int tendency) : base(username, changeRequestId)
+        public V1()
+        {
+
+        }
+        public V1(string username, Guid aggregateId, int gravity, int urgency, int tendency) : base(username, aggregateId)
         {
             Gravity = gravity;
             Tendency = tendency;

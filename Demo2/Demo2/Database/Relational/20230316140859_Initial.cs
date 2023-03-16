@@ -1,9 +1,10 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Demo2.Database.Relational.Migrations
+namespace Demo2.Database.Relational
 {
     /// <inheritdoc />
     public partial class Initial : Migration
@@ -15,8 +16,8 @@ namespace Demo2.Database.Relational.Migrations
                 name: "__SeedHistory",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    DateApplied = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    DateApplied = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -27,9 +28,9 @@ namespace Demo2.Database.Relational.Migrations
                 name: "AttachmentTypes",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Extension = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Extension = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -40,8 +41,8 @@ namespace Demo2.Database.Relational.Migrations
                 name: "ChageRequestSources",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -52,10 +53,10 @@ namespace Demo2.Database.Relational.Migrations
                 name: "ChangeRequestPriorities",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Order = table.Column<int>(type: "int", nullable: false),
-                    Color = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Order = table.Column<int>(type: "integer", nullable: false),
+                    Color = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -66,8 +67,8 @@ namespace Demo2.Database.Relational.Migrations
                 name: "ChangeRequestTypes",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -78,8 +79,8 @@ namespace Demo2.Database.Relational.Migrations
                 name: "Disciplines",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -90,8 +91,8 @@ namespace Demo2.Database.Relational.Migrations
                 name: "DocumentCategories",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -102,12 +103,12 @@ namespace Demo2.Database.Relational.Migrations
                 name: "Events",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    AggregateId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Version = table.Column<int>(type: "int", nullable: false),
-                    Type = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Data = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    AggregateId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Version = table.Column<int>(type: "integer", nullable: false),
+                    Type = table.Column<string>(type: "text", nullable: true),
+                    Data = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -118,8 +119,8 @@ namespace Demo2.Database.Relational.Migrations
                 name: "FicCategories",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -130,8 +131,8 @@ namespace Demo2.Database.Relational.Migrations
                 name: "States",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -142,11 +143,11 @@ namespace Demo2.Database.Relational.Migrations
                 name: "Uns",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Domain = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Repository = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    Domain = table.Column<string>(type: "text", nullable: true),
+                    Repository = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -157,9 +158,9 @@ namespace Demo2.Database.Relational.Migrations
                 name: "Platforms",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UnId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    UnId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -176,30 +177,30 @@ namespace Demo2.Database.Relational.Migrations
                 name: "ChangeRequests",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PlatformId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    SourceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    SourceNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RequestedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PriorityId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Justification = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    StateId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    StatusSgm = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Comments = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Complexity = table.Column<double>(type: "float", nullable: false),
-                    Prioritization_Gravity = table.Column<int>(type: "int", nullable: true),
-                    Prioritization_Urgency = table.Column<int>(type: "int", nullable: true),
-                    Prioritization_Tendency = table.Column<int>(type: "int", nullable: true),
-                    Resource = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CheckedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CurrentOwner = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DesiredDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    PlatformId = table.Column<Guid>(type: "uuid", nullable: false),
+                    TypeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    SourceId = table.Column<Guid>(type: "uuid", nullable: false),
+                    SourceNumber = table.Column<string>(type: "text", nullable: true),
+                    RequestedBy = table.Column<string>(type: "text", nullable: true),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    PriorityId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Justification = table.Column<string>(type: "text", nullable: true),
+                    StateId = table.Column<Guid>(type: "uuid", nullable: false),
+                    StatusSgm = table.Column<string>(type: "text", nullable: true),
+                    Comments = table.Column<string>(type: "text", nullable: true),
+                    Complexity = table.Column<double>(type: "double precision", nullable: false),
+                    Prioritization_Gravity = table.Column<int>(type: "integer", nullable: true),
+                    Prioritization_Urgency = table.Column<int>(type: "integer", nullable: true),
+                    Prioritization_Tendency = table.Column<int>(type: "integer", nullable: true),
+                    Resource = table.Column<string>(type: "text", nullable: true),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    CheckedBy = table.Column<string>(type: "text", nullable: true),
+                    CurrentOwner = table.Column<string>(type: "text", nullable: true),
+                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    DesiredDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     InternalNumber = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1")
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
                 },
                 constraints: table =>
                 {
@@ -240,14 +241,14 @@ namespace Demo2.Database.Relational.Migrations
                 name: "Attachments",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ChangeRequestId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    TypeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ChangeRequestId = table.Column<Guid>(type: "uuid", nullable: false),
                     Size = table.Column<long>(type: "bigint", nullable: false),
-                    Path = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Filename = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ChangeRequestId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    Path = table.Column<string>(type: "text", nullable: true),
+                    Filename = table.Column<string>(type: "text", nullable: true),
+                    ChangeRequestId1 = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -275,9 +276,9 @@ namespace Demo2.Database.Relational.Migrations
                 name: "ChangeRequestToDisciplines",
                 columns: table => new
                 {
-                    ChangeRequestId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DisciplineId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ChangeRequestId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    ChangeRequestId = table.Column<Guid>(type: "uuid", nullable: false),
+                    DisciplineId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ChangeRequestId1 = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -305,11 +306,11 @@ namespace Demo2.Database.Relational.Migrations
                 name: "Documents",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SindotecUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ChangeRequestId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    SindotecUrl = table.Column<string>(type: "text", nullable: true),
+                    CategoryId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ChangeRequestId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -332,15 +333,15 @@ namespace Demo2.Database.Relational.Migrations
                 name: "EvidenceAttachments",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ChangeRequestId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    TypeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ChangeRequestId = table.Column<Guid>(type: "uuid", nullable: false),
                     Size = table.Column<long>(type: "bigint", nullable: false),
-                    AdditionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Path = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Filename = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Commentary = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    AdditionDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Path = table.Column<string>(type: "text", nullable: true),
+                    Filename = table.Column<string>(type: "text", nullable: true),
+                    Commentary = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -363,10 +364,10 @@ namespace Demo2.Database.Relational.Migrations
                 name: "Fic",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ChangeRequestId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    CategoryId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ChangeRequestId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -389,15 +390,15 @@ namespace Demo2.Database.Relational.Migrations
                 name: "StateChangeEvent",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    StatusName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    StatusId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    StatusHistory = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    User = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NewOwner = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ChangeRequestId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    StatusName = table.Column<string>(type: "text", nullable: true),
+                    StatusId = table.Column<Guid>(type: "uuid", nullable: false),
+                    StatusHistory = table.Column<string>(type: "text", nullable: true),
+                    User = table.Column<string>(type: "text", nullable: true),
+                    NewOwner = table.Column<string>(type: "text", nullable: true),
+                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ChangeRequestId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Notes = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {

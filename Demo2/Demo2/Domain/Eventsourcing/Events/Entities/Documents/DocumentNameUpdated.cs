@@ -8,14 +8,18 @@ public class DocumentNameUpdatedOnChangeRequest
 {
     public class V1 : DomainEvent, IDomainEvent<ChangeRequest>
     {
-        public V1(string username, Guid changeRequestId, Guid documentId, string name) : base(username, changeRequestId)
+        public V1()
+        {
+
+        }
+        public V1(string username, Guid aggregateId, Guid documentId, string name) : base(username, aggregateId)
         {
             Name = name;
             DocumentId = documentId;
         }
 
-        public Guid DocumentId { get; protected set; }
-        public string Name { get; protected set; }
+        public Guid DocumentId { get; set; }
+        public string Name { get; set; }
 
         public void ApplyTo(ChangeRequest entity)
         {

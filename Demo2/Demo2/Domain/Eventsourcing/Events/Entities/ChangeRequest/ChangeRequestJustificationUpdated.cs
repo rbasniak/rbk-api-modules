@@ -8,12 +8,16 @@ public class ChangeRequestJustificationUpdated
 {
     public class V1 : DomainEvent, IDomainEvent<ChangeRequest>
     {
-        public V1(string username, Guid changeRequestId, string justification) : base(username, changeRequestId)
+        public V1()
+        {
+
+        }
+        public V1(string username, Guid aggregateId, string justification) : base(username, aggregateId)
         {
             Justification = justification;
         }
 
-        public string Justification { get; protected set; }
+        public string Justification { get; set; }
 
         public void ApplyTo(ChangeRequest entity)
         {

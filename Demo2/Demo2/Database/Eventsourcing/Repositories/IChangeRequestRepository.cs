@@ -12,6 +12,7 @@ namespace Demo2.Domain.Events.Repositories;
 
 public interface IChangeRequestRepository
 {
+    Task<ChangeRequest[]> GetAllAsync();
     Task<ChangeRequest> FindAsync(Guid id);
     Task SaveAsync(ChangeRequest changeRequest);
 }
@@ -32,6 +33,22 @@ public class ChangeRequestRepository: IChangeRequestRepository
         var events = await _eventStore.LoadAsync(id);
 
         return events.Count() > 0 ? new ChangeRequest(events.Select(x => (IDomainEvent<ChangeRequest>)x)) : null;
+    }
+
+    public async Task<ChangeRequest[]> GetAllAsync()
+    {
+        var events = await _eventStore.LoadAllAsync(typeof(ChangeRequest));
+
+        var groups = events.GroupBy(x => x.AggregateId).ToList();
+
+        var results = new List<ChangeRequest>();
+
+        foreach (var group in groups)
+        {
+            results.Add(new ChangeRequest(group.Select(x => (IDomainEvent<ChangeRequest>)x)));
+        }
+
+        return results.ToArray();
     }
 
     public async Task SaveAsync(ChangeRequest changeRequest)

@@ -7,7 +7,11 @@ public class ChangeRequestStatusUpdated
 {
     public class V1 : DomainEvent
     {
-        public V1(string username, Guid changeRequestId, object status) : base(username, changeRequestId)
+        public V1()
+        {
+
+        }
+        public V1(string username, Guid aggregateId, object status) : base(username, aggregateId)
         {
             Status = status;
         }

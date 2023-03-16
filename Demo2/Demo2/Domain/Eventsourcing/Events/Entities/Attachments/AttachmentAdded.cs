@@ -8,7 +8,11 @@ public class AttachmentAddedToChangeRequest
 {
     public class V1 : DomainEvent, IDomainEvent<ChangeRequest>
     {
-        public V1(string username, Guid changeRequestId, string name, string filename, string path, Guid typeId, int size) : base(username, changeRequestId)
+        public V1()
+        {
+
+        }
+        public V1(string username, Guid aggregateId, string name, string filename, string path, Guid typeId, int size) : base(username, aggregateId)
         {
             Name = name;
             Filename = filename;
@@ -17,11 +21,11 @@ public class AttachmentAddedToChangeRequest
             Size = size;
         }
 
-        public string Name { get; protected set; }
-        public string Filename { get; protected set; }
-        public string Path { get; protected set; }
-        public Guid TypeId { get; protected set; }
-        public int Size { get; protected set; }
+        public string Name { get; set; }
+        public string Filename { get; set; }
+        public string Path { get; set; }
+        public Guid TypeId { get; set; }
+        public int Size { get; set; }
 
         public void ApplyTo(ChangeRequest entity)
         {
