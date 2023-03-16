@@ -22,6 +22,7 @@ public abstract class AuthenticatedRequest: IAuthenticatedRequest
     [JsonIgnore]
     public AuthenticatedUser Identity { get; private set; }
 
+    [JsonIgnore]
     public bool IsAuthenticated { get; private set; }
 
     public void SetIdentity(string tenant, string username, string[] claims)

@@ -8,6 +8,7 @@ using rbkApiModules.Comments.Relational;
 using rbkApiModules.Faqs.Relational;
 using rbkApiModules.Notifications.Relational;
 using rbkApiModules.Commons.Core.Auditing;
+using rbkApiModules.Identity;
 
 namespace Demo1.Database.Domain;
 

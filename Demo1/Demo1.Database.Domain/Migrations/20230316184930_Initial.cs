@@ -64,44 +64,6 @@ namespace Demo1.Database.Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Comments",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Username = table.Column<string>(type: "text", nullable: true),
-                    EntityId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ParentId = table.Column<Guid>(type: "uuid", nullable: true),
-                    Message = table.Column<string>(type: "text", nullable: true),
-                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    TenantId = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Comments", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Comments_Comments_ParentId",
-                        column: x => x.ParentId,
-                        principalTable: "Comments",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Faqs",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Tag = table.Column<string>(type: "text", nullable: true),
-                    Question = table.Column<string>(type: "text", nullable: true),
-                    Answer = table.Column<string>(type: "text", nullable: true),
-                    TenantId = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Faqs", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Folder",
                 columns: table => new
                 {
@@ -139,33 +101,6 @@ namespace Demo1.Database.Domain.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Notifications", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Plant",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: true),
-                    Desciption = table.Column<string>(type: "text", nullable: true),
-                    TenantId = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Plant", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Roles",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
-                    TenantId = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Roles", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -254,6 +189,121 @@ namespace Demo1.Database.Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Comments",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Username = table.Column<string>(type: "text", nullable: true),
+                    EntityId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ParentId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Message = table.Column<string>(type: "text", nullable: true),
+                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    TenantId = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Comments_Comments_ParentId",
+                        column: x => x.ParentId,
+                        principalTable: "Comments",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Comments_Tenants_TenantId",
+                        column: x => x.TenantId,
+                        principalTable: "Tenants",
+                        principalColumn: "Alias");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Faqs",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Tag = table.Column<string>(type: "text", nullable: true),
+                    Question = table.Column<string>(type: "text", nullable: true),
+                    Answer = table.Column<string>(type: "text", nullable: true),
+                    TenantId = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Faqs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Faqs_Tenants_TenantId",
+                        column: x => x.TenantId,
+                        principalTable: "Tenants",
+                        principalColumn: "Alias");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Plant",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    Desciption = table.Column<string>(type: "text", nullable: true),
+                    TenantId = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Plant", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Plant_Tenants_TenantId",
+                        column: x => x.TenantId,
+                        principalTable: "Tenants",
+                        principalColumn: "Alias");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Roles",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    TenantId = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Roles", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Roles_Tenants_TenantId",
+                        column: x => x.TenantId,
+                        principalTable: "Tenants",
+                        principalColumn: "Alias");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Username = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    Email = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    Password = table.Column<string>(type: "character varying(4096)", maxLength: 4096, nullable: false),
+                    RefreshToken = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: true),
+                    DisplayName = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true),
+                    Avatar = table.Column<string>(type: "character varying(1024)", maxLength: 1024, nullable: true),
+                    IsConfirmed = table.Column<bool>(type: "boolean", nullable: false),
+                    ActivationCode = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    PasswordRedefineCode_CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    PasswordRedefineCode_Hash = table.Column<string>(type: "character varying(1024)", maxLength: 1024, nullable: true),
+                    RefreshTokenValidity = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    LastLogin = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    Metadata = table.Column<string>(type: "text", nullable: true),
+                    TenantId = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Users_Tenants_TenantId",
+                        column: x => x.TenantId,
+                        principalTable: "Tenants",
+                        principalColumn: "Alias");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "RolesToClaims",
                 columns: table => new
                 {
@@ -275,36 +325,6 @@ namespace Demo1.Database.Domain.Migrations
                         principalTable: "Roles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Users",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Username = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    Email = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    Password = table.Column<string>(type: "character varying(4096)", maxLength: 4096, nullable: false),
-                    RefreshToken = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: true),
-                    DisplayName = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true),
-                    Avatar = table.Column<string>(type: "character varying(1024)", maxLength: 1024, nullable: true),
-                    IsConfirmed = table.Column<bool>(type: "boolean", nullable: false),
-                    ActivationCode = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    PasswordRedefineCodeCreationDate = table.Column<DateTime>(name: "PasswordRedefineCode_CreationDate", type: "timestamp with time zone", nullable: true),
-                    PasswordRedefineCodeHash = table.Column<string>(name: "PasswordRedefineCode_Hash", type: "character varying(1024)", maxLength: 1024, nullable: true),
-                    RefreshTokenValidity = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    LastLogin = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    Metadata = table.Column<string>(type: "text", nullable: true),
-                    TenantId = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Users", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Users_Tenants_TenantId",
-                        column: x => x.TenantId,
-                        principalTable: "Tenants",
-                        principalColumn: "Alias");
                 });
 
             migrationBuilder.CreateTable(
@@ -362,6 +382,16 @@ namespace Demo1.Database.Domain.Migrations
                 column: "ParentId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Comments_TenantId",
+                table: "Comments",
+                column: "TenantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Faqs_TenantId",
+                table: "Faqs",
+                column: "TenantId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_File_FolderId",
                 table: "File",
                 column: "FolderId");
@@ -372,6 +402,11 @@ namespace Demo1.Database.Domain.Migrations
                 column: "ParentId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Plant_TenantId",
+                table: "Plant",
+                column: "TenantId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Posts_AuthorId",
                 table: "Posts",
                 column: "AuthorId");
@@ -380,6 +415,11 @@ namespace Demo1.Database.Domain.Migrations
                 name: "IX_Posts_BlogId",
                 table: "Posts",
                 column: "BlogId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Roles_TenantId",
+                table: "Roles",
+                column: "TenantId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RolesToClaims_RoleId",

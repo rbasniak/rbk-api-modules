@@ -1,5 +1,6 @@
 ﻿using Serilog;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -36,8 +37,10 @@ public class TypescriptModel
 
         Properties = new List<TypescriptProperty>();
 
-        foreach (var property in type.Type.GetProperties().Where(x => x.GetAttribute<JsonIgnoreAttribute>() == null))
+        foreach (var property in type.Type.GetProperties())
         {
+            var temp = property.GetAttribute<JsonIgnoreAttribute>();
+
             Properties.Add(new TypescriptProperty(property.Name, new TypeInfo(property.PropertyType), false));
         }
     }

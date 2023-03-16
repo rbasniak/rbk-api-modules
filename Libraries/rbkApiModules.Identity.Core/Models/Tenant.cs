@@ -5,8 +5,6 @@ namespace rbkApiModules.Identity.Core;
 
 public class Tenant 
 {
-    protected HashSet<User> _users;
-
     protected Tenant()
     {
 
@@ -17,8 +15,6 @@ public class Tenant
         Alias = alias;
         Name = name;
         Metadata = metadata;
-
-        _users = new HashSet<User>();
     }
 
     [Key, Required, MaxLength(32)]
@@ -28,8 +24,6 @@ public class Tenant
     public virtual string Name { get; protected set; }
 
     public virtual string Metadata { get; protected set; }
-
-    public virtual IEnumerable<User> Users => _users?.ToList();
 
     public void Update(string name, string metadata)
     {

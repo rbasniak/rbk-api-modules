@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Demo1.Database.Domain.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230224160216_Initial")]
+    [Migration("20230316184930_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace Demo1.Database.Domain.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.2")
+                .HasAnnotation("ProductVersion", "7.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -174,6 +174,8 @@ namespace Demo1.Database.Domain.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("TenantId");
+
                     b.ToTable("Plant");
                 });
 
@@ -205,6 +207,8 @@ namespace Demo1.Database.Domain.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ParentId");
+
+                    b.HasIndex("TenantId");
 
                     b.ToTable("Comments", (string)null);
                 });
@@ -275,6 +279,8 @@ namespace Demo1.Database.Domain.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("TenantId");
+
                     b.ToTable("Faqs", (string)null);
                 });
 
@@ -321,6 +327,8 @@ namespace Demo1.Database.Domain.Migrations
                         .HasColumnType("character varying(32)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("TenantId");
 
                     b.ToTable("Roles", (string)null);
                 });
@@ -536,6 +544,13 @@ namespace Demo1.Database.Domain.Migrations
                     b.Navigation("Parent");
                 });
 
+            modelBuilder.Entity("Demo1.Models.Domain.Plant", b =>
+                {
+                    b.HasOne("rbkApiModules.Identity.Core.Tenant", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId");
+                });
+
             modelBuilder.Entity("rbkApiModules.Comments.Core.Comment", b =>
                 {
                     b.HasOne("rbkApiModules.Comments.Core.Comment", "Parent")
@@ -543,7 +558,25 @@ namespace Demo1.Database.Domain.Migrations
                         .HasForeignKey("ParentId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("rbkApiModules.Identity.Core.Tenant", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId");
+
                     b.Navigation("Parent");
+                });
+
+            modelBuilder.Entity("rbkApiModules.Faqs.Core.Faq", b =>
+                {
+                    b.HasOne("rbkApiModules.Identity.Core.Tenant", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId");
+                });
+
+            modelBuilder.Entity("rbkApiModules.Identity.Core.Role", b =>
+                {
+                    b.HasOne("rbkApiModules.Identity.Core.Tenant", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId");
                 });
 
             modelBuilder.Entity("rbkApiModules.Identity.Core.RoleToClaim", b =>
@@ -568,7 +601,7 @@ namespace Demo1.Database.Domain.Migrations
             modelBuilder.Entity("rbkApiModules.Identity.Core.User", b =>
                 {
                     b.HasOne("rbkApiModules.Identity.Core.Tenant", null)
-                        .WithMany("Users")
+                        .WithMany()
                         .HasForeignKey("TenantId");
 
                     b.OwnsOne("rbkApiModules.Identity.Core.PasswordRedefineCode", "PasswordRedefineCode", b1 =>
@@ -665,11 +698,6 @@ namespace Demo1.Database.Domain.Migrations
                 {
                     b.Navigation("Claims");
 
-                    b.Navigation("Users");
-                });
-
-            modelBuilder.Entity("rbkApiModules.Identity.Core.Tenant", b =>
-                {
                     b.Navigation("Users");
                 });
 

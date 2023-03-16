@@ -21,7 +21,7 @@ public class AuthorizationController : BaseController
     /// Lista as permissões de acesso
     /// </summary>
     [HttpGet("claims")]
-    [RbkAuthorize(AuthenticationClaims.MANAGE_CLAIMS)]
+    [Authorize]
     public async Task<ActionResult<ClaimDetails[]>> GetAllClaims(CancellationToken cancellation)
     {
         return HttpResponse<ClaimDetails[]>(await Mediator.Send(new GetAllClaims.Request(), cancellation));

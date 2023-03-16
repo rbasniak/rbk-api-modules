@@ -19,14 +19,14 @@ public class AngularCodeGenerator
         _projectId = projectId;
     }
 
-    public void Generate()
+    public void Generate(Assembly[] assemblies = null)
     {
         Log.Information("Begining code generation");
 
         var servicesFolder = Path.Combine(_basePath, "services", "api");
         Directory.CreateDirectory(servicesFolder);
 
-        var controllers = GetControllers(_projectId);
+        var controllers = GetControllers(_projectId, assemblies);
 
         Log.Information("Found {amount} controllers", controllers.Length);
 
@@ -126,7 +126,7 @@ public class AngularCodeGenerator
         frontendModel.GenerateModels();
         frontendModel.GenerateServices();
         frontendModel.GenerateStores();
-    }
+    } 
 
     private List<TypeInfo> GetForcedTypescriptModels(string projectId)
     {
@@ -180,15 +180,18 @@ public class AngularCodeGenerator
         return propertyType.Name;
     }
 
-    private ControllerInfo[] GetControllers(string projectId)
+    private ControllerInfo[] GetControllers(string projectId, Assembly[] assemblies)
     {
         var result = new StringBuilder();
 
-        var loadedAssemblies = GetRevelantAssemblies();
-
         var controllers = new List<ControllerInfo>();
 
-        foreach (var assembly in loadedAssemblies)
+        if (assemblies == null)
+        {
+            assemblies = GetRevelantAssemblies();
+        }
+
+        foreach (var assembly in assemblies)
         {
             var assemblyControllers = (assembly.GetTypes()
                 .Where(myType => myType.IsClass

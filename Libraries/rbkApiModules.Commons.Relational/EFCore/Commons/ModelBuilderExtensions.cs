@@ -62,33 +62,4 @@ public static class ModelBuilderExtensions
             }
         }
     }
-    
-    public static void SetupTenants(this ModelBuilder modelBuilder)
-    {
-        if (modelBuilder == null) throw new ArgumentNullException(nameof(modelBuilder));
-
-        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
-        {
-            var typeBase = typeof(TypeBase);
-
-            var ignoredMembers = typeBase.GetField("_ignoredMembers", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(entityType) as Dictionary<string, ConfigurationSource>;
-
-            bool NotIgnored(PropertyInfo property) =>
-                property != null && !ignoredMembers.ContainsKey(property.Name) && !property.CustomAttributes.Any(a => a.AttributeType == typeof(NotMappedAttribute));
-
-            foreach (var clrProperty in entityType.ClrType.GetProperties().Where(x => NotIgnored(x) && entityType.ClrType == typeof(TenantEntity)))
-            {
-                Debugger.Break();
-                //var property = modelBuilder.Entity(entityType.ClrType).Property(clrProperty.PropertyType, clrProperty.Name);
-                //var modelType = clrProperty.PropertyType;
-
-                //var converterType = typeof(JsonValueConverter<>).MakeGenericType(modelType);
-                //var converter = (ValueConverter)Activator.CreateInstance(converterType, new object[] { null });
-                //property.Metadata.SetValueConverter(converter);
-
-                //var valueComparer = typeof(JsonValueComparer<>).MakeGenericType(modelType);
-                //property.Metadata.SetValueComparer((ValueComparer)Activator.CreateInstance(valueComparer, new object[0]));
-            }
-        }
-    }
 }

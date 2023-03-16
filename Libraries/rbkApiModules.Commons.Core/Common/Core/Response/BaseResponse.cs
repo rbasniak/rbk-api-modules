@@ -48,6 +48,11 @@ public class BaseResponse
 
     public void AddHandledError(string message)
     {
+        if (Status != CommandStatus.HasUnhandledError)
+        {
+            Status = CommandStatus.HasHandledError;
+        }
+
         AddError(ValidationErrorCodes.BAD_REQUEST, message);
     }
 
