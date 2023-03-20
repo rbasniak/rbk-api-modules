@@ -153,4 +153,25 @@ public class AuthenticationController : BaseController
             return Redirect(_authEmailOptions.EmailData.ConfirmationFailedUrl);
         }
     }
+
+    [Authorize]
+    [IgnoreOnCodeGeneration]
+    [HttpPost("switch-domain")]
+    public async Task<ActionResult<JwtResponse>> SwitchDomain(SwitchDomain.Request data, CancellationToken cancellation)
+    {
+        var result = await Mediator.Send(data, cancellation);
+
+        if (result.IsValid)
+        {
+            return HttpResponse<JwtResponse>(result);
+        }
+        else
+        {
+            return new ContentResult()
+            {
+                Content = JsonSerializer.Serialize(result.Errors.Select(x => x.Message)),
+                StatusCode = (int)HttpStatusCode.BadRequest
+            };
+        };
+    }
 }
