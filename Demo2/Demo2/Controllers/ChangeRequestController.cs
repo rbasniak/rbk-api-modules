@@ -1,16 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using rbkApiModules.Commons.Core;
-using Demo2.Domain.Events;
-using Microsoft.AspNetCore.Authorization;
-using Demo2.Domain.Events.Repositories;
-using Demo2.Domain;
 using System.Diagnostics;
-using Demo2.Domain.Events.MyImplementation.Database;
-using Demo2.Infrastructure.EventSourcing.Database.Repositories;
-using Demo2.Domain.Eventsourcing.Projectors;
-using Demo2.Relational;
 using Microsoft.EntityFrameworkCore;
-using System;
+using Demo2.Samples.Relational.Database;
+using Demo2.Samples.Eventsourcing.EventOrientedChanges.Database;
+using Demo2.Samples.Eventsourcing.EventOrientedChanges.Domain.Projectors;
+using Demo2.Samples.Relational.Domain.Models;
+using Demo2.Samples.Eventsourcing.EventOrientedChanges.Infrastructure.Database.Repositories;
+using Demo2.Seed;
 
 namespace Demo2.Controllers;
 

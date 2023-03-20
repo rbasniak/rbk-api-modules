@@ -1,0 +1,19 @@
+﻿using Demo2.Samples.Relational.Domain.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Diagnostics.CodeAnalysis;
+
+namespace Demo2.Samples.Relational.Database.Config.Relational
+{
+    [ExcludeFromCodeCoverage]
+    public class ChangeRequestSourceConfig : IEntityTypeConfiguration<ChangeRequestSource>
+    {
+        public void Configure(EntityTypeBuilder<ChangeRequestSource> entity)
+        {
+            entity.ToTable("ChageRequestSources");
+
+            entity.Property(c => c.Name)
+                .IsRequired();
+        }
+    }
+}

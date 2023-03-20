@@ -5,16 +5,14 @@ using System.Net;
 using System.Reflection;
 using System.Text.Json;
 using rbkApiModules.Commons.Core.UiDefinitions;
-using AutoMapper;
 using rbkApiModules.Commons.Relational;
-using rbkApiModules.Commons.Core.CQRS;
 using rbkApiModules.Commons.Core;
-using rbkApiModules.Commons.Relational.CQRS;
-using Demo2.Domain.Events.Infrastructure;
 using rbkApiModules.Commons.Core.Pipelines;
-using Demo2.Infrastructure.EventSourcing.Database.Repositories;
-using Demo2.Domain.Events.MyImplementation.Database;
-using Demo2.Domain.Eventsourcing.Projectors;
+using Demo2.Samples.Relational.Database;
+using Demo2.Samples.Eventsourcing.EventOrientedChanges.Database;
+using Demo2.Samples.Eventsourcing.EventOrientedChanges.Domain.Commands.ChangeRequests;
+using Demo2.Samples.Eventsourcing.EventOrientedChanges.Infrastructure.Database.Repositories;
+using Demo2.Samples.Eventsourcing.EventOrientedChanges.Domain.Projectors;
 
 namespace Demo2.Api;
 
@@ -173,12 +171,12 @@ public class Startup
 
     private static Assembly[] AssembliesForMediatR => new[] 
     {
-        Assembly.GetAssembly(typeof(Demo2.Domain.Events.CreateChangeRequestByGeneralUser.Request))
+        Assembly.GetAssembly(typeof(CreateChangeRequestByGeneralUser.Request))
     };
 
     private static Assembly[] AssembliesForAdditionalValidations => new[]
     {
-        Assembly.GetAssembly(typeof(Demo2.Domain.Events.CreateChangeRequestByGeneralUser.Validator))
+        Assembly.GetAssembly(typeof(CreateChangeRequestByGeneralUser.Validator))
     };
 
     private static Assembly[] AssembliesForUiDefinitions => new Assembly[0];

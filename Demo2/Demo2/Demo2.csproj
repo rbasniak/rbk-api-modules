@@ -25,8 +25,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Database\Relational\Config\EventSourcing\" />
-    <Folder Include="Logs\" />
+    <Folder Include="Samples\Relational\Database\Config\EventSourcing\" />
+    <Folder Include="Samples\Eventsourcing\ModelOrientedChanges\Database\" />
+    <Folder Include="Samples\Eventsourcing\ModelOrientedChanges\Domain\" />
   </ItemGroup>
 
   <ItemGroup>
