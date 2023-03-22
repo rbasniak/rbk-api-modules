@@ -2,6 +2,7 @@
 using MediatR;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.Localization;
+using rbkApiModules.Commons.Core.Utilities.Localization;
 
 namespace rbkApiModules.Identity.Core;
 
@@ -40,7 +41,9 @@ public class ConfirmUserEmail
 
             RuleFor(a => a.Email)
                 .IsRequired(localization)
-                .MustAsync(BeValidPair).WithMessage(localization.GetValue("Código de ativação inválido"));
+                .MustAsync(BeValidPair)
+                .WithMessage(localization.GetValue(AuthenticationMessages.Validations.InvalidActivationCode))
+                .WithName(localization.GetValue(AuthenticationMessages.Fields.ActivationCode));
         }
 
         public async Task<bool> BeValidPair(Request request, string email, CancellationToken cancelation)

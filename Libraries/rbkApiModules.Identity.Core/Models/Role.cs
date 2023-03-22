@@ -43,7 +43,7 @@ public class Role : TenantEntity
 
     public RoleToClaim AddClaim(Claim claim)
     {
-        if (_claims == null) throw new Exception("Não é possível manipular listas que não foram carregadas completamente do banco de dados");
+        if (_claims == null) throw new Exception("Cannot change lists not loaded from database");
 
         var roleToClaim = new RoleToClaim(this, claim);
 

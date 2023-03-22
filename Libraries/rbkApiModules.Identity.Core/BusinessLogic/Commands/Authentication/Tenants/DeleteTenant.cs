@@ -2,6 +2,7 @@
 using MediatR;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.Localization;
+using rbkApiModules.Commons.Core.Utilities.Localization;
 
 namespace rbkApiModules.Identity.Core;
 
@@ -34,8 +35,10 @@ public class DeleteTenant
 
             RuleFor(a => a.Alias)
                 .IsRequired(localization)
-                .MustAsync(ExistInDatabase).WithErrorCode(ValidationErrorCodes.NOT_FOUND).WithMessage(localization.GetValue("Tenant not found"))
-                .WithName(localization.GetValue("Alias"));
+                .MustAsync(ExistInDatabase)
+                    .WithErrorCode(ValidationErrorCodes.NOT_FOUND)
+                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.TenantNotFound))
+                    .WithName(localization.GetValue(AuthenticationMessages.Fields.TenantAlias));
         }
 
         private async Task<bool> ExistInDatabase(Request request, string alias, CancellationToken cancellation)
@@ -49,21 +52,30 @@ public class DeleteTenant
         private readonly ITenantsService _tenantsService;
         private readonly IRolesService _rolesService;
         private readonly IAuthService _authService;
+        private readonly ILocalizationService _localization;
 
-        public Handler(ITenantsService tenantsService, IAuthService authService, IRolesService rolesService)
+        public Handler(ITenantsService tenantsService, IAuthService authService, IRolesService rolesService, ILocalizationService localization)
         {
             _tenantsService = tenantsService;
             _rolesService = rolesService;
             _authService = authService;
+            _localization = localization;
         }
 
         public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)
         {
-            await _authService.DeleteUsersFromTenant(request.Alias, cancellation);
+            try
+            {
+                await _authService.DeleteUsersFromTenant(request.Alias, cancellation);
 
-            await _rolesService.DeleteRolesFromTenant(request.Alias, cancellation);
+                await _rolesService.DeleteRolesFromTenant(request.Alias, cancellation);
 
-            await _tenantsService.DeleteAsync(request.Alias, cancellation);
+                await _tenantsService.DeleteAsync(request.Alias, cancellation);
+            }
+            catch 
+            {
+                throw new SafeException(_localization.GetValue(AuthenticationMessages.Erros.CannotDeleteUsedTenant));
+            }
 
             return CommandResponse.Success();
         }

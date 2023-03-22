@@ -2,6 +2,7 @@
 using MediatR;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.Localization;
+using rbkApiModules.Commons.Core.Utilities.Localization;
 
 namespace rbkApiModules.Identity.Core;
 
@@ -24,13 +25,14 @@ public class UpdateRoleClaims
             _claimsService = claimsService;
 
             RuleFor(a => a.Id)
-                .RoleExistOnDatabaseForTheCurrentTenant(rolesService, localization).WithMessage(localization.GetValue("Role not found"));
+                .RoleExistOnDatabaseForTheCurrentTenant(rolesService, localization)
+                .WithMessage(localization.GetValue(AuthenticationMessages.Validations.RoleNotFound));
 
             RuleFor(x => x.ClaimsIds)
-                .NotNull().WithMessage(localization.GetValue("The list of claims must be provided"));
+                .NotNull().WithMessage(localization.GetValue(AuthenticationMessages.Validations.ClaimListMustNotBeEmpty));
 
             RuleForEach(a => a.ClaimsIds)
-                .MustAsync(ClaimExistInDatabase).WithMessage(localization.GetValue("Unknown claim in the list"));
+                .MustAsync(ClaimExistInDatabase).WithMessage(localization.GetValue(AuthenticationMessages.Validations.UnknownClaimInTheList));
 
             RuleFor(x => x.Identity)
                 .TenantExistOnDatabase(tenantsService, localization)

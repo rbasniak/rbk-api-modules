@@ -2,6 +2,7 @@
 using MediatR;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.Localization;
+using rbkApiModules.Commons.Core.Utilities.Localization;
 
 namespace rbkApiModules.Identity.Core;
 
@@ -23,13 +24,15 @@ public class CreateClaim
 
             RuleFor(a => a.Identification)
                 .IsRequired(localization)
-                .MustAsync(NotExistsInDatabaseWithSameIdentification).WithMessage(localization.GetValue("There is already a claim with this identification"))
-                .WithName(localization.GetValue("Identification"));
+                .MustAsync(NotExistsInDatabaseWithSameIdentification)
+                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.ClaimIdentificationAlreadyUsed))
+                .WithName(localization.GetValue(AuthenticationMessages.Fields.Identification));
 
             RuleFor(a => a.Description)
                 .IsRequired(localization)
-                .MustAsync(NotExistsInDatabaseWithSameDescription).WithMessage(localization.GetValue("There is already a claim with this description"))
-                .WithName(localization.GetValue("Description"));
+                .MustAsync(NotExistsInDatabaseWithSameDescription)
+                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.ClaimDescriptionAlreadyUsed))
+                .WithName(localization.GetValue(AuthenticationMessages.Fields.Description));
         }
 
         private async Task<bool> NotExistsInDatabaseWithSameIdentification(Request request, string identification, CancellationToken cancelation)

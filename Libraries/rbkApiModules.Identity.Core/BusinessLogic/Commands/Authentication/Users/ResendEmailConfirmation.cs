@@ -2,6 +2,7 @@
 using MediatR;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.Localization;
+using rbkApiModules.Commons.Core.Utilities.Localization;
 
 namespace rbkApiModules.Identity.Core;
 
@@ -23,8 +24,10 @@ public class ResendEmailConfirmation
             RuleFor(x => x.Email)
                 .IsRequired(localization)
                 .MustBeEmail(localization)
-                .MustAsync(EmailBeRegistered).WithMessage(localization.GetValue("E-mail não cadastrado"))
-                .MustAsync(EmailBeUnconfirmed).WithMessage(localization.GetValue("E-mail já confirmado"));
+                .MustAsync(EmailBeRegistered)
+                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.EmailNotFound))
+                .MustAsync(EmailBeUnconfirmed)
+                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.EmailAlreadyConfirmed));
         }
 
         private async Task<bool> EmailBeRegistered(Request request, string email, CancellationToken cancellation)

@@ -5,6 +5,8 @@ using MediatR;
 using rbkApiModules.Commons.Core;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using rbkApiModules.Commons.Core.Localization;
+using rbkApiModules.Commons.Core.Utilities.Localization;
 
 namespace rbkApiModules.SharedUI.Core;
 
@@ -19,22 +21,24 @@ public class UserLogin
     public class Handler : IRequestHandler<Request, CommandResponse>
     {
         private readonly RbkSharedUIAuthentication _sharedUIAuthentication;
+        private readonly ILocalizationService _localization;
 
-        public Handler(IOptions<RbkSharedUIAuthentication> sharedUIAuthentication)  
+        public Handler(IOptions<RbkSharedUIAuthentication> sharedUIAuthentication, ILocalizationService localization)  
         {
             _sharedUIAuthentication = sharedUIAuthentication.Value;
+            _localization = localization;
         }
 
         public async Task<CommandResponse> Handle(Request request, CancellationToken cancellationToken)
         {
             if (String.IsNullOrEmpty(_sharedUIAuthentication.Username))
             {
-                throw new SafeException("SharedUI credentials are not properly setup in the server");
+                throw new SafeException(_localization.GetValue(SharedUiMessages.Errors.CredentialsNotProperlyConfigured));
             }
 
             if (_sharedUIAuthentication.Username.ToLower() != request.Username.ToLower() || _sharedUIAuthentication.Password != request.Password)
             {
-                throw new SafeException("Invalid credentials");
+                throw new SafeException(_localization.GetValue(SharedUiMessages.Errors.InvalidCredentials));
             }
 
             var claims = new Dictionary<string, string[]>();

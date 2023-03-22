@@ -2,6 +2,7 @@
 using MediatR;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.Localization;
+using rbkApiModules.Commons.Core.Utilities.Localization;
 
 namespace rbkApiModules.Faqs.Core;
 
@@ -20,15 +21,15 @@ public class UpdateFaq
         {
             RuleFor(x => x.Id)
                 .MustAsync(async (command, id, cancellation) => await faqsService.ExistsAsync(command.Identity.Tenant, id, cancellation))
-                    .WithMessage(localization.GetValue("Entity not found"));
+                    .WithMessage(localization.GetValue(FaqMessages.Validation.EntityNotFound));
 
             RuleFor(x => x.Question)
                 .IsRequired(localization)
-                .WithName(localization.GetValue("Question"));
+                .WithName(localization.GetValue(FaqMessages.Fields.Question));
 
             RuleFor(x => x.Answer)
                 .IsRequired(localization)
-                .WithName(localization.GetValue("Answer"));
+                .WithName(localization.GetValue(FaqMessages.Fields.Answer));
         }
     }
 

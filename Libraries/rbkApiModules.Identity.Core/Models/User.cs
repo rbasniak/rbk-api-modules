@@ -109,11 +109,11 @@ public class User : TenantEntity
     {
         var claims = new HashSet<Claim>();
 
-        if (_roles == null) throw new ApplicationException("O usuário precisa estar carregado completamente do banco para verificar as regras de acesso.");
+        if (_roles == null) throw new ApplicationException("User relationships need to be fully loaded from database to check the access claims");
 
         foreach (var role in _roles)
         {
-            if (role.Role == null) throw new ApplicationException("O usuário precisa estar carregado completamente do banco para verificar as regras de acesso.");
+            if (role.Role == null) throw new ApplicationException("User relationships need to be fully loaded from database to check the access claims");
 
             foreach (var claim in role.Role.Claims)
             {
@@ -121,7 +121,7 @@ public class User : TenantEntity
             }
         }
 
-        if (Claims == null) throw new ApplicationException("O usuário precisa estar carregado completamente do banco para verificar as regras de acesso.");
+        if (Claims == null) throw new ApplicationException("User relationships need to be fully loaded from database to check the access claims");
 
         foreach (var overridedClaim in Claims)
         {
@@ -162,7 +162,7 @@ public class User : TenantEntity
     /// </summary>
     public virtual UserToRole AddRole(Role role)
     {
-        if (_roles == null) throw new Exception("Não é possível manipular listas que não foram carregadas completamente do banco de dados");
+        if (_roles == null) throw new Exception("User relationships need to be fully loaded from database to check the access claims");
 
         var userToRole = new UserToRole(this, role);
 
@@ -176,7 +176,7 @@ public class User : TenantEntity
     /// </summary>
     public virtual void RemoveRole(Role role)
     {
-        if (_roles == null) throw new Exception("Não é possível manipular listas que não foram carregadas completamente do banco de dados");
+        if (_roles == null) throw new Exception("User relationships need to be fully loaded from database to check the access claims");
 
         var userToRole = _roles.Single(x => x.RoleId == role.Id);
 
@@ -191,7 +191,7 @@ public class User : TenantEntity
     /// <returns>Retorna a entidade n-n necessária para modelar o relacionamento no EFCore</returns>
     public virtual UserToClaim AddClaim(Claim claim, ClaimAccessType access)
     {
-        if (_claims == null) throw new Exception("Não é possível manipular listas que não foram carregadas completamente do banco de dados");
+        if (_claims == null) throw new Exception("User relationships need to be fully loaded from database to check the access claims");
 
         var roleToClaim = new UserToClaim(this, claim, access);
 

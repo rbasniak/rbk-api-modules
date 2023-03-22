@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using rbkApiModules.Commons.Core.Localization;
+using rbkApiModules.Commons.Core.Utilities.Localization;
 
 namespace rbkApiModules.Commons.Core;
 
@@ -12,56 +13,41 @@ public static class FluentValidationExtensions
     /// Retorna válido se o Id for vazio ou nulo, precisa usar o MustNotBeWmpty 
     /// antes desse validador caso o id não possa ser nulo
     /// </summary>
-    public static IRuleBuilderOptions<T, string> MustBeValidId<T>(this IRuleBuilder<T, string> rule)
+    public static IRuleBuilderOptions<T, string> MustBeValidId<T>(this IRuleBuilder<T, string> rule, ILocalizationService localization)
     {
         return rule
             .Must(value => !String.IsNullOrEmpty(value) ? Guid.TryParse(value, out Guid result) : true)
-            .WithMessage("Id com formato inválido");
+            .WithMessage(localization.GetValue(SharedValidationMessages.Common.InvalidIdFormat));
     }
 
-    /// <summary>
-    /// Validação de campos de texto que não podem ser vazios
-    /// </summary>
     public static IRuleBuilderOptions<T, string> IsRequired<T>(this IRuleBuilder<T, string> rule, ILocalizationService localization)
     {
         return rule
-            .NotEmpty().WithMessage(localization.GetValue("O campo '{PropertyName}' não pode ser vazio"));
+            .NotEmpty().WithMessage(localization.GetValue(SharedValidationMessages.Common.FieldCannotBeEmpty));
     }
 
-    /// <summary>
-    /// Validação de campos de texto que não podem ser nulos
-    /// </summary>
     public static IRuleBuilderOptions<T, string> MustNotBeNull<T>(this IRuleBuilder<T, string> rule, ILocalizationService localization)
     {
         return rule
-            .NotNull().WithMessage(localization.GetValue("O campo '{PropertyName}' não pode ser nulo"));
+            .NotNull().WithMessage(localization.GetValue(SharedValidationMessages.Common.FieldCannotBeNull));
     }
 
-    /// <summary>
-    /// Validação de campos numéricos que devem ficar em um determinado range
-    /// </summary>
     public static IRuleBuilderOptions<T, string> MustHasLengthBetween<T>(this IRuleBuilder<T, string> rule, int min, int max, ILocalizationService localization)
     {
         return rule
             .Must(x => String.IsNullOrEmpty(x) || (x.Length >= min && x.Length <= max))
-            .WithMessage(localization.GetValue("O campo '{PropertyName}' deve conter entre " + min + " e " + max + " caracteres"));
+            .WithMessage(String.Format(localization.GetValue(SharedValidationMessages.Common.FieldMustHaveLengthBetweenMinAndMax), min, max));
     }
 
-    /// <summary>
-    /// Validação de campos de listas de texto que devem conter ao menos um item na lista
-    /// </summary>
     public static IRuleBuilderOptions<T, string[]> ListMustHaveItems<T>(this IRuleBuilder<T, string[]> rule)
     {
         return rule
             .Must(x => x != null && x.Length != 0);
     }
 
-    /// <summary>
-    /// Validação de campos de e-mail
-    /// </summary>
     public static IRuleBuilderOptions<T, string> MustBeEmail<T>(this IRuleBuilder<T, string> rule, ILocalizationService localization)
     {
         return rule
-            .EmailAddress().WithMessage(localization.GetValue("E-mail com formato inválido"));
+            .EmailAddress().WithMessage(localization.GetValue(SharedValidationMessages.Common.InvalidEmailFormat));
     }
 }

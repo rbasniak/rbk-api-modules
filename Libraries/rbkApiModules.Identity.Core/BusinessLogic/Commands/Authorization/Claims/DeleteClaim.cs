@@ -2,6 +2,7 @@
 using MediatR;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.Localization;
+using rbkApiModules.Commons.Core.Utilities.Localization;
 
 namespace rbkApiModules.Identity.Core;
 
@@ -22,9 +23,12 @@ public class DeleteClaim
 
             RuleFor(a => a.Id)
                 .ClaimExistOnDatabase(claimsService, localization)
-                .MustAsync(NotBeUsedInAnyRole).WithMessage(localization.GetValue("Cannot remove a claim that is being used by any roles"))
-                .MustAsync(NotBeProtected).WithMessage(localization.GetValue("Cannot remove a system protected claim"))
-                .MustAsync(NotBeUsedInAnyUser).WithMessage(localization.GetValue("Cannot remove a claim that is being used in any users"));
+                .MustAsync(NotBeUsedInAnyRole)
+                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.CannotRemoveClaimUsedByOtherRoles))
+                .MustAsync(NotBeProtected)
+                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.CannotRemoveSystemProtectedClaims))
+                .MustAsync(NotBeUsedInAnyUser)
+                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.CannotRemoveClaimAssociatedWithUsers));
         } 
 
         private async Task<bool> NotBeUsedInAnyRole(Request request, Guid id, CancellationToken cancellation)

@@ -2,6 +2,7 @@
 using MediatR;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.Localization;
+using rbkApiModules.Commons.Core.Utilities.Localization;
 
 namespace rbkApiModules.Identity.Core;
 
@@ -23,13 +24,13 @@ public class RedefinePassword
 
             RuleFor(a => a.Password)
                  .IsRequired(localization)
-                 .WithName(localization.GetValue("Password"))
+                 .WithName(localization.GetValue(AuthenticationMessages.Fields.Password))
                  .DependentRules(() =>
                  {
                      RuleFor(a => a.Code)
                          .IsRequired(localization)
-                         .MustAsync(ExistOnDatabaseAndIsValid).WithMessage(localization.GetValue("The password reset is code expired or was already used."))
-                         .WithName(localization.GetValue("Password reset code"));
+                         .MustAsync(ExistOnDatabaseAndIsValid).WithMessage(localization.GetValue(AuthenticationMessages.Validations.PasswordResetCodeExpiredOrUsed))
+                         .WithName(localization.GetValue(AuthenticationMessages.Fields.PasswordResetCode));
                  });  
         }
 

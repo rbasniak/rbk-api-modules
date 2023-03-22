@@ -2,6 +2,7 @@
 using MediatR;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.Localization;
+using rbkApiModules.Commons.Core.Utilities.Localization;
 
 namespace rbkApiModules.Identity.Core;
 
@@ -26,10 +27,10 @@ public class SwitchDomain
                 .IsRequired(localization)
                 .MustAsync(ExistInDatabase)
                     .WithErrorCode(ValidationErrorCodes.NOT_FOUND)
-                        .WithMessage(localization.GetValue("Tenant not found"))
+                        .WithMessage(localization.GetValue(AuthenticationMessages.Validations.TenantNotFound))
                 .MustAsync(BePartOfDomain)
-                    .WithMessage(localization.GetValue("Access denied"))
-                .WithName(localization.GetValue("Destination domain"));
+                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.UnauthorizedAccess))
+                .WithName(localization.GetValue(AuthenticationMessages.Fields.DestinationDomain));
         }
 
         public async Task<bool> ExistInDatabase(Request request, string destinationDomain, CancellationToken cancellation)

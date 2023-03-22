@@ -8,7 +8,7 @@ public class PasswordPolicyValidator : ICustomPasswordPolicyValidator
     {
         if (password.Length < 3)
         {
-            return await Task.FromResult(CustomValidationResult.Failure("The password must have at least 3 characteres"));
+            return await Task.FromResult(CustomValidationResult.Failure(ApplicationMessages.AuthenticationPolicies.Errors.PasswordMustHave3Characters));
         }
 
         return await Task.FromResult(CustomValidationResult.Success());

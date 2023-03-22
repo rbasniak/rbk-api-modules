@@ -24,11 +24,9 @@ public class Claim : BaseEntity
     }
 
     [Required, MinLength(5), MaxLength(128)]
-    // TODO: [DialogData(OperationType.Create, "Chave")]
     public virtual string Identification { get; private set; }
 
     [Required, MinLength(5), MaxLength(255)]
-    // TODO: [DialogData(OperationType.CreateAndUpdate, "Descrição")]
     public virtual string Description { get; private set; }
 
     public virtual bool Hidden { get; private set; }

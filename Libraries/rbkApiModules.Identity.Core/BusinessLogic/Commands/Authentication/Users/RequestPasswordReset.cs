@@ -2,6 +2,7 @@
 using MediatR;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.Localization;
+using rbkApiModules.Commons.Core.Utilities.Localization;
 
 namespace rbkApiModules.Identity.Core;
 public class RequestPasswordReset
@@ -31,15 +32,15 @@ public class RequestPasswordReset
 
             RuleFor(x => x.Tenant)
                 .IsRequired(localization)
-                .WithName(localization.GetValue("Tenant"))
+                .WithName(localization.GetValue(AuthenticationMessages.Fields.Tenant))
                 .DependentRules(() =>
                 {
                     RuleFor(x => x.Email)
                         .IsRequired(localization)
                         .MustBeEmail(localization)
-                        .MustAsync(EmailBeRegistered).WithMessage(localization.GetValue("E-mail not found"))
-                        .MustAsync(EmailBeConfirmed).WithMessage(localization.GetValue("E-mail não confirmado"))
-                        .WithName(localization.GetValue("Email"));
+                        .MustAsync(EmailBeRegistered).WithMessage(localization.GetValue(AuthenticationMessages.Validations.EmailNotFound))
+                        .MustAsync(EmailBeConfirmed).WithMessage(localization.GetValue(AuthenticationMessages.Validations.EmailNotYetConfirmed))
+                        .WithName(localization.GetValue(AuthenticationMessages.Fields.Email));
                 });
 
         }

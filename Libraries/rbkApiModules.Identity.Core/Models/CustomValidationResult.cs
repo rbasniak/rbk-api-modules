@@ -4,10 +4,10 @@ public class CustomValidationResult
 {
     private CustomValidationResult()
     {
-        Errors = new string[0];
+        Errors = new Enum[0];
     }
 
-    public string[] Errors { get; private set; }
+    public Enum[] Errors { get; private set; }
 
     public bool IsSuccess => Errors.Length == 0;
     public bool HasErrors => Errors.Length > 0;
@@ -17,7 +17,7 @@ public class CustomValidationResult
         return new CustomValidationResult();
     }
 
-    public static CustomValidationResult Failure(params string[] errors)
+    public static CustomValidationResult Failure(params Enum[] errors)
     {
         if (errors == null || errors.Length == 0) throw new ArgumentNullException(nameof(errors)); 
 

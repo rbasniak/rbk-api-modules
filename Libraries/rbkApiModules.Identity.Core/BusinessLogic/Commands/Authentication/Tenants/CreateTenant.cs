@@ -2,6 +2,7 @@
 using MediatR;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.Localization;
+using rbkApiModules.Commons.Core.Utilities.Localization;
 
 namespace rbkApiModules.Identity.Core;
 
@@ -45,7 +46,8 @@ public class CreateTenant
             _tenantsService = tenantsService;
 
             RuleFor(x => x.AdminInfo)
-                .NotNull().WithMessage(localization.GetValue("Admin user data is required"))
+                .NotNull()
+                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.AdminUserDataIsRequired))
                 .DependentRules(() => 
                 {
                     RuleFor(x => x.AdminInfo.Username)
@@ -62,14 +64,16 @@ public class CreateTenant
 
                     RuleFor(a => a.Alias)
                         .IsRequired(localization)
-                        .MustAsync(NameBeUnique).WithMessage(localization.GetValue(localization.GetValue("Alias already used")))
-                        .WithName(localization.GetValue("Alias"))
+                        .MustAsync(NameBeUnique)
+                            .WithMessage(localization.GetValue(AuthenticationMessages.Validations.TenantAliasAlreadyUsed))
+                            .WithName(localization.GetValue(AuthenticationMessages.Fields.Tenant))
                         .DependentRules(() =>
                         {
                             RuleFor(a => a.Name)
-                               .IsRequired(localization)
-                               .MustAsync(NameNotBeingUsed).WithMessage(localization.GetValue("Name already being used"))
-                               .WithName(localization.GetValue("Name"));
+                                .IsRequired(localization)
+                                .MustAsync(NameNotBeingUsed)
+                                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.NameAlreadyUsed))
+                                    .WithName(localization.GetValue(AuthenticationMessages.Fields.Name));
                         });
                 });
 

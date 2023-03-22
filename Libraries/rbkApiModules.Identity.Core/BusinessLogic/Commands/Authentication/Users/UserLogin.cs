@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.Localization;
+using rbkApiModules.Commons.Core.Utilities.Localization;
 using System.Text.Json.Serialization;
 
 namespace rbkApiModules.Identity.Core;
@@ -45,17 +46,20 @@ public class UserLogin
                 {
                     RuleFor(a => a.Username)
                         .IsRequired(localization)
-                        .MustAsync(ExistOnDatabase).WithMessage(localization.GetValue("Invalid credentials"))
-                        .WithName(localization.GetValue("User"))
+                        .MustAsync(ExistOnDatabase)
+                            .WithMessage(localization.GetValue(AuthenticationMessages.Validations.InvalidCredentials))
+                        .WithName(localization.GetValue(AuthenticationMessages.Fields.User))
                         .DependentRules(() =>
                         {
                             RuleFor(a => a.Username)
-                                .MustAsync(BeConfirmed).WithMessage(localization.GetValue("User not yet confirmed"));
+                                .MustAsync(BeConfirmed)
+                                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.UserNotYetConfirmed));
 
                             RuleFor(a => a.Password)
                                 .IsRequired(localization)
-                                .MustAsync(MatchPassword).WithMessage(localization.GetValue("Invalid credentials"))
-                                .WithName(localization.GetValue("Senha"));
+                                .MustAsync(MatchPassword)
+                                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.InvalidCredentials))
+                                .WithName(localization.GetValue(AuthenticationMessages.Fields.Password));
                         });
                 });
         } 

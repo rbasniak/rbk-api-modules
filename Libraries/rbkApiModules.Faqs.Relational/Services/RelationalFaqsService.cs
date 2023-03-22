@@ -2,16 +2,20 @@
 using rbkApiModules.Faqs.Core;
 using rbkApiModules.Commons.Relational.CQRS;
 using rbkApiModules.Commons.Relational;
+using rbkApiModules.Commons.Core.Localization;
+using rbkApiModules.Commons.Core.Utilities.Localization;
 
 namespace rbkApiModules.Faqs.Relational;
 
 public class RelationalFaqsService : IFaqsService
 {
     private readonly DbContext _context;
+    private readonly ILocalizationService _localization;
 
-    public RelationalFaqsService(IEnumerable<DbContext> contexts)
+    public RelationalFaqsService(IEnumerable<DbContext> contexts, ILocalizationService localization)
     {
         _context = contexts.GetDefaultContext();
+        _localization = localization;
     }
 
     public async Task<Faq[]> GetAllAsync(string tenant, string tag, CancellationToken cancellation = default)
@@ -55,7 +59,7 @@ public class RelationalFaqsService : IFaqsService
 
         if (faq.TenantId != tenant)
         {
-            throw new UnauthorizedAccessException("Access denied");
+            throw new UnauthorizedAccessException(_localization.GetValue(FaqMessages.Errors.AccessDenied));
         }
 
         faq.Update(question, answer);
@@ -71,7 +75,7 @@ public class RelationalFaqsService : IFaqsService
 
         if (faq.TenantId != tenant)
         {
-            throw new UnauthorizedAccessException("Access denied");
+            throw new UnauthorizedAccessException(_localization.GetValue(FaqMessages.Errors.AccessDenied));
         }
 
         _context.Remove(faq);

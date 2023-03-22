@@ -2,6 +2,7 @@
 using MediatR;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.Localization;
+using rbkApiModules.Commons.Core.Utilities.Localization;
 
 namespace rbkApiModules.Identity.Core;
 
@@ -22,8 +23,9 @@ public class CreateRole
 
             RuleFor(x => x.Name)
                 .IsRequired(localization)
-                .MustAsync(NameBeUnique).WithMessage(localization.GetValue("Name already used"))
-                .WithName(localization.GetValue("Role"));
+                .MustAsync(NameBeUnique)
+                .WithMessage(localization.GetValue(AuthenticationMessages.Validations.NameAlreadyUsed))
+                .WithName(localization.GetValue(AuthenticationMessages.Fields.Role));
 
             RuleFor(x => x.Identity)
                 .TenantExistOnDatabase(tenantsService, localization)

@@ -2,6 +2,7 @@
 using MediatR;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.Localization;
+using rbkApiModules.Commons.Core.Utilities.Localization;
 
 namespace rbkApiModules.Identity.Core;
 
@@ -22,9 +23,9 @@ public class RenewAccessToken
 
             RuleFor(a => a.RefreshToken)
                 .IsRequired(localization)
-                .MustAsync(RefreshTokenExistOnDatabase).WithMessage("Refresh token does not exist anymore")
-                .MustAsync(TokenMustBeWithinValidity).WithMessage("Refresh token expired")
-                .WithName(localization.GetValue("RefreshToken"));
+                .MustAsync(RefreshTokenExistOnDatabase).WithMessage(localization.GetValue(AuthenticationMessages.Validations.RefreshTokenNotFound))
+                .MustAsync(TokenMustBeWithinValidity).WithMessage(localization.GetValue(AuthenticationMessages.Validations.RefreshTokenExpired))
+                .WithName(localization.GetValue(AuthenticationMessages.Fields.RefreshToken));
         }
 
         public async Task<bool> TokenMustBeWithinValidity(Request comman, string refreshToken, CancellationToken cancelation)

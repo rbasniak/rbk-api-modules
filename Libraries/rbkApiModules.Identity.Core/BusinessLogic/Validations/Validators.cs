@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.Localization;
+using rbkApiModules.Commons.Core.Utilities.Localization;
 
 namespace rbkApiModules.Identity.Core;
 
@@ -21,7 +22,7 @@ internal static class Validators
                 }
             })
             .WithErrorCode(ValidationErrorCodes.UNAUTHORIZED)
-            .WithMessage(command => localization.GetValue("Unauthorized access"));
+            .WithMessage(command => localization.GetValue(AuthenticationMessages.Validations.UnauthorizedAccess));
     }
 
     public static IRuleBuilderOptions<T, AuthenticatedUser> TenantExistOnDatabase<T>(this IRuleBuilder<T, AuthenticatedUser> rule, ITenantsService tenants, ILocalizationService localization)
@@ -39,7 +40,7 @@ internal static class Validators
                 }
             })
             .WithErrorCode(ValidationErrorCodes.NOT_FOUND)
-            .WithMessage(command => localization.GetValue("Tenant not found"));
+            .WithMessage(command => localization.GetValue(AuthenticationMessages.Validations.TenantNotFound));
     }
 
     public static IRuleBuilderOptions<T, Guid> RoleExistOnDatabaseForTheCurrentTenant<T>(this IRuleBuilder<T, Guid> rule, IRolesService roles, ILocalizationService localization) where T: AuthenticatedRequest
@@ -67,7 +68,7 @@ internal static class Validators
 
             })
             .WithErrorCode(ValidationErrorCodes.NOT_FOUND)
-            .WithMessage(command => localization.GetValue("Role not found"));
+            .WithMessage(command => localization.GetValue(AuthenticationMessages.Validations.RoleNotFound));
     }
 
     public static IRuleBuilderOptions<T, Guid> ClaimExistOnDatabase<T>(this IRuleBuilder<T, Guid> rule, IClaimsService claims, ILocalizationService localization)
@@ -78,7 +79,7 @@ internal static class Validators
                 return await claims.FindAsync(claimId, cancellation) != null;
             })
             .WithErrorCode(ValidationErrorCodes.NOT_FOUND)
-            .WithMessage(command => localization.GetValue("Claim not found"));
+            .WithMessage(command => localization.GetValue(AuthenticationMessages.Validations.ClaimNotFound));
     }
 
     public static IRuleBuilderOptions<T, string> PasswordPoliciesAreValid<T>(this IRuleBuilder<T, string> rule, IEnumerable<ICustomPasswordPolicyValidator> validators, ILocalizationService localization)  
@@ -102,7 +103,7 @@ internal static class Validators
 
                 return !hasError;
             })
-            .WithMessage("none");
+            .WithMessage("none"); // DO NOT CHANGE THIS MESSAGE! It's used in the pipeline to idenfity these errors
     }
 
     public static IRuleBuilderOptions<T, ILoginData> LoginPoliciesAreValid<T>(this IRuleBuilder<T, ILoginData> rule, IEnumerable<ICustomLoginPolicyValidator> validators, ILocalizationService localization) where T: ILoginData
@@ -126,6 +127,6 @@ internal static class Validators
 
                 return !hasError;
             })
-            .WithMessage("none");
+            .WithMessage("none"); // DO NOT CHANGE THIS MESSAGE! It's used in the pipeline to idenfity these errors
     }
 }

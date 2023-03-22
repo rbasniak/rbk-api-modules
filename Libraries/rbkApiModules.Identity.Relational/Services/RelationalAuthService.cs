@@ -3,16 +3,20 @@ using rbkApiModules.Identity.Core;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Relational.CQRS;
 using rbkApiModules.Commons.Relational;
+using rbkApiModules.Commons.Core.Localization;
+using rbkApiModules.Commons.Core.Utilities.Localization;
 
 namespace rbkApiModules.Identity.Relational;
 
 public class RelationalAuthService: IAuthService
 {
     private readonly DbContext _context;
+    private readonly ILocalizationService _localization;
 
-    public RelationalAuthService(IEnumerable<DbContext> contexts)
+    public RelationalAuthService(IEnumerable<DbContext> contexts, ILocalizationService localization)
     {
         _context = contexts.GetDefaultContext();
+        _localization = localization;
     }
 
     public async Task ConfirmUserAsync(string username, string tenant, CancellationToken cancellation = default)
@@ -67,7 +71,7 @@ public class RelationalAuthService: IAuthService
             .Include(x => x.PasswordRedefineCode)
             .FirstOrDefaultAsync(x => x.PasswordRedefineCode.Hash == resetPasswordCode, cancellation);
 
-        if (user == null) throw new SafeException("Could not find the user associate with that password reset code");
+        if (user == null) throw new SafeException(_localization.GetValue(AuthenticationMessages.Erros.CouldNotFindTheUserAssociatedWithThePasswordResetCode));
 
         user.SetPassword(password);
 

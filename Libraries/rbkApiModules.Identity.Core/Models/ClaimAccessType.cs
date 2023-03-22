@@ -4,9 +4,9 @@ namespace rbkApiModules.Identity.Core;
 
 public enum ClaimAccessType
 {
-    [Description("Permitir")]
+    [Description("Allow")]
     Allow = 1,
 
-    [Description("Bloquear")]
+    [Description("Block")]
     Block = 0
 }

@@ -2,6 +2,7 @@
 using MediatR;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.Localization;
+using rbkApiModules.Commons.Core.Utilities.Localization;
 
 namespace rbkApiModules.Identity.Core;
 
@@ -24,12 +25,14 @@ public class AddClaimOverride
 
             RuleFor(a => a.Username)
                 .IsRequired(localization)
-                .MustAsync(UserExistInDatabaseUnderTheSameTenant).WithMessage(localization.GetValue("User not found."))
-                .WithName(localization.GetValue("User"))
+                .MustAsync(UserExistInDatabaseUnderTheSameTenant)
+                .WithMessage(localization.GetValue(AuthenticationMessages.Validations.UserNotFound))
+                .WithName(localization.GetValue(AuthenticationMessages.Fields.User))
                 .DependentRules(() =>
                 {
                     RuleFor(a => a.ClaimIds)
-                   .Must(HaveAtLeastOneItem).WithMessage(localization.GetValue("The list of claims must have at least one item"))
+                   .Must(HaveAtLeastOneItem)
+                   .WithMessage(localization.GetValue(AuthenticationMessages.Validations.RoleListMustNotBeEmpty))
                    .DependentRules(() =>
                    {
                        RuleForEach(x => x.ClaimIds)

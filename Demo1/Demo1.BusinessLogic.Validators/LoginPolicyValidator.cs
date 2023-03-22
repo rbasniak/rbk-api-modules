@@ -1,4 +1,6 @@
-﻿using rbkApiModules.Identity.Core;
+﻿using rbkApiModules.Commons.Core.Utilities.Localization;
+using rbkApiModules.Identity.Core;
+using System.ComponentModel;
 
 namespace Demo1.BusinessLogic.Validators;
 
@@ -8,7 +10,7 @@ public class LoginPolicyValidator1 : ICustomLoginPolicyValidator
     {
         if (username == "forbidden")
         {
-            return await Task.FromResult(CustomValidationResult.Failure("You tried to login with the forbidden username"));
+            return await Task.FromResult(CustomValidationResult.Failure(ApplicationMessages.AuthenticationPolicies.Errors.TriedToLoginWithForbiddenUsername));
         }
         else
         {
@@ -23,11 +25,24 @@ public class LoginPolicyValidator2 : ICustomLoginPolicyValidator
     {
         if (tenant == "FORBIDDEN")
         {
-            return await Task.FromResult(CustomValidationResult.Failure("You tried to login with the forbidden tenant"));
+            return await Task.FromResult(CustomValidationResult.Failure(ApplicationMessages.AuthenticationPolicies.Errors.TriedToLoginWithForbiddenTenant));
         }
         else
         {
             return await Task.FromResult(CustomValidationResult.Success());
+        }
+    }
+}
+
+public class ApplicationMessages: ILocalizedResource
+{
+    public class AuthenticationPolicies
+    {
+        public enum Errors
+        {
+            [Description("You tried to login with the forbidden tenant")] TriedToLoginWithForbiddenTenant,
+            [Description("You tried to login with the forbidden username")] TriedToLoginWithForbiddenUsername,
+            [Description("The password must have at least 3 characteres")] PasswordMustHave3Characters,
         }
     }
 }

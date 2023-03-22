@@ -2,6 +2,7 @@
 using MediatR;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.Localization;
+using rbkApiModules.Commons.Core.Utilities.Localization;
 
 namespace rbkApiModules.Identity.Core;
 
@@ -25,17 +26,20 @@ public class ReplaceUserRoles
 
             RuleFor(a => a.Username)
                 .IsRequired(localization)
-                .MustAsync(UserExistInDatabaseUnderTheSameTenant).WithMessage(localization.GetValue("User not found."))
-                .WithName(localization.GetValue("User"))
+                .MustAsync(UserExistInDatabaseUnderTheSameTenant)
+                .WithMessage(localization.GetValue(AuthenticationMessages.Validations.UserNotFound))
+                .WithName(localization.GetValue(AuthenticationMessages.Fields.User))
                 .DependentRules(() =>
                 {
                     RuleFor(x => x.RoleIds)
-                        .NotNull().WithMessage("The list of roles must be provided")
+                        .NotNull()
+                        .WithMessage(localization.GetValue(AuthenticationMessages.Validations.RoleListMustNotBeEmpty))
                         .DependentRules(() =>
                         {
                             RuleForEach(a => a.RoleIds)
-                               .MustAsync(RoleExistOnDatabase).WithMessage("Não foi possível localizar o role no servidor")
-                               .WithName("Controle de Acesso");
+                               .MustAsync(RoleExistOnDatabase)
+                               .WithMessage(localization.GetValue(AuthenticationMessages.Validations.RoleNotFound))
+                               .WithName(localization.GetValue(AuthenticationMessages.Fields.Role));
                         });
                 });
         }

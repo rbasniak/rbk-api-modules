@@ -2,6 +2,7 @@
 using MediatR;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.Localization;
+using rbkApiModules.Commons.Core.Utilities.Localization;
 
 namespace rbkApiModules.Identity.Core;
 
@@ -26,8 +27,9 @@ public class UpdateClaim
 
             RuleFor(a => a.Description)
                 .IsRequired(localization)
-                .MustAsync(NotExistsInDatabaseWithSameDescription).WithMessage(localization.GetValue("There is already a claim with this description"))
-                .WithName(localization.GetValue("Description"));
+                .MustAsync(NotExistsInDatabaseWithSameDescription)
+                .WithMessage(localization.GetValue(AuthenticationMessages.Validations.ClaimDescriptionAlreadyUsed))
+                .WithName(localization.GetValue(AuthenticationMessages.Fields.Name));
         }
 
         private async Task<bool> NotExistsInDatabaseWithSameDescription(Request request, string identification, CancellationToken cancelation)

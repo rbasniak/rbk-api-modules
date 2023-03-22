@@ -2,6 +2,7 @@
 using MediatR;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.Localization;
+using rbkApiModules.Commons.Core.Utilities.Localization;
 
 namespace rbkApiModules.Identity.Core;
 
@@ -22,8 +23,9 @@ public class DeleteRole
 
             RuleFor(x => x.Id)
                 .RoleExistOnDatabaseForTheCurrentTenant(rolesService, localization)
-                .MustAsync(NotBeUsedInAnyUserUnlessThereIsAnAlternateRole).WithMessage(localization.GetValue("Role associated with one or more users"))
-            .WithName(localization.GetValue("Role"));
+                .MustAsync(NotBeUsedInAnyUserUnlessThereIsAnAlternateRole)
+                .WithMessage(localization.GetValue(AuthenticationMessages.Validations.RoleIsBeingUsed))
+            .WithName(localization.GetValue(AuthenticationMessages.Fields.Role));
 
             RuleFor(x => x.Identity)
                 .TenantExistOnDatabase(tenantsService, localization)

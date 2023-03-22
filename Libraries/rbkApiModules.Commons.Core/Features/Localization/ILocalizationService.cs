@@ -2,13 +2,13 @@
 
 public interface ILocalizationService
 {
-    string GetValue(string value);
+    string GetValue(Enum value); 
 }
 
 public class LocalizationService : ILocalizationService
 {
-    public string GetValue(string value)
+    public string GetValue(Enum value)
     {
-        return value;
-    }
+        return value.ToString();
+    } 
 }

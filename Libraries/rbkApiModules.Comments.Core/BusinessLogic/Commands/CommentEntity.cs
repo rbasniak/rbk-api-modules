@@ -2,6 +2,7 @@
 using MediatR;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.Localization;
+using rbkApiModules.Commons.Core.Utilities.Localization;
 
 namespace rbkApiModules.Comments.Core;
 
@@ -20,13 +21,13 @@ public class CommentEntity
         {
             RuleFor(x => x.Comment)
                 .IsRequired(localization)
-                .WithName(localization.GetValue("Message"));
+                .WithName(localization.GetValue(CommentMessages.Fields.Comment));
 
             When(x => x.ParentId != null, () => 
             {
                 RuleFor(x => x.ParentId)
                     .MustAsync(async (command, parentId, cancellation) => await commentsService.ExistsAsync(command.Identity.Tenant, parentId.Value, cancellation))
-                    .WithMessage(localization.GetValue("Could not find parent comment"));
+                    .WithMessage(localization.GetValue(CommentMessages.Validation.CouldNotFindParentComment));
             });
         }
     }

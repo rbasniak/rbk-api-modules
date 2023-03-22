@@ -82,7 +82,7 @@ public class CodeGeneratorController : BaseController
             var codeGenerator = new AngularCodeGenerator(projectId, basePath);
             codeGenerator.Generate();
 
-            return Ok("Arquivos atualizados com sucesso :)");
+            return Ok("File successfully updated :)");
         }
         else
         {

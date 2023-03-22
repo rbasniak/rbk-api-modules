@@ -1,15 +1,19 @@
 ﻿using rbkApiModules.Commons.Core.CQRS;
 using LiteDB;
+using rbkApiModules.Commons.Core.Utilities.Localization;
+using rbkApiModules.Commons.Core.Localization;
 
 namespace rbkApiModules.Commons.LiteDB;
 
 public class CqrsLiteDBStore<T> : ICqrsReadStore<T> where T : class
 {
     private readonly LiteDatabase _liteDatabase;
+    private readonly ILocalizationService _localization;
 
-    public CqrsLiteDBStore()
+    public CqrsLiteDBStore(ILocalizationService localization)
     {
         _liteDatabase = new LiteDatabase("");
+        _localization = localization;
     }
 
     public Task AddAsync(T entity)
@@ -46,7 +50,7 @@ public class CqrsLiteDBStore<T> : ICqrsReadStore<T> where T : class
 
         if (!success)
         {
-            throw new LiteException(-1, $"Could not delete the entity with id: {id}");
+            throw new LiteException(-1, String.Format(_localization.GetValue(LiteDBCommonMessages.Errors.CannotDeleteEntity), id));
         }
     }
 
@@ -58,7 +62,7 @@ public class CqrsLiteDBStore<T> : ICqrsReadStore<T> where T : class
 
         if (!success)
         {
-            throw new LiteException(-1, $"Could not update entity with id: {id}");
+            throw new LiteException(-1, String.Format(_localization.GetValue(LiteDBCommonMessages.Errors.CannotUpdateEntity), id));
         }
 
         await Task.CompletedTask;

@@ -2,6 +2,7 @@
 using MediatR;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.Localization;
+using rbkApiModules.Commons.Core.Utilities.Localization;
 
 namespace rbkApiModules.Identity.Core;
 
@@ -36,14 +37,16 @@ public class UpdateTenant
 
             RuleFor(a => a.Alias)
                 .IsRequired(localization)
-                .MustAsync(ExistInDatabase).WithErrorCode(ValidationErrorCodes.NOT_FOUND).WithMessage(localization.GetValue("Tenant not found"))
-                .WithName(localization.GetValue("Alias"))
+                .MustAsync(ExistInDatabase)
+                    .WithErrorCode(ValidationErrorCodes.NOT_FOUND)
+                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.TenantNotFound))
+                    .WithName(localization.GetValue(AuthenticationMessages.Fields.TenantAlias))
                 .DependentRules(() => 
                 {
                     RuleFor(a => a.Name)
                        .IsRequired(localization)
-                       .MustAsync(NameNotBeingUsed).WithMessage(localization.GetValue("Name already being used"))
-                       .WithName(localization.GetValue("Name"));
+                       .MustAsync(NameNotBeingUsed).WithMessage(localization.GetValue(AuthenticationMessages.Validations.NameAlreadyUsed))
+                       .WithName(localization.GetValue(AuthenticationMessages.Fields.Name));
                 });
         }
 

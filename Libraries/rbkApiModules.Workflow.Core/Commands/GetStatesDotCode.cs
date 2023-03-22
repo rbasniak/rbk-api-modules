@@ -3,6 +3,7 @@ using FluentValidation;
 using MediatR;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.Localization;
+using rbkApiModules.Commons.Core.Utilities.Localization;
 
 namespace rbkApiModules.Workflow.Core;
 
@@ -18,7 +19,8 @@ public class GetStatesDotCode
         public Validator(IStatesService statesService, ILocalizationService localization)
         {
             RuleFor(x => x.GroupId)
-                .MustAsync(async (command, id, cancellation) => (await statesService.FindGroup(id, cancellation)) != null).WithMessage(localization.GetValue("State group not found"));
+                .MustAsync(async (command, id, cancellation) => (await statesService.FindGroup(id, cancellation)) != null)
+                .WithMessage(localization.GetValue(WorkflowMessages.Validation.StateGroupNotFound));
         }
     }
 
