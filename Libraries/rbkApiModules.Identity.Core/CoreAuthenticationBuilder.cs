@@ -16,6 +16,8 @@ public static class CoreAuthenticationBuilder
 {
     public static void AddRbkAuthentication(this IServiceCollection services, RbkAuthenticationOptions options)
     {
+        services.AddSingleton<RbkAuthenticationOptions>(options);
+
         services.AddMvc(o =>
         {
             var actionsToRemove = new List<Tuple<Type, string>>();
@@ -50,6 +52,7 @@ public static class CoreAuthenticationBuilder
             {
                 actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.LoginWithCredentials)));
                 actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.ChangePassword)));
+                actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.ConfirmEmail)));
 
                 o.Filters.Add(new WindowsAuthenticationFilter());
             } 
@@ -259,6 +262,18 @@ public static class CoreAuthenticationBuilder
         {
             services.AddScoped(typeof(ICustomPasswordPolicyValidator), type);
         }
+
+        foreach (var type in GetClassesImplementingInterface(typeof(ICustomUserMetadataValidator)))
+        {
+            services.AddScoped(typeof(ICustomUserMetadataValidator), type);
+        }
+
+        foreach (var type in GetClassesImplementingInterface(typeof(IUserMetadataService)))
+        {
+            services.AddScoped(typeof(IUserMetadataService), type);
+        }
+
+        services.AddScoped(typeof(IAvatarStorage), options._customAvatarStorageType);
     }
 
     private static Type[] GetClassesImplementingInterface(Type type)

@@ -78,11 +78,16 @@ public class UserLogin
 
         public async Task<bool> MatchPassword(Request request, string password, CancellationToken cancellation)
         {
-            if (request.AuthenticationMode == AuthenticationMode.Windows) return true;
+            if (request.AuthenticationMode == AuthenticationMode.Windows)
+            {
+                return true;
+            }
+            else
+            {
+                var user = await _userService.FindUserAsync(request.Username, request.Tenant, cancellation);
 
-            var user = await _userService.FindUserAsync(request.Username, request.Tenant, cancellation);
-
-            return PasswordHasher.VerifyPassword(password, user.Password);
+                return PasswordHasher.VerifyPassword(password, user.Password);
+            }
         }
     }
 

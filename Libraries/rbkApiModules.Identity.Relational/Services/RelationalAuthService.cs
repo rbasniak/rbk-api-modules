@@ -34,8 +34,6 @@ public class RelationalAuthService: IAuthService
         return user;
     }
 
-
-
     public async Task<User> GetUserWithDependenciesAsync(string username, string tenant, CancellationToken cancellation = default)
     {
         tenant = tenant != null ? tenant.ToUpper() : null;
@@ -239,9 +237,9 @@ public class RelationalAuthService: IAuthService
         return user;
     }
 
-    public async Task<User> CreateUserAsync(string tenant, string username, string password, string email, string displayName, string avatar, bool isConfirmed, CancellationToken cancellation)
+    public async Task<User> CreateUserAsync(string tenant, string username, string password, string email, string displayName, string avatarPath, bool isConfirmed, CancellationToken cancellation)
     {
-        var user = new User(tenant, username, email, password, avatar, displayName);
+        var user = new User(tenant, username, email, password, avatarPath, displayName);
 
         if (isConfirmed)
         {

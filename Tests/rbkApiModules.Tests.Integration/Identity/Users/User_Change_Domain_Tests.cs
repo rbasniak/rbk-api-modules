@@ -3,11 +3,11 @@
 namespace rbkApiModules.Tests.Integration.Identity;
 
 [TestCaseOrderer(PriorityOrderer.Name, PriorityOrderer.Assembly)]
-public class User_Change_Domain : SequentialTest, IClassFixture<ServerFixture>
+public class UserChangeDomainTests : SequentialTest, IClassFixture<ServerFixture>
 {
     private ServerFixture _serverFixture;
 
-    public User_Change_Domain(ServerFixture serverFixture)
+    public UserChangeDomainTests(ServerFixture serverFixture)
     {
         _serverFixture = serverFixture; 
     }

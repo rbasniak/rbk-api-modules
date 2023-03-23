@@ -30,6 +30,7 @@ public class AuthenticationMessages : ILocalizedResource
         [Description("Password reset code")] PasswordResetCode,
         [Description("Activation code")] ActivationCode,
         [Description("Tenant")] TenantAlias,
+        [Description("Display name")] DisplayName,
     }
 
     public enum Emails
@@ -71,6 +72,8 @@ public class AuthenticationMessages : ILocalizedResource
         [Description("Tenant alias already used")] TenantAliasAlreadyUsed,
         [Description("Old and new passwords must match")] PasswordsMustBeTheSame,
         [Description("Old password does not match")] OldPasswordDoesNotMatch,
+        [Description("User already exists")] UserAlreadyExists,
+        [Description("E-mail already used")] EmailAlreadyUsed,
     }
 
     public enum Erros

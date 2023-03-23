@@ -16,6 +16,22 @@ public class RbkAuthenticationOptions
     public LoginMode _loginMode = LoginMode.Credentials;
     public bool _allowUserSelfRegistration = false;
     public bool _allowUserCreationFromWithinTheApplication = false;
+    public string _userAvatarPath = "users/images";
+    public Type _customAvatarStorageType = typeof(DefaultAvatarStorageService);
+
+    public RbkAuthenticationOptions UseCustomAvatarStorage<T>() where T : IAvatarStorage
+    {
+        _customAvatarStorageType = typeof(T);
+
+        return this;
+    }
+
+    public RbkAuthenticationOptions SetDefaultAvatarStoragePath(string path)
+    {
+        _userAvatarPath = path;
+
+        return this;
+    }
 
     public RbkAuthenticationOptions DisablePasswordReset()
     {

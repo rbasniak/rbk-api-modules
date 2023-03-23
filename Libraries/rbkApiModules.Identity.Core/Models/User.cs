@@ -15,7 +15,7 @@ public class User : TenantEntity
 
     }
 
-    public User(string tenant, string username, string email, string password, string avatar, string displayName, string metadata = null)
+    public User(string tenant, string username, string email, string password, string avatarPath, string displayName, Dictionary<string, string> metadata = null)
     {
         TenantId = tenant;
         DisplayName = displayName;
@@ -24,14 +24,19 @@ public class User : TenantEntity
         Metadata = metadata;
         CreationDate = DateTime.UtcNow;
 
+        if (metadata == null)
+        {
+            Metadata = new Dictionary<string, string>();
+        }
+
         if (!String.IsNullOrEmpty(password))
         {
             ChangePassword(password);
         }
 
-        if (!String.IsNullOrEmpty(avatar))
+        if (!String.IsNullOrEmpty(avatarPath))
         {
-            Avatar = avatar;
+            Avatar = avatarPath;
         }
         else
         {
@@ -73,8 +78,10 @@ public class User : TenantEntity
     public virtual DateTime RefreshTokenValidity { get; protected set; }
 
     public virtual DateTime? LastLogin { get; protected set; }
+    public virtual bool IsActive { get; protected set; }
 
-    public virtual string Metadata { get; protected set; } 
+    [JsonColumn]
+    public virtual Dictionary<string, string> Metadata { get; protected set; } 
 
     public virtual IEnumerable<UserToRole> Roles => _roles?.ToList();
 
@@ -202,15 +209,10 @@ public class User : TenantEntity
         return roleToClaim;
     }
 
-    public virtual void SetMetadata(string metadata)
+    public virtual void SetMetadata(Dictionary<string, string> metadata)
     {
         Metadata = metadata;
-    }
-
-    public virtual T GetMetadata<T>()
-    {
-        return JsonSerializer.Deserialize<T>(Metadata);
-    }
+    } 
 
     public void RefreshLastLogin()
     {
