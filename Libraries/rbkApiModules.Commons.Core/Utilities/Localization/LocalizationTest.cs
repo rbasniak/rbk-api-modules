@@ -69,6 +69,8 @@ public class AuthenticationMessages : ILocalizedResource
         [Description("The password reset is code expired or was already used")] InvalidActivationCode,
         [Description("Admin user data is required")] AdminUserDataIsRequired,
         [Description("Tenant alias already used")] TenantAliasAlreadyUsed,
+        [Description("Old and new passwords must match")] PasswordsMustBeTheSame,
+        [Description("Old password does not match")] OldPasswordDoesNotMatch,
     }
 
     public enum Erros

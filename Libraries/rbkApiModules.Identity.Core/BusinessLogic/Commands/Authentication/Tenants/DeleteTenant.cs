@@ -33,7 +33,7 @@ public class DeleteTenant
         {
             _tenantsService = tenantsService;
 
-            RuleFor(a => a.Alias)
+            RuleFor(x => x.Alias)
                 .IsRequired(localization)
                 .MustAsync(ExistInDatabase)
                     .WithErrorCode(ValidationErrorCodes.NOT_FOUND)

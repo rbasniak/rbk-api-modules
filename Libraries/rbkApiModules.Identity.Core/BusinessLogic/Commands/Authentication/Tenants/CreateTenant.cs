@@ -62,14 +62,14 @@ public class CreateTenant
                     RuleFor(x => x.AdminInfo.DisplayName)
                         .IsRequired(localization);
 
-                    RuleFor(a => a.Alias)
+                    RuleFor(x => x.Alias)
                         .IsRequired(localization)
                         .MustAsync(NameBeUnique)
                             .WithMessage(localization.GetValue(AuthenticationMessages.Validations.TenantAliasAlreadyUsed))
                             .WithName(localization.GetValue(AuthenticationMessages.Fields.Tenant))
                         .DependentRules(() =>
                         {
-                            RuleFor(a => a.Name)
+                            RuleFor(x => x.Name)
                                 .IsRequired(localization)
                                 .MustAsync(NameNotBeingUsed)
                                     .WithMessage(localization.GetValue(AuthenticationMessages.Validations.NameAlreadyUsed))

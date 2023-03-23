@@ -21,7 +21,7 @@ public class DeleteClaim
         {
             _claimsService = claimsService;
 
-            RuleFor(a => a.Id)
+            RuleFor(x => x.Id)
                 .ClaimExistOnDatabase(claimsService, localization)
                 .MustAsync(NotBeUsedInAnyRole)
                     .WithMessage(localization.GetValue(AuthenticationMessages.Validations.CannotRemoveClaimUsedByOtherRoles))

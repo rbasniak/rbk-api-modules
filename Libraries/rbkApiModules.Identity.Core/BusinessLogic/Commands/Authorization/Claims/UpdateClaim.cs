@@ -22,10 +22,10 @@ public class UpdateClaim
         {
             _claimsService = claimsService;
 
-            RuleFor(a => a.Id)
+            RuleFor(x => x.Id)
                 .ClaimExistOnDatabase(claimsService, localization);
 
-            RuleFor(a => a.Description)
+            RuleFor(x => x.Description)
                 .IsRequired(localization)
                 .MustAsync(NotExistsInDatabaseWithSameDescription)
                 .WithMessage(localization.GetValue(AuthenticationMessages.Validations.ClaimDescriptionAlreadyUsed))

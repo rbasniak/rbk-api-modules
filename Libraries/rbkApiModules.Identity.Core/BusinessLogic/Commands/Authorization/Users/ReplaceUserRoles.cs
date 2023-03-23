@@ -24,7 +24,7 @@ public class ReplaceUserRoles
             _authService = authService;
             _rolesService = rolesService;
 
-            RuleFor(a => a.Username)
+            RuleFor(x => x.Username)
                 .IsRequired(localization)
                 .MustAsync(UserExistInDatabaseUnderTheSameTenant)
                 .WithMessage(localization.GetValue(AuthenticationMessages.Validations.UserNotFound))
@@ -36,7 +36,7 @@ public class ReplaceUserRoles
                         .WithMessage(localization.GetValue(AuthenticationMessages.Validations.RoleListMustNotBeEmpty))
                         .DependentRules(() =>
                         {
-                            RuleForEach(a => a.RoleIds)
+                            RuleForEach(x => x.RoleIds)
                                .MustAsync(RoleExistOnDatabase)
                                .WithMessage(localization.GetValue(AuthenticationMessages.Validations.RoleNotFound))
                                .WithName(localization.GetValue(AuthenticationMessages.Fields.Role));

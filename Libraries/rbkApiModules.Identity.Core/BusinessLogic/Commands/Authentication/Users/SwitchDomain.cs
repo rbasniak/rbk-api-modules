@@ -23,14 +23,14 @@ public class SwitchDomain
             _usersService = usersService;
             _tenantsService = tenantsService;
 
-            RuleFor(a => a.DestinationDomain)
+            RuleFor(x => x.DestinationDomain)
                 .IsRequired(localization)
                 .MustAsync(ExistInDatabase)
                     .WithErrorCode(ValidationErrorCodes.NOT_FOUND)
-                        .WithMessage(localization.GetValue(AuthenticationMessages.Validations.TenantNotFound))
+                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.TenantNotFound))
                 .MustAsync(BePartOfDomain)
                     .WithMessage(localization.GetValue(AuthenticationMessages.Validations.UnauthorizedAccess))
-                .WithName(localization.GetValue(AuthenticationMessages.Fields.DestinationDomain));
+                    .WithName(localization.GetValue(AuthenticationMessages.Fields.DestinationDomain));
         }
 
         public async Task<bool> ExistInDatabase(Request request, string destinationDomain, CancellationToken cancellation)

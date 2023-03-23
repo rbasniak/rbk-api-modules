@@ -5,6 +5,7 @@ using System.Net;
 using System.Text.Json;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.CodeGeneration;
+using Microsoft.Win32;
 
 namespace rbkApiModules.Identity.Core;
 
@@ -21,7 +22,6 @@ public class AuthenticationController : BaseController
     }
 
     [Authorize]
-    [IgnoreOnCodeGeneration]
     [HttpPost("login")]
     public async Task<ActionResult<JwtResponse>> LoginWithNegotiate(UserLogin.Request data, CancellationToken cancellation)
     {
@@ -32,20 +32,7 @@ public class AuthenticationController : BaseController
 
         try
         {
-            var result = await Mediator.Send(data, cancellation);
-
-            if (result.IsValid)
-            {
-                return HttpResponse<JwtResponse>(result);
-            }
-            else
-            {
-                return new ContentResult()
-                {
-                    Content = JsonSerializer.Serialize(result.Errors.Select(x => x.Message)),
-                    StatusCode = (int)HttpStatusCode.BadRequest
-                };
-            };
+            return HttpResponse<JwtResponse>(await Mediator.Send(data, cancellation));
         }
         catch (Exception ex)
         {
@@ -58,7 +45,6 @@ public class AuthenticationController : BaseController
     }
 
     [AllowAnonymous]
-    [IgnoreOnCodeGeneration]
     [HttpPost("login")]
     public async Task<ActionResult<JwtResponse>> LoginWithCredentials(UserLogin.Request data, CancellationToken cancellation)
     {
@@ -66,20 +52,7 @@ public class AuthenticationController : BaseController
 
         try
         {
-            var result = await Mediator.Send(data, cancellation);
-
-            if (result.IsValid)
-            {
-                return HttpResponse<JwtResponse>(result);
-            }
-            else
-            {
-                return new ContentResult()
-                {
-                    Content = JsonSerializer.Serialize(result.Errors.Select(x => x.Message)),
-                    StatusCode = (int)HttpStatusCode.BadRequest
-                };
-            };
+            return HttpResponse<JwtResponse>(await Mediator.Send(data, cancellation));
         }
         catch (Exception ex)
         {
@@ -92,24 +65,10 @@ public class AuthenticationController : BaseController
     }
 
     [AllowAnonymous]
-    [IgnoreOnCodeGeneration]
     [HttpPost("refresh-token")]
     public async Task<ActionResult<JwtResponse>> RefreshToken(RenewAccessToken.Request data, CancellationToken cancellation)
     {
-        var result = await Mediator.Send(data, cancellation);
-
-        if (result.IsValid)
-        {
-            return HttpResponse<JwtResponse>(result);
-        }
-        else
-        {
-            return new ContentResult()
-            {
-                Content = JsonSerializer.Serialize(result.Errors.Select(x => x.Message)),
-                StatusCode = (int)HttpStatusCode.BadRequest
-            };
-        };
+        return HttpResponse<JwtResponse>(await Mediator.Send(data, cancellation));
     }
 
     [AllowAnonymous]
@@ -137,7 +96,6 @@ public class AuthenticationController : BaseController
     }
 
     [AllowAnonymous]
-    [IgnoreOnCodeGeneration]
     [HttpGet("confirm-email")]
     public async Task<ActionResult> ConfirmEmail(string email, string code, string tenant, CancellationToken cancellation)
     {
@@ -155,23 +113,30 @@ public class AuthenticationController : BaseController
     }
 
     [Authorize]
-    [IgnoreOnCodeGeneration]
     [HttpPost("switch-domain")]
     public async Task<ActionResult<JwtResponse>> SwitchDomain(SwitchDomain.Request data, CancellationToken cancellation)
     {
-        var result = await Mediator.Send(data, cancellation);
+        return HttpResponse<JwtResponse>(await Mediator.Send(data, cancellation));
+    }
 
-        if (result.IsValid)
-        {
-            return HttpResponse<JwtResponse>(result);
-        }
-        else
-        {
-            return new ContentResult()
-            {
-                Content = JsonSerializer.Serialize(result.Errors.Select(x => x.Message)),
-                StatusCode = (int)HttpStatusCode.BadRequest
-            };
-        };
+    [Authorize]
+    [HttpPost("change-password")]
+    public async Task<ActionResult> ChangePassword(ChangePassword.Request data, CancellationToken cancellation)
+    {
+        return HttpResponse(await Mediator.Send(data, cancellation));
+    }
+
+    [Authorize]
+    [HttpPost("register")]
+    public async Task<ActionResult<JwtResponse>> RegisterAnonymously(Register.Request data, CancellationToken cancellation)
+    {
+        return HttpResponse<JwtResponse>(await Mediator.Send(data, cancellation));
+    }
+
+    [Authorize]
+    [HttpPost("create-user")]
+    public async Task<ActionResult<JwtResponse>> CreateUser(CreateUser.Request data, CancellationToken cancellation)
+    {
+        return HttpResponse<JwtResponse>(await Mediator.Send(data, cancellation));
     }
 }

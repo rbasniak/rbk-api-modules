@@ -24,14 +24,14 @@ public class UpdateRoleClaims
             _rolesService = rolesService;
             _claimsService = claimsService;
 
-            RuleFor(a => a.Id)
+            RuleFor(x => x.Id)
                 .RoleExistOnDatabaseForTheCurrentTenant(rolesService, localization)
                 .WithMessage(localization.GetValue(AuthenticationMessages.Validations.RoleNotFound));
 
             RuleFor(x => x.ClaimsIds)
                 .NotNull().WithMessage(localization.GetValue(AuthenticationMessages.Validations.ClaimListMustNotBeEmpty));
 
-            RuleForEach(a => a.ClaimsIds)
+            RuleForEach(x => x.ClaimsIds)
                 .MustAsync(ClaimExistInDatabase).WithMessage(localization.GetValue(AuthenticationMessages.Validations.UnknownClaimInTheList));
 
             RuleFor(x => x.Identity)

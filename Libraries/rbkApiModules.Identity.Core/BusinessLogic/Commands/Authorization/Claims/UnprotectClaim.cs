@@ -16,7 +16,7 @@ public class UnprotectClaim
     {
         public Validator(IClaimsService claimsService, ILocalizationService localization)
         {
-            RuleFor(a => a.Id)
+            RuleFor(x => x.Id)
                 .ClaimExistOnDatabase(claimsService, localization);
         }
     }

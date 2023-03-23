@@ -22,13 +22,13 @@ public class CreateClaim
         {
             _claimsService = claimsService;
 
-            RuleFor(a => a.Identification)
+            RuleFor(x => x.Identification)
                 .IsRequired(localization)
                 .MustAsync(NotExistsInDatabaseWithSameIdentification)
                     .WithMessage(localization.GetValue(AuthenticationMessages.Validations.ClaimIdentificationAlreadyUsed))
                 .WithName(localization.GetValue(AuthenticationMessages.Fields.Identification));
 
-            RuleFor(a => a.Description)
+            RuleFor(x => x.Description)
                 .IsRequired(localization)
                 .MustAsync(NotExistsInDatabaseWithSameDescription)
                     .WithMessage(localization.GetValue(AuthenticationMessages.Validations.ClaimDescriptionAlreadyUsed))

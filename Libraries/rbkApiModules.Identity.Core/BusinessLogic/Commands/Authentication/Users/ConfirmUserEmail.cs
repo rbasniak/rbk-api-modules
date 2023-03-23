@@ -39,7 +39,7 @@ public class ConfirmUserEmail
             RuleFor(x => x.Tenant)
                 .IsRequired(localization);
 
-            RuleFor(a => a.Email)
+            RuleFor(x => x.Email)
                 .IsRequired(localization)
                 .MustAsync(BeValidPair)
                 .WithMessage(localization.GetValue(AuthenticationMessages.Validations.InvalidActivationCode))

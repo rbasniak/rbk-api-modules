@@ -34,6 +34,8 @@ public class RelationalAuthService: IAuthService
         return user;
     }
 
+
+
     public async Task<User> GetUserWithDependenciesAsync(string username, string tenant, CancellationToken cancellation = default)
     {
         tenant = tenant != null ? tenant.ToUpper() : null;
@@ -73,7 +75,7 @@ public class RelationalAuthService: IAuthService
 
         if (user == null) throw new SafeException(_localization.GetValue(AuthenticationMessages.Erros.CouldNotFindTheUserAssociatedWithThePasswordResetCode));
 
-        user.SetPassword(password);
+        user.ChangePassword(password);
 
         await _context.SaveChangesAsync(cancellation);
 
@@ -265,6 +267,15 @@ public class RelationalAuthService: IAuthService
         _context.RemoveRange(users.SelectMany(x => x.Roles));
         _context.RemoveRange(users.SelectMany(x => x.Claims));
         _context.RemoveRange(users);
+
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task ChangePasswordAsync(string tenant, string username, string password, CancellationToken cancellation = default)
+    {
+        var user = await LoadUserEntityAsync(username, tenant, cancellation);
+
+        user.ChangePassword(password); 
 
         await _context.SaveChangesAsync();
     }

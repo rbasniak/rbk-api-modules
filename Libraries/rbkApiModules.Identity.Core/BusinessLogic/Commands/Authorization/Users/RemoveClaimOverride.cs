@@ -22,14 +22,14 @@ public class RemoveClaimOverride
         {
             _authService = authService;
 
-            RuleFor(a => a.Username)
+            RuleFor(x => x.Username)
                 .IsRequired(localization)
                 .MustAsync(UserExistInDatabaseUnderTheSameTenant)
                 .WithMessage(localization.GetValue(AuthenticationMessages.Validations.UserNotFound))
                 .WithName(localization.GetValue(AuthenticationMessages.Fields.User))
                 .DependentRules(() =>
                 {
-                    RuleFor(a => a.ClaimIds)
+                    RuleFor(x => x.ClaimIds)
                         .Must(HaveAtLeastOneItem)
                         .WithMessage(localization.GetValue(AuthenticationMessages.Validations.RoleListMustNotBeEmpty))
                         .DependentRules(() =>

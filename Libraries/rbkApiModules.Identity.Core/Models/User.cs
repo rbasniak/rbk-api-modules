@@ -25,7 +25,7 @@ public class User : TenantEntity
 
         if (!String.IsNullOrEmpty(password))
         {
-            SetPassword(password);
+            ChangePassword(password);
         }
 
         if (!String.IsNullOrEmpty(avatar))
@@ -142,7 +142,7 @@ public class User : TenantEntity
     /// Método que recebe a senha do usuário e seta o valor já encriptado com hash
     /// </summary>
     /// <param name="password">Senha do usuário</param>
-    public virtual void SetPassword(string password)
+    public virtual void ChangePassword(string password)
     {
         Password = PasswordHasher.GenerateSaltedHash(password);
         PasswordRedefineCode = null;
@@ -219,5 +219,5 @@ public class User : TenantEntity
     public override string ToString()
     {
         return $"[{TenantId}] {Username}";
-    }
+    } 
 } 

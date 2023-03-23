@@ -49,11 +49,25 @@ public static class CoreAuthenticationBuilder
             if (options._loginMode == LoginMode.WindowsAuthentication)
             {
                 actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.LoginWithCredentials)));
+                actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.ChangePassword)));
+
                 o.Filters.Add(new WindowsAuthenticationFilter());
             } 
             else if (options._loginMode == LoginMode.Credentials)
             {
                 actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.LoginWithNegotiate)));
+            }
+
+            if (!options._allowUserSelfRegistration)
+            {
+                if (options._loginMode == LoginMode.WindowsAuthentication) throw new NotSupportedException("User self registration is not allowed with Windows authentication");
+
+                actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.RegisterAnonymously)));
+            }
+
+            if (options._allowUserCreationFromWithinTheApplication)
+            {
+                actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.CreateUser)));
             }
 
             o.Conventions.Add(new RemoveActionConvention(actionsToRemove.ToArray()));

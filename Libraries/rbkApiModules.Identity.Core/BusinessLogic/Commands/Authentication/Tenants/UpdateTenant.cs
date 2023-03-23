@@ -35,7 +35,7 @@ public class UpdateTenant
         {
             _tenantsService = tenantsService;
 
-            RuleFor(a => a.Alias)
+            RuleFor(x => x.Alias)
                 .IsRequired(localization)
                 .MustAsync(ExistInDatabase)
                     .WithErrorCode(ValidationErrorCodes.NOT_FOUND)
@@ -43,7 +43,7 @@ public class UpdateTenant
                     .WithName(localization.GetValue(AuthenticationMessages.Fields.TenantAlias))
                 .DependentRules(() => 
                 {
-                    RuleFor(a => a.Name)
+                    RuleFor(x => x.Name)
                        .IsRequired(localization)
                        .MustAsync(NameNotBeingUsed).WithMessage(localization.GetValue(AuthenticationMessages.Validations.NameAlreadyUsed))
                        .WithName(localization.GetValue(AuthenticationMessages.Fields.Name));

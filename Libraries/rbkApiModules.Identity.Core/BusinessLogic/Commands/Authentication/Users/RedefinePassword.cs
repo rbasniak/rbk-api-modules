@@ -22,12 +22,12 @@ public class RedefinePassword
         {
             _usersService = usersService;
 
-            RuleFor(a => a.Password)
+            RuleFor(x => x.Password)
                  .IsRequired(localization)
                  .WithName(localization.GetValue(AuthenticationMessages.Fields.Password))
                  .DependentRules(() =>
                  {
-                     RuleFor(a => a.Code)
+                     RuleFor(x => x.Code)
                          .IsRequired(localization)
                          .MustAsync(ExistOnDatabaseAndIsValid).WithMessage(localization.GetValue(AuthenticationMessages.Validations.PasswordResetCodeExpiredOrUsed))
                          .WithName(localization.GetValue(AuthenticationMessages.Fields.PasswordResetCode));

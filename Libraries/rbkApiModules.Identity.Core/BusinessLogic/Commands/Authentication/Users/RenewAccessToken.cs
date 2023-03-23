@@ -21,7 +21,7 @@ public class RenewAccessToken
         {
             _usersService = usersService;
 
-            RuleFor(a => a.RefreshToken)
+            RuleFor(x => x.RefreshToken)
                 .IsRequired(localization)
                 .MustAsync(RefreshTokenExistOnDatabase).WithMessage(localization.GetValue(AuthenticationMessages.Validations.RefreshTokenNotFound))
                 .MustAsync(TokenMustBeWithinValidity).WithMessage(localization.GetValue(AuthenticationMessages.Validations.RefreshTokenExpired))

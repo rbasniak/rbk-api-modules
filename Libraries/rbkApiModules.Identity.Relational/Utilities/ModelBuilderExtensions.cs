@@ -27,7 +27,7 @@ public static class ModelBuilderExtensions
             var ignoredMembers = typeBase.GetField("_ignoredMembers", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(entityType) as Dictionary<string, ConfigurationSource>;
 
             bool NotIgnored(PropertyInfo property) =>
-                property != null && !ignoredMembers.ContainsKey(property.Name) && !property.CustomAttributes.Any(a => a.AttributeType == typeof(NotMappedAttribute));
+                property != null && !ignoredMembers.ContainsKey(property.Name) && !property.CustomAttributes.Any(x => x.AttributeType == typeof(NotMappedAttribute));
 
             var allProperties = entityType.ClrType.GetProperties().ToList();
 

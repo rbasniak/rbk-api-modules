@@ -12,6 +12,7 @@ public interface IAuthService
     Task<bool> IsUserConfirmedAsync(string email, string tenant, CancellationToken cancellation = default);
     Task<bool> IsUserRegisteredAsync(string email, string tenant, CancellationToken cancelation = default);
     Task<User> RedefinePasswordAsync(string resetPasswordCode, string password, CancellationToken cancellation = default);
+    Task ChangePasswordAsync(string tenant, string username, string password, CancellationToken cancellation = default);
     Task<bool> RefreshTokenExistsOnDatabaseAsync(string refreshToken, CancellationToken cancelation = default);
     Task RequestPasswordResetAsync(string email, string tenant, CancellationToken cancellation = default);
     Task UpdateRefreshTokenAsync(string username, string tenant, string refreshToken, double duration, CancellationToken cancellation = default);

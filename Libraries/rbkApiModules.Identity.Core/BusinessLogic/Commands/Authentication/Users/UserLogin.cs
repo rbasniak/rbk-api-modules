@@ -44,18 +44,18 @@ public class UserLogin
             RuleFor(x => x)
                 .LoginPoliciesAreValid(loginPolicies, localization).DependentRules(() => 
                 {
-                    RuleFor(a => a.Username)
+                    RuleFor(x => x.Username)
                         .IsRequired(localization)
                         .MustAsync(ExistOnDatabase)
                             .WithMessage(localization.GetValue(AuthenticationMessages.Validations.InvalidCredentials))
                         .WithName(localization.GetValue(AuthenticationMessages.Fields.User))
                         .DependentRules(() =>
                         {
-                            RuleFor(a => a.Username)
+                            RuleFor(x => x.Username)
                                 .MustAsync(BeConfirmed)
                                     .WithMessage(localization.GetValue(AuthenticationMessages.Validations.UserNotYetConfirmed));
 
-                            RuleFor(a => a.Password)
+                            RuleFor(x => x.Password)
                                 .IsRequired(localization)
                                 .MustAsync(MatchPassword)
                                     .WithMessage(localization.GetValue(AuthenticationMessages.Validations.InvalidCredentials))
@@ -81,6 +81,8 @@ public class UserLogin
 
         public async Task<bool> MatchPassword(Request request, string password, CancellationToken cancellation)
         {
+            if (request.AuthenticationMode == AuthenticationMode.Windows) return true;
+
             var user = await _userService.FindUserAsync(request.Username, request.Tenant, cancellation);
 
             return PasswordHasher.VerifyPassword(password, user.Password);

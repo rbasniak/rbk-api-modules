@@ -14,6 +14,8 @@ public class RbkAuthenticationOptions
     public bool _allowAnonymousTenantAccess = false;
     public Type _tenantPostCreationActionType = null;
     public LoginMode _loginMode = LoginMode.Credentials;
+    public bool _allowUserSelfRegistration = false;
+    public bool _allowUserCreationFromWithinTheApplication = false;
 
     public RbkAuthenticationOptions DisablePasswordReset()
     {
@@ -67,6 +69,20 @@ public class RbkAuthenticationOptions
     public RbkAuthenticationOptions AllowAnonymousAccessToTenants()
     {
         _allowAnonymousTenantAccess = true;
+
+        return this;
+    }
+
+    public RbkAuthenticationOptions AllowUserSelfRegistration()
+    {
+        _allowUserSelfRegistration = true;
+
+        return this;
+    }
+
+    public RbkAuthenticationOptions AllowUserCreationFromWithinTheApplication()
+    {
+        _allowUserCreationFromWithinTheApplication = true;
 
         return this;
     }
