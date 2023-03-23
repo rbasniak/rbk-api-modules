@@ -6,6 +6,8 @@ using System.IO;
 using System;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Hosting;
+using System.Collections.Generic;
+using System.Text.Json;
 
 namespace Demo1.Api;
 
@@ -14,23 +16,23 @@ public class Program
     public static int Main(string[] args)
     {
         Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Verbose()
-            .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-            .Enrich.WithExceptionDetails()
+                .MinimumLevel.Verbose()
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                .Enrich.WithExceptionDetails()
 
-            .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Error)
+                .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Error)
 
-            .WriteTo.File(Path.Combine(Environment.CurrentDirectory, "Logs", "startup-.log"),
-                restrictedToMinimumLevel: LogEventLevel.Debug,
-                fileSizeLimitBytes: 1024 * 1024,
-                shared: true,
-                rollOnFileSizeLimit: true,
-                retainedFileTimeLimit: TimeSpan.FromDays(10),
-                rollingInterval: RollingInterval.Day)
+                .WriteTo.File(Path.Combine(Environment.CurrentDirectory, "Logs", "startup-.log"),
+                    restrictedToMinimumLevel: LogEventLevel.Debug,
+                    fileSizeLimitBytes: 1024 * 1024,
+                    shared: true,
+                    rollOnFileSizeLimit: true,
+                    retainedFileTimeLimit: TimeSpan.FromDays(10),
+                    rollingInterval: RollingInterval.Day)
 
-            .WriteTo.Debug(LogEventLevel.Debug)
+                .WriteTo.Debug(LogEventLevel.Debug)
 
-            .CreateBootstrapLogger();
+                .CreateBootstrapLogger();
 
         try
         {

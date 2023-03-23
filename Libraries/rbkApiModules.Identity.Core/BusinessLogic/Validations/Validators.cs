@@ -43,7 +43,7 @@ internal static class Validators
             .WithMessage(command => localization.GetValue(AuthenticationMessages.Validations.TenantNotFound));
     }
 
-    public static IRuleBuilderOptions<T, Guid> RoleExistOnDatabaseForTheCurrentTenant<T>(this IRuleBuilder<T, Guid> rule, IRolesService roles, ILocalizationService localization) where T: AuthenticatedRequest
+    public static IRuleBuilderOptions<T, Guid> RoleExistOnDatabaseForTheCurrentTenant<T>(this IRuleBuilder<T, Guid> rule, IRolesService roles, ILocalizationService localization) where T : AuthenticatedRequest
     {
         return rule
             .MustAsync(async (command, roleId, cancellation) =>
@@ -82,7 +82,7 @@ internal static class Validators
             .WithMessage(command => localization.GetValue(AuthenticationMessages.Validations.ClaimNotFound));
     }
 
-    public static IRuleBuilderOptions<T, string> PasswordPoliciesAreValid<T>(this IRuleBuilder<T, string> rule, IEnumerable<ICustomPasswordPolicyValidator> validators, ILocalizationService localization)  
+    public static IRuleBuilderOptions<T, string> PasswordPoliciesAreValid<T>(this IRuleBuilder<T, string> rule, IEnumerable<ICustomPasswordPolicyValidator> validators, ILocalizationService localization)
     {
         return rule
             .MustAsync(async (command, password, validationContext, cancellation) =>
@@ -106,7 +106,7 @@ internal static class Validators
             .WithMessage("none"); // DO NOT CHANGE THIS MESSAGE! It's used in the pipeline to idenfity these errors
     }
 
-    public static IRuleBuilderOptions<T, ILoginData> LoginPoliciesAreValid<T>(this IRuleBuilder<T, ILoginData> rule, IEnumerable<ICustomLoginPolicyValidator> validators, ILocalizationService localization) where T: ILoginData
+    public static IRuleBuilderOptions<T, ILoginData> LoginPoliciesAreValid<T>(this IRuleBuilder<T, ILoginData> rule, IEnumerable<ICustomLoginPolicyValidator> validators, ILocalizationService localization) where T : ILoginData
     {
         return rule
             .MustAsync(async (command, property, validationContext, cancellation) =>
@@ -116,6 +116,30 @@ internal static class Validators
                 foreach (var validator in validators)
                 {
                     var result = await validator.Validate(command.Tenant, command.Username, command.Password);
+
+                    hasError = hasError || result.HasErrors;
+
+                    foreach (var message in result.Errors)
+                    {
+                        validationContext.AddFailure(localization.GetValue(message));
+                    }
+                }
+
+                return !hasError;
+            })
+            .WithMessage("none"); // DO NOT CHANGE THIS MESSAGE! It's used in the pipeline to idenfity these errors
+    }
+
+    public static IRuleBuilderOptions<T, IUserMetadata> UserMetadataIsValid<T>(this IRuleBuilder<T, IUserMetadata> rule, IEnumerable<ICustomUserMetadataValidator> validators, ILocalizationService localization) where T : IUserMetadata
+    {
+        return rule
+            .MustAsync(async (command, property, validationContext, cancellation) =>
+            {
+                bool hasError = false;
+
+                foreach (var validator in validators)
+                {
+                    var result = await validator.Validate(command.Metadata);
 
                     hasError = hasError || result.HasErrors;
 

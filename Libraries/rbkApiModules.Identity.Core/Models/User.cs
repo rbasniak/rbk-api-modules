@@ -22,6 +22,7 @@ public class User : TenantEntity
         Username = username?.ToLower();
         Email = email?.ToLower();
         Metadata = metadata;
+        CreationDate = DateTime.UtcNow;
 
         if (!String.IsNullOrEmpty(password))
         {
@@ -62,6 +63,7 @@ public class User : TenantEntity
     public virtual string Avatar { get; protected set; }
 
     public virtual bool IsConfirmed { get; protected set; }
+    public virtual DateTime CreationDate { get; protected set; }
 
     [MaxLength(255)]
     public virtual string ActivationCode { get; protected set; }

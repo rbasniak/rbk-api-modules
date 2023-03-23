@@ -6,3 +6,8 @@ public interface ILoginData
     string Username { get; }
     string Password { get; }
 }
+
+public interface IUserMetadata
+{
+    public Dictionary<string, string> Metadata { get; set; }
+}

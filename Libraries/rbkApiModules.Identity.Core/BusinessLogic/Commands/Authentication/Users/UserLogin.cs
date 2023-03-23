@@ -38,9 +38,6 @@ public class UserLogin
         {
             _userService = userService;
 
-            var temp1 = httpContextAccessor.HttpContext.Request.Headers.ToList();
-            var temp2 = httpContextAccessor.HttpContext.User.Identity.Name;
-
             RuleFor(x => x)
                 .LoginPoliciesAreValid(loginPolicies, localization).DependentRules(() => 
                 {

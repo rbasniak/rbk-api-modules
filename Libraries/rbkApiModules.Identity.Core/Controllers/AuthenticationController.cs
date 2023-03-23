@@ -135,7 +135,7 @@ public class AuthenticationController : BaseController
 
     [Authorize]
     [HttpPost("create-user")]
-    public async Task<ActionResult<JwtResponse>> CreateUser(CreateUser.Request data, CancellationToken cancellation)
+    public async Task<ActionResult<JwtResponse>> CreateUser(Register.Request data, CancellationToken cancellation)
     {
         return HttpResponse<JwtResponse>(await Mediator.Send(data, cancellation));
     }
