@@ -160,7 +160,7 @@ public class UserManagementTests : SequentialTest, IClassFixture<ServerFixture>
         var response = await _serverFixture.PostAsync<UserDetails>("api/authorization/users/set-roles", request, await _serverFixture.GetAccessTokenAsync("admin1", "123", "un-bs"));
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "O campo 'User' não pode ser vazio");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'User' cannot be empty");
     }
 
     /// <summary>
@@ -184,7 +184,7 @@ public class UserManagementTests : SequentialTest, IClassFixture<ServerFixture>
         var response = await _serverFixture.PostAsync<UserDetails>("api/authorization/users/set-roles", request, await _serverFixture.GetAccessTokenAsync("admin1", "123", "buzios"));
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "User not found.");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "User not found");
     }
 
     /// <summary>
@@ -209,7 +209,7 @@ public class UserManagementTests : SequentialTest, IClassFixture<ServerFixture>
         var response = await _serverFixture.PostAsync<UserDetails>("api/authorization/users/set-roles", request, await _serverFixture.GetAccessTokenAsync("admin1", "123", "un-bs"));
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Não foi possível localizar o role no servidor");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Role not found");
     }
 
     /// <summary>
@@ -234,6 +234,6 @@ public class UserManagementTests : SequentialTest, IClassFixture<ServerFixture>
         var response = await _serverFixture.PostAsync<UserDetails>("api/authorization/users/set-roles", request, await _serverFixture.GetAccessTokenAsync("admin1", "123", "un-bs"));
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The list of roles must be provided");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The list of roles must have at least one item");
     }
 }

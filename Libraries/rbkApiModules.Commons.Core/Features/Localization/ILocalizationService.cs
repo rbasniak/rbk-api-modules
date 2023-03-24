@@ -1,4 +1,7 @@
-﻿namespace rbkApiModules.Commons.Core.Localization;
+﻿using Microsoft.OpenApi.Extensions;
+using System.ComponentModel;
+
+namespace rbkApiModules.Commons.Core.Localization;
 
 public interface ILocalizationService
 {
@@ -9,6 +12,6 @@ public class LocalizationService : ILocalizationService
 {
     public string GetValue(Enum value)
     {
-        return value.ToString();
+        return value.GetAttributeOfType<DescriptionAttribute>().Description;
     } 
 }

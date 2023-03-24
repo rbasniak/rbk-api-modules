@@ -162,7 +162,7 @@ public class UserConfirmationTests : SequentialTest, IClassFixture<ServerFixture
 
         _serverFixture.ShouldHaveSentEmail(options => options
             .ToAddress(user.Email)
-            .WithTileContaining("Confirmação de registro")
+            .WithTileContaining("Registration confirmation")
         );
 
         // Assert the database
@@ -194,7 +194,7 @@ public class UserConfirmationTests : SequentialTest, IClassFixture<ServerFixture
         _serverFixture.ShouldHaveSentEmail(options => options
             .ToAddress(user.Email)
             .WithTileContaining(user.DisplayName)
-            .WithTileContaining("Bem vindo"));
+            .WithTileContaining("Welcome"));
     }
 
     /// <summary>
@@ -217,7 +217,7 @@ public class UserConfirmationTests : SequentialTest, IClassFixture<ServerFixture
         var response = await _serverFixture.PostAsync($"api/authentication/resend-confirmation", request, await _serverFixture.GetAccessTokenAsync("admin1", "123", "buzios"));
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "E-mail já confirmado");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "E-mail already confirmed");
     }
 
     /// <summary>
@@ -236,6 +236,6 @@ public class UserConfirmationTests : SequentialTest, IClassFixture<ServerFixture
         var response = await _serverFixture.PostAsync($"api/authentication/resend-confirmation", request, await _serverFixture.GetAccessTokenAsync("admin1", "123", "buzios"));
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "E-mail não cadastrado");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "E-mail not found");
     }
 }

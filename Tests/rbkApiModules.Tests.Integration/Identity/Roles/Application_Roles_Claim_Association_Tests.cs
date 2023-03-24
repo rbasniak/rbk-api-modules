@@ -203,7 +203,7 @@ public class ApplicationRolesClaimAssociationTests : SequentialTest, IClassFixtu
         var response = await _serverFixture.PostAsync<RoleDetails>("api/authorization/roles/update-claims", request, true);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The list of claims must be provided");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The list of claims must have at least one item");
     }
 
     #region tables

@@ -39,7 +39,7 @@ public class UserRequestPasswordResetTests : SequentialTest, IClassFixture<Serve
         var response = await _serverFixture.PostAsync($"api/authentication/reset-password", request, token: null);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "E-mail não confirmado");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "E-mail not confirmed");
     }
 
     /// <summary>
@@ -65,7 +65,7 @@ public class UserRequestPasswordResetTests : SequentialTest, IClassFixture<Serve
         var response = await _serverFixture.PostAsync($"api/authentication/reset-password", request, token: null);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "O campo 'Tenant' não pode ser vazio");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'Tenant' cannot be empty");
     }
 
     /// <summary>
@@ -136,7 +136,7 @@ public class UserRequestPasswordResetTests : SequentialTest, IClassFixture<Serve
         var response = await _serverFixture.PostAsync($"api/authentication/reset-password", request, token: null);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "O campo 'Email' não pode ser vazio");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'E-mail' cannot be empty");
     }
 
     /// <summary>
@@ -172,6 +172,6 @@ public class UserRequestPasswordResetTests : SequentialTest, IClassFixture<Serve
         // Assert the e-mail
         _serverFixture.ShouldHaveSentEmail(options => options
             .ToAddress(user.Email)
-            .WithTileContaining("Redefinição de senha"));
+            .WithTileContaining("Password reset"));
     }
 }

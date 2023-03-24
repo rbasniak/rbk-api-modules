@@ -1,11 +1,11 @@
 ﻿namespace rbkApiModules.Tests.Integration.Identity;
 
 [TestCaseOrderer(PriorityOrderer.Name, PriorityOrderer.Assembly)]
-public class UserPasswordChangeTests : SequentialTest, IClassFixture<ServerFixture>
+public class UserPasswordResetTests : SequentialTest, IClassFixture<ServerFixture>
 {
     private ServerFixture _serverFixture;
 
-    public UserPasswordChangeTests(ServerFixture serverFixture)
+    public UserPasswordResetTests(ServerFixture serverFixture)
     {
         _serverFixture = serverFixture;
 
@@ -32,7 +32,7 @@ public class UserPasswordChangeTests : SequentialTest, IClassFixture<ServerFixtu
         var response = await _serverFixture.PostAsync($"api/authentication/redefine-password", request, token: null);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "O campo 'Password reset code' não pode ser vazio");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'Password reset code' cannot be empty");
     }
 
     /// <summary>
@@ -53,7 +53,7 @@ public class UserPasswordChangeTests : SequentialTest, IClassFixture<ServerFixtu
         var response = await _serverFixture.PostAsync($"api/authentication/redefine-password", request, token: null);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The password reset is code expired or was already used.");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The password reset is code expired or was already used");
     }
 
     /// <summary>
@@ -93,7 +93,7 @@ public class UserPasswordChangeTests : SequentialTest, IClassFixture<ServerFixtu
         var response = await _serverFixture.PostAsync($"api/authentication/redefine-password", request, token: null);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "O campo 'Password' não pode ser vazio");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'Password' cannot be empty");
     }
 
     /// <summary>
@@ -173,7 +173,7 @@ public class UserPasswordChangeTests : SequentialTest, IClassFixture<ServerFixtu
         // Assert the e-mail
         _serverFixture.ShouldHaveSentEmail(options => options
             .ToAddress(user.Email)
-            .WithTileContaining("Redefinição de senha bem sucedida")
+            .WithTileContaining("Password successfully reset")
         );
     }
 

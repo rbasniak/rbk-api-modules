@@ -250,7 +250,7 @@ public class FaqsManagementTests : SequentialTest, IClassFixture<ServerFixture>
         var response = await _serverFixture.PutAsync<FaqDetails>("api/faqs", request, _user1);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "O campo 'Question' não pode ser vazio");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'Question' cannot be empty");
     }
 
     /// <summary>
@@ -277,7 +277,7 @@ public class FaqsManagementTests : SequentialTest, IClassFixture<ServerFixture>
         var response = await _serverFixture.PutAsync<FaqDetails>("api/faqs", request, _user1);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "O campo 'Answer' não pode ser vazio");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'Answer' cannot be empty");
     }
 
     /// <summary>
@@ -420,7 +420,7 @@ public class FaqsManagementTests : SequentialTest, IClassFixture<ServerFixture>
         var response = await _serverFixture.PostAsync<FaqDetails>("api/faqs", request, _superuser);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "O campo 'Tag' não pode ser vazio");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'Tag' cannot be empty");
     }
 
     /// <summary>
@@ -444,7 +444,7 @@ public class FaqsManagementTests : SequentialTest, IClassFixture<ServerFixture>
         var response = await _serverFixture.PostAsync<FaqDetails>("api/faqs", request, _user1);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "O campo 'Question' não pode ser vazio");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'Question' cannot be empty");
     }
 
     /// <summary>
@@ -468,7 +468,7 @@ public class FaqsManagementTests : SequentialTest, IClassFixture<ServerFixture>
         var response = await _serverFixture.PostAsync<FaqDetails>("api/faqs", request, _user1);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "O campo 'Answer' não pode ser vazio");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'Answer' cannot be empty");
     }
 
     /// <summary>

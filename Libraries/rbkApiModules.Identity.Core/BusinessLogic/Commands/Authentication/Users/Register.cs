@@ -46,6 +46,8 @@ public class Register
             RuleFor(x => x.Email)
                 .IsRequired(localization)
                 .MustBeEmail(localization)
+                .MustAsync(EmailDoesNotExistOnDatabase)
+                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.EmailAlreadyUsed))
                 .WithName(localization.GetValue(AuthenticationMessages.Fields.Email));
 
             RuleFor(x => x.DisplayName)
@@ -60,6 +62,11 @@ public class Register
                 .Must(PasswordsBeTheSame)
                     .WithMessage(localization.GetValue(AuthenticationMessages.Validations.PasswordsMustBeTheSame))
                 .PasswordPoliciesAreValid(passwordValidators, localization);
+        }
+
+        private async Task<bool> EmailDoesNotExistOnDatabase(Request request, string email, CancellationToken cancellation)
+        {
+            return await _usersService.IsUserRegisteredAsync(email, request.Identity.Tenant, cancellation);
         }
 
         private bool PasswordsBeTheSame(Request request, string _)

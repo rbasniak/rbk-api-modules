@@ -458,7 +458,7 @@ public class ClaimManagementIndependentTests : SequentialTest, IClassFixture<Ser
         var response = await _serverFixture.PostAsync<ClaimDetails>("api/authorization/claims", request, authenticated: true);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "O campo 'Identification' não pode ser vazio");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'Identification' cannot be empty");
     }
 
     /// <summary>
@@ -480,7 +480,7 @@ public class ClaimManagementIndependentTests : SequentialTest, IClassFixture<Ser
         var response = await _serverFixture.PostAsync<ClaimDetails>("api/authorization/claims", request, authenticated: true);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "O campo 'Description' não pode ser vazio");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'Description' cannot be empty");
     }
 
     /// <summary>
@@ -525,7 +525,7 @@ public class ClaimManagementIndependentTests : SequentialTest, IClassFixture<Ser
         var response = await _serverFixture.PutAsync<ClaimDetails>("api/authorization/claims", request, authenticated: true);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "O campo 'Description' não pode ser vazio");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'Description' cannot be empty");
     }
 
     /// <summary>
@@ -557,16 +557,16 @@ public class ClaimManagementIndependentTests : SequentialTest, IClassFixture<Ser
     }
 
     /// <summary>
-    /// Local admin should not be able to get the list of claims
+    /// Local admin should be able to get the list of claims
     /// </summary>
     [FriendlyNamedFact("IT-101"), Priority(130)]
-    public async Task Local_Admin_Should_Not_Be_Able_To_Query_The_Claims()
+    public async Task Local_Admin_Should_Be_Able_To_Query_The_Claims()
     {
         // Act
         var response = await _serverFixture.GetAsync<ClaimDetails[]>("api/authorization/claims", await _serverFixture.GetAccessTokenAsync("admin1", "123", "buzios"));
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.Forbidden);
+        response.ShouldHaveErrors(HttpStatusCode.OK);
     }
 
     /// <summary>

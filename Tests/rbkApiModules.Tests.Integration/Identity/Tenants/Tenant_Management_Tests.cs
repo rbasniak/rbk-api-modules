@@ -129,7 +129,7 @@ public class TenantManagementTests : SequentialTest, IClassFixture<ServerFixture
         var response = await _serverFixture.PostAsync<TenantDetails>("api/authorization/tenants", request, authenticated: true);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "O campo 'Alias' não pode ser vazio");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'Tenant' cannot be empty");
     }
 
     /// <summary>
@@ -158,7 +158,7 @@ public class TenantManagementTests : SequentialTest, IClassFixture<ServerFixture
         var response = await _serverFixture.PostAsync<TenantDetails>("api/authorization/tenants", request, authenticated: true);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "O campo 'Name' não pode ser vazio");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'Name' cannot be empty");
     }
 
     /// <summary>
@@ -272,7 +272,7 @@ public class TenantManagementTests : SequentialTest, IClassFixture<ServerFixture
         var response = await _serverFixture.PutAsync<TenantDetails>("api/authorization/tenants", request, authenticated: true);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Name already being used");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Name already used");
     }
 
     /// <summary>
@@ -299,7 +299,7 @@ public class TenantManagementTests : SequentialTest, IClassFixture<ServerFixture
         var response = await _serverFixture.PostAsync<TenantDetails>("api/authorization/tenants", request, authenticated: true);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Name already being used");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Name already used");
     }
 
     /// <summary>
@@ -343,7 +343,7 @@ public class TenantManagementTests : SequentialTest, IClassFixture<ServerFixture
         var response = await _serverFixture.PutAsync<TenantDetails>("api/authorization/tenants", request, authenticated: true);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "O campo 'Name' não pode ser vazio");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'Name' cannot be empty");
     }
 
     /// <summary>
@@ -366,7 +366,7 @@ public class TenantManagementTests : SequentialTest, IClassFixture<ServerFixture
         var response = await _serverFixture.PutAsync<TenantDetails>("api/authorization/tenants", request, authenticated: true);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "O campo 'Alias' não pode ser vazio");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'Tenant' cannot be empty");
     }
 
     /// <summary>
@@ -394,7 +394,7 @@ public class TenantManagementTests : SequentialTest, IClassFixture<ServerFixture
         var response = await _serverFixture.PostAsync<TenantDetails>("api/authorization/tenants", request, authenticated: true);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Alias already used");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Tenant alias already used");
     }
 
     /// <summary>

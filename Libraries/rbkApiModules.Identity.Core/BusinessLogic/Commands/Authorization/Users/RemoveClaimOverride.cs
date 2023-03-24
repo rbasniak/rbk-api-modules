@@ -45,7 +45,7 @@ public class RemoveClaimOverride
 
         private async Task<bool> ClaimIsOverrideInUser(Request request, Guid claimId, CancellationToken cancellation)
         {
-            var user = await _authService.GetUserWithDependenciesAsync(request.Username, request.Identity.Tenant);
+            var user = await _authService.GetUserWithDependenciesAsync(request.Username, request.Identity.Tenant, cancellation);
 
             return user.Claims.Any(x => x.ClaimId == claimId);
         }

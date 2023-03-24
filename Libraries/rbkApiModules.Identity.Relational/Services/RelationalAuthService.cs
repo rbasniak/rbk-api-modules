@@ -276,5 +276,5 @@ public class RelationalAuthService: IAuthService
         user.ChangePassword(password); 
 
         await _context.SaveChangesAsync();
-    }
+    } 
 }

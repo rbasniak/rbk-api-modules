@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Demo1.Database.Domain.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230316184930_Initial")]
+    [Migration("20230324103815_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -381,6 +381,9 @@ namespace Demo1.Database.Domain.Migrations
                         .HasMaxLength(1024)
                         .HasColumnType("character varying(1024)");
 
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("DisplayName")
                         .HasMaxLength(32)
                         .HasColumnType("character varying(32)");
@@ -389,6 +392,9 @@ namespace Demo1.Database.Domain.Migrations
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("IsConfirmed")
                         .HasColumnType("boolean");

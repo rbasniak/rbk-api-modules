@@ -29,7 +29,7 @@ public class UpdateClaim
                 .IsRequired(localization)
                 .MustAsync(NotExistsInDatabaseWithSameDescription)
                 .WithMessage(localization.GetValue(AuthenticationMessages.Validations.ClaimDescriptionAlreadyUsed))
-                .WithName(localization.GetValue(AuthenticationMessages.Fields.Name));
+                .WithName(localization.GetValue(AuthenticationMessages.Fields.Description));
         }
 
         private async Task<bool> NotExistsInDatabaseWithSameDescription(Request request, string identification, CancellationToken cancelation)

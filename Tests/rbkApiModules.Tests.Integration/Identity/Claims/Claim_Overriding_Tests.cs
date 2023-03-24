@@ -66,7 +66,7 @@ public class ClaimOverridingTests : SequentialTest, IClassFixture<ServerFixture>
         var response = await _serverFixture.PostAsync<UserDetails>("api/authorization/users/add-claims", request, await _serverFixture.GetAccessTokenAsync("admin1", "123", "buzios"));
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "User not found.");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "User not found");
     }
 
     /// <summary>
@@ -318,7 +318,7 @@ public class ClaimOverridingTests : SequentialTest, IClassFixture<ServerFixture>
         var response = await _serverFixture.PostAsync<UserDetails>("api/authorization/users/remove-claims", request, await _serverFixture.GetAccessTokenAsync("admin1", "123", "buzios"));
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "User not found.");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "User not found");
     }
 
     /// <summary>

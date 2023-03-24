@@ -46,7 +46,7 @@ public class UserChangePasswordTests : SequentialTest, IClassFixture<ServerFixtu
     /// User can change his password
     /// DEPENDENCIES: none
     /// </summary>
-    [FriendlyNamedFact("IT-226"), Priority(40)]
+    [FriendlyNamedFact("IT-225"), Priority(40)]
     public async Task User_Can_Change_His_Password()
     {
         throw new NotImplementedException();

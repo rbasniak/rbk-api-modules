@@ -360,7 +360,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
         var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/refresh-token", request, token: null);
 
         // Assert
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "O campo 'RefreshToken' não pode ser vazio");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'Refresh token' cannot be empty");
     }
 
     /// <summary>

@@ -44,7 +44,7 @@ public class CommentsManagementTests : SequentialTest, IClassFixture<ServerFixtu
         var response = await _serverFixture.PostAsync<TreeNode[]>("api/comments", request, authenticated: true);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "O campo 'Message' não pode ser vazio"); 
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'Message' cannot be empty"); 
     }
 
     /// <summary>

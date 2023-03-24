@@ -202,7 +202,7 @@ public class TenantRolesBasicDependentTests : SequentialTest, IClassFixture<Serv
         var response = await _serverFixture.PutAsync<RoleDetails>("api/authorization/roles", request, authenticated: true);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "O campo 'Name' não pode ser vazio");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'Name' cannot be empty");
     }
 
     #region tables
@@ -795,7 +795,7 @@ public class TenantRolesBasicIndependentTests : SequentialTest, IClassFixture<Se
         var response = await _serverFixture.PostAsync<RoleDetails>("api/authorization/roles", request, authenticated: true);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "O campo 'Role' não pode ser vazio");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'Role' cannot be empty");
     }
 
     /// <summary>

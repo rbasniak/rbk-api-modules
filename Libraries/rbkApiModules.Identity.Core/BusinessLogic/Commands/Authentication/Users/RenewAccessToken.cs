@@ -30,12 +30,12 @@ public class RenewAccessToken
 
         public async Task<bool> TokenMustBeWithinValidity(Request comman, string refreshToken, CancellationToken cancelation)
         {
-            return await _usersService.IsRefreshTokenValidAsync(refreshToken);
+            return await _usersService.IsRefreshTokenValidAsync(refreshToken, cancelation);
         }
 
         public async Task<bool> RefreshTokenExistOnDatabase(Request request, string refreshToken, CancellationToken cancelation)
         {
-            return await _usersService.RefreshTokenExistsOnDatabaseAsync(refreshToken);
+            return await _usersService.RefreshTokenExistsOnDatabaseAsync(refreshToken, cancelation);
         }
     }
 
@@ -54,7 +54,7 @@ public class RenewAccessToken
 
         public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)
         {
-            var user = await _usersService.GetUserFromRefreshtokenAsync(request.RefreshToken);
+            var user = await _usersService.GetUserFromRefreshtokenAsync(request.RefreshToken, cancellation);
 
             var extraClaims = new Dictionary<string, string[]>();
 

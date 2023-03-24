@@ -20,7 +20,7 @@ public class GetAllUsers
 
         public async Task<QueryResponse> Handle(Request request, CancellationToken cancellation)
         {
-            var users = await _usersService.GetAllAsync(request.Identity.Tenant);
+            var users = await _usersService.GetAllAsync(request.Identity.Tenant, cancellation);
 
             return QueryResponse.Success(users);
         }

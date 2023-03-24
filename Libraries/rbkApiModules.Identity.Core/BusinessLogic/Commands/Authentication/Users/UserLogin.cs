@@ -114,10 +114,10 @@ public class UserLogin
             {
                 var refreshToken = Guid.NewGuid().ToString().ToLower().Replace("-", "");
 
-                await _authService.UpdateRefreshTokenAsync(request.Username, request.Tenant, refreshToken, _jwtOptions.RefreshTokenLife);
+                await _authService.UpdateRefreshTokenAsync(request.Username, request.Tenant, refreshToken, _jwtOptions.RefreshTokenLife, cancellation);
             }
 
-            user = await _authService.GetUserWithDependenciesAsync(request.Username, request.Tenant);
+            user = await _authService.GetUserWithDependenciesAsync(request.Username, request.Tenant, cancellation);
 
             var extraClaims = new Dictionary<string, string[]>
             {

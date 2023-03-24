@@ -56,7 +56,7 @@ public class ResendEmailConfirmation
 
         public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)
         {
-            var user = await _authService.FindUserAsync(request.Email, request.Identity.Tenant);
+            var user = await _authService.FindUserAsync(request.Email, request.Identity.Tenant, cancellation);
 
             _mailingService.SendConfirmationMail(user.DisplayName, user.Email, user.ActivationCode);
 

@@ -15,6 +15,7 @@ using System.Text.Json;
 
 namespace Demo1.Api.Controllers
 {
+    [IgnoreOnCodeGeneration]
     [ApiController]
     [Route("api/code-generator-debugger")]
     public class CodeGeneratorDebuggerController: ControllerBase

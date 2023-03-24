@@ -45,6 +45,8 @@ public class CreateUser
             RuleFor(x => x.Email)
                 .IsRequired(localization)
                 .MustBeEmail(localization)
+                .MustAsync(EmailDoesNotExistOnDatabase)
+                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.EmailAlreadyUsed))
                 .WithName(localization.GetValue(AuthenticationMessages.Fields.Email));
 
             RuleFor(x => x.DisplayName)
@@ -56,7 +58,7 @@ public class CreateUser
 
             RuleFor(x => x.Password)
                 .Must(PasswordsIsRequired)
-                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.PasswordsMustBeTheSame))
+                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.PasswordIsRequired))
                 .Must(PasswordsBeTheSame)
                     .WithMessage(localization.GetValue(AuthenticationMessages.Validations.PasswordsMustBeTheSame))
                 .PasswordPoliciesAreValid(passwordValidators, localization);
@@ -72,6 +74,11 @@ public class CreateUser
                         .WithName(localization.GetValue(AuthenticationMessages.Fields.Role));
                 });
         }
+
+        private async Task<bool> EmailDoesNotExistOnDatabase(Request request, string email, CancellationToken cancellation)
+        {
+            return await _usersService.IsUserRegisteredAsync(email, request.Identity.Tenant, cancellation);
+        } 
 
         private async Task<bool> RoleExistOnDatabase(Request request, Guid roleId, CancellationToken cancellation)
         {

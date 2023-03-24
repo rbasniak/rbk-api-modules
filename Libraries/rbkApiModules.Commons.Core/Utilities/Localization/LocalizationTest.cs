@@ -74,6 +74,7 @@ public class AuthenticationMessages : ILocalizedResource
         [Description("Old password does not match")] OldPasswordDoesNotMatch,
         [Description("User already exists")] UserAlreadyExists,
         [Description("E-mail already used")] EmailAlreadyUsed,
+        [Description("Password is required")] PasswordIsRequired,
     }
 
     public enum Erros
