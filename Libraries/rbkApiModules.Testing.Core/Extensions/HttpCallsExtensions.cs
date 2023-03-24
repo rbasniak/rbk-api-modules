@@ -14,17 +14,24 @@ public static class HttpCallsExtensions
 
         using (var httpClient = fixture.Server.CreateClient())
         {
-            if (token != null)
+            if (fixture.AuthenticationMode == Identity.Core.AuthenticationMode.Credentials)
             {
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
-            }
-
-            if (additionalHeaders != null)
-            {
-                foreach (var header in additionalHeaders)
+                if (token != null)
                 {
-                    httpClient.DefaultRequestHeaders.Add(header.Key, header.Value);
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
                 }
+
+                if (additionalHeaders != null)
+                {
+                    foreach (var header in additionalHeaders)
+                    {
+                        httpClient.DefaultRequestHeaders.Add(header.Key, header.Value);
+                    }
+                }
+            }
+            else
+            {
+                httpClient.DefaultRequestHeaders.Add("Authorization", "NTLM " + Convert.ToBase64String(Encoding.UTF8.GetBytes($"{Environment.UserDomainName}\\{Environment.UserName}:rbBrun@2012"))); // {Environment.GetEnvironmentVariable("USER_PASSWORD")}
             }
 
             var response = await httpClient.PostAsync(url, new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json"));

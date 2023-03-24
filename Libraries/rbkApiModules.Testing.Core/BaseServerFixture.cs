@@ -17,11 +17,13 @@ public class BaseServerFixture : IDisposable
     private readonly Dictionary<Credentials, string> _accessTokens = new();
     private readonly string _contentFolder;
 
-    public BaseServerFixture(Type startupClassType)
+    public BaseServerFixture(Type startupClassType, AuthenticationMode authenticationMode)
     {
         var projectDir = Path.GetDirectoryName(startupClassType.Assembly.Location);
 
         _contentFolder = projectDir;
+
+        AuthenticationMode = authenticationMode;
 
         Server = new TestServer(new WebHostBuilder()
             .UseContentRoot(_contentFolder)
@@ -35,6 +37,8 @@ public class BaseServerFixture : IDisposable
     }
 
     public TestServer Server { get; private set; }
+
+    public AuthenticationMode AuthenticationMode { get; private set; }
 
     public DbContext Context
     {

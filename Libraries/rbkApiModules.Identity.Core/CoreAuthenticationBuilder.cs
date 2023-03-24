@@ -63,9 +63,14 @@ public static class CoreAuthenticationBuilder
 
             if (!options._allowUserSelfRegistration)
             {
-                if (options._loginMode == LoginMode.WindowsAuthentication) throw new NotSupportedException("User self registration is not allowed with Windows authentication");
-
                 actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.RegisterAnonymously)));
+            }
+            else
+            {
+                if (options._loginMode == LoginMode.WindowsAuthentication)
+                {
+                    throw new NotSupportedException("User self registration is not allowed with Windows authentication");
+                }
             }
 
             if (options._allowUserCreationFromWithinTheApplication)

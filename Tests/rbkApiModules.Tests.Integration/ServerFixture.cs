@@ -2,7 +2,7 @@
 {
     public class ServerFixture: BaseServerFixture
     {
-        public ServerFixture(): base(typeof(Startup))
+        public ServerFixture(): base(typeof(Startup), AuthenticationMode.Credentials)
         {
 
         }

@@ -1,11 +1,14 @@
-﻿namespace rbkApiModules.Tests.Integration.Identity;
+﻿using System.Net.Http;
+using System.Text;
+
+namespace rbkApiModules.Tests.Integration.Identity;
 
 [TestCaseOrderer(PriorityOrderer.Name, PriorityOrderer.Assembly)]
-public class LocalUserCanLoginWithWindowsAuthenticatinIfEnabled : SequentialTest, IClassFixture<ServerFixture>
+public class LocalUserCanLoginWithWindowsAuthenticatinIfEnabled : SequentialTest, IClassFixture<NtlmServerFixture>
 {
-    private ServerFixture _serverFixture;
+    private NtlmServerFixture _serverFixture;
 
-    public LocalUserCanLoginWithWindowsAuthenticatinIfEnabled(ServerFixture serverFixture)
+    public LocalUserCanLoginWithWindowsAuthenticatinIfEnabled(NtlmServerFixture serverFixture)
     {
         _serverFixture = serverFixture;
     }
@@ -16,22 +19,38 @@ public class LocalUserCanLoginWithWindowsAuthenticatinIfEnabled : SequentialTest
     [FriendlyNamedFact("IT-XXXX"), Priority(10)]
     public async Task User_Can_Login_With_Windows_Authentication()
     {
-        // Prepare
-        var request = new UserLogin.Request
-        {
+        var command = new UserLogin.Request
+        { 
             Tenant = "buzios"
         };
 
-        var additionalHeaders = new Dictionary<string, string>
+        // Act
+        var responseTemp = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", command, token: null);
+
+        //// Assert
+        //response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Invalid credentials");
+
+        var handler = new HttpClientHandler()
         {
-            { "withCredentials", "true" }
+            UseDefaultCredentials = true,
+            AllowAutoRedirect = false,
+            PreAuthenticate = true,
         };
 
+        var httpClient = new HttpClient(handler)
+        {
+            BaseAddress = new Uri("https://localhost:44349")
+        };
+        
+        httpClient.DefaultRequestHeaders.Add("Authorization", "NTLM " + Convert.ToBase64String(Encoding.UTF8.GetBytes($"{Environment.UserName}:rbBrun@2012")));
+
+        var request = new HttpRequestMessage(HttpMethod.Post, "api/authentication/login");
+
         // Act
-        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", request, token: null, additionalHeaders);
+        var response = await httpClient.SendAsync(request);
 
         // Assert
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Invalid credentials");
+        response.EnsureSuccessStatusCode();
     }
 }
 
