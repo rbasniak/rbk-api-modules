@@ -1,5 +1,7 @@
 ﻿using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.Localization;
 using rbkApiModules.Commons.Core.Utilities.Localization;
@@ -35,13 +37,12 @@ public class SwitchDomain
 
         public async Task<bool> ExistInDatabase(Request request, string destinationDomain, CancellationToken cancellation)
         {
-            return await _tenantsService.FindAsync(destinationDomain, cancellation) != null;
+            return await _tenantsService.FindAsync(destinationDomain, cancellation) != null; 
         }
 
         public async Task<bool> BePartOfDomain(Request request, string destinationDomain, CancellationToken cancellation)
         {
-            var user = await _usersService.FindUserAsync(request.Identity.Username, destinationDomain, cancellation);
-            return user != null;
+            return await _usersService.FindUserAsync(request.Identity.Username, destinationDomain, cancellation) != null;
         }
     }
 
@@ -49,20 +50,32 @@ public class SwitchDomain
     {
         private readonly IJwtFactory _jwtFactory;
         private readonly IAuthService _usersService;
+        private readonly JwtIssuerOptions _jwtOptions;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IEnumerable<ICustomClaimHandler> _claimHandlers;
 
-        public Handler(IJwtFactory jwtFactory, IAuthService usersService, IEnumerable<ICustomClaimHandler> claimHandlers)
+        public Handler(IJwtFactory jwtFactory, IAuthService usersService, IEnumerable<ICustomClaimHandler> claimHandlers, IOptions<JwtIssuerOptions> jwtOptions, IHttpContextAccessor httpContextAccessor)
         {
             _jwtFactory = jwtFactory;
             _usersService = usersService;
             _claimHandlers = claimHandlers;
+            _jwtOptions = jwtOptions.Value;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)
         {
-            var user = await _usersService.FindUserAsync(request.Identity.Username, request.DestinationDomain, cancellation);
+            var refreshToken = Guid.NewGuid().ToString().ToLower().Replace("-", "");
+
+            await _usersService.UpdateRefreshTokenAsync(request.Identity.Username, request.DestinationDomain, refreshToken, _jwtOptions.RefreshTokenLife, cancellation);
+
+            var user = await _usersService.GetUserWithDependenciesAsync(request.Identity.Username, request.DestinationDomain, cancellation);
 
             var extraClaims = new Dictionary<string, string[]>();
+
+            var authenticationMode = _httpContextAccessor.HttpContext.User.Claims.First(claim => claim.Type == JwtClaimIdentifiers.AuthenticationMode).Value;
+
+            extraClaims.Add(JwtClaimIdentifiers.AuthenticationMode, new[] { authenticationMode });
 
             foreach (var claimHandler in _claimHandlers)
             {

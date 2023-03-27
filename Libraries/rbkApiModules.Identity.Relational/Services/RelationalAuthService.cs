@@ -21,6 +21,8 @@ public class RelationalAuthService: IAuthService
 
     public async Task ConfirmUserAsync(string username, string tenant, CancellationToken cancellation = default)
     {
+        tenant = tenant != null ? tenant.ToUpper() : null;
+
         var user = await LoadUserEntityAsync(username, tenant, cancellation);
 
         user.Confirm();
@@ -30,6 +32,8 @@ public class RelationalAuthService: IAuthService
 
     public async Task<User> FindUserAsync(string username, string tenant, CancellationToken cancellation = default)
     {
+        tenant = tenant != null ? tenant.ToUpper() : null;
+
         var user = await LoadUserEntityAsync(username, tenant, cancellation);
         return user;
     }
@@ -52,6 +56,8 @@ public class RelationalAuthService: IAuthService
 
     public async Task UpdateRefreshTokenAsync(string username, string tenant, string refreshToken, double duration, CancellationToken cancellation = default)
     {
+        tenant = tenant != null ? tenant.ToUpper() : null;
+
         var user = await LoadUserEntityAsync(username, tenant, cancellation);
 
         user.SetRefreshToken(refreshToken, duration);
@@ -61,6 +67,8 @@ public class RelationalAuthService: IAuthService
 
     private async Task<User> LoadUserEntityAsync(string username, string tenant, CancellationToken cancellation = default)
     {
+        tenant = tenant != null ? tenant.ToUpper() : null;
+
         return  await _context.Set<User>()
             .SingleOrDefaultAsync(x => (x.Username.ToLower() == username.ToLower() || x.Email.ToLower() == username.ToLower()) && x.TenantId == tenant, cancellation);
     }
@@ -134,6 +142,8 @@ public class RelationalAuthService: IAuthService
 
     public async Task RequestPasswordResetAsync(string email, string tenant, CancellationToken cancellation = default)
     {
+        tenant = tenant != null ? tenant.ToUpper() : null;
+
         var user = await LoadUserEntityAsync(email, tenant, cancellation);
 
         user.SetPasswordRedefineCode();
@@ -143,6 +153,8 @@ public class RelationalAuthService: IAuthService
 
     public async Task RefreshLastLogin(string username, string tenant, CancellationToken cancellation = default)
     {
+        tenant = tenant != null ? tenant.ToUpper() : null;
+
         var user = await LoadUserEntityAsync(username, tenant, cancellation);
 
         user.RefreshLastLogin();
@@ -196,6 +208,8 @@ public class RelationalAuthService: IAuthService
 
     public async Task<User> ReplaceRoles(string username, string tenant, Guid[] roleIds, CancellationToken cancellation)
     {
+        tenant = tenant != null ? tenant.ToUpper() : null;
+
         var user = await GetUserWithDependenciesAsync(username, tenant, cancellation);
 
         _context.RemoveRange(user.Roles);
@@ -215,6 +229,8 @@ public class RelationalAuthService: IAuthService
 
     public async Task<User> AddRole(string username, string tenant, Guid roleId, CancellationToken cancellation)
     {
+        tenant = tenant != null ? tenant.ToUpper() : null;
+
         var user = await LoadUserEntityAsync(username, tenant, cancellation);
 
         var role = await _context.Set<Role>().SingleAsync(x => x.Id == roleId);
@@ -227,6 +243,8 @@ public class RelationalAuthService: IAuthService
 
     public async Task<User> RemoveRole(string username, string tenant, Guid roleId, CancellationToken cancellation)
     {
+        tenant = tenant != null ? tenant.ToUpper() : null;
+
         var user = await LoadUserEntityAsync(username, tenant, cancellation);
 
         var role = await _context.Set<Role>().SingleAsync(x => x.Id == roleId);
@@ -239,6 +257,8 @@ public class RelationalAuthService: IAuthService
 
     public async Task<User> CreateUserAsync(string tenant, string username, string password, string email, string displayName, string avatarPath, bool isConfirmed, CancellationToken cancellation)
     {
+        tenant = tenant != null ? tenant.ToUpper() : null;
+
         var user = new User(tenant, username, email, password, avatarPath, displayName);
 
         if (isConfirmed)
@@ -271,6 +291,8 @@ public class RelationalAuthService: IAuthService
 
     public async Task ChangePasswordAsync(string tenant, string username, string password, CancellationToken cancellation = default)
     {
+        tenant = tenant != null ? tenant.ToUpper() : null;
+
         var user = await LoadUserEntityAsync(username, tenant, cancellation);
 
         user.ChangePassword(password); 

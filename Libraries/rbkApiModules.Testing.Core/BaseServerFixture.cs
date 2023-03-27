@@ -15,6 +15,8 @@ using Microsoft.Extensions.Options;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using Claim = System.Security.Claims.Claim;
+using System.Net.Http.Headers;
+using System;
 
 namespace rbkApiModules.Testing.Core;
 
@@ -110,7 +112,45 @@ public class BaseServerFixture : IDisposable
                     Tenant = tenant
                 };
 
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(TestAuthHandler.AuthenticationScheme);
+                httpClient.DefaultRequestHeaders.Add(TestAuthHandler.UserId, username);
+
                 var response = await httpClient.PostAsync("api/authentication/login", new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json"));
+
+                response.EnsureSuccessStatusCode();
+
+                var responseBodyData = await response.Content.ReadAsStringAsync();
+
+                var data = JsonSerializer.Deserialize<JwtResponse>(responseBodyData, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                _accessTokens.Add(credentials, data.AccessToken);
+            }
+        }
+
+        return _accessTokens[credentials];
+    }
+
+    public async Task<string> GetAccessTokenAsync(string username, string tenant)
+    {
+        var credentials = new Credentials(username, String.Empty, tenant);
+
+        if (!_accessTokens.ContainsKey(credentials))
+        {
+            using (var httpClient = Server.CreateClient())
+            {
+                var body = new UserLogin.Request
+                {
+                    Tenant = tenant
+                };
+
+                if (AuthenticationMode == AuthenticationMode.Windows)
+                {
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(TestAuthHandler.AuthenticationScheme);
+                    httpClient.DefaultRequestHeaders.Add(TestAuthHandler.UserId, username);
+                }
+
+                var response = await httpClient.PostAsync("api/authentication/login", 
+                    new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json"));
 
                 response.EnsureSuccessStatusCode();
 

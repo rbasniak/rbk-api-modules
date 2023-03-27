@@ -12,7 +12,7 @@ public class Tenant
 
     public Tenant(string alias, string name, string metadata = null)
     {
-        Alias = alias;
+        Alias = alias.ToUpper();
         Name = name;
         Metadata = metadata;
     }

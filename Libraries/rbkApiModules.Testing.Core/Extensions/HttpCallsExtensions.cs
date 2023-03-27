@@ -25,7 +25,7 @@ public static class HttpCallsExtensions
 
         using (var httpClient = fixture.Server.CreateClient())
         {
-            if (fixture.AuthenticationMode == Identity.Core.AuthenticationMode.Credentials)
+            if (fixture.AuthenticationMode == Identity.Core.AuthenticationMode.Credentials || url != "api/authentication/login")
             {
                 if (credentials != null)
                 {
@@ -74,7 +74,7 @@ public static class HttpCallsExtensions
 
         using (var httpClient = fixture.Server.CreateClient())
         {
-            if (fixture.AuthenticationMode == Identity.Core.AuthenticationMode.Credentials)
+            if (fixture.AuthenticationMode == Identity.Core.AuthenticationMode.Credentials || url != "api/authentication/login")
             {
                 if (credentials != null)
                 {
@@ -123,17 +123,9 @@ public static class HttpCallsExtensions
 
         using (var httpClient = fixture.Server.CreateClient())
         {
-            if (fixture.AuthenticationMode == Identity.Core.AuthenticationMode.Credentials)
+            if (credentials != null)
             {
-                if (credentials != null)
-                {
-                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", credentials);
-                }
-            }
-            else
-            {
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(TestAuthHandler.AuthenticationScheme);
-                httpClient.DefaultRequestHeaders.Add(TestAuthHandler.UserId, credentials);
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", credentials);
             }
 
             var response = await httpClient.PutAsync(url, new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json"));
@@ -173,17 +165,9 @@ public static class HttpCallsExtensions
 
         using (var httpClient = fixture.Server.CreateClient())
         {
-            if (fixture.AuthenticationMode == Identity.Core.AuthenticationMode.Credentials)
+            if (credentials != null)
             {
-                if (credentials != null)
-                {
-                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", credentials);
-                }
-            }
-            else
-            {
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(TestAuthHandler.AuthenticationScheme);
-                httpClient.DefaultRequestHeaders.Add(TestAuthHandler.UserId, credentials);
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", credentials);
             }
 
             var response = await httpClient.GetAsync(url);
@@ -218,17 +202,9 @@ public static class HttpCallsExtensions
 
         using (var httpClient = fixture.Server.CreateClient())
         {
-            if (fixture.AuthenticationMode == Identity.Core.AuthenticationMode.Credentials)
+            if (credentials != null)
             {
-                if (credentials != null)
-                {
-                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", credentials);
-                }
-            }
-            else
-            {
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(TestAuthHandler.AuthenticationScheme);
-                httpClient.DefaultRequestHeaders.Add(TestAuthHandler.UserId, credentials);
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", credentials);
             }
 
             var response = await httpClient.GetAsync(url);
@@ -267,17 +243,9 @@ public static class HttpCallsExtensions
 
         using (var httpClient = fixture.Server.CreateClient())
         {
-            if (fixture.AuthenticationMode == Identity.Core.AuthenticationMode.Credentials)
+            if (credentials != null)
             {
-                if (credentials != null)
-                {
-                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", credentials);
-                }
-            }
-            else
-            {
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(TestAuthHandler.AuthenticationScheme);
-                httpClient.DefaultRequestHeaders.Add(TestAuthHandler.UserId, credentials);
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", credentials);
             }
 
             var response = await httpClient.DeleteAsync(url);

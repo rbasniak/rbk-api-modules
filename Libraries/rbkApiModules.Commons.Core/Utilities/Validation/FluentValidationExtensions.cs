@@ -1,6 +1,9 @@
 ﻿using FluentValidation;
 using rbkApiModules.Commons.Core.Localization;
 using rbkApiModules.Commons.Core.Utilities.Localization;
+using static rbkApiModules.Commons.Core.Utilities.Localization.AuthenticationMessages;
+using System.Net.Mail;
+using System.Diagnostics;
 
 namespace rbkApiModules.Commons.Core;
 
@@ -48,6 +51,28 @@ public static class FluentValidationExtensions
     public static IRuleBuilderOptions<T, string> MustBeEmail<T>(this IRuleBuilder<T, string> rule, ILocalizationService localization)
     {
         return rule
-            .EmailAddress().WithMessage(localization.GetValue(SharedValidationMessages.Common.InvalidEmailFormat));
+            .Must(x =>
+            {
+                if (!MailAddress.TryCreate(x, out var mailAddress))
+                    return false;
+
+                var hostParts = mailAddress.Host.Split('.');
+                if (hostParts.Length == 1)
+                    return false; // No dot.
+                if (hostParts.Any(p => p == string.Empty))
+                    return false; // Double dot.
+                if (hostParts[^1].Length < 2)
+                    return false; // TLD only one letter.
+
+                if (mailAddress.User.Contains(' '))
+                    return false;
+                if (mailAddress.User.Split('.').Any(p => p == string.Empty))
+                    return false; // Double dot or dot at end of user part.
+
+                Debug.WriteLine("E-mail is valid: " + x);
+
+                return true;
+            })
+            .WithMessage(localization.GetValue(SharedValidationMessages.Common.InvalidEmailFormat));
     }
 }

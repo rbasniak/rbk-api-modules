@@ -13,9 +13,9 @@ public class DatabaseSeed : DatabaseSeedManager<DatabaseContext>, IDatabaseSeede
 
     public static void UsersSeed(DatabaseContext context)
     {
-        var tenant = context.Add(new Tenant("WAYNE INC", "Wayne Enterprises")).Entity;
+        var tenant = context.Add(new Tenant("PARKER INDUSTRIES", "Parker Industries")).Entity;
 
-        var user = context.Add(new User("WAYNE INC", Environment.UserName, "admin@wayne-inc.com", "dumb_password", null, "John Doe", new Dictionary<string, string>
+        var user = context.Add(new User("PARKER INDUSTRIES", Environment.UserName, "admin@parker-industries.com", null, null, "John Doe", new Dictionary<string, string>
         {
             { "Sector", "Administration" },
             { "IsManager", "false" }

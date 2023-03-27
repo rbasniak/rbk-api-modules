@@ -124,7 +124,7 @@ public class UserLogin
             _authService = authService;
             _jwtFactory = jwtFactory;
             _jwtOptions = jwtOptions.Value;
-            _claimHandlers = claimHandlers.DistinctBy(x => x.GetType());
+            _claimHandlers = claimHandlers;
         }
 
         public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)
@@ -142,7 +142,7 @@ public class UserLogin
 
             var extraClaims = new Dictionary<string, string[]>
             {
-                { "authentication-mode", new[] { request.AuthenticationMode.ToString().ToLower() } }
+                { JwtClaimIdentifiers.AuthenticationMode, new[] { request.AuthenticationMode.ToString().ToLower() } }
             };
 
             foreach (var claimHandler in _claimHandlers)

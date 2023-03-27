@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using rbkApiModules.Commons.Core;
@@ -20,21 +21,22 @@ public class CreateUser
         public string PasswordConfirmation { get; set; }
         public Guid[] RoleIds { get; set; }
         public Dictionary<string, string> Metadata { get; set; }
-
-        [JsonIgnore]
-        public AuthenticationMode AuthenticationMode { get; set; }
     }
 
     public class Validator : AbstractValidator<Request>
     {
         private readonly IAuthService _usersService;
         private readonly IRolesService _rolesService;
+        private readonly AuthenticationMode _authenticationMode;
 
         public Validator(IAuthService usersService, ILocalizationService localization, IEnumerable<ICustomPasswordPolicyValidator> passwordValidators,
-            IEnumerable<ICustomUserMetadataValidator> metadataValidators, IRolesService rolesService)
+            IEnumerable<ICustomUserMetadataValidator> metadataValidators, IRolesService rolesService, IHttpContextAccessor httpContextAccessor)
         {
             _usersService = usersService;
             _rolesService = rolesService;
+
+            var authenticationModeClaim = httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == JwtClaimIdentifiers.AuthenticationMode);
+            _authenticationMode = authenticationModeClaim != null && authenticationModeClaim.Value == "windows" ? AuthenticationMode.Windows : AuthenticationMode.Credentials;
 
             RuleFor(x => x.Username)
                 .IsRequired(localization)
@@ -68,6 +70,10 @@ public class CreateUser
                 .WithMessage(localization.GetValue(AuthenticationMessages.Validations.RoleListMustNotBeEmpty))
                 .DependentRules(() =>
                 {
+                    RuleFor(x => x.RoleIds.Length)
+                        .GreaterThan(0)
+                        .WithMessage(localization.GetValue(AuthenticationMessages.Validations.RoleListMustNotBeEmpty));
+
                     RuleForEach(x => x.RoleIds)
                         .MustAsync(RoleExistOnDatabase)
                         .WithMessage(localization.GetValue(AuthenticationMessages.Validations.RoleNotFound))
@@ -77,7 +83,7 @@ public class CreateUser
 
         private async Task<bool> EmailDoesNotExistOnDatabase(Request request, string email, CancellationToken cancellation)
         {
-            return await _usersService.IsUserRegisteredAsync(email, request.Identity.Tenant, cancellation);
+            return !await _usersService.IsUserRegisteredAsync(email, request.Identity.Tenant, cancellation);
         } 
 
         private async Task<bool> RoleExistOnDatabase(Request request, Guid roleId, CancellationToken cancellation)
@@ -89,19 +95,19 @@ public class CreateUser
 
         private bool PasswordsBeTheSame(Request request, string _)
         {
-            return request.AuthenticationMode == AuthenticationMode.Windows ? true : request.PasswordConfirmation == request.Password;
+            return _authenticationMode == AuthenticationMode.Windows ? true : request.PasswordConfirmation == request.Password;
         }
 
         private bool PasswordsIsRequired(Request request, string _)
         {
-            return request.AuthenticationMode == AuthenticationMode.Windows ? true : request.PasswordConfirmation == request.Password;
+            return _authenticationMode == AuthenticationMode.Windows ? true : request.PasswordConfirmation == request.Password;
         } 
 
         private async Task<bool> UserDoesNotExistOnDatabase(Request request, string username, CancellationToken cancellation)
         {
             var user = await _usersService.FindUserAsync(username, request.Identity.Tenant, cancellation);
 
-            return user != null;
+            return user == null;
         }
     }
 

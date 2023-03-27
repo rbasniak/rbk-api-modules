@@ -81,6 +81,7 @@ public class Startup
             .UseSymetricEncryptationKey()
             .AllowAnonymousAccessToTenants()
             .UseLoginWithWindowsAuthentication()
+            .AllowUserCreationByAdmins()
         );
 
         services.AddRbkUIDefinitions(AssembliesForUiDefinitions);

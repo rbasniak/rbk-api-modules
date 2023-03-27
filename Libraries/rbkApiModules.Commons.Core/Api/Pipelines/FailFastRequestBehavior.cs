@@ -29,7 +29,7 @@ public class FailFastRequestBehavior<TRequest, TResponse> : IPipelineBehavior<TR
         // Then serarch for the other validators using the interfaces implemented by the command
         var interfaces = request.GetType().GetInterfaces().Where(x => !x.FullName.Contains("MediatR"));
 
-        var composedValidators = _validators.DistinctBy(x => x.GetType()).ToList();
+        var composedValidators = _validators.ToList();
 
         foreach (var @interface in interfaces)
         {

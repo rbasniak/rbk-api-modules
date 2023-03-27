@@ -1,8 +1,12 @@
-﻿using System;
+﻿using rbkApiModules.Identity.Core;
+using rbkApiModules.Identity.Core.DataTransfer.Users;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static rbkApiModules.Commons.Core.Utilities.Localization.AuthenticationMessages;
 
 namespace rbkApiModules.Demo3.Tests.Integration.Identity;
 
@@ -16,6 +20,30 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
         _serverFixture = serverFixture;
     }
 
+    [FriendlyNamedFact("IT-000"), Priority(-1)]
+    public async Task Seed()
+    {
+        var context = _serverFixture.Context;
+
+        context.Set<Tenant>().Add(new Tenant("WAYNE INC", "Wayne Industries"));
+
+        var admin = context.Set<User>().Add(new User("WAYNE INC", "admin", "admin@wayne-inc.com", null, String.Empty, "Admin")).Entity;
+        var user = context.Set<User>().Add(new User("WAYNE INC", "user", "user@wayne-inc.com", null, String.Empty, "User")).Entity;
+
+        admin.Confirm();
+        user.Confirm();
+
+        admin.AddClaim(context.Set<Claim>().First(x => x.Identification == AuthenticationClaims.MANAGE_USERS), ClaimAccessType.Allow);
+
+        var role1 = context.Set<Role>().Add(new Role("WAYNE INC", "Role1")).Entity;
+        var role2 = context.Set<Role>().Add(new Role("WAYNE INC", "Role2")).Entity;
+
+        context.SaveChanges();
+
+        // Default user for all tests
+        await _serverFixture.GetAccessTokenAsync("admin", "wayne inc");
+    }
+
     /// <summary>
     /// User cannot be created if username is not supplied
     /// DEPENDENCIES: none
@@ -25,8 +53,22 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
     [InlineData("")]
     public async Task User_cannot_be_created_when_username_is_null_or_empty(string username)
     {
+        var role1 = _serverFixture.Context.Set<Role>().First(x => x.Name == "Role1");
 
-        throw new NotImplementedException();
+        // Prepare
+        var request = new CreateUser.Request
+        {
+            Username = username,
+            DisplayName = "John Doe",
+            Email = "john.doe@fake-company.com",
+            RoleIds = new[] { role1.Id },
+        };
+
+        // Act
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/create-user", request, true);
+
+        // Assert the response
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'User' cannot be empty");
     }
 
     /// <summary>
@@ -36,7 +78,22 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
     [FriendlyNamedFact("IT-228"), Priority(20)]
     public async Task User_cannot_be_created_when_username_is_already_taken()
     {
-        throw new NotImplementedException();
+        var role1 = _serverFixture.Context.Set<Role>().First(x => x.Name == "Role1");
+
+        // Prepare
+        var request = new CreateUser.Request
+        {
+            Username = "user",
+            DisplayName = "John Doe",
+            Email = "john.doe@fake-company.com",
+            RoleIds = new[] { role1.Id },
+        };
+
+        // Act
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/create-user", request, true);
+
+        // Assert the response
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "User already exists"); 
     }
 
     /// <summary>
@@ -48,7 +105,22 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
     [InlineData("")]
     public async Task User_cannot_be_created_when_email_is_null_or_empty(string email)
     {
-        throw new NotImplementedException();
+        var role1 = _serverFixture.Context.Set<Role>().First(x => x.Name == "Role1");
+
+        // Prepare
+        var request = new CreateUser.Request
+        {
+            Username = "new-user",
+            DisplayName = "John Doe",
+            Email = email,
+            RoleIds = new[] { role1.Id },
+        };
+
+        // Act
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/create-user", request, true);
+
+        // Assert the response
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'E-mail' cannot be empty");
     }
 
     /// <summary>
@@ -59,13 +131,27 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
     [InlineData("aaaaaa")]
     [InlineData("aaaaa@bbbbbb")]
     [InlineData("aaaaaaa@bbbbbbb.")]
-    [InlineData("-aaaaaaa@bbbbbbb.com")]
-    [InlineData("123@bbbbbbb.com")]
-    [InlineData("_aaaaa@bbbbbbb.com")]
     [InlineData("@bbbbbbb.com")]
     public async Task User_cannot_be_created_when_email_is_invalid(string email)
     {
-        throw new NotImplementedException();
+        Debug.WriteLine(email);
+
+        var role1 = _serverFixture.Context.Set<Role>().First(x => x.Name == "Role1");
+
+        // Prepare
+        var request = new CreateUser.Request
+        {
+            Username = "new-user",
+            DisplayName = "John Doe",
+            Email = email,
+            RoleIds = new[] { role1.Id },
+        };
+
+        // Act
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/create-user", request, true);
+
+        // Assert the response
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "E-mail is invalid");
     }
 
     /// <summary>
@@ -75,19 +161,49 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
     [FriendlyNamedFact("IT-263"), Priority(45)]
     public async Task User_cannot_be_created_when_email_is_already_taken()
     {
-        throw new NotImplementedException();
+        var role1 = _serverFixture.Context.Set<Role>().First(x => x.Name == "Role1");
+
+        // Prepare
+        var request = new CreateUser.Request
+        {
+            Username = "new-user",
+            DisplayName = "John Doe",
+            Email = "user@wayne-inc.com",
+            RoleIds = new[] { role1.Id },
+        };
+
+        // Act
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/create-user", request, true);
+
+        // Assert the response
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "E-mail already used");
     }
 
     /// <summary>
     /// User cannot be created if display name is not supplied
     /// DEPENDENCIES: none
     /// </summary>
-    [FriendlyNamedFact("IT-231"), Priority(50)]
+    [FriendlyNamedTheory("IT-231"), Priority(50)]
     [InlineData(null)]
     [InlineData("")]
     public async Task User_cannot_be_created_when_display_name_is_null_or_empty(string displayName)
     {
-        throw new NotImplementedException();
+        var role1 = _serverFixture.Context.Set<Role>().First(x => x.Name == "Role1");
+
+        // Prepare
+        var request = new CreateUser.Request
+        {
+            Username = "new-user",
+            DisplayName = displayName,
+            Email = "new-user@wayne-inc.com",
+            RoleIds = new[] { role1.Id },
+        };
+
+        // Act
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/create-user", request, true);
+
+        // Assert the response
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'Display name' cannot be empty");
     }
 
     /// <summary>
@@ -129,7 +245,20 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
     [FriendlyNamedFact("IT-236"), Priority(90)]
     public async Task User_cannot_be_created_when_role_list_is_null()
     {
-        throw new NotImplementedException();
+        // Prepare
+        var request = new CreateUser.Request
+        {
+            Username = "new-user",
+            DisplayName = "John Doe",
+            Email = "new-user@wayne-inc.com",
+            RoleIds = null,
+        };
+
+        // Act
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/create-user", request, true);
+
+        // Assert the response
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The list of roles must have at least one item");
     }
 
     /// <summary>
@@ -139,7 +268,20 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
     [FriendlyNamedFact("IT-239"), Priority(100)]
     public async Task User_cannot_be_created_when_role_list_is_empty()
     {
-        throw new NotImplementedException();
+        // Prepare
+        var request = new CreateUser.Request
+        {
+            Username = "new-user",
+            DisplayName = "John Doe",
+            Email = "new-user@wayne-inc.com",
+            RoleIds = new Guid[0],
+        };
+
+        // Act
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/create-user", request, true);
+
+        // Assert the response
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The list of roles must have at least one item");
     }
 
     /// <summary>
@@ -149,7 +291,22 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
     [FriendlyNamedFact("IT-240"), Priority(110)]
     public async Task User_cannot_be_created_when_role_list_has_an_invlid_role()
     {
-        throw new NotImplementedException();
+        var role1 = _serverFixture.Context.Set<Role>().First(x => x.Name == "Role1");
+
+        // Prepare
+        var request = new CreateUser.Request
+        {
+            Username = "new-user",
+            DisplayName = "John Doe",
+            Email = "new-user@wayne-inc.com",
+            RoleIds = new[] { role1.Id, Guid.Empty },
+        };
+
+        // Act
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/create-user", request, true);
+
+        // Assert the response
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Role not found");
     }
 
     /// <summary>

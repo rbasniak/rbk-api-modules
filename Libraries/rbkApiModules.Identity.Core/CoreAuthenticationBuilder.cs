@@ -67,7 +67,6 @@ public static class CoreAuthenticationBuilder
             {
                 actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.LoginWithNegotiate)));
                 actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.SwitchDomain)));
-                actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.SwitchDomain)));
             }
             else
             {
@@ -87,11 +86,6 @@ public static class CoreAuthenticationBuilder
             }
 
             if (!authenticationOptions._allowUserCreationByAdmin)
-            {
-                actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.CreateUser)));
-            }
-
-            if (authenticationOptions._allowUserCreationFromWithinTheApplication)
             {
                 actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.CreateUser)));
             }
@@ -289,30 +283,54 @@ public static class CoreAuthenticationBuilder
 
         foreach (var type in GetClassesImplementingInterface(typeof(ICustomLoginPolicyValidator)))
         {
-            services.AddScoped(typeof(ICustomLoginPolicyValidator), type);
+            // Avoiid duplicated registrations. Depending on naming convention used, it could be already registered by the generic .AddApplicationServices() method
+            if (services.None(x => x.ServiceType == typeof(ICustomLoginPolicyValidator) && x.ImplementationType == type))
+            { 
+                services.AddScoped(typeof(ICustomLoginPolicyValidator), type);
+            }
         }
 
         foreach (var type in GetClassesImplementingInterface(typeof(ICustomClaimHandler)))
         {
-            services.AddScoped(typeof(ICustomClaimHandler), type);
+            // Avoiid duplicated registrations. Depending on naming convention used, it could be already registered by the generic .AddApplicationServices() method
+            if (services.None(x => x.ServiceType == typeof(ICustomClaimHandler) && x.ImplementationType == type))
+            {
+                services.AddScoped(typeof(ICustomClaimHandler), type);
+            }
         }
 
         foreach (var type in GetClassesImplementingInterface(typeof(ICustomPasswordPolicyValidator)))
         {
-            services.AddScoped(typeof(ICustomPasswordPolicyValidator), type);
+            // Avoiid duplicated registrations. Depending on naming convention used, it could be already registered by the generic .AddApplicationServices() method
+            if (services.None(x => x.ServiceType == typeof(ICustomPasswordPolicyValidator) && x.ImplementationType == type))
+            {
+                services.AddScoped(typeof(ICustomPasswordPolicyValidator), type);
+            }
         }
 
         foreach (var type in GetClassesImplementingInterface(typeof(ICustomUserMetadataValidator)))
         {
-            services.AddScoped(typeof(ICustomUserMetadataValidator), type);
+            // Avoiid duplicated registrations. Depending on naming convention used, it could be already registered by the generic .AddApplicationServices() method
+            if (services.None(x => x.ServiceType == typeof(ICustomUserMetadataValidator) && x.ImplementationType == type))
+            {
+                services.AddScoped(typeof(ICustomUserMetadataValidator), type);
+            }
         }
 
         foreach (var type in GetClassesImplementingInterface(typeof(IUserMetadataService)))
         {
-            services.AddScoped(typeof(IUserMetadataService), type);
+            // Avoiid duplicated registrations. Depending on naming convention used, it could be already registered by the generic .AddApplicationServices() method
+            if (services.None(x => x.ServiceType == typeof(IUserMetadataService) && x.ImplementationType == type))
+            {
+                services.AddScoped(typeof(IUserMetadataService), type);
+            }
         }
 
-        services.AddScoped(typeof(IAvatarStorage), authenticationOptions._customAvatarStorageType);
+        // Avoiid duplicated registrations. Depending on naming convention used, it could be already registered by the generic .AddApplicationServices() method
+        if (services.None(x => x.ServiceType == typeof(IAvatarStorage) && x.ImplementationType == authenticationOptions._customAvatarStorageType))
+        {
+            services.AddScoped(typeof(IAvatarStorage), authenticationOptions._customAvatarStorageType);
+        }
     }
 
     private static Type[] GetClassesImplementingInterface(Type type)

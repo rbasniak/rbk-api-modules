@@ -6,6 +6,7 @@ using System.Text.Json;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.CodeGeneration;
 using Microsoft.Win32;
+using rbkApiModules.Identity.Core.DataTransfer.Users;
 
 namespace rbkApiModules.Identity.Core;
 
@@ -112,7 +113,7 @@ public class AuthenticationController : BaseController
     }
 
     [Authorize]
-    [HttpPost("switch-domain")]
+    [HttpPost("switch-tenant")]
     public async Task<ActionResult<JwtResponse>> SwitchDomain(SwitchDomain.Request data, CancellationToken cancellation)
     {
         return HttpResponse<JwtResponse>(await Mediator.Send(data, cancellation));
@@ -134,8 +135,8 @@ public class AuthenticationController : BaseController
 
     [RbkAuthorize(AuthenticationClaims.MANAGE_USERS)]
     [HttpPost("create-user")]
-    public async Task<ActionResult<JwtResponse>> CreateUser(CreateUser.Request data, CancellationToken cancellation)
+    public async Task<ActionResult<UserDetails>> CreateUser(CreateUser.Request data, CancellationToken cancellation)
     {
-        return HttpResponse<JwtResponse>(await Mediator.Send(data, cancellation));
+        return HttpResponse<UserDetails>(await Mediator.Send(data, cancellation));
     }
 }

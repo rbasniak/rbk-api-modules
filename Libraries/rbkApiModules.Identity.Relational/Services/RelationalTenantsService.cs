@@ -29,7 +29,7 @@ public class RelationalTenantsService : ITenantsService
 
     public async Task DeleteAsync(string alias, CancellationToken cancellation = default )
     {
-        var tenant = await _context.Set<Tenant>().FindAsync(new object[] { alias }, cancellation);
+        var tenant = await _context.Set<Tenant>().FindAsync(new object[] { alias.ToUpper() }, cancellation);
 
         _context.Remove(tenant);
 
@@ -38,7 +38,7 @@ public class RelationalTenantsService : ITenantsService
 
     public async Task<Tenant> FindAsync(string alias, CancellationToken cancellation = default)
     {
-        return await _context.Set<Tenant>().FindAsync(new object[] { alias }, cancellation);
+        return await _context.Set<Tenant>().FindAsync(new object[] { alias.ToUpper() }, cancellation);
     }
 
     public async Task<Tenant> FindByNameAsync(string name, CancellationToken cancellation = default)
@@ -57,12 +57,12 @@ public class RelationalTenantsService : ITenantsService
 
     public async Task<Tenant> GetDetailsAsync(string alias, CancellationToken cancellation = default)
     {
-        return await _context.Set<Tenant>().FindAsync(alias, cancellation);
+        return await _context.Set<Tenant>().FindAsync(alias.ToUpper(), cancellation);
     }
 
     public async Task<Tenant> UpdateAsync(string alias, string name, string metadata, CancellationToken cancellation = default)
     {
-        var tenant = await _context.Set<Tenant>().FindAsync(new object[] { alias }, cancellation);
+        var tenant = await _context.Set<Tenant>().FindAsync(new object[] { alias.ToUpper() }, cancellation);
 
         tenant.Update(name, metadata);
 

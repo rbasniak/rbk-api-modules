@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics;
 using System.Reflection;
 
 namespace rbkApiModules.Commons.Core;
@@ -20,7 +21,10 @@ public static class ServicesCollectionExtensions
                 {
                     if (handlerType.Name == $"I{type.Name}" && !handlerType.HasAttribute<IgnoreAutomaticIocContainerRegistrationAttribute>())
                     {
-                        services.AddScoped(handlerType.AsType(), type.AsType());
+                        if (services.None(x => x.ServiceType == handlerType.AsType() && x.ImplementationType == type.AsType()))
+                        {
+                            services.AddScoped(handlerType.AsType(), type.AsType());
+                        }
                     }
                 }
             }

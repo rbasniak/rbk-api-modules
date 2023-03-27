@@ -18,7 +18,7 @@ public class WindowsAuthenticationTests : SequentialTest, IClassFixture<ServerFi
     {
         var command = new UserLogin.Request
         {
-            Tenant = "wayne inc"
+            Tenant = "PARKER INDUSTRIES"
         };
 
         // Act
@@ -41,7 +41,7 @@ public class WindowsAuthenticationTests : SequentialTest, IClassFixture<ServerFi
     {
         var command = new UserLogin.Request
         {
-            Tenant = "wayne inc"
+            Tenant = "PARKER INDUSTRIES"
         };
 
         // Act
@@ -59,7 +59,7 @@ public class WindowsAuthenticationTests : SequentialTest, IClassFixture<ServerFi
     {
         var command = new UserLogin.Request
         {
-            Tenant = "wayne inc"
+            Tenant = "PARKER INDUSTRIES"
         };
 
         // Act
