@@ -1,7 +1,7 @@
 ﻿using rbkApiModules.Identity.Core.DataTransfer.Claims;
 using rbkApiModules.Identity.Core.DataTransfer.Users;
 
-namespace rbkApiModules.Tests.Integration.Identity;
+namespace rbkApiModules.Demo1.Tests.Integration.Identity;
 
 [TestCaseOrderer(PriorityOrderer.Name, PriorityOrderer.Assembly)]
 public class ClaimOverridingTests : SequentialTest, IClassFixture<ServerFixture>

@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography;
 
-namespace rbkApiModules.Tests.Integration.Identity;
+namespace rbkApiModules.Demo1.Tests.Integration.Identity;
 
 [TestCaseOrderer(PriorityOrderer.Name, PriorityOrderer.Assembly)]
 public class UserChangePasswordTests : SequentialTest, IClassFixture<ServerFixture>

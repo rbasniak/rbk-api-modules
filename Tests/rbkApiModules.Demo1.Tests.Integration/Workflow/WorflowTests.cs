@@ -1,7 +1,7 @@
 ﻿using Stateless.Graph;
 using System.Diagnostics;
 
-namespace rbkApiModules.Tests.Integration.Workflow;
+namespace rbkApiModules.Demo1.Tests.Integration.Workflow;
 
 public class WorflowTests
 {

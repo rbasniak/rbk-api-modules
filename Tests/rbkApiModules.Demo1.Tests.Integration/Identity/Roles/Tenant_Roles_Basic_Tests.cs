@@ -1,6 +1,6 @@
 ﻿using rbkApiModules.Identity.Core.DataTransfer.Roles;
 
-namespace rbkApiModules.Tests.Integration.Identity;
+namespace rbkApiModules.Demo1.Tests.Integration.Identity;
 
 /// <summary>
 /// In general, the local admin can only manage roles that are tenant wide,

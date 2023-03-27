@@ -1,7 +1,7 @@
 ﻿using rbkApiModules.Commons.Core;
 using System.IdentityModel.Tokens.Jwt;
 
-namespace rbkApiModules.Tests.Integration.Identity;
+namespace rbkApiModules.Demo1.Tests.Integration.Identity;
 
 [TestCaseOrderer(PriorityOrderer.Name, PriorityOrderer.Assembly)]
 public class GlobalAdminLoginTests : SequentialTest, IClassFixture<ServerFixture>

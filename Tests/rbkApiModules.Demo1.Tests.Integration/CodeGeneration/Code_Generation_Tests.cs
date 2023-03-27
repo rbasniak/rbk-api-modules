@@ -1,4 +1,4 @@
-﻿namespace rbkApiModules.Tests.Integration.CodeGeneration;
+﻿namespace rbkApiModules.Demo1.Tests.Integration.CodeGeneration;
 
 [TestCaseOrderer(PriorityOrderer.Name, PriorityOrderer.Assembly)]
 public class CodeGenerationTests : SequentialTest, IClassFixture<ServerFixture>

@@ -3,7 +3,7 @@ using rbkApiModules.Identity.Core.DataTransfer.Tenants;
 using rbkApiModules.Identity.Core.DataTransfer.Users;
 using System.Text.Json;
 
-namespace rbkApiModules.Tests.Integration.Identity;
+namespace rbkApiModules.Demo1.Tests.Integration.Identity;
 
 [TestCaseOrderer(PriorityOrderer.Name, PriorityOrderer.Assembly)]
 public class TenantManagementTests : SequentialTest, IClassFixture<ServerFixture>

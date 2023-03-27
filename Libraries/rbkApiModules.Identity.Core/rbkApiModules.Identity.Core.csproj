@@ -57,4 +57,8 @@
 		<ProjectReference Include="..\rbkApiModules.Commons.Core\rbkApiModules.Commons.Core.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Contracts\" />
+	</ItemGroup>
+
 </Project>

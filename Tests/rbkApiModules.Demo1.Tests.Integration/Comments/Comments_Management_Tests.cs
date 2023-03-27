@@ -2,7 +2,7 @@
 using rbkApiModules.Comments.Core;
 using rbkApiModules.Commons.Core;
 
-namespace rbkApiModules.Tests.Integration.Comments;
+namespace rbkApiModules.Demo1.Tests.Integration.Comments;
 
 [TestCaseOrderer(PriorityOrderer.Name, PriorityOrderer.Assembly)]
 public class CommentsManagementTests : SequentialTest, IClassFixture<ServerFixture>

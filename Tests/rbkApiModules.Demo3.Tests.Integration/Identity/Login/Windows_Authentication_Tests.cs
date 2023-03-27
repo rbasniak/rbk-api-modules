@@ -11,31 +11,13 @@ public class WindowsAuthenticationTests : SequentialTest, IClassFixture<ServerFi
     }
 
     /// <summary>
-    /// User cannot login with Windows Authentication when if user doesn't exist
+    /// With Windows Authentication, user can login if all conditions are met
     /// </summary>
-    [FriendlyNamedFact("IT-XXXX"), Priority(10)]
-    public async Task User_Cannot_Login_With_Windows_Authentication_When_User_Does_Not_Exist()
+    [FriendlyNamedFact("IT-264"), Priority(10)]
+    public async Task User_can_login_with_Windows_Authentication_when_all_conditions_are_ok()
     {
         var command = new UserLogin.Request
         {
-            Tenant = "no tenant"
-        };
-
-        // Act
-        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", command, credentials: Environment.UserName);
-
-        // Assert
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Invalid credentials");
-    }
-
-    /// <summary>
-    /// User cann login with Windows Authentication when it's enabled
-    /// </summary>
-    [FriendlyNamedFact("IT-XXXX"), Priority(20)]
-    public async Task User_Can_Login_With_Windows_Authentication_When_User_Exists()
-    {
-        var command = new UserLogin.Request
-        { 
             Tenant = "wayne inc"
         };
 
@@ -44,6 +26,47 @@ public class WindowsAuthenticationTests : SequentialTest, IClassFixture<ServerFi
 
         // Assert
         response.ShouldBeSuccess();
+        response.Data.ShouldNotBeNull("Response from server is null");
+        response.Data.AccessToken.ShouldNotBeNull("Access token is null");
+        response.Data.AccessToken.ShouldNotBeEmpty("Access token is empty");
+        response.Data.RefreshToken.ShouldNotBeNull("Refresh token is null");
+        response.Data.RefreshToken.ShouldNotBeEmpty("Refresh token is empty");
+    }
+
+    /// <summary>
+    /// With Windows Authentication, user cannot login if it doesn't pass a a custom login validator 
+    /// </summary>
+    [FriendlyNamedFact("IT-263"), Priority(20)]
+    public async Task User_cannot_login_with_Windows_Authentication_when_custom_validators_are_not_met()
+    {
+        var command = new UserLogin.Request
+        {
+            Tenant = "wayne inc"
+        };
+
+        // Act
+        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", command, credentials: "tony.stark");
+
+        // Assert
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Invalid credentials");
+    }
+
+    /// <summary>
+    /// With Windows Authentication user cannot login if it passes a custom login validator but doesn't exist in database
+    /// </summary>
+    [FriendlyNamedFact("IT-262"), Priority(30)]
+    public async Task User_cannot_login_with_Windows_Authentication_when_custom_validators_are_met_but_user_does_not_exist()
+    {
+        var command = new UserLogin.Request
+        {
+            Tenant = "wayne inc"
+        };
+
+        // Act
+        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", command, credentials: "lucius.fox");
+
+        // Assert
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Invalid credentials");
     }
 }
 

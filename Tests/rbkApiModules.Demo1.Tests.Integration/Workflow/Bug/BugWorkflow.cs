@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace rbkApiModules.Tests.Integration.Workflow.Bug;
+namespace rbkApiModules.Demo1.Tests.Integration.Workflow.Bug;
 
 public class BugWorkflow
 {

@@ -1,6 +1,6 @@
 ﻿using Demo1.Api;
 
-namespace rbkApiModules.Tests.Integration;
+namespace rbkApiModules.Demo1.Tests.Integration;
 
 public class ServerFixture: BaseServerFixture
 {

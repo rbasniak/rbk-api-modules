@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace rbkApiModules.Demo1.Tests.Integration.Identity;
+namespace rbkApiModules.Demo3.Tests.Integration.Identity;
 
 [TestCaseOrderer(PriorityOrderer.Name, PriorityOrderer.Assembly)]
 public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
@@ -25,7 +25,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
     [InlineData("")]
     public async Task User_cannot_be_created_when_username_is_null_or_empty(string username)
     {
-        
+
         throw new NotImplementedException();
     }
 

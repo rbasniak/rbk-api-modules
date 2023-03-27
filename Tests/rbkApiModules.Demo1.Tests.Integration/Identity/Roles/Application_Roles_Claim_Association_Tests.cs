@@ -1,7 +1,7 @@
 ﻿using rbkApiModules.Identity.Core.DataTransfer.Claims;
 using rbkApiModules.Identity.Core.DataTransfer.Roles;
 
-namespace rbkApiModules.Tests.Integration.Identity;
+namespace rbkApiModules.Demo1.Tests.Integration.Identity;
 
 /// <summary>
 /// In general, the global admin can only manage roles that are application wide,

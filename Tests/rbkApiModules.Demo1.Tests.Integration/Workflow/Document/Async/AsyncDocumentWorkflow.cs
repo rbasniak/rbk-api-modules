@@ -1,6 +1,6 @@
 ﻿using Stateless;
 
-namespace rbkApiModules.Tests.Integration.Workflow.Document.Async;
+namespace rbkApiModules.Demo1.Tests.Integration.Workflow.Document.Async;
 
 public class AsyncDocumentWorkflow
 {

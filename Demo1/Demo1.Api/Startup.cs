@@ -59,8 +59,6 @@ public class Startup
         var temp1 = _configuration.GetConnectionString(writeConnection);
         var temp2 = _configuration.GetConnectionString("DefaultConnection");
 
-        //if (!_isInTestMode)
-        //{
             services.AddDbContext<ReadDatabaseContext>((scope, options) => options
                 .UseNpgsql(
                     _configuration.GetConnectionString(readConnection).Replace("**CONTEXT**", "Database.Read"))
@@ -78,21 +76,6 @@ public class Startup
                 .EnableDetailedErrors()
                 .EnableSensitiveDataLogging()
             );
-        //}
-        //else
-        //{
-        //    services.AddDbContext<ReadDatabaseContext>((scope, options) => options
-        //        .UseSqlite("Data Source=:memory:")
-        //        .EnableDetailedErrors()
-        //        .EnableSensitiveDataLogging()
-        //    );
-
-        //    services.AddDbContext<DatabaseContext>((scope, options) => options
-        //        .UseSqlite("Data Source=:memory:")
-        //        .EnableDetailedErrors()
-        //        .EnableSensitiveDataLogging()
-        //    );
-        //}
 
         services.AddScoped<DbContext, DatabaseContext>();
         services.AddScoped<DbContext, ReadDatabaseContext>();
@@ -156,7 +139,7 @@ public class Startup
         services.AddRbkUIDefinitions(AssembliesForUiDefinitions);
 
         services.AddRbkRelationalComments(options =>
-            options.SetCommentsUserdataService(typeof(DefaultUserdataCommentService))
+            options.SetCommentsUserdataService(typeof(UserdataCommentService))
         );
 
         services.AddRbkRelationalNotifications();

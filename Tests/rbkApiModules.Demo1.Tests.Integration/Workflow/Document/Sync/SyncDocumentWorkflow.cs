@@ -1,6 +1,6 @@
 ﻿using Stateless;
 
-namespace rbkApiModules.Tests.Integration.Workflow.Document.Sync;
+namespace rbkApiModules.Demo1.Tests.Integration.Workflow.Document.Sync;
 
 public class SyncDocumentWorkflow
 {
@@ -265,7 +265,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace rbkApiModules.Tests.Integration.Workflow.Document;
+namespace rbkApiModules.Demo1.Tests.Integration.Workflow.Document;
 
 public class DocumentWorkflow
 {

@@ -1,4 +1,4 @@
-﻿namespace rbkApiModules.Tests.Integration.Identity;
+﻿namespace rbkApiModules.Demo1.Tests.Integration.Identity;
 
 [TestCaseOrderer(PriorityOrderer.Name, PriorityOrderer.Assembly)]
 public class UserPasswordResetTests : SequentialTest, IClassFixture<ServerFixture>

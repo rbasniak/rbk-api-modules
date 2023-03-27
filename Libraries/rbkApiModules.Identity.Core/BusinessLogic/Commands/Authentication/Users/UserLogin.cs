@@ -124,7 +124,7 @@ public class UserLogin
             _authService = authService;
             _jwtFactory = jwtFactory;
             _jwtOptions = jwtOptions.Value;
-            _claimHandlers = claimHandlers;
+            _claimHandlers = claimHandlers.DistinctBy(x => x.GetType());
         }
 
         public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)

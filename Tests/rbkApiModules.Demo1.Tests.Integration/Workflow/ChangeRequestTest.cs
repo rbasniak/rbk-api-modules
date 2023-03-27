@@ -1,4 +1,4 @@
-﻿using rbkApiModules.Tests.Integration.Workflow;
+﻿using rbkApiModules.Demo1.Tests.Integration.Workflow;
 using Stateless;
 using System.Diagnostics;
 

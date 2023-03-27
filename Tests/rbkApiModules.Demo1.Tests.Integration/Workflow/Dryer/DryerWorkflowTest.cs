@@ -1,10 +1,10 @@
-﻿using rbkApiModules.Tests.Integration.Workflow.Document.Sync;
+﻿using rbkApiModules.Demo1.Tests.Integration.Workflow.Document.Sync;
 using Stateless;
 using Stateless.Graph;
-using State = rbkApiModules.Tests.Integration.Workflow.Dryer.DryerWorkflow.State;
-using Trigger = rbkApiModules.Tests.Integration.Workflow.Dryer.DryerWorkflow.Trigger;
+using State = rbkApiModules.Demo1.Tests.Integration.Workflow.Dryer.DryerWorkflow.State;
+using Trigger = rbkApiModules.Demo1.Tests.Integration.Workflow.Dryer.DryerWorkflow.Trigger;
 
-namespace rbkApiModules.Tests.Integration.Workflow.Dryer;
+namespace rbkApiModules.Demo1.Tests.Integration.Workflow.Dryer;
 
 public class DryerWorkflowTests
 {

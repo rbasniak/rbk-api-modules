@@ -1,6 +1,6 @@
 ﻿using rbkApiModules.Faqs.Core;
 
-namespace rbkApiModules.Tests.Integration.Faqs;
+namespace rbkApiModules.Demo1.Tests.Integration.Faqs;
 
 [TestCaseOrderer(PriorityOrderer.Name, PriorityOrderer.Assembly)]
 public class FaqsManagementTests : SequentialTest, IClassFixture<ServerFixture>

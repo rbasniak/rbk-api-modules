@@ -1,4 +1,4 @@
-﻿namespace rbkApiModules.Tests.Integration.UiDefinitions;
+﻿namespace rbkApiModules.Demo1.Tests.Integration.UiDefinitions;
 
 [TestCaseOrderer(PriorityOrderer.Name, PriorityOrderer.Assembly)]
 public class UiDefinitionTests : SequentialTest, IClassFixture<ServerFixture>

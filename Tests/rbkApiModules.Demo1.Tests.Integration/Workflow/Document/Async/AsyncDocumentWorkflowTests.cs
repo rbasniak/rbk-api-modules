@@ -1,8 +1,8 @@
 ﻿using Stateless.Graph;
-using State = rbkApiModules.Tests.Integration.Workflow.Document.Async.AsyncDocumentWorkflow.State;
-using Trigger = rbkApiModules.Tests.Integration.Workflow.Document.Async.AsyncDocumentWorkflow.Trigger;
+using State = rbkApiModules.Demo1.Tests.Integration.Workflow.Document.Async.AsyncDocumentWorkflow.State;
+using Trigger = rbkApiModules.Demo1.Tests.Integration.Workflow.Document.Async.AsyncDocumentWorkflow.Trigger;
 
-namespace rbkApiModules.Tests.Integration.Workflow.Document.Async;
+namespace rbkApiModules.Demo1.Tests.Integration.Workflow.Document.Async;
 
 
 public class AsyncDocumentWorkflowTests
