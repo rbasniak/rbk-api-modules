@@ -42,16 +42,11 @@ public class Startup
 {
     private readonly IConfiguration _configuration;
     private readonly IWebHostEnvironment _environment;
-    private readonly bool _isInTestMode;
 
     public Startup(IConfiguration configuration, IWebHostEnvironment environment)
     {
         _configuration = configuration;
         _environment = environment;
-
-        _isInTestMode = AppDomain.CurrentDomain.GetAssemblies().Any(assembly => assembly.FullName.ToLowerInvariant().StartsWith("xunit"));
-
-        var temp = environment.EnvironmentName;
     }
 
     public IConfiguration Configuration => _configuration;
@@ -60,6 +55,9 @@ public class Startup
     {
         var writeConnection = Environment.OSVersion.Platform == PlatformID.Unix ? "DockerWriteConnection" : "DefaultWriteConnection";
         var readConnection = Environment.OSVersion.Platform == PlatformID.Unix ? "DockerReadConnection" : "DefaultReadConnection";
+
+        var temp1 = _configuration.GetConnectionString(writeConnection);
+        var temp2 = _configuration.GetConnectionString("DefaultConnection");
 
         //if (!_isInTestMode)
         //{
@@ -123,11 +121,11 @@ public class Startup
             //                          .WithExposedHeaders("Content-Disposition");
             //                      }))
             .UseDefaultHsts(_environment.IsDevelopment())
-            .UseDefaultHttpsRedirection(_isInTestMode)
+            .UseDefaultHttpsRedirection()
             .UseDefaultMemoryCache()
             .UseDefaultHttpClient()
             .UseDefaultPipelines()
-            .UseDefaultHttpClient()
+            .UseDefaultSwagger("PoC for the new API libraries")
             .UseDefaultSwagger("PoC for the new API libraries")
             .UseHttpContextAccessor()
             .UseStaticFiles()
@@ -153,10 +151,6 @@ public class Startup
 
         services.AddRbkRelationalAuthentication(options => options
             .UseSymetricEncryptationKey()
-            //.AllowAnonymousAccessToTenants()
-            .UseLoginWithWindowsAuthentication()
-            // .DisableEmailConfirmation()
-            // .DisablePasswordReset()
         );
 
         services.AddRbkUIDefinitions(AssembliesForUiDefinitions);
@@ -208,12 +202,10 @@ public class Startup
 
         app.SetupDatabase<DatabaseContext>(options => options
             .MigrateOnStartup()
-            .ResetOnStartup(_isInTestMode)
         );
 
         app.SetupDatabase<ReadDatabaseContext>(options => options
-            .MigrateOnStartup()
-            .ResetOnStartup()
+            .MigrateOnStartup() 
         );
 
         app.SetupRbkAuthenticationClaims(options => options

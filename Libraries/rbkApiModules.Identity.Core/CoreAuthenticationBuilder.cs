@@ -9,37 +9,40 @@ using System.Text;
 using rbkApiModules.Commons.Core;
 using Microsoft.AspNetCore.Authentication.Negotiate;
 using System.Reflection.PortableExecutable;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using rbkApiModules.Commons.Core.Utilities;
 
 namespace rbkApiModules.Identity.Core;
 
 public static class CoreAuthenticationBuilder
 {
-    public static void AddRbkAuthentication(this IServiceCollection services, RbkAuthenticationOptions options)
+    public static void AddRbkAuthentication(this IServiceCollection services, RbkAuthenticationOptions authenticationOptions)
     {
-        services.AddSingleton<RbkAuthenticationOptions>(options);
+        services.AddSingleton<RbkAuthenticationOptions>(authenticationOptions);
 
         services.AddMvc(o =>
         {
             var actionsToRemove = new List<Tuple<Type, string>>();
 
-            if (options._disablePasswordReset)
+            if (authenticationOptions._disablePasswordReset)
             {
                 actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.RedefinePassword)));
                 actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.SendResetPasswordEmail)));
             }
 
-            if (options._disableEmailConfirmation)
+            if (authenticationOptions._disableEmailConfirmation)
             {
                 actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.ConfirmEmail)));
                 actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.ResendEmailConfirmation)));
             }
 
-            if (options._disableRefreshToken)
+            if (authenticationOptions._disableRefreshToken)
             {
                 actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.RefreshToken)));
             }
             
-            if (options._allowAnonymousTenantAccess)
+            if (authenticationOptions._allowAnonymousTenantAccess)
             {
                 actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthorizationController), nameof(AuthorizationController.GetAllTenantsAuthenticated)));
             }
@@ -48,7 +51,7 @@ public static class CoreAuthenticationBuilder
                 actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthorizationController), nameof(AuthorizationController.GetAllTenantsAnonymous)));
             }
 
-            if (options._loginMode == LoginMode.WindowsAuthentication)
+            if (authenticationOptions._loginMode == LoginMode.WindowsAuthentication)
             {
                 actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.LoginWithCredentials)));
                 actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.ChangePassword)));
@@ -56,24 +59,24 @@ public static class CoreAuthenticationBuilder
 
                 o.Filters.Add(new WindowsAuthenticationFilter());
             } 
-            else if (options._loginMode == LoginMode.Credentials)
+            else if (authenticationOptions._loginMode == LoginMode.Credentials)
             {
                 actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.LoginWithNegotiate)));
             }
 
-            if (!options._allowUserSelfRegistration)
+            if (!authenticationOptions._allowUserSelfRegistration)
             {
                 actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.RegisterAnonymously)));
             }
             else
             {
-                if (options._loginMode == LoginMode.WindowsAuthentication)
+                if (authenticationOptions._loginMode == LoginMode.WindowsAuthentication)
                 {
                     throw new NotSupportedException("User self registration is not allowed with Windows authentication");
                 }
             }
 
-            if (options._allowUserCreationFromWithinTheApplication)
+            if (authenticationOptions._allowUserCreationFromWithinTheApplication)
             {
                 actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.CreateUser)));
             }
@@ -102,7 +105,7 @@ public static class CoreAuthenticationBuilder
         if (!Double.TryParse(accessTokenLifeStr, CultureInfo.InvariantCulture, out var accessTokenLife)) throw new InvalidCastException(nameof(JwtIssuerOptions.AccessTokenLife));
         if (!Double.TryParse(refreshTokenLifeStr, CultureInfo.InvariantCulture, out var refreshTokenLife)) throw new InvalidCastException(nameof(JwtIssuerOptions.RefreshTokenLife));
 
-        if (options._useSymetricEncryptationKey == false && options._useAssymetricEncryptationKey == false)
+        if (authenticationOptions._useSymetricEncryptationKey == false && authenticationOptions._useAssymetricEncryptationKey == false)
         {
             throw new InvalidOperationException("You need pick either the symetric or assymetric key option for authentication");
         }
@@ -144,6 +147,22 @@ public static class CoreAuthenticationBuilder
             configureOptions.ClaimsIssuer = authOptions[nameof(JwtIssuerOptions.Issuer)];
             configureOptions.TokenValidationParameters = tokenValidationParameters;
             configureOptions.SaveToken = true;
+        });
+
+        services.AddAuthorization(options =>
+        {
+            var validSchemas = new List<string> { JwtBearerDefaults.AuthenticationScheme };
+
+            if (TestEnvironmentChecker.IsTestEnvironment && authenticationOptions._loginMode == LoginMode.WindowsAuthentication)
+            {
+                validSchemas.Add("TestScheme");
+            }
+
+            var defaultAuthorizationPolicyBuilder = new AuthorizationPolicyBuilder(validSchemas.ToArray());
+
+            defaultAuthorizationPolicyBuilder = defaultAuthorizationPolicyBuilder.RequireAuthenticatedUser();
+
+            options.DefaultPolicy = defaultAuthorizationPolicyBuilder.Build();
         });
 
         services.RegisterApplicationServices(Assembly.GetAssembly(typeof(IJwtFactory)));
@@ -278,7 +297,7 @@ public static class CoreAuthenticationBuilder
             services.AddScoped(typeof(IUserMetadataService), type);
         }
 
-        services.AddScoped(typeof(IAvatarStorage), options._customAvatarStorageType);
+        services.AddScoped(typeof(IAvatarStorage), authenticationOptions._customAvatarStorageType);
     }
 
     private static Type[] GetClassesImplementingInterface(Type type)

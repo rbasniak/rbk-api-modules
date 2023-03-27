@@ -16,7 +16,7 @@ public class UiDefinitionTests : SequentialTest, IClassFixture<ServerFixture>
     [FriendlyNamedFact("IT-19001"), Priority(1)]
     public async Task GetUiDefinitions()
     {
-        var response = await _serverFixture.GetAsync("api/ui-definitions", token: null);
+        var response = await _serverFixture.GetAsync("api/ui-definitions", credentials: null);
 
         response.ShouldBeSuccess();
 

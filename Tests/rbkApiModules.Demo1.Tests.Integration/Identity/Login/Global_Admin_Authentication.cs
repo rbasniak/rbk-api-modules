@@ -27,7 +27,7 @@ public class GlobalAdminLoginTests : SequentialTest, IClassFixture<ServerFixture
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", request, token: null);
+        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", request, credentials: null);
 
         // Assert
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Invalid credentials");
@@ -47,7 +47,7 @@ public class GlobalAdminLoginTests : SequentialTest, IClassFixture<ServerFixture
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", request, token: null);
+        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", request, credentials: null);
 
         // Assert
         response.ShouldBeSuccess();
@@ -101,7 +101,7 @@ public class GlobalAdminLoginTests : SequentialTest, IClassFixture<ServerFixture
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", request, token: null);
+        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", request, credentials: null);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Invalid credentials");

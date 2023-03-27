@@ -54,7 +54,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", request, token: null);
+        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", request, credentials: null);
 
         // Assert
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Invalid credentials");
@@ -75,7 +75,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", request, token: null);
+        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", request, credentials: null);
 
         // Assert
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Invalid credentials");
@@ -98,7 +98,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", request, token: null);
+        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", request, credentials: null);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Invalid credentials");
@@ -125,7 +125,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
         };
 
         // Act
-        var response1 = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", request, token: null);
+        var response1 = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", request, credentials: null);
 
         // Assert the response
         response1.ShouldBeSuccess();
@@ -147,7 +147,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
         Thread.Sleep(1500); // Needed so the access token data can actually change between the two calls
 
         // Act again
-        var response2 = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", request, token: null);
+        var response2 = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", request, credentials: null);
 
         // Assert the response
         response2.ShouldBeSuccess();
@@ -182,7 +182,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", request, token: null);
+        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", request, credentials: null);
 
         // Assert
         response.ShouldBeSuccess();
@@ -226,7 +226,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", request, token: null);
+        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", request, credentials: null);
 
         // Assert
         response.ShouldBeSuccess();
@@ -270,7 +270,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", request, token: null);
+        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", request, credentials: null);
 
         // Assert
         response.ShouldBeSuccess();
@@ -314,7 +314,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", request, token: null);
+        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", request, credentials: null);
 
         // Assert
         response.ShouldBeSuccess();
@@ -357,7 +357,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/refresh-token", request, token: null);
+        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/refresh-token", request, credentials: null);
 
         // Assert
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'Refresh token' cannot be empty");
@@ -376,7 +376,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/refresh-token", request, token: null);
+        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/refresh-token", request, credentials: null);
 
         // Assert
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Refresh token does not exist anymore");
@@ -395,7 +395,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
             Password = "abc",
             Tenant = "un-bs"
         };
-        var authDataResponse = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", loginRequest, token: null);
+        var authDataResponse = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", loginRequest, credentials: null);
 
         authDataResponse.ShouldBeSuccess();
 
@@ -409,7 +409,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/refresh-token", request, token: null);
+        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/refresh-token", request, credentials: null);
 
         // Assert
         response.ShouldBeSuccess();
@@ -443,7 +443,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
             Password = "123",
             Tenant = "buzios"
         };
-        var loginResponse = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", loginRequest, token: null);
+        var loginResponse = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", loginRequest, credentials: null);
         loginResponse.ShouldBeSuccess();
 
         Thread.Sleep(7500); // Needed so the refresh token expires (6s, setup in the appsettings.Testing.json)
@@ -455,7 +455,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
         {
             RefreshToken = user.RefreshToken
         };
-        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/refresh-token", request, token: null);
+        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/refresh-token", request, credentials: null);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Refresh token expired");

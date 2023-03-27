@@ -156,11 +156,6 @@ namespace Demo3.Database.Migrations
                     b.Property<string>("Metadata")
                         .HasColumnType("text");
 
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasMaxLength(4096)
-                        .HasColumnType("character varying(4096)");
-
                     b.Property<string>("RefreshToken")
                         .HasMaxLength(128)
                         .HasColumnType("character varying(128)");
@@ -248,28 +243,6 @@ namespace Demo3.Database.Migrations
                     b.HasOne("rbkApiModules.Identity.Core.Tenant", null)
                         .WithMany()
                         .HasForeignKey("TenantId");
-
-                    b.OwnsOne("rbkApiModules.Identity.Core.PasswordRedefineCode", "PasswordRedefineCode", b1 =>
-                        {
-                            b1.Property<Guid>("UserId")
-                                .HasColumnType("uuid");
-
-                            b1.Property<DateTime?>("CreationDate")
-                                .HasColumnType("timestamp with time zone");
-
-                            b1.Property<string>("Hash")
-                                .HasMaxLength(1024)
-                                .HasColumnType("character varying(1024)");
-
-                            b1.HasKey("UserId");
-
-                            b1.ToTable("Users");
-
-                            b1.WithOwner()
-                                .HasForeignKey("UserId");
-                        });
-
-                    b.Navigation("PasswordRedefineCode");
                 });
 
             modelBuilder.Entity("rbkApiModules.Identity.Core.UserToClaim", b =>

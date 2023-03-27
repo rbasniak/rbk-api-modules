@@ -66,7 +66,7 @@ public class Startup
             //                          .WithExposedHeaders("Content-Disposition");
             //                      }))
             .UseDefaultHsts(_environment.IsDevelopment())
-            .UseDefaultHttpsRedirection(_isInTestMode)
+            .UseDefaultHttpsRedirection()
             .UseDefaultMemoryCache()
             .UseDefaultHttpClient()
             .UseDefaultPipelines()

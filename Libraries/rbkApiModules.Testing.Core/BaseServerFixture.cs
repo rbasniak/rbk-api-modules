@@ -9,6 +9,12 @@ using rbkApiModules.Identity.Core;
 using rbkApiModules.Commons.Relational.CQRS;
 using rbkApiModules.Commons.Relational;
 using Serilog;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using System.Security.Claims;
+using System.Text.Encodings.Web;
+using Claim = System.Security.Claims.Claim;
 
 namespace rbkApiModules.Testing.Core;
 
@@ -25,15 +31,43 @@ public class BaseServerFixture : IDisposable
 
         AuthenticationMode = authenticationMode;
 
-        Server = new TestServer(new WebHostBuilder()
-            .UseContentRoot(_contentFolder)
-            .UseConfiguration(new ConfigurationBuilder()
-                .SetBasePath(projectDir)
-                .AddJsonFile("appsettings.Testing.json")
-                .Build()
-            )
-            .UseStartup(startupClassType)
-            .UseSerilog());
+        if (authenticationMode == AuthenticationMode.Credentials)
+        {
+#pragma warning disable CS0618 // Type or member is obsolete
+            Server = new TestServer(new WebHostBuilder()
+                .UseContentRoot(_contentFolder)
+                .UseConfiguration(new ConfigurationBuilder()
+                    .SetBasePath(projectDir)
+                    .AddJsonFile("appsettings.Testing.json")
+                    .Build()
+                )
+                .UseStartup(startupClassType)
+                .UseSerilog());
+#pragma warning restore CS0618 // Type or member is obsolete
+        }
+        else
+        {
+#pragma warning disable CS0618 // Type or member is obsolete
+            Server = new TestServer(new WebHostBuilder()
+                .UseContentRoot(_contentFolder)
+                .UseConfiguration(new ConfigurationBuilder()
+                    .SetBasePath(projectDir)
+                    .AddJsonFile("appsettings.Testing.json")
+                    .Build()
+                )
+                .UseStartup(startupClassType)
+                .ConfigureTestServices(services =>
+                {
+                    services.Configure<TestAuthHandlerOptions>(options => { });
+
+                    services.AddAuthentication(TestAuthHandler.AuthenticationScheme)
+                        .AddScheme<TestAuthHandlerOptions, TestAuthHandler>(TestAuthHandler.AuthenticationScheme, options => { });
+                })
+                .UseSerilog());
+#pragma warning restore CS0618 // Type or member is obsolete
+        }
+
+        Server.BaseAddress = new Uri("https://localhost/");
     }
 
     public TestServer Server { get; private set; }
@@ -101,4 +135,3 @@ public class BaseServerFixture : IDisposable
         Server.Dispose();
     }
 }
-

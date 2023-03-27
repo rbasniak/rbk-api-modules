@@ -80,7 +80,7 @@ public class Startup
             .UseDefaultCompression()
             .UseDefaultCors()
             .UseDefaultHsts(_environment.IsDevelopment())
-            .UseDefaultHttpsRedirection(_isInTestMode)
+            .UseDefaultHttpsRedirection()
             .UseDefaultMemoryCache()
             .UseDefaultPipelines()
             .SuppressPipeline(typeof(TransactionBehavior<,>))

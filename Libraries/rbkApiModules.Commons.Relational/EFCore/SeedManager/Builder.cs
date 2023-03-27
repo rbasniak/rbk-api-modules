@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using rbkApiModules.Commons.Core.Utilities;
 
 namespace rbkApiModules.Commons.Relational;
 
@@ -18,7 +19,7 @@ public static class SeedBuilder
         {
             var context = scope.ServiceProvider.GetService<T>();
 
-            if (options._resetOnStartup)
+            if (options._resetOnStartup || TestEnvironmentChecker.IsTestEnvironment)
             {
                 context.Database.EnsureDeleted();
                 context.Database.Migrate();

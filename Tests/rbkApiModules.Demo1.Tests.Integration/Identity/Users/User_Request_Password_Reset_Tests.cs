@@ -36,7 +36,7 @@ public class UserRequestPasswordResetTests : SequentialTest, IClassFixture<Serve
         };
 
         // Act
-        var response = await _serverFixture.PostAsync($"api/authentication/reset-password", request, token: null);
+        var response = await _serverFixture.PostAsync($"api/authentication/reset-password", request, credentials: null);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "E-mail not confirmed");
@@ -62,7 +62,7 @@ public class UserRequestPasswordResetTests : SequentialTest, IClassFixture<Serve
         };
 
         // Act
-        var response = await _serverFixture.PostAsync($"api/authentication/reset-password", request, token: null);
+        var response = await _serverFixture.PostAsync($"api/authentication/reset-password", request, credentials: null);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'Tenant' cannot be empty");
@@ -83,7 +83,7 @@ public class UserRequestPasswordResetTests : SequentialTest, IClassFixture<Serve
         };
 
         // Act
-        var response = await _serverFixture.PostAsync($"api/authentication/reset-password", request, token: null);
+        var response = await _serverFixture.PostAsync($"api/authentication/reset-password", request, credentials: null);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "E-mail not found");
@@ -107,7 +107,7 @@ public class UserRequestPasswordResetTests : SequentialTest, IClassFixture<Serve
         };
 
         // Act
-        var response = await _serverFixture.PostAsync($"api/authentication/reset-password", request, token: null);
+        var response = await _serverFixture.PostAsync($"api/authentication/reset-password", request, credentials: null);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "E-mail not found");
@@ -133,7 +133,7 @@ public class UserRequestPasswordResetTests : SequentialTest, IClassFixture<Serve
         };
 
         // Act
-        var response = await _serverFixture.PostAsync($"api/authentication/reset-password", request, token: null);
+        var response = await _serverFixture.PostAsync($"api/authentication/reset-password", request, credentials: null);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'E-mail' cannot be empty");
@@ -157,7 +157,7 @@ public class UserRequestPasswordResetTests : SequentialTest, IClassFixture<Serve
         };
 
         // Act
-        var response = await _serverFixture.PostAsync($"api/authentication/reset-password", request, token: null);
+        var response = await _serverFixture.PostAsync($"api/authentication/reset-password", request, credentials: null);
 
         // Assert the response
         response.ShouldBeSuccess();

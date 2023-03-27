@@ -29,7 +29,7 @@ public class UserPasswordResetTests : SequentialTest, IClassFixture<ServerFixtur
         };
 
         // Act
-        var response = await _serverFixture.PostAsync($"api/authentication/redefine-password", request, token: null);
+        var response = await _serverFixture.PostAsync($"api/authentication/redefine-password", request, credentials: null);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'Password reset code' cannot be empty");
@@ -50,7 +50,7 @@ public class UserPasswordResetTests : SequentialTest, IClassFixture<ServerFixtur
         };
 
         // Act
-        var response = await _serverFixture.PostAsync($"api/authentication/redefine-password", request, token: null);
+        var response = await _serverFixture.PostAsync($"api/authentication/redefine-password", request, credentials: null);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The password reset is code expired or was already used");
@@ -76,7 +76,7 @@ public class UserPasswordResetTests : SequentialTest, IClassFixture<ServerFixtur
             Email = user.Email,
             Tenant = user.TenantId.ToLower()
         };
-        var resetResponse = await _serverFixture.PostAsync($"api/authentication/reset-password", resetRequest, token: null);
+        var resetResponse = await _serverFixture.PostAsync($"api/authentication/reset-password", resetRequest, credentials: null);
         resetResponse.ShouldBeSuccess();
         
         user = GetUser();
@@ -90,7 +90,7 @@ public class UserPasswordResetTests : SequentialTest, IClassFixture<ServerFixtur
         };
 
         // Act
-        var response = await _serverFixture.PostAsync($"api/authentication/redefine-password", request, token: null);
+        var response = await _serverFixture.PostAsync($"api/authentication/redefine-password", request, credentials: null);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'Password' cannot be empty");
@@ -115,7 +115,7 @@ public class UserPasswordResetTests : SequentialTest, IClassFixture<ServerFixtur
         };
 
         // Act
-        var response = await _serverFixture.PostAsync($"api/authentication/login", request, token: null);
+        var response = await _serverFixture.PostAsync($"api/authentication/login", request, credentials: null);
 
         // Assert the response
         response.ShouldBeSuccess();
@@ -145,7 +145,7 @@ public class UserPasswordResetTests : SequentialTest, IClassFixture<ServerFixtur
             Email = user.Email,
             Tenant = user.TenantId.ToLower()
         };
-        var resetResponse = await _serverFixture.PostAsync($"api/authentication/reset-password", resetRequest, token: null);
+        var resetResponse = await _serverFixture.PostAsync($"api/authentication/reset-password", resetRequest, credentials: null);
         resetResponse.ShouldBeSuccess();
 
         user = GetUser();
@@ -161,7 +161,7 @@ public class UserPasswordResetTests : SequentialTest, IClassFixture<ServerFixtur
         _serverFixture.ClearMailsFolder();
 
         // Act
-        var response = await _serverFixture.PostAsync($"api/authentication/redefine-password", request, token: null);
+        var response = await _serverFixture.PostAsync($"api/authentication/redefine-password", request, credentials: null);
 
         // Assert the response
         response.ShouldBeSuccess();
@@ -193,7 +193,7 @@ public class UserPasswordResetTests : SequentialTest, IClassFixture<ServerFixtur
         };
 
         // Act
-        var response = await _serverFixture.PostAsync($"api/authentication/login", request, token: null);
+        var response = await _serverFixture.PostAsync($"api/authentication/login", request, credentials: null);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Invalid credentials");
@@ -215,7 +215,7 @@ public class UserPasswordResetTests : SequentialTest, IClassFixture<ServerFixtur
         };
 
         // Act
-        var response = await _serverFixture.PostAsync($"api/authentication/login", request, token: null);
+        var response = await _serverFixture.PostAsync($"api/authentication/login", request, credentials: null);
 
         // Assert the response
         response.ShouldBeSuccess();

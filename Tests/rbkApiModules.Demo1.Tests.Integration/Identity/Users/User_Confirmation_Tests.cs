@@ -30,7 +30,7 @@ public class UserConfirmationTests : SequentialTest, IClassFixture<ServerFixture
         user.ActivationCode.ShouldNotBe("");
 
         // Act
-        var response = await _serverFixture.GetAsync($"api/authentication/confirm-email?email={user.Email}&code=wrong-code&tenant={user.TenantId}", token: null);
+        var response = await _serverFixture.GetAsync($"api/authentication/confirm-email?email={user.Email}&code=wrong-code&tenant={user.TenantId}", credentials: null);
 
         // Assert the response
         response.ShouldRedirect("/registration/fail");
@@ -54,7 +54,7 @@ public class UserConfirmationTests : SequentialTest, IClassFixture<ServerFixture
         user.ActivationCode.ShouldNotBe("");
 
         // Act
-        var response = await _serverFixture.GetAsync($"api/authentication/confirm-email?email={user.Email}&tenant={user.TenantId}", token: null);
+        var response = await _serverFixture.GetAsync($"api/authentication/confirm-email?email={user.Email}&tenant={user.TenantId}", credentials: null);
 
         // Assert the response
         response.ShouldRedirect("/registration/fail");
@@ -78,7 +78,7 @@ public class UserConfirmationTests : SequentialTest, IClassFixture<ServerFixture
         user.ActivationCode.ShouldNotBe("");
 
         // Act
-        var response = await _serverFixture.GetAsync($"api/authentication/confirm-email?code={user.ActivationCode}&tenant={user.TenantId}", token: null);
+        var response = await _serverFixture.GetAsync($"api/authentication/confirm-email?code={user.ActivationCode}&tenant={user.TenantId}", credentials: null);
 
         // Assert the response
         response.ShouldRedirect("/registration/fail");
@@ -102,7 +102,7 @@ public class UserConfirmationTests : SequentialTest, IClassFixture<ServerFixture
         user.ActivationCode.ShouldNotBe("");
 
         // Act
-        var response = await _serverFixture.GetAsync($"api/authentication/confirm-email?email={user.Email}&code={user.ActivationCode}", token: null);
+        var response = await _serverFixture.GetAsync($"api/authentication/confirm-email?email={user.Email}&code={user.ActivationCode}", credentials: null);
 
         // Assert the response
         response.ShouldRedirect("/registration/fail");
@@ -126,7 +126,7 @@ public class UserConfirmationTests : SequentialTest, IClassFixture<ServerFixture
         user.ActivationCode.ShouldNotBe("");
 
         // Act
-        var response = await _serverFixture.GetAsync($"api/authentication/confirm-email?email=wrong_email@company.com&code={user.ActivationCode}&tenant={user.TenantId}", token: null);
+        var response = await _serverFixture.GetAsync($"api/authentication/confirm-email?email=wrong_email@company.com&code={user.ActivationCode}&tenant={user.TenantId}", credentials: null);
 
         // Assert the response
         response.ShouldRedirect("/registration/fail");
@@ -182,7 +182,7 @@ public class UserConfirmationTests : SequentialTest, IClassFixture<ServerFixture
         user.ActivationCode.ShouldNotBe(null);
         user.ActivationCode.ShouldNotBe("");
 
-        var response = await _serverFixture.GetAsync($"api/authentication/confirm-email?email={user.Email}&code={user.ActivationCode}&tenant=buzios", token: null);
+        var response = await _serverFixture.GetAsync($"api/authentication/confirm-email?email={user.Email}&code={user.ActivationCode}&tenant=buzios", credentials: null);
 
         // Assert the response
         response.ShouldRedirect("/registration/success");

@@ -24,7 +24,7 @@ public class CustomLoginPoliciesTests : SequentialTest, IClassFixture<ServerFixt
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", request, token: null);
+        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", request, credentials: null);
 
         // Assert
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "You tried to login with the forbidden username");
@@ -45,7 +45,7 @@ public class CustomLoginPoliciesTests : SequentialTest, IClassFixture<ServerFixt
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", request, token: null);
+        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", request, credentials: null);
 
         // Assert
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "You tried to login with the forbidden tenant");

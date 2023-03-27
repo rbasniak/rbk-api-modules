@@ -53,13 +53,30 @@ public class UserLogin
                                     .WithMessage(localization.GetValue(AuthenticationMessages.Validations.UserNotYetConfirmed));
 
                             RuleFor(x => x.Password)
-                                .IsRequired(localization)
+                                .Must(IsRequiredWhenUsingCredentials)
+                                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.PasswordIsRequired))
                                 .MustAsync(MatchPassword)
                                     .WithMessage(localization.GetValue(AuthenticationMessages.Validations.InvalidCredentials))
                                 .WithName(localization.GetValue(AuthenticationMessages.Fields.Password));
                         });
                 });
-        } 
+        }
+
+        private bool IsRequiredWhenUsingCredentials(Request request, string password)
+        {
+            if (request.AuthenticationMode == AuthenticationMode.Windows)
+            {
+                return true;
+            }   
+            else if (request.AuthenticationMode == AuthenticationMode.Credentials)
+            {
+                return !String.IsNullOrEmpty(password);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+        }
 
         public async Task<bool> ExistOnDatabase(Request request, string username, CancellationToken cancellation)
         {
@@ -82,11 +99,15 @@ public class UserLogin
             {
                 return true;
             }
-            else
+            else if (request.AuthenticationMode == AuthenticationMode.Credentials)
             {
                 var user = await _userService.FindUserAsync(request.Username, request.Tenant, cancellation);
 
                 return PasswordHasher.VerifyPassword(password, user.Password);
+            }
+            else
+            {
+                throw new NotImplementedException();
             }
         }
     }

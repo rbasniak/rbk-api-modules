@@ -566,7 +566,10 @@ public class ClaimManagementIndependentTests : SequentialTest, IClassFixture<Ser
         var response = await _serverFixture.GetAsync<ClaimDetails[]>("api/authorization/claims", await _serverFixture.GetAccessTokenAsync("admin1", "123", "buzios"));
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.OK);
+        response.ShouldBeSuccess();
+        response.Data.ShouldNotBeNull();
+        response.Data.Length.ShouldBeGreaterThan(0);
+        response.Data[0].GetType().ShouldBe(typeof(ClaimDetails));
     }
 
     /// <summary>
