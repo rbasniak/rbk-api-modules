@@ -89,7 +89,6 @@ public class AuthenticationController : BaseController
 
     [AllowAnonymous]
     [HttpPost("resend-confirmation")]
-    [RbkAuthorize(AuthenticationClaims.MANAGE_USERS)]
     public async Task<ActionResult> ResendEmailConfirmation(ResendEmailConfirmation.Request data, CancellationToken cancellation)
     {
         return HttpResponse(await Mediator.Send(data, cancellation));

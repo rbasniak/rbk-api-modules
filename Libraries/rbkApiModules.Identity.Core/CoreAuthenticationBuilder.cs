@@ -56,12 +56,22 @@ public static class CoreAuthenticationBuilder
                 actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.LoginWithCredentials)));
                 actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.ChangePassword)));
                 actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.ConfirmEmail)));
+                actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.RedefinePassword)));
+                actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.SendResetPasswordEmail)));
+                actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.ResendEmailConfirmation)));
+                actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.RegisterAnonymously)));
 
                 o.Filters.Add(new WindowsAuthenticationFilter());
             } 
             else if (authenticationOptions._loginMode == LoginMode.Credentials)
             {
                 actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.LoginWithNegotiate)));
+                actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.SwitchDomain)));
+                actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.SwitchDomain)));
+            }
+            else
+            {
+                throw new NotImplementedException();
             }
 
             if (!authenticationOptions._allowUserSelfRegistration)
@@ -74,6 +84,11 @@ public static class CoreAuthenticationBuilder
                 {
                     throw new NotSupportedException("User self registration is not allowed with Windows authentication");
                 }
+            }
+
+            if (!authenticationOptions._allowUserCreationByAdmin)
+            {
+                actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.CreateUser)));
             }
 
             if (authenticationOptions._allowUserCreationFromWithinTheApplication)

@@ -120,7 +120,6 @@ public class Startup
 
         app.SetupDatabase<DatabaseContext>(options => options
             .MigrateOnStartup()
-            .ResetOnStartup(_isInTestMode)
         );
 
         app.SetupRbkAuthenticationClaims();

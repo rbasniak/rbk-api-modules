@@ -19,7 +19,14 @@ public class EndpointsAvailabilityTests : SequentialTest, IClassFixture<ServerFi
     [FriendlyNamedFact("IT-290"), Priority(10)]
     public async Task Switch_domain_endpoint_should_not_be_available()
     {
-        throw new NotImplementedException();
+        // Prepare
+        var request = new SwitchDomain.Request();
+
+        // Act
+        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/switch-domain", request, credentials: null);
+
+        // Assert
+        response.ShouldHaveErrors(HttpStatusCode.NotFound);
     }
 
     /// <summary>
@@ -29,6 +36,13 @@ public class EndpointsAvailabilityTests : SequentialTest, IClassFixture<ServerFi
     [FriendlyNamedFact("IT-291"), Priority(20)]
     public async Task Create_user_endpoint_should_not_be_available()
     {
-        throw new NotImplementedException();
+        // Prepare
+        var request = new CreateUser.Request();
+
+        // Act
+        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/create-user", request, credentials: null);
+
+        // Assert
+        response.ShouldHaveErrors(HttpStatusCode.NotFound);
     }
 }
