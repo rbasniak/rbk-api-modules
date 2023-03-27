@@ -22,6 +22,7 @@ using Serilog;
 using rbkApiModules.Commons.Core.Pipelines;
 using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Authentication.Negotiate;
+using rbkApiModules.Commons.Core.Utilities;
 
 [assembly: InternalsVisibleTo("rbkApiModules.Commons.Relational")]
 
@@ -150,12 +151,9 @@ public class RbkApiCoreOptions
     internal bool _useDefaultHttpsRedirection = false;
     internal Action<HttpsRedirectionOptions> _userHttpsRedirectionOptions = null;
 
-    public RbkApiCoreOptions UseDefaultHttpsRedirection(bool isInTestingMode = false)
+    public RbkApiCoreOptions UseDefaultHttpsRedirection()
     {
-        if (!isInTestingMode)
-        {
-            _useDefaultHttpsRedirection = true;
-        }
+        _useDefaultHttpsRedirection = true;
 
         return this;
     }

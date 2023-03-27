@@ -2,12 +2,23 @@
 using System.Net;
 using System.Text;
 using System.Text.Json;
+using System.Net.Http;
 
 namespace rbkApiModules.Testing.Core;
 
 public static class HttpCallsExtensions
 {
-    public async static Task<HttpResponse<TResult>> PostAsync<TResult>(this BaseServerFixture fixture, string url, object body, string token, Dictionary<string, string> additionalHeaders = null)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TResult"></typeparam>
+    /// <param name="fixture"></param>
+    /// <param name="url"></param>
+    /// <param name="body"></param>
+    /// <param name="credentials">Pass the JWT token if not using Windows Authentication, otherwise, simply pass the username</param>
+    /// <param name="additionalHeaders"></param>
+    /// <returns></returns>
+    public async static Task<HttpResponse<TResult>> PostAsync<TResult>(this BaseServerFixture fixture, string url, object body, string credentials, Dictionary<string, string> additionalHeaders = null)
         where TResult : class
     {
         var result = new HttpResponse<TResult>();
@@ -16,9 +27,9 @@ public static class HttpCallsExtensions
         {
             if (fixture.AuthenticationMode == Identity.Core.AuthenticationMode.Credentials)
             {
-                if (token != null)
+                if (credentials != null)
                 {
-                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", credentials);
                 }
 
                 if (additionalHeaders != null)
@@ -31,7 +42,8 @@ public static class HttpCallsExtensions
             }
             else
             {
-                httpClient.DefaultRequestHeaders.Add("Authorization", "NTLM " + Convert.ToBase64String(Encoding.UTF8.GetBytes($"{Environment.UserDomainName}\\{Environment.UserName}:rbBrun@2012"))); // {Environment.GetEnvironmentVariable("USER_PASSWORD")}
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(TestAuthHandler.AuthenticationScheme);
+                httpClient.DefaultRequestHeaders.Add(TestAuthHandler.UserId, credentials);
             }
 
             var response = await httpClient.PostAsync(url, new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json"));
@@ -55,16 +67,24 @@ public static class HttpCallsExtensions
             return result;
         }
     }
-    
-    public async static Task<HttpResponse> PostAsync(this BaseServerFixture fixture, string url, object body, string token) 
+
+    public async static Task<HttpResponse> PostAsync(this BaseServerFixture fixture, string url, object body, string credentials)
     {
         var result = new HttpResponse();
 
         using (var httpClient = fixture.Server.CreateClient())
         {
-            if (token != null)
+            if (fixture.AuthenticationMode == Identity.Core.AuthenticationMode.Credentials)
             {
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+                if (credentials != null)
+                {
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", credentials);
+                }
+            }
+            else
+            {
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(TestAuthHandler.AuthenticationScheme);
+                httpClient.DefaultRequestHeaders.Add(TestAuthHandler.UserId, credentials);
             }
 
             var response = await httpClient.PostAsync(url, new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json"));
@@ -96,16 +116,24 @@ public static class HttpCallsExtensions
         return fixture.PostAsync<TResult>(url, body, token);
     }
 
-    public async static Task<HttpResponse<TResult>> PutAsync<TResult>(this BaseServerFixture fixture, string url, object body, string token)
+    public async static Task<HttpResponse<TResult>> PutAsync<TResult>(this BaseServerFixture fixture, string url, object body, string credentials)
         where TResult : class
     {
         var result = new HttpResponse<TResult>();
 
         using (var httpClient = fixture.Server.CreateClient())
         {
-            if (token != null)
+            if (fixture.AuthenticationMode == Identity.Core.AuthenticationMode.Credentials)
             {
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+                if (credentials != null)
+                {
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", credentials);
+                }
+            }
+            else
+            {
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(TestAuthHandler.AuthenticationScheme);
+                httpClient.DefaultRequestHeaders.Add(TestAuthHandler.UserId, credentials);
             }
 
             var response = await httpClient.PutAsync(url, new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json"));
@@ -138,16 +166,24 @@ public static class HttpCallsExtensions
         return fixture.PutAsync<TResult>(url, body, token);
     }
 
-    public async static Task<HttpResponse<TResult>> GetAsync<TResult>(this BaseServerFixture fixture, string url, string token)
+    public async static Task<HttpResponse<TResult>> GetAsync<TResult>(this BaseServerFixture fixture, string url, string credentials)
         where TResult : class
     {
         var result = new HttpResponse<TResult>();
 
         using (var httpClient = fixture.Server.CreateClient())
         {
-            if (token != null)
+            if (fixture.AuthenticationMode == Identity.Core.AuthenticationMode.Credentials)
             {
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+                if (credentials != null)
+                {
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", credentials);
+                }
+            }
+            else
+            {
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(TestAuthHandler.AuthenticationScheme);
+                httpClient.DefaultRequestHeaders.Add(TestAuthHandler.UserId, credentials);
             }
 
             var response = await httpClient.GetAsync(url);
@@ -176,15 +212,23 @@ public static class HttpCallsExtensions
         }
     }
 
-    public async static Task<HttpResponse> GetAsync(this BaseServerFixture fixture, string url, string token) 
+    public async static Task<HttpResponse> GetAsync(this BaseServerFixture fixture, string url, string credentials)
     {
         var result = new HttpResponse();
 
         using (var httpClient = fixture.Server.CreateClient())
         {
-            if (token != null)
+            if (fixture.AuthenticationMode == Identity.Core.AuthenticationMode.Credentials)
             {
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+                if (credentials != null)
+                {
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", credentials);
+                }
+            }
+            else
+            {
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(TestAuthHandler.AuthenticationScheme);
+                httpClient.DefaultRequestHeaders.Add(TestAuthHandler.UserId, credentials);
             }
 
             var response = await httpClient.GetAsync(url);
@@ -217,15 +261,23 @@ public static class HttpCallsExtensions
         return fixture.GetAsync<TResult>(url, token);
     }
 
-    public async static Task<HttpResponse> DeleteAsync(this BaseServerFixture fixture, string url, string token)
+    public async static Task<HttpResponse> DeleteAsync(this BaseServerFixture fixture, string url, string credentials)
     {
         var result = new HttpResponse();
 
         using (var httpClient = fixture.Server.CreateClient())
         {
-            if (token != null)
+            if (fixture.AuthenticationMode == Identity.Core.AuthenticationMode.Credentials)
             {
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+                if (credentials != null)
+                {
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", credentials);
+                }
+            }
+            else
+            {
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(TestAuthHandler.AuthenticationScheme);
+                httpClient.DefaultRequestHeaders.Add(TestAuthHandler.UserId, credentials);
             }
 
             var response = await httpClient.DeleteAsync(url);
