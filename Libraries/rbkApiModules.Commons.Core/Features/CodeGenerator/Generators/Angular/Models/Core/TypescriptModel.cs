@@ -39,9 +39,10 @@ public class TypescriptModel
 
         foreach (var property in type.Type.GetProperties())
         {
-            var temp = property.GetAttribute<JsonIgnoreAttribute>();
-
-            Properties.Add(new TypescriptProperty(property.Name, new TypeInfo(property.PropertyType), false));
+            if (!property.HasAttribute<JsonIgnoreAttribute>())
+            {
+                Properties.Add(new TypescriptProperty(property.Name, new TypeInfo(property.PropertyType), false));
+            }
         }
     }
 
