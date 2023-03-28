@@ -19,14 +19,6 @@
 			<PackagePath>\</PackagePath>
 		</None>
 	</ItemGroup>
-	<ItemGroup>
-		<Compile Remove="Features\Analytics\**" />
-		<Compile Remove="Features\Diagnostics\**" />
-		<EmbeddedResource Remove="Features\Analytics\**" />
-		<EmbeddedResource Remove="Features\Diagnostics\**" />
-		<None Remove="Features\Analytics\**" />
-		<None Remove="Features\Diagnostics\**" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
@@ -52,5 +44,9 @@
 	<ItemGroup>
 		<Folder Include="Features\UiDefinitions\Commands\" />
 		<Folder Include="Features\UiDefinitions\Utilities\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="Localization\localized-strings_pt-br.localization" />
 	</ItemGroup>
 </Project>

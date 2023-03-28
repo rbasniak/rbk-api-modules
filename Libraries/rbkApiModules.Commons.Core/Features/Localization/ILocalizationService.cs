@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.OpenApi.Extensions;
 using rbkApiModules.Commons.Core.Utilities.Localization;
+using System;
 using System.ComponentModel;
 using System.Reflection;
 using System.Text;
+using System.Text.Json;
 
 namespace rbkApiModules.Commons.Core.Localization;
 
@@ -12,13 +14,13 @@ public interface ILocalizationService
 {
     string GetValue(Enum value);
 
-    string GetLanguageTemplate();
+    string GetLanguageTemplate(string localization = null);
 }
 
 public class LocalizationService : ILocalizationService
 {
-    private static Dictionary<string, Dictionary<string, string>> _languagesCache = new();
-    private static Dictionary<string, string> _defaultValues = new();
+    private static SortedDictionary<string, SortedDictionary<string, string>> _languagesCache = new();
+    private static SortedDictionary<string, string> _defaultValues = new();
 
     private readonly string _systemLanguage = "en-us";
     private readonly string _currentLanguage = "en-us";
@@ -28,7 +30,7 @@ public class LocalizationService : ILocalizationService
     {
         if (coreOptions != null)
         {
-            _systemLanguage = coreOptions._defaultLocalization;
+            _systemLanguage = coreOptions._defaultLocalization.ToLower();
         }
 
         if (httpContextAccessor != null && httpContextAccessor.HttpContext != null)
@@ -37,7 +39,11 @@ public class LocalizationService : ILocalizationService
 
             if (languageHeaderValues.Count() > 0)
             {
-                _currentLanguage = languageHeaderValues[0];
+                _currentLanguage = languageHeaderValues[0].ToLower();
+            }
+            else
+            {
+                _currentLanguage = _systemLanguage;
             }
         }
         else
@@ -45,118 +51,143 @@ public class LocalizationService : ILocalizationService
             _currentLanguage = _systemLanguage;
         }
 
-        if (_languagesCache.ContainsKey(_currentLanguage))
-        {
-
-        }
-
         if (_defaultValues.Count == 0)
         {
-            _defaultValues = EnumIdentifierFinder.FindEnumIdsWithDescriptions();
+            LoadDefaultValues();
+
+            LoadLocalizedValues();
         }
-    } 
+    }
+
+    private void LoadLocalizedValues()
+    {
+        _languagesCache.Add("en-us", _defaultValues);
+
+        var resources = Assembly.GetAssembly(typeof(ILocalizationService)).GetManifestResourceNames().Where(x => x.EndsWith(".localization")).ToList();
+
+        foreach (var resource in resources)
+        {
+            var data = new StreamReader(Assembly.GetAssembly(typeof(ILocalizationService)).GetManifestResourceStream(resource)).ReadToEnd();
+
+            var newDictionary = JsonSerializer.Deserialize<SortedDictionary<string, string>>(data);
+
+            var localization = resource.ToLower().Replace(".localization", "").Split('.').Last().Split('_').Last();
+
+            if (!_languagesCache.ContainsKey(localization))
+            {
+                var tempDictionary = new SortedDictionary<string, string>();
+
+                foreach (var localizedString in _defaultValues)
+                {
+                    tempDictionary.Add(localizedString.Key, localizedString.Value);
+                }
+
+                _languagesCache.Add(localization.ToLower(), tempDictionary);
+            }
+
+            var existingDictionary = _languagesCache[localization];
+
+            foreach (var newEntry in newDictionary)
+            {
+                if (existingDictionary.ContainsKey(newEntry.Key))
+                {
+                    existingDictionary[newEntry.Key] = newEntry.Value;
+                }
+                else
+                {
+                    existingDictionary.Add(newEntry.Key, newEntry.Value);
+                }
+            }
+        }
+    }
+
+    private void LoadDefaultValues()
+    {
+        _defaultValues = new SortedDictionary<string, string>();
+
+        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+        var localizableEnums = assemblies
+            .SelectMany(assembly => assembly.GetTypes().Where(type => typeof(ILocalizedResource).IsAssignableFrom(type) && !type.IsInterface)
+                .SelectMany(typeImplementingInterface => typeImplementingInterface.GetNestedTypes().Where(x => x.IsEnum)))
+                    .ToList();
+
+        foreach (var localizableEnum in localizableEnums)
+        {
+            var enumValues = Enum.GetValues(localizableEnum);
+
+            foreach (var enumValue in enumValues)
+            {
+                _defaultValues.Add(GetLocalizedEnumIdentifier((Enum)enumValue), GetEnumDescription((Enum)enumValue));
+            }
+        }
+    }
 
     public string GetValue(Enum value)
     {
+        var dictionary = _defaultValues;
 
-
-        return value.GetAttributeOfType<DescriptionAttribute>().Description;
-    }
-
-    public string GetLanguageTemplate()
-    {
-        var builder = new StringBuilder();
-
-        foreach (var kvp in _defaultValues)
+        if (_languagesCache.ContainsKey(_currentLanguage))
         {
-            builder.AppendLine($"{kvp.Key}={kvp.Value}");
+            dictionary = _languagesCache[_currentLanguage];
         }
 
-        return builder.ToString();
-    }
-}
+        var key = GetLocalizedEnumIdentifier(value);
 
-public static class EnumExtensions
-{
-    public static string GetLocalizationId(this Enum value)
-    {
-        var enumType = value.GetType();
-        string enumTypeName = enumType.Name;
-        string valueName = value.ToString();
-        string owningClasses = "";
-
-        Type declaringType = enumType.DeclaringType;
-
-        while (declaringType != null)
+        if (dictionary.TryGetValue(key, out var response))
         {
-            owningClasses = declaringType.Name + "::" + owningClasses;
-            declaringType = declaringType.DeclaringType;
+            return response;
+        }
+        else
+        {
+            return GetEnumDescription(value);
+        }
+    }
+
+    public string GetLanguageTemplate(string localization = null)
+    {
+        var dictionary = _defaultValues;
+
+        if (localization != null && _languagesCache.ContainsKey(localization))
+        {
+            dictionary = _languagesCache[localization];
         }
 
-        return owningClasses + enumTypeName + "::" + valueName;
+        return JsonSerializer.Serialize(dictionary, new JsonSerializerOptions { WriteIndented = true });
     }
-}
 
-public static class EnumIdentifierFinder
-{
-    public static Dictionary<string, string> FindEnumIdsWithDescriptions()
+    private string GetEnumDescription(Enum value)
     {
-        var enumIdsWithDescriptions = new Dictionary<string, string>();
-
-        foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+        var type = value.GetType();
+        var name = Enum.GetName(type, value);
+        if (name != null)
         {
-            var types = assembly.GetTypes()
-                    .Where(x => typeof(ILocalizedResource).IsAssignableFrom(x) && !x.IsInterface);
-
-            foreach (var type in types)
+            var field = type.GetField(name);
+            if (field != null)
             {
-                if (type.IsEnum)
+                var attribute = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) as DescriptionAttribute;
+                if (attribute != null)
                 {
-                    foreach (Enum enumValue in Enum.GetValues(type))
-                    {
-                        string enumId = GetEnumIdentifier(enumValue);
-                        string enumDescription = GetEnumValueDescription(enumValue);
-                        enumIdsWithDescriptions[enumId] = enumDescription;
-                    }
+                    return attribute.Description;
                 }
             }
         }
 
-        return enumIdsWithDescriptions;
+        return value.ToString();
     }
 
-    private static string GetEnumValueDescription(Enum enumValue)
+    private string GetLocalizedEnumIdentifier(Enum enumValue)
     {
-        FieldInfo fieldInfo = enumValue.GetType().GetField(enumValue.ToString());
+        var localizableEnum = enumValue.GetType();
 
-        if (fieldInfo != null)
+        var prefix = localizableEnum.FullName.Split('.').Last().Replace("+", "::");
+
+        if (localizableEnum.FullName.StartsWith("rbk"))
         {
-            DescriptionAttribute descriptionAttribute =
-                (DescriptionAttribute)fieldInfo.GetCustomAttribute(typeof(DescriptionAttribute));
-
-            if (descriptionAttribute != null)
-            {
-                return descriptionAttribute.Description;
-            }
+            prefix = "rbkApiModules::" + prefix;
         }
 
-        return enumValue.ToString();
+        return $"{prefix}::{enumValue.ToString()}";
     }
 
-    private static string GetEnumIdentifier(Enum enumValue)
-    {
-        Type enumType = enumValue.GetType();
-        string enumTypeName = enumType.Name;
-        string valueName = enumValue.ToString();
-        string owningClasses = "";
-
-        Type declaringType = enumType.DeclaringType;
-        while (declaringType != null)
-        {
-            owningClasses = declaringType.Name + "::" + owningClasses;
-            declaringType = declaringType.DeclaringType;
-        }
-
-        return owningClasses + enumTypeName + "::" + valueName;
-    }
 }

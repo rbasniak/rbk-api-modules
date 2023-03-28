@@ -109,7 +109,6 @@ public class FaqMessages : ILocalizedResource
 
     public enum Validation
     {
-        [Description("Could not find parent comment")] CouldNotFindParentComment,
         [Description("Entity not found")] EntityNotFound,
     }
 

@@ -34,9 +34,9 @@ public class LoginPolicyValidator2 : ICustomLoginPolicyValidator
     }
 }
 
-public class ApplicationMessages: ILocalizedResource
+public class ApplicationMessages 
 {
-    public class AuthenticationPolicies
+    public class AuthenticationPolicies : ILocalizedResource
     {
         public enum Errors
         {

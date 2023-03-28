@@ -32,11 +32,7 @@ public class LocalizationController : BaseController
     [HttpGet("test")]
     public ActionResult<string> Test()
     {
-        var value = SharedValidationMessages.Common.FieldMustHaveLengthBetweenMinAndMax;
-
-        var temp = value.GetType().FullName;
-
-        return $"{value.GetType().FullName.Split('.').Last().Replace("+", "::")}::{value.ToString()}";
+        return _localizationService.GetValue(AuthenticationMessages.Erros.CannotDeleteUsedTenant);
 
         // Carregar o dicionario básico, com todos enums e descriptions
         // Procurar todos os arquivos com extensao .localization
@@ -51,83 +47,8 @@ public class LocalizationController : BaseController
 
     [AllowAnonymous]
     [HttpGet("localization-template")]
-    public ActionResult<string> GetLocalizationTemplate()
+    public ActionResult<string> GetLocalizationTemplate(string localization = null)
     {
-        return _localizationService.GetLanguageTemplate();
-        //var results = new List<string>();
-
-        //AppDomain currentDomain = AppDomain.CurrentDomain;
-        //var assemblies = currentDomain.GetAssemblies();
-
-        //foreach (var assembly in assemblies)
-        //{
-        //    var localizedResourceTypes = assembly.GetTypes()
-        //            .Where(x => typeof(ILocalizedResource).IsAssignableFrom(x) && !x.IsInterface);
-
-        //    foreach (var localizedResourceType in localizedResourceTypes)
-        //    {
-        //        var localizedResourceChildTypes = localizedResourceType.GetNestedTypes();
-
-        //        foreach (var localizedResourceChildType in localizedResourceChildTypes)
-        //        {
-        //            if (localizedResourceChildType.IsEnum)
-        //            {
-        //                var enumValues = Enum.GetValues(localizedResourceChildType);
-
-        //                foreach (var enumValue in enumValues)
-        //                {
-        //                    var enumType = localizedResourceChildType;
-        //                    var memberInfos = enumType.GetMember(((Enum)enumValue).ToString());
-        //                    var enumValueMemberInfo = memberInfos.FirstOrDefault(m => m.DeclaringType == enumType);
-        //                    var valueAttributes = enumValueMemberInfo.GetCustomAttributes(typeof(DescriptionAttribute), false);
-
-        //                    var message = "*** Missing localized message ***";
-
-        //                    if (valueAttributes != null && valueAttributes.Length > 0)
-        //                    {
-        //                        message = ((DescriptionAttribute)valueAttributes[0]).Description;
-        //                    }
-
-        //                    results.Add($"{localizedResourceType.Name}::{localizedResourceChildType.Name}::{enumValue.ToString()}={message}");
-        //                }
-        //            }
-        //            else
-        //            {
-        //                var localizedResourceGrandChildTypes = localizedResourceChildType.GetNestedTypes();
-
-        //                foreach (var localizedResourceGrandChildType in localizedResourceGrandChildTypes)
-        //                {
-        //                    if (localizedResourceGrandChildType.IsEnum)
-        //                    {
-        //                        var enumValues = Enum.GetValues(localizedResourceGrandChildType);
-
-        //                        foreach (var enumValue in enumValues)
-        //                        {
-        //                            var enumType = localizedResourceGrandChildType;
-        //                            var memberInfos = enumType.GetMember(((Enum)enumValue).ToString());
-        //                            var enumValueMemberInfo = memberInfos.FirstOrDefault(m => m.DeclaringType == enumType);
-        //                            var valueAttributes = enumValueMemberInfo.GetCustomAttributes(typeof(DescriptionAttribute), false);
-
-        //                            var message = "*** Missing localized message ***";
-
-        //                            if (valueAttributes != null && valueAttributes.Length > 0)
-        //                            {
-        //                                message = ((DescriptionAttribute)valueAttributes[0]).Description;
-        //                            }
-
-        //                            results.Add($"{localizedResourceType.Name}::{localizedResourceChildType.Name}::{localizedResourceGrandChildType.Name}::{enumValue.ToString()}={message}");
-        //                        }
-        //                    }
-        //                    else
-        //                    {
-        //                        throw new SafeException("Localization services does not support classes nested more than 2 levels deep");
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
-
-        //return String.Join(Environment.NewLine, results);
+        return _localizationService.GetLanguageTemplate(localization);
     }
 }
