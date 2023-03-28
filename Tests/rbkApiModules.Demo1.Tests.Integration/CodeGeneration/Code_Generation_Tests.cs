@@ -20,7 +20,7 @@ public class CodeGenerationTests : SequentialTest, IClassFixture<ServerFixture>
 
         response.ShouldBeSuccess();
 
-        var remainingFiles = Directory.GetFiles(Path.Combine(_serverFixture.ContentFolder, "wwwroot", "_temp"));
+        var remainingFiles = Directory.GetFiles(Path.Combine(_serverFixture.ContentFolder, "_temp"));
 
         remainingFiles.Length.ShouldBe(0);
     }

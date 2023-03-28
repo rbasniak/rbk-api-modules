@@ -9,7 +9,7 @@ namespace rbkApiModules.Identity.Core;
 
 public class Register
 {
-    public class Request : AuthenticatedRequest, IRequest<CommandResponse>, IUserMetadata
+    public class Request : IRequest<CommandResponse>, IUserMetadata
     {
         public string Tenant { get; set; }
         public string DisplayName { get; set; }
@@ -66,7 +66,9 @@ public class Register
 
         private async Task<bool> EmailDoesNotExistOnDatabase(Request request, string email, CancellationToken cancellation)
         {
-            return await _usersService.IsUserRegisteredAsync(email, request.Identity.Tenant, cancellation);
+            var isRegistered = await _usersService.IsUserRegisteredAsync(email, request.Tenant, cancellation);
+
+            return !isRegistered;
         }
 
         private bool PasswordsBeTheSame(Request request, string _)
@@ -85,7 +87,7 @@ public class Register
         {
             var user = await _usersService.FindUserAsync(username, request.Tenant, cancellation);
 
-            return user != null;
+            return user == null;
         }
     }
 
@@ -103,7 +105,7 @@ public class Register
         public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)
         {
             var user = await _usersService.CreateUserAsync(request.Tenant, request.Username, request.Password, request.Email, request.DisplayName,
-                AvatarGenerator.GenerateBase64Avatar(request.DisplayName), false, cancellation);
+                AvatarGenerator.GenerateBase64Avatar(request.DisplayName), false, request.Metadata, cancellation);
 
             _mailingService.SendConfirmationMail(user.DisplayName, user.Email, user.ActivationCode);
 

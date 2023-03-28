@@ -100,7 +100,7 @@ public class CreateUser
 
         private bool PasswordsIsRequired(Request request, string _)
         {
-            return _authenticationMode == AuthenticationMode.Windows ? true : request.PasswordConfirmation == request.Password;
+            return _authenticationMode == AuthenticationMode.Windows ? true : !String.IsNullOrEmpty(request.Password);
         } 
 
         private async Task<bool> UserDoesNotExistOnDatabase(Request request, string username, CancellationToken cancellation)
@@ -140,15 +140,31 @@ public class CreateUser
             var filename = await _avatarStorage.SaveAsync(avatar, _options._userAvatarPath, Guid.NewGuid().ToString("N"), cancellation);
             var avatarUrl = _avatarStorage.GetRelativePath(filename); 
 
-            await _usersService.CreateUserAsync(request.Identity.Tenant, request.Username, password, request.Email, request.DisplayName,
-               avatarUrl, true, cancellation);
+            var user = await _usersService.CreateUserAsync(request.Identity.Tenant, request.Username, password, request.Email, request.DisplayName,
+               avatarUrl, true, request.Metadata, cancellation);
 
-            var user = await _usersService.ReplaceRoles(request.Username, request.Identity.Tenant, request.RoleIds, cancellation);
+            var allMetadata = new Dictionary<string, string>();
 
             foreach (var metadataService in _userMetadataService)
             {
-                await metadataService.AppendMetadataAsync(user);
+                var data = await metadataService.GetIdentityInfo(user);
+
+                foreach (var kvp in data)
+                {
+                    if (allMetadata.ContainsKey(kvp.Key))
+                    {
+                        allMetadata[kvp.Key] = kvp.Value;
+                    }
+                    else
+                    {
+                        allMetadata.Add(kvp.Key, kvp.Value);
+                    }
+                }
             }
+
+            await _usersService.AppendUserMetadata(request.Username, request.Identity.Tenant, allMetadata, cancellation);
+
+            user = await _usersService.ReplaceRoles(request.Username, request.Identity.Tenant, request.RoleIds, cancellation);
 
             return CommandResponse.Success(user);
         }

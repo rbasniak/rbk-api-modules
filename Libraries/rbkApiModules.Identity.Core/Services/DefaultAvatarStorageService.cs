@@ -61,6 +61,11 @@ public class DefaultAvatarStorageService : IAvatarStorage
 
         var outputPath = Path.Combine(parts.ToArray());
 
+        if (!Directory.Exists(Path.GetDirectoryName(outputPath)))
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
+        }
+
         var bytes = Convert.FromBase64String(base64Data.Substring(base64Data.IndexOf(',') + 1));
 
         await File.WriteAllBytesAsync(outputPath, bytes, cancellation);
@@ -90,5 +95,5 @@ public class DefaultAvatarStorageService : IAvatarStorage
         }
 
         return await SaveAsync(base64Data, path, filenameWithoutExtension, extension, cancellation);
-    } 
+    }
 }

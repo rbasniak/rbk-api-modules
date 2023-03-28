@@ -23,6 +23,7 @@ public class User : TenantEntity
         Email = email?.ToLower();
         Metadata = metadata;
         CreationDate = DateTime.UtcNow;
+        IsActive = true;
 
         if (metadata == null)
         {

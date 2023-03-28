@@ -44,7 +44,7 @@ public class UserChangeDomainTests : SequentialTest, IClassFixture<ServerFixture
     /// User cannot access change tenant anonymously
     /// DEPENDENCIES: none
     /// </summary>
-    [FriendlyNamedFact("IT-???"), Priority(5)]
+    [FriendlyNamedFact("IT-402"), Priority(5)]
     public async Task User_cannot_change_access_change_domain_anonymously()
     {
         // Prepare
@@ -64,7 +64,7 @@ public class UserChangeDomainTests : SequentialTest, IClassFixture<ServerFixture
     /// User cannot change domain if the domain doesn't exist in database
     /// DEPENDENCIES: none
     /// </summary>
-    [FriendlyNamedFact("IT-223"), Priority(10)]
+    [FriendlyNamedFact("IT-423"), Priority(10)]
     public async Task User_cannot_change_domain_if_destination_domain_doesnt_exist()
     {
         // Prepare
@@ -93,7 +93,7 @@ public class UserChangeDomainTests : SequentialTest, IClassFixture<ServerFixture
     /// User cannot change domain if its user doesn't exist in the new domain
     /// DEPENDENCIES: none
     /// </summary>
-    [FriendlyNamedFact("IT-224"), Priority(20)]
+    [FriendlyNamedFact("IT-424"), Priority(20)]
     public async Task User_cannot_change_domain_if_he_doesnt_exist_in_destination_domain()
     {
         // Prepare
@@ -122,7 +122,7 @@ public class UserChangeDomainTests : SequentialTest, IClassFixture<ServerFixture
     /// User can change domain 
     /// DEPENDENCIES: none
     /// </summary>
-    [FriendlyNamedFact("IT-226"), Priority(30)]
+    [FriendlyNamedFact("IT-426"), Priority(30)]
     public async Task User_can_change_domain_if_he_exists_in_both_tenants()
     {
         // Prepare

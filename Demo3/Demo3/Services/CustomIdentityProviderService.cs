@@ -2,7 +2,7 @@
 
 public interface ICustomIdentityProviderService
 {
-    ExternalUserInfo GetUserInfo(string username);
+    ExternalUserInfo GetUserInfo(string username); 
 }
 
 public class CustomIdentityProviderService : ICustomIdentityProviderService
@@ -29,7 +29,7 @@ public class CustomIdentityProviderService : ICustomIdentityProviderService
             Manager = "Bruce Wayne",
             Sector = "Gadget Research"
         };
-    }
+    } 
 }
 
 public class ExternalUserInfo

@@ -2,6 +2,6 @@
 
 public interface IUserMetadataService
 {
-    Task AppendMetadataAsync(User user);
+    Task<Dictionary<string, string>> GetIdentityInfo(User user);
 }
 

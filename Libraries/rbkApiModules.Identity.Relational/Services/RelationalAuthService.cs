@@ -255,11 +255,12 @@ public class RelationalAuthService: IAuthService
         return user;
     }
 
-    public async Task<User> CreateUserAsync(string tenant, string username, string password, string email, string displayName, string avatarPath, bool isConfirmed, CancellationToken cancellation)
+    public async Task<User> CreateUserAsync(string tenant, string username, string password, string email, 
+        string displayName, string avatarPath, bool isConfirmed, Dictionary<string, string> metadata, CancellationToken cancellation)
     {
         tenant = tenant != null ? tenant.ToUpper() : null;
 
-        var user = new User(tenant, username, email, password, avatarPath, displayName);
+        var user = new User(tenant, username, email, password, avatarPath, displayName, metadata);
 
         if (isConfirmed)
         {
@@ -298,5 +299,26 @@ public class RelationalAuthService: IAuthService
         user.ChangePassword(password); 
 
         await _context.SaveChangesAsync();
-    } 
+    }
+
+    public async Task<User> AppendUserMetadata(string username, string tenant, Dictionary<string, string> metadata, CancellationToken cancellation)
+    {
+        tenant = tenant != null ? tenant.ToUpper() : null;
+
+        var user = await LoadUserEntityAsync(username, tenant, cancellation);
+
+        foreach (var kvp in metadata)
+        {
+            if (user.Metadata.ContainsKey(kvp.Key))
+            {
+                user.Metadata[kvp.Key] = kvp.Value;
+            }
+            else
+            {
+                user.Metadata.Add(kvp.Key, kvp.Value);
+            }
+        }
+
+        return user;
+    }
 }

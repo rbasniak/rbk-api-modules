@@ -128,9 +128,9 @@ public class AuthenticationController : BaseController
 
     [AllowAnonymous]
     [HttpPost("register")]
-    public async Task<ActionResult<JwtResponse>> RegisterAnonymously(Register.Request data, CancellationToken cancellation)
+    public async Task<ActionResult> RegisterAnonymously(Register.Request data, CancellationToken cancellation)
     {
-        return HttpResponse<JwtResponse>(await Mediator.Send(data, cancellation));
+        return HttpResponse(await Mediator.Send(data, cancellation));
     }
 
     [RbkAuthorize(AuthenticationClaims.MANAGE_USERS)]

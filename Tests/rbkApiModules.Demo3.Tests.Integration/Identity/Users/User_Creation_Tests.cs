@@ -1,4 +1,5 @@
-﻿using rbkApiModules.Identity.Core;
+﻿using rbkApiModules.Commons.Core;
+using rbkApiModules.Identity.Core;
 using rbkApiModules.Identity.Core.DataTransfer.Users;
 using System;
 using System.Collections.Generic;
@@ -35,8 +36,18 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
 
         admin.AddClaim(context.Set<Claim>().First(x => x.Identification == AuthenticationClaims.MANAGE_USERS), ClaimAccessType.Allow);
 
+        var claim1 = context.Set<Claim>().Add(new Claim("CLAIM1", "Claim 1")).Entity;
+        var claim2 = context.Set<Claim>().Add(new Claim("CLAIM2", "Claim 2")).Entity;
+        var claim3 = context.Set<Claim>().Add(new Claim("CLAIM3", "Claim 3")).Entity;
+
         var role1 = context.Set<Role>().Add(new Role("WAYNE INC", "Role1")).Entity;
         var role2 = context.Set<Role>().Add(new Role("WAYNE INC", "Role2")).Entity;
+
+        role1.AddClaim(claim1);
+        role1.AddClaim(claim2);
+        
+        role2.AddClaim(claim2);
+        role2.AddClaim(claim3);
 
         context.SaveChanges();
 
@@ -48,7 +59,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
     /// User cannot be created if username is not supplied
     /// DEPENDENCIES: none
     /// </summary>
-    [FriendlyNamedTheory("IT-227"), Priority(10)]
+    [FriendlyNamedTheory("IT-427"), Priority(10)]
     [InlineData(null)]
     [InlineData("")]
     public async Task User_cannot_be_created_when_username_is_null_or_empty(string username)
@@ -62,6 +73,11 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
             DisplayName = "John Doe",
             Email = "john.doe@fake-company.com",
             RoleIds = new[] { role1.Id },
+            Metadata = new Dictionary<string, string>
+            {
+                { "age", "18" },
+                { "sector", "Research" }
+            }
         };
 
         // Act
@@ -75,7 +91,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
     /// User cannot be created if username is already taken
     /// DEPENDENCIES: none
     /// </summary>
-    [FriendlyNamedFact("IT-228"), Priority(20)]
+    [FriendlyNamedFact("IT-428"), Priority(20)]
     public async Task User_cannot_be_created_when_username_is_already_taken()
     {
         var role1 = _serverFixture.Context.Set<Role>().First(x => x.Name == "Role1");
@@ -87,6 +103,11 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
             DisplayName = "John Doe",
             Email = "john.doe@fake-company.com",
             RoleIds = new[] { role1.Id },
+            Metadata = new Dictionary<string, string>
+            {
+                { "age", "18" },
+                { "sector", "Research" }
+            }
         };
 
         // Act
@@ -100,7 +121,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
     /// User cannot be created if email is not supplied
     /// DEPENDENCIES: none
     /// </summary>
-    [FriendlyNamedTheory("IT-229"), Priority(30)]
+    [FriendlyNamedTheory("IT-429"), Priority(30)]
     [InlineData(null)]
     [InlineData("")]
     public async Task User_cannot_be_created_when_email_is_null_or_empty(string email)
@@ -114,6 +135,11 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
             DisplayName = "John Doe",
             Email = email,
             RoleIds = new[] { role1.Id },
+            Metadata = new Dictionary<string, string>
+            {
+                { "age", "18" },
+                { "sector", "Research" }
+            }
         };
 
         // Act
@@ -127,7 +153,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
     /// User cannot be created if email is invalid
     /// DEPENDENCIES: none
     /// </summary>
-    [FriendlyNamedTheory("IT-230"), Priority(40)]
+    [FriendlyNamedTheory("IT-430"), Priority(40)]
     [InlineData("aaaaaa")]
     [InlineData("aaaaa@bbbbbb")]
     [InlineData("aaaaaaa@bbbbbbb.")]
@@ -145,6 +171,11 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
             DisplayName = "John Doe",
             Email = email,
             RoleIds = new[] { role1.Id },
+            Metadata = new Dictionary<string, string>
+            {
+                { "age", "18" },
+                { "sector", "Research" }
+            }
         };
 
         // Act
@@ -158,7 +189,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
     /// User cannot be created if email is already taken
     /// DEPENDENCIES: none
     /// </summary>
-    [FriendlyNamedFact("IT-263"), Priority(45)]
+    [FriendlyNamedFact("IT-401"), Priority(45)]
     public async Task User_cannot_be_created_when_email_is_already_taken()
     {
         var role1 = _serverFixture.Context.Set<Role>().First(x => x.Name == "Role1");
@@ -170,6 +201,11 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
             DisplayName = "John Doe",
             Email = "user@wayne-inc.com",
             RoleIds = new[] { role1.Id },
+            Metadata = new Dictionary<string, string>
+            {
+                { "age", "18" },
+                { "sector", "Research" }
+            }
         };
 
         // Act
@@ -183,7 +219,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
     /// User cannot be created if display name is not supplied
     /// DEPENDENCIES: none
     /// </summary>
-    [FriendlyNamedTheory("IT-231"), Priority(50)]
+    [FriendlyNamedTheory("IT-431"), Priority(50)]
     [InlineData(null)]
     [InlineData("")]
     public async Task User_cannot_be_created_when_display_name_is_null_or_empty(string displayName)
@@ -197,6 +233,11 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
             DisplayName = displayName,
             Email = "new-user@wayne-inc.com",
             RoleIds = new[] { role1.Id },
+            Metadata = new Dictionary<string, string>
+            {
+                { "age", "18" },
+                { "sector", "Research" }
+            }
         };
 
         // Act
@@ -210,39 +251,37 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
     /// User cannot be created if custom metadata validations are not met
     /// DEPENDENCIES: none
     /// </summary>
-    [FriendlyNamedFact("IT-232"), Priority(60)]
+    [FriendlyNamedFact("IT-432"), Priority(60)]
     public async Task User_cannot_be_created_when_metadata_custom_validators_do_not_pass()
     {
-        throw new NotImplementedException();
-    }
+        var role1 = _serverFixture.Context.Set<Role>().First(x => x.Name == "Role1");
 
-    /// <summary>
-    /// User cannot be created if password is not supplied
-    /// DEPENDENCIES: none
-    /// </summary>
-    [FriendlyNamedTheory("IT-233"), Priority(70)]
-    [InlineData(null)]
-    [InlineData("")]
-    public async Task User_cannot_be_created_when_password_is_null_or_empty(string password)
-    {
-        throw new NotImplementedException();
-    }
+        // Prepare
+        var request = new CreateUser.Request
+        {
+            Username = "new-user",
+            DisplayName = "New User",
+            Email = "new-user@wayne-inc.com",
+            RoleIds = new[] { role1.Id },
+            Metadata = new Dictionary<string, string>
+            {
+                { "sector", "" },
+                { "age", "XIV" }
+            }
+        };
 
-    /// <summary>
-    /// User cannot be created if passwords do not metch
-    /// DEPENDENCIES: none
-    /// </summary>
-    [FriendlyNamedFact("IT-234"), Priority(80)]
-    public async Task User_cannot_be_created_when_passwords_do_not_match()
-    {
-        throw new NotImplementedException();
+        // Act
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/create-user", request, true);
+
+        // Assert the response
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Age is not valid", "Sector is required");
     }
 
     /// <summary>
     /// User cannot be created if no role is supplied (null list)
     /// DEPENDENCIES: none
     /// </summary>
-    [FriendlyNamedFact("IT-236"), Priority(90)]
+    [FriendlyNamedFact("IT-436"), Priority(90)]
     public async Task User_cannot_be_created_when_role_list_is_null()
     {
         // Prepare
@@ -252,6 +291,11 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
             DisplayName = "John Doe",
             Email = "new-user@wayne-inc.com",
             RoleIds = null,
+            Metadata = new Dictionary<string, string>
+            {
+                { "age", "18" },
+                { "sector", "Research" }
+            }
         };
 
         // Act
@@ -265,7 +309,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
     /// User cannot be created if no role is supplied (empty list)
     /// DEPENDENCIES: none
     /// </summary>
-    [FriendlyNamedFact("IT-239"), Priority(100)]
+    [FriendlyNamedFact("IT-439"), Priority(100)]
     public async Task User_cannot_be_created_when_role_list_is_empty()
     {
         // Prepare
@@ -275,6 +319,11 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
             DisplayName = "John Doe",
             Email = "new-user@wayne-inc.com",
             RoleIds = new Guid[0],
+            Metadata = new Dictionary<string, string>
+            {
+                { "age", "18" },
+                { "sector", "Research" }
+            }
         };
 
         // Act
@@ -288,7 +337,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
     /// User cannot be created if role list has an invalid role
     /// DEPENDENCIES: none
     /// </summary>
-    [FriendlyNamedFact("IT-240"), Priority(110)]
+    [FriendlyNamedFact("IT-440"), Priority(110)]
     public async Task User_cannot_be_created_when_role_list_has_an_invlid_role()
     {
         var role1 = _serverFixture.Context.Set<Role>().First(x => x.Name == "Role1");
@@ -300,6 +349,11 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
             DisplayName = "John Doe",
             Email = "new-user@wayne-inc.com",
             RoleIds = new[] { role1.Id, Guid.Empty },
+            Metadata = new Dictionary<string, string>
+            {
+                { "age", "18" },
+                { "sector", "Research" }
+            }
         };
 
         // Act
@@ -313,31 +367,98 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
     /// User cannot be created if requesting user doesn't have the proper access rights
     /// DEPENDENCIES: none
     /// </summary>
-    [FriendlyNamedFact("IT-236"), Priority(120)]
+    [FriendlyNamedFact("IT-436"), Priority(120)]
     public async Task User_cannot_be_created_when_requester_does_not_have_proper_access_rights()
     {
-        throw new NotImplementedException();
-    }
+        var role1 = _serverFixture.Context.Set<Role>().First(x => x.Name == "Role1");
 
-    /// <summary>
-    /// User cannot be created if custom password policies are not met
-    /// DEPENDENCIES: none
-    /// </summary>
-    [FriendlyNamedFact("IT-238"), Priority(130)]
-    public async Task User_cannot_be_created_when_password_policies_are_not_met()
-    {
-        throw new NotImplementedException();
-    }
+        // Prepare
+        var request = new CreateUser.Request
+        {
+            Username = "new-user",
+            DisplayName = "John Doe",
+            Email = "new-user@wayne-inc.com",
+            RoleIds = new[] { role1.Id, Guid.Empty },
+            Metadata = new Dictionary<string, string>
+            {
+                { "age", "18" },
+                { "sector", "Research" }
+            }
+        };
+
+        // Act
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/create-user", request, await _serverFixture.GetAccessTokenAsync("user", "wayne inc"));
+
+        // Assert the response
+        response.ShouldHaveErrors(HttpStatusCode.Forbidden);
+    } 
 
     /// <summary>
     /// User can be created
     /// DEPENDENCIES: none
     /// </summary>
-    [FriendlyNamedFact("IT-237"), Priority(140)]
+    [FriendlyNamedFact("IT-489"), Priority(140)]
     public async Task User_can_be_created()
     {
-        throw new NotImplementedException();
+        var role1 = _serverFixture.Context.Set<Role>().First(x => x.Name == "Role1");
+        var role2 = _serverFixture.Context.Set<Role>().First(x => x.Name == "Role2");
+
+        // Prepare
+        var request = new CreateUser.Request
+        {
+            Username = "new-user",
+            DisplayName = "John Doe",
+            Email = "new-user@wayne-inc.com",
+            RoleIds = new[] { role1.Id, role2.Id },
+            Metadata = new Dictionary<string, string>
+            {
+                { "age", "25" },
+                { "sector", "Research" }
+            }
+        };
+
+        // Act
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/create-user", request, true);
+
+        // Assert the response
+        response.ShouldBeSuccess();
+        response.Data.ShouldNotBeNull();
+        response.Data.ShouldBeOfType<UserDetails>();
+        response.Data.DisplayName.ShouldBe("John Doe");
+        response.Data.Username.ShouldBe("new-user");
+        response.Data.Email.ShouldBe("new-user@wayne-inc.com");
+        response.Data.Avatar.ShouldNotBeNull("");
+        response.Data.IsConfirmed.ShouldBeTrue();
+        response.Data.Roles.Length.ShouldBe(2);
+        response.Data.Claims.Length.ShouldBe(3);
+        response.Data.OverridedClaims.Length.ShouldBe(0);
+
+        // Assert the database
+        var user = _serverFixture.Context.Set<User>()
+            .Include(x => x.Claims)
+            .Include(x => x.Roles)
+            .First(x => x.Username == "new-user");
+
+        user.ActivationCode.ShouldBeNull();
+        user.Avatar.ShouldNotBeNull();
+        user.Claims.Count().ShouldBe(0);
+        user.DisplayName.ShouldBe("John Doe");
+        user.Email.ShouldBe("new-user@wayne-inc.com");
+        user.HasTenant.ShouldBeTrue();
+        user.IsActive.ShouldBeTrue();
+        user.IsConfirmed.ShouldBeTrue();
+        user.Metadata.ShouldNotBeNull();
+        user.Metadata.Count.ShouldBe(5);
+        user.Metadata["sector"].ShouldBe("Research");
+        user.Metadata["age"].ShouldBe("25");
+        user.Metadata["building"].ShouldBe("B11");
+        user.Metadata["office"].ShouldBe("1219");
+        user.Metadata["desk"].ShouldBe("3");
+        user.PasswordRedefineCode.ShouldBeNull();
+        user.Password.ShouldBeNull();
+        user.TenantId.ShouldBe("WAYNE INC");
+        user.Username.ShouldBe("new-user");
+        user.Roles.Count().ShouldBe(2);
+        (DateTime.UtcNow - user.CreationDate).TotalSeconds.ShouldBeLessThan(60);
     }
-
-
 }

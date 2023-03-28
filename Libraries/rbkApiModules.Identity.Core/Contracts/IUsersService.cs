@@ -21,6 +21,7 @@ public interface IAuthService
     Task<User> ReplaceRoles(string username, string tenant, Guid[] roleIds, CancellationToken cancellation);
     Task<User> AddRole(string username, string tenant, Guid roleId, CancellationToken cancellation);
     Task<User> RemoveRole(string username, string tenant, Guid roleId, CancellationToken cancellation);
-    Task<User> CreateUserAsync(string tenant, string username, string password, string email, string displayName, string avatar, bool isConfirmed, CancellationToken cancellation);
+    Task<User> CreateUserAsync(string tenant, string username, string password, string email, string displayName, string avatar, bool isConfirmed, Dictionary<string, string> metadata, CancellationToken cancellation);
     Task DeleteUsersFromTenant(string tenant, CancellationToken cancellation);
+    Task<User> AppendUserMetadata(string username, string tenant, Dictionary<string, string> metadata, CancellationToken cancellation);
 }

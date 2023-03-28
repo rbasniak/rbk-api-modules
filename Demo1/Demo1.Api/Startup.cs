@@ -134,6 +134,8 @@ public class Startup
 
         services.AddRbkRelationalAuthentication(options => options
             .UseSymetricEncryptationKey()
+            .AllowUserCreationByAdmins()
+            .AllowUserSelfRegistration()
         );
 
         services.AddRbkUIDefinitions(AssembliesForUiDefinitions);

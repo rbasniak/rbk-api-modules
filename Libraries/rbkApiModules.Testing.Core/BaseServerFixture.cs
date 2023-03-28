@@ -29,7 +29,9 @@ public class BaseServerFixture : IDisposable
     {
         var projectDir = Path.GetDirectoryName(startupClassType.Assembly.Location);
 
-        _contentFolder = projectDir;
+        _contentFolder = Path.Combine(projectDir, "wwwroot");
+
+        Directory.Delete(_contentFolder, true);
 
         AuthenticationMode = authenticationMode;
 
@@ -37,7 +39,7 @@ public class BaseServerFixture : IDisposable
         {
 #pragma warning disable CS0618 // Type or member is obsolete
             Server = new TestServer(new WebHostBuilder()
-                .UseContentRoot(_contentFolder)
+                .UseWebRoot(Path.Combine(_contentFolder))
                 .UseConfiguration(new ConfigurationBuilder()
                     .SetBasePath(projectDir)
                     .AddJsonFile("appsettings.Testing.json")
@@ -51,7 +53,7 @@ public class BaseServerFixture : IDisposable
         {
 #pragma warning disable CS0618 // Type or member is obsolete
             Server = new TestServer(new WebHostBuilder()
-                .UseContentRoot(_contentFolder)
+                .UseWebRoot(Path.Combine(_contentFolder))
                 .UseConfiguration(new ConfigurationBuilder()
                     .SetBasePath(projectDir)
                     .AddJsonFile("appsettings.Testing.json")
@@ -149,7 +151,7 @@ public class BaseServerFixture : IDisposable
                     httpClient.DefaultRequestHeaders.Add(TestAuthHandler.UserId, username);
                 }
 
-                var response = await httpClient.PostAsync("api/authentication/login", 
+                var response = await httpClient.PostAsync("api/authentication/login",
                     new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json"));
 
                 response.EnsureSuccessStatusCode();

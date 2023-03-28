@@ -10,11 +10,11 @@ public class UserDetails : BaseDataTransferObject
     public string DisplayName { get; set; }
     public DateTime? LastLogin { get; set; }
     public string Avatar { get; set; }
-    public string Metadata { get; set; }
     public bool IsConfirmed { get; set; }
     public SimpleNamedEntity[] Roles { get; set; }
     public ClaimOverride[] OverridedClaims { get; set; }
     public SimpleNamedEntity[] Claims { get; set; }
+    public Dictionary<string, string> Metadata { get; set; }
 }
 
 public class ClaimOverride

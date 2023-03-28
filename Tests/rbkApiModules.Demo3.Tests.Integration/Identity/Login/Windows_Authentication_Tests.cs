@@ -13,7 +13,7 @@ public class WindowsAuthenticationTests : SequentialTest, IClassFixture<ServerFi
     /// <summary>
     /// With Windows Authentication, user can login if all conditions are met
     /// </summary>
-    [FriendlyNamedFact("IT-264"), Priority(10)]
+    [FriendlyNamedFact("IT-403"), Priority(10)]
     public async Task User_can_login_with_Windows_Authentication_when_all_conditions_are_ok()
     {
         var command = new UserLogin.Request
@@ -36,7 +36,7 @@ public class WindowsAuthenticationTests : SequentialTest, IClassFixture<ServerFi
     /// <summary>
     /// With Windows Authentication, user cannot login if it doesn't pass a a custom login validator 
     /// </summary>
-    [FriendlyNamedFact("IT-263"), Priority(20)]
+    [FriendlyNamedFact("IT-404"), Priority(20)]
     public async Task User_cannot_login_with_Windows_Authentication_when_custom_validators_are_not_met()
     {
         var command = new UserLogin.Request
@@ -54,7 +54,7 @@ public class WindowsAuthenticationTests : SequentialTest, IClassFixture<ServerFi
     /// <summary>
     /// With Windows Authentication user cannot login if it passes a custom login validator but doesn't exist in database
     /// </summary>
-    [FriendlyNamedFact("IT-262"), Priority(30)]
+    [FriendlyNamedFact("IT-405"), Priority(30)]
     public async Task User_cannot_login_with_Windows_Authentication_when_custom_validators_are_met_but_user_does_not_exist()
     {
         var command = new UserLogin.Request
