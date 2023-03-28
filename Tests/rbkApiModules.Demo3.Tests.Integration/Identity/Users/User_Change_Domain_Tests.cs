@@ -86,7 +86,7 @@ public class UserChangeDomainTests : SequentialTest, IClassFixture<ServerFixture
         var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/switch-tenant", command, loginResponse.Data.AccessToken);
 
         // Assert
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Tenant not found");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Tenant não encontrado");
     }
 
     /// <summary>
@@ -115,7 +115,7 @@ public class UserChangeDomainTests : SequentialTest, IClassFixture<ServerFixture
         var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/switch-tenant", command, loginResponse.Data.AccessToken);
 
         // Assert
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Unauthorized access");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Acesso negado");
     }
 
     /// <summary>

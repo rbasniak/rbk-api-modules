@@ -44,20 +44,20 @@ public class UserLogin
                     RuleFor(x => x.Username)
                         .IsRequired(localization)
                         .MustAsync(ExistOnDatabase)
-                            .WithMessage(localization.GetValue(AuthenticationMessages.Validations.InvalidCredentials))
-                        .WithName(localization.GetValue(AuthenticationMessages.Fields.User))
+                            .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.InvalidCredentials))
+                        .WithName(localization.LocalizeString(AuthenticationMessages.Fields.User))
                         .DependentRules(() =>
                         {
                             RuleFor(x => x.Username)
                                 .MustAsync(BeConfirmed)
-                                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.UserNotYetConfirmed));
+                                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.UserNotYetConfirmed));
 
                             RuleFor(x => x.Password)
                                 .Must(IsRequiredWhenUsingCredentials)
-                                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.PasswordIsRequired))
+                                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.PasswordIsRequired))
                                 .MustAsync(MatchPassword)
-                                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.InvalidCredentials))
-                                .WithName(localization.GetValue(AuthenticationMessages.Fields.Password));
+                                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.InvalidCredentials))
+                                .WithName(localization.LocalizeString(AuthenticationMessages.Fields.Password));
                         });
                 });
         }

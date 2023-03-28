@@ -31,7 +31,15 @@ public class BaseServerFixture : IDisposable
 
         _contentFolder = Path.Combine(projectDir, "wwwroot");
 
-        Directory.Delete(_contentFolder, true);
+        if (Directory.Exists(_contentFolder))
+        {
+            Directory.Delete(_contentFolder, true);
+        }
+
+        if (!Directory.Exists(_contentFolder))
+        {
+            Directory.CreateDirectory(_contentFolder);
+        }
 
         AuthenticationMode = authenticationMode;
 

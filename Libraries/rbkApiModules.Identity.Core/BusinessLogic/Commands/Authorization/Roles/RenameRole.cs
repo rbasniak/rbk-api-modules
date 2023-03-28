@@ -29,8 +29,8 @@ public class RenameRole
             RuleFor(x => x.Name)
                 .IsRequired(localization)
                 .MustAsync(NameBeUnique)
-                .WithMessage(localization.GetValue(AuthenticationMessages.Validations.NameAlreadyUsed))
-                .WithName(localization.GetValue(AuthenticationMessages.Fields.Name));
+                .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.NameAlreadyUsed))
+                .WithName(localization.LocalizeString(AuthenticationMessages.Fields.Name));
 
             RuleFor(x => x.Identity)
                 .TenantExistOnDatabase(tenantsService, localization)

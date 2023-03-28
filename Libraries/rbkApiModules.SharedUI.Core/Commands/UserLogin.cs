@@ -33,12 +33,12 @@ public class UserLogin
         {
             if (String.IsNullOrEmpty(_sharedUIAuthentication.Username))
             {
-                throw new SafeException(_localization.GetValue(SharedUiMessages.Errors.CredentialsNotProperlyConfigured));
+                throw new SafeException(_localization.LocalizeString(SharedUiMessages.Errors.CredentialsNotProperlyConfigured));
             }
 
             if (_sharedUIAuthentication.Username.ToLower() != request.Username.ToLower() || _sharedUIAuthentication.Password != request.Password)
             {
-                throw new SafeException(_localization.GetValue(SharedUiMessages.Errors.InvalidCredentials));
+                throw new SafeException(_localization.LocalizeString(SharedUiMessages.Errors.InvalidCredentials));
             }
 
             var claims = new Dictionary<string, string[]>();

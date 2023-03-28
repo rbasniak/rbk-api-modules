@@ -24,8 +24,8 @@ public class CreateRole
             RuleFor(x => x.Name)
                 .IsRequired(localization)
                 .MustAsync(NameBeUnique)
-                .WithMessage(localization.GetValue(AuthenticationMessages.Validations.NameAlreadyUsed))
-                .WithName(localization.GetValue(AuthenticationMessages.Fields.Role));
+                .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.NameAlreadyUsed))
+                .WithName(localization.LocalizeString(AuthenticationMessages.Fields.Role));
 
             RuleFor(x => x.Identity)
                 .TenantExistOnDatabase(tenantsService, localization)

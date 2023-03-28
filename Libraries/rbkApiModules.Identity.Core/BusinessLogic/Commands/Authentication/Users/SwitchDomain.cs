@@ -29,10 +29,10 @@ public class SwitchDomain
                 .IsRequired(localization)
                 .MustAsync(ExistInDatabase)
                     .WithErrorCode(ValidationErrorCodes.NOT_FOUND)
-                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.TenantNotFound))
+                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.TenantNotFound))
                 .MustAsync(BePartOfDomain)
-                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.UnauthorizedAccess))
-                    .WithName(localization.GetValue(AuthenticationMessages.Fields.DestinationDomain));
+                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.UnauthorizedAccess))
+                    .WithName(localization.LocalizeString(AuthenticationMessages.Fields.DestinationDomain));
         }
 
         public async Task<bool> ExistInDatabase(Request request, string destinationDomain, CancellationToken cancellation)

@@ -32,15 +32,15 @@ public class RequestPasswordReset
 
             RuleFor(x => x.Tenant)
                 .IsRequired(localization)
-                .WithName(localization.GetValue(AuthenticationMessages.Fields.Tenant))
+                .WithName(localization.LocalizeString(AuthenticationMessages.Fields.Tenant))
                 .DependentRules(() =>
                 {
                     RuleFor(x => x.Email)
                         .IsRequired(localization)
                         .MustBeEmail(localization)
-                        .MustAsync(EmailBeRegistered).WithMessage(localization.GetValue(AuthenticationMessages.Validations.EmailNotFound))
-                        .MustAsync(EmailBeConfirmed).WithMessage(localization.GetValue(AuthenticationMessages.Validations.EmailNotYetConfirmed))
-                        .WithName(localization.GetValue(AuthenticationMessages.Fields.Email));
+                        .MustAsync(EmailBeRegistered).WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.EmailNotFound))
+                        .MustAsync(EmailBeConfirmed).WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.EmailNotYetConfirmed))
+                        .WithName(localization.LocalizeString(AuthenticationMessages.Fields.Email));
                 });
 
         }

@@ -20,7 +20,7 @@ public class GetStatesDotCode
         {
             RuleFor(x => x.GroupId)
                 .MustAsync(async (command, id, cancellation) => (await statesService.FindGroup(id, cancellation)) != null)
-                .WithMessage(localization.GetValue(WorkflowMessages.Validation.StateGroupNotFound));
+                .WithMessage(localization.LocalizeString(WorkflowMessages.Validation.StateGroupNotFound));
         }
     }
 

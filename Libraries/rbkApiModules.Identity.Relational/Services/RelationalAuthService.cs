@@ -79,7 +79,7 @@ public class RelationalAuthService: IAuthService
             .Include(x => x.PasswordRedefineCode)
             .FirstOrDefaultAsync(x => x.PasswordRedefineCode.Hash == resetPasswordCode, cancellation);
 
-        if (user == null) throw new SafeException(_localization.GetValue(AuthenticationMessages.Erros.CouldNotFindTheUserAssociatedWithThePasswordResetCode));
+        if (user == null) throw new SafeException(_localization.LocalizeString(AuthenticationMessages.Erros.CouldNotFindTheUserAssociatedWithThePasswordResetCode));
 
         user.ChangePassword(password);
 

@@ -25,9 +25,9 @@ public class ResendEmailConfirmation
                 .IsRequired(localization)
                 .MustBeEmail(localization)
                 .MustAsync(EmailBeRegistered)
-                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.EmailNotFound))
+                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.EmailNotFound))
                 .MustAsync(EmailBeUnconfirmed)
-                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.EmailAlreadyConfirmed));
+                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.EmailAlreadyConfirmed));
         }
 
         private async Task<bool> EmailBeRegistered(Request request, string email, CancellationToken cancellation)

@@ -21,15 +21,15 @@ public class UpdateFaq
         {
             RuleFor(x => x.Id)
                 .MustAsync(async (command, id, cancellation) => await faqsService.ExistsAsync(command.Identity.Tenant, id, cancellation))
-                    .WithMessage(localization.GetValue(FaqMessages.Validation.EntityNotFound));
+                    .WithMessage(localization.LocalizeString(FaqMessages.Validation.EntityNotFound));
 
             RuleFor(x => x.Question)
                 .IsRequired(localization)
-                .WithName(localization.GetValue(FaqMessages.Fields.Question));
+                .WithName(localization.LocalizeString(FaqMessages.Fields.Question));
 
             RuleFor(x => x.Answer)
                 .IsRequired(localization)
-                .WithName(localization.GetValue(FaqMessages.Fields.Answer));
+                .WithName(localization.LocalizeString(FaqMessages.Fields.Answer));
         }
     }
 

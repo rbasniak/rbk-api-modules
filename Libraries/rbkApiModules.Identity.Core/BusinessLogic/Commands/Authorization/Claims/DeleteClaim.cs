@@ -24,11 +24,11 @@ public class DeleteClaim
             RuleFor(x => x.Id)
                 .ClaimExistOnDatabase(claimsService, localization)
                 .MustAsync(NotBeUsedInAnyRole)
-                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.CannotRemoveClaimUsedByOtherRoles))
+                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.CannotRemoveClaimUsedByOtherRoles))
                 .MustAsync(NotBeProtected)
-                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.CannotRemoveSystemProtectedClaims))
+                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.CannotRemoveSystemProtectedClaims))
                 .MustAsync(NotBeUsedInAnyUser)
-                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.CannotRemoveClaimAssociatedWithUsers));
+                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.CannotRemoveClaimAssociatedWithUsers));
         } 
 
         private async Task<bool> NotBeUsedInAnyRole(Request request, Guid id, CancellationToken cancellation)

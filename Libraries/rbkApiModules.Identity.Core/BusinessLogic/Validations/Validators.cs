@@ -22,7 +22,7 @@ internal static class Validators
                 }
             })
             .WithErrorCode(ValidationErrorCodes.UNAUTHORIZED)
-            .WithMessage(command => localization.GetValue(AuthenticationMessages.Validations.UnauthorizedAccess));
+            .WithMessage(command => localization.LocalizeString(AuthenticationMessages.Validations.UnauthorizedAccess));
     }
 
     public static IRuleBuilderOptions<T, AuthenticatedUser> TenantExistOnDatabase<T>(this IRuleBuilder<T, AuthenticatedUser> rule, ITenantsService tenants, ILocalizationService localization)
@@ -40,7 +40,7 @@ internal static class Validators
                 }
             })
             .WithErrorCode(ValidationErrorCodes.NOT_FOUND)
-            .WithMessage(command => localization.GetValue(AuthenticationMessages.Validations.TenantNotFound));
+            .WithMessage(command => localization.LocalizeString(AuthenticationMessages.Validations.TenantNotFound));
     }
 
     public static IRuleBuilderOptions<T, Guid> RoleExistOnDatabaseForTheCurrentTenant<T>(this IRuleBuilder<T, Guid> rule, IRolesService roles, ILocalizationService localization) where T : AuthenticatedRequest
@@ -68,7 +68,7 @@ internal static class Validators
 
             })
             .WithErrorCode(ValidationErrorCodes.NOT_FOUND)
-            .WithMessage(command => localization.GetValue(AuthenticationMessages.Validations.RoleNotFound));
+            .WithMessage(command => localization.LocalizeString(AuthenticationMessages.Validations.RoleNotFound));
     }
 
     public static IRuleBuilderOptions<T, Guid> ClaimExistOnDatabase<T>(this IRuleBuilder<T, Guid> rule, IClaimsService claims, ILocalizationService localization)
@@ -79,7 +79,7 @@ internal static class Validators
                 return await claims.FindAsync(claimId, cancellation) != null;
             })
             .WithErrorCode(ValidationErrorCodes.NOT_FOUND)
-            .WithMessage(command => localization.GetValue(AuthenticationMessages.Validations.ClaimNotFound));
+            .WithMessage(command => localization.LocalizeString(AuthenticationMessages.Validations.ClaimNotFound));
     }
 
     public static IRuleBuilderOptions<T, string> PasswordPoliciesAreValid<T>(this IRuleBuilder<T, string> rule, IEnumerable<ICustomPasswordPolicyValidator> validators, ILocalizationService localization)
@@ -97,7 +97,7 @@ internal static class Validators
 
                     foreach (var message in result.Errors)
                     {
-                        validationContext.AddFailure(localization.GetValue(message));
+                        validationContext.AddFailure(localization.LocalizeString(message));
                     }
                 }
 
@@ -121,7 +121,7 @@ internal static class Validators
 
                     foreach (var message in result.Errors)
                     {
-                        validationContext.AddFailure(localization.GetValue(message));
+                        validationContext.AddFailure(localization.LocalizeString(message));
                     }
                 }
 
@@ -145,7 +145,7 @@ internal static class Validators
 
                     foreach (var message in result.Errors)
                     {
-                        validationContext.AddFailure(localization.GetValue(message));
+                        validationContext.AddFailure(localization.LocalizeString(message));
                     }
                 }
 

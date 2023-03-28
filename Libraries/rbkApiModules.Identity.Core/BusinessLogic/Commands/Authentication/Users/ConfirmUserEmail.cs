@@ -42,8 +42,8 @@ public class ConfirmUserEmail
             RuleFor(x => x.Email)
                 .IsRequired(localization)
                 .MustAsync(BeValidPair)
-                .WithMessage(localization.GetValue(AuthenticationMessages.Validations.InvalidActivationCode))
-                .WithName(localization.GetValue(AuthenticationMessages.Fields.ActivationCode));
+                .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.InvalidActivationCode))
+                .WithName(localization.LocalizeString(AuthenticationMessages.Fields.ActivationCode));
         }
 
         public async Task<bool> BeValidPair(Request request, string email, CancellationToken cancelation)

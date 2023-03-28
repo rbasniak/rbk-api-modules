@@ -27,19 +27,19 @@ public class ReplaceUserRoles
             RuleFor(x => x.Username)
                 .IsRequired(localization)
                 .MustAsync(UserExistInDatabaseUnderTheSameTenant)
-                .WithMessage(localization.GetValue(AuthenticationMessages.Validations.UserNotFound))
-                .WithName(localization.GetValue(AuthenticationMessages.Fields.User))
+                .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.UserNotFound))
+                .WithName(localization.LocalizeString(AuthenticationMessages.Fields.User))
                 .DependentRules(() =>
                 {
                     RuleFor(x => x.RoleIds)
                         .NotNull()
-                        .WithMessage(localization.GetValue(AuthenticationMessages.Validations.RoleListMustNotBeEmpty))
+                        .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.RoleListMustNotBeEmpty))
                         .DependentRules(() =>
                         {
                             RuleForEach(x => x.RoleIds)
                                .MustAsync(RoleExistOnDatabase)
-                               .WithMessage(localization.GetValue(AuthenticationMessages.Validations.RoleNotFound))
-                               .WithName(localization.GetValue(AuthenticationMessages.Fields.Role));
+                               .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.RoleNotFound))
+                               .WithName(localization.LocalizeString(AuthenticationMessages.Fields.Role));
                         });
                 });
         }

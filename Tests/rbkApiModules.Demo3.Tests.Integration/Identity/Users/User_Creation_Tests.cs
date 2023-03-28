@@ -84,7 +84,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
         var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/create-user", request, true);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'User' cannot be empty");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "O campo 'Usuário' não pode ser vazio(a)");
     }
 
     /// <summary>
@@ -114,7 +114,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
         var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/create-user", request, true);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "User already exists"); 
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Usuário já existe"); 
     }
 
     /// <summary>
@@ -146,7 +146,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
         var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/create-user", request, true);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'E-mail' cannot be empty");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "O campo 'E-mail' não pode ser vazio(a)");
     }
 
     /// <summary>
@@ -182,7 +182,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
         var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/create-user", request, true);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "E-mail is invalid");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "E-mail inválido");
     }
 
     /// <summary>
@@ -212,7 +212,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
         var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/create-user", request, true);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "E-mail already used");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "E-mail já utilizado");
     }
 
     /// <summary>
@@ -244,7 +244,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
         var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/create-user", request, true);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'Display name' cannot be empty");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "O campo 'Nome' não pode ser vazio(a)");
     }
 
     /// <summary>
@@ -302,7 +302,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
         var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/create-user", request, true);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The list of roles must have at least one item");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "A lista de perfis precisa ter ao menos um item");
     }
 
     /// <summary>
@@ -330,7 +330,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
         var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/create-user", request, true);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The list of roles must have at least one item");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "A lista de perfis precisa ter ao menos um item");
     }
 
     /// <summary>
@@ -360,7 +360,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
         var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/create-user", request, true);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Role not found");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Perfil não encontrado");
     }
 
     /// <summary>

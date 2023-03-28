@@ -20,26 +20,26 @@ public static class FluentValidationExtensions
     {
         return rule
             .Must(value => !String.IsNullOrEmpty(value) ? Guid.TryParse(value, out Guid result) : true)
-            .WithMessage(localization.GetValue(SharedValidationMessages.Common.InvalidIdFormat));
+            .WithMessage(localization.LocalizeString(SharedValidationMessages.Common.InvalidIdFormat));
     }
 
     public static IRuleBuilderOptions<T, string> IsRequired<T>(this IRuleBuilder<T, string> rule, ILocalizationService localization)
     {
         return rule
-            .NotEmpty().WithMessage(localization.GetValue(SharedValidationMessages.Common.FieldCannotBeEmpty));
+            .NotEmpty().WithMessage(localization.LocalizeString(SharedValidationMessages.Common.FieldCannotBeEmpty));
     }
 
     public static IRuleBuilderOptions<T, string> MustNotBeNull<T>(this IRuleBuilder<T, string> rule, ILocalizationService localization)
     {
         return rule
-            .NotNull().WithMessage(localization.GetValue(SharedValidationMessages.Common.FieldCannotBeNull));
+            .NotNull().WithMessage(localization.LocalizeString(SharedValidationMessages.Common.FieldCannotBeNull));
     }
 
     public static IRuleBuilderOptions<T, string> MustHasLengthBetween<T>(this IRuleBuilder<T, string> rule, int min, int max, ILocalizationService localization)
     {
         return rule
             .Must(x => String.IsNullOrEmpty(x) || (x.Length >= min && x.Length <= max))
-            .WithMessage(String.Format(localization.GetValue(SharedValidationMessages.Common.FieldMustHaveLengthBetweenMinAndMax), min, max));
+            .WithMessage(String.Format(localization.LocalizeString(SharedValidationMessages.Common.FieldMustHaveLengthBetweenMinAndMax), min, max));
     }
 
     public static IRuleBuilderOptions<T, string[]> ListMustHaveItems<T>(this IRuleBuilder<T, string[]> rule)
@@ -87,6 +87,6 @@ public static class FluentValidationExtensions
 
                 return true;
             })
-            .WithMessage(localization.GetValue(SharedValidationMessages.Common.InvalidEmailFormat));
+            .WithMessage(localization.LocalizeString(SharedValidationMessages.Common.InvalidEmailFormat));
     }
 }

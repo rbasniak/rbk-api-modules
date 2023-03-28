@@ -59,7 +59,7 @@ public class RelationalFaqsService : IFaqsService
 
         if (faq.TenantId != tenant)
         {
-            throw new UnauthorizedAccessException(_localization.GetValue(FaqMessages.Errors.AccessDenied));
+            throw new UnauthorizedAccessException(_localization.LocalizeString(FaqMessages.Errors.AccessDenied));
         }
 
         faq.Update(question, answer);
@@ -75,7 +75,7 @@ public class RelationalFaqsService : IFaqsService
 
         if (faq.TenantId != tenant)
         {
-            throw new UnauthorizedAccessException(_localization.GetValue(FaqMessages.Errors.AccessDenied));
+            throw new UnauthorizedAccessException(_localization.LocalizeString(FaqMessages.Errors.AccessDenied));
         }
 
         _context.Remove(faq);

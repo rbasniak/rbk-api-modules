@@ -26,13 +26,13 @@ public class UpdateRoleClaims
 
             RuleFor(x => x.Id)
                 .RoleExistOnDatabaseForTheCurrentTenant(rolesService, localization)
-                .WithMessage(localization.GetValue(AuthenticationMessages.Validations.RoleNotFound));
+                .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.RoleNotFound));
 
             RuleFor(x => x.ClaimsIds)
-                .NotNull().WithMessage(localization.GetValue(AuthenticationMessages.Validations.ClaimListMustNotBeEmpty));
+                .NotNull().WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.ClaimListMustNotBeEmpty));
 
             RuleForEach(x => x.ClaimsIds)
-                .MustAsync(ClaimExistInDatabase).WithMessage(localization.GetValue(AuthenticationMessages.Validations.UnknownClaimInTheList));
+                .MustAsync(ClaimExistInDatabase).WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.UnknownClaimInTheList));
 
             RuleFor(x => x.Identity)
                 .TenantExistOnDatabase(tenantsService, localization)

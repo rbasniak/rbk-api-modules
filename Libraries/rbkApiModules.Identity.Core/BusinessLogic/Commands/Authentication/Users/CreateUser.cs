@@ -41,43 +41,43 @@ public class CreateUser
             RuleFor(x => x.Username)
                 .IsRequired(localization)
                 .MustAsync(UserDoesNotExistOnDatabase)
-                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.UserAlreadyExists))
-                .WithName(localization.GetValue(AuthenticationMessages.Fields.User));
+                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.UserAlreadyExists))
+                .WithName(localization.LocalizeString(AuthenticationMessages.Fields.User));
 
             RuleFor(x => x.Email)
                 .IsRequired(localization)
                 .MustBeEmail(localization)
                 .MustAsync(EmailDoesNotExistOnDatabase)
-                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.EmailAlreadyUsed))
-                .WithName(localization.GetValue(AuthenticationMessages.Fields.Email));
+                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.EmailAlreadyUsed))
+                .WithName(localization.LocalizeString(AuthenticationMessages.Fields.Email));
 
             RuleFor(x => x.DisplayName)
                 .IsRequired(localization)
-                .WithName(localization.GetValue(AuthenticationMessages.Fields.DisplayName));
+                .WithName(localization.LocalizeString(AuthenticationMessages.Fields.DisplayName));
 
             RuleFor(x => x)
                 .UserMetadataIsValid(metadataValidators, localization);
 
             RuleFor(x => x.Password)
                 .Must(PasswordsIsRequired)
-                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.PasswordIsRequired))
+                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.PasswordIsRequired))
                 .Must(PasswordsBeTheSame)
-                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.PasswordsMustBeTheSame))
+                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.PasswordsMustBeTheSame))
                 .PasswordPoliciesAreValid(passwordValidators, localization);
 
             RuleFor(x => x.RoleIds)
                 .NotNull()
-                .WithMessage(localization.GetValue(AuthenticationMessages.Validations.RoleListMustNotBeEmpty))
+                .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.RoleListMustNotBeEmpty))
                 .DependentRules(() =>
                 {
                     RuleFor(x => x.RoleIds.Length)
                         .GreaterThan(0)
-                        .WithMessage(localization.GetValue(AuthenticationMessages.Validations.RoleListMustNotBeEmpty));
+                        .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.RoleListMustNotBeEmpty));
 
                     RuleForEach(x => x.RoleIds)
                         .MustAsync(RoleExistOnDatabase)
-                        .WithMessage(localization.GetValue(AuthenticationMessages.Validations.RoleNotFound))
-                        .WithName(localization.GetValue(AuthenticationMessages.Fields.Role));
+                        .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.RoleNotFound))
+                        .WithName(localization.LocalizeString(AuthenticationMessages.Fields.Role));
                 });
         }
 

@@ -24,13 +24,13 @@ public class RedefinePassword
 
             RuleFor(x => x.Password)
                  .IsRequired(localization)
-                 .WithName(localization.GetValue(AuthenticationMessages.Fields.Password))
+                 .WithName(localization.LocalizeString(AuthenticationMessages.Fields.Password))
                  .DependentRules(() =>
                  {
                      RuleFor(x => x.Code)
                          .IsRequired(localization)
-                         .MustAsync(ExistOnDatabaseAndIsValid).WithMessage(localization.GetValue(AuthenticationMessages.Validations.PasswordResetCodeExpiredOrUsed))
-                         .WithName(localization.GetValue(AuthenticationMessages.Fields.PasswordResetCode));
+                         .MustAsync(ExistOnDatabaseAndIsValid).WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.PasswordResetCodeExpiredOrUsed))
+                         .WithName(localization.LocalizeString(AuthenticationMessages.Fields.PasswordResetCode));
                  });  
         }
 

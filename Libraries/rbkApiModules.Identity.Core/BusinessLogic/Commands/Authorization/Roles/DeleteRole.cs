@@ -24,8 +24,8 @@ public class DeleteRole
             RuleFor(x => x.Id)
                 .RoleExistOnDatabaseForTheCurrentTenant(rolesService, localization)
                 .MustAsync(NotBeUsedInAnyUserUnlessThereIsAnAlternateRole)
-                .WithMessage(localization.GetValue(AuthenticationMessages.Validations.RoleIsBeingUsed))
-            .WithName(localization.GetValue(AuthenticationMessages.Fields.Role));
+                .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.RoleIsBeingUsed))
+            .WithName(localization.LocalizeString(AuthenticationMessages.Fields.Role));
 
             RuleFor(x => x.Identity)
                 .TenantExistOnDatabase(tenantsService, localization)

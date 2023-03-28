@@ -42,7 +42,7 @@ public class DefaultAuthenticationMailService : IAuthenticationMailService
             .Replace("{{systemName}}", _mailConfiguration.EmailData.Logo == null ? _mailConfiguration.Sender.Name  : _logoHtml)
             .Replace("{{activationLink}}", $"{_url}/api/auth/confirm-email?email={receiverEmail}&code={activationCode}");
 
-        var title = $"{_mailConfiguration.Sender.Name} - {_localization.GetValue(AuthenticationMessages.Emails.RegistrationConfirmed)}";
+        var title = $"{_mailConfiguration.Sender.Name} - {_localization.LocalizeString(AuthenticationMessages.Emails.RegistrationConfirmed)}";
 
         SendEmail(title, textBody, htmlBody, receiverEmail);
     }
@@ -60,7 +60,7 @@ public class DefaultAuthenticationMailService : IAuthenticationMailService
             .Replace("{{systemName}}", _mailConfiguration.EmailData.Logo == null ? _mailConfiguration.Sender.Name : _logoHtml)
             .Replace("{{profileUrl}}", _mailConfiguration.EmailData.AccountDetailsUrl);
 
-        var title = $"{_mailConfiguration.Sender.Name} - {_localization.GetValue(AuthenticationMessages.Emails.Welcome)} {receiverName}";
+        var title = $"{_mailConfiguration.Sender.Name} - {_localization.LocalizeString(AuthenticationMessages.Emails.Welcome)} {receiverName}";
 
         SendEmail(title, textBody, htmlBody, receiverEmail);
     }
@@ -78,7 +78,7 @@ public class DefaultAuthenticationMailService : IAuthenticationMailService
             .Replace("{{systemName}}", _mailConfiguration.EmailData.Logo == null ? _mailConfiguration.Sender.Name : _logoHtml)
             .Replace("{{resetLink}}", $"{_mailConfiguration.EmailData.PasswordResetUrl}?code={resetCode}");
 
-        var title = $"{_mailConfiguration.Sender.Name} - {_localization.GetValue(AuthenticationMessages.Emails.PasswordReset)}";
+        var title = $"{_mailConfiguration.Sender.Name} - {_localization.LocalizeString(AuthenticationMessages.Emails.PasswordReset)}";
 
         SendEmail(title, textBody, htmlBody, receiverEmail);
 
@@ -99,7 +99,7 @@ public class DefaultAuthenticationMailService : IAuthenticationMailService
             .Replace("{{profileUrl}}", _mailConfiguration.EmailData.AccountDetailsUrl)
             .Replace("{{suportMail}}", _mailConfiguration.EmailData.SuportEmail);
 
-        var title = $"{_mailConfiguration.Sender.Name} - {_localization.GetValue(AuthenticationMessages.Emails.PasswordSuccessfullyReset)}";
+        var title = $"{_mailConfiguration.Sender.Name} - {_localization.LocalizeString(AuthenticationMessages.Emails.PasswordSuccessfullyReset)}";
 
         SendEmail(title, textBody, htmlBody, receiverEmail);
     }

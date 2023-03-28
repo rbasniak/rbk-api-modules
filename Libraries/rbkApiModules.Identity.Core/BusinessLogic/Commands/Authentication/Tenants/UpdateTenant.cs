@@ -39,14 +39,14 @@ public class UpdateTenant
                 .IsRequired(localization)
                 .MustAsync(ExistInDatabase)
                     .WithErrorCode(ValidationErrorCodes.NOT_FOUND)
-                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.TenantNotFound))
-                    .WithName(localization.GetValue(AuthenticationMessages.Fields.TenantAlias))
+                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.TenantNotFound))
+                    .WithName(localization.LocalizeString(AuthenticationMessages.Fields.TenantAlias))
                 .DependentRules(() => 
                 {
                     RuleFor(x => x.Name)
                        .IsRequired(localization)
-                       .MustAsync(NameNotBeingUsed).WithMessage(localization.GetValue(AuthenticationMessages.Validations.NameAlreadyUsed))
-                       .WithName(localization.GetValue(AuthenticationMessages.Fields.Name));
+                       .MustAsync(NameNotBeingUsed).WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.NameAlreadyUsed))
+                       .WithName(localization.LocalizeString(AuthenticationMessages.Fields.Name));
                 });
         }
 

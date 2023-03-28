@@ -47,7 +47,7 @@ public class CreateTenant
 
             RuleFor(x => x.AdminInfo)
                 .NotNull()
-                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.AdminUserDataIsRequired))
+                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.AdminUserDataIsRequired))
                 .DependentRules(() => 
                 {
                     RuleFor(x => x.AdminInfo.Username)
@@ -65,15 +65,15 @@ public class CreateTenant
                     RuleFor(x => x.Alias)
                         .IsRequired(localization)
                         .MustAsync(NameBeUnique)
-                            .WithMessage(localization.GetValue(AuthenticationMessages.Validations.TenantAliasAlreadyUsed))
-                            .WithName(localization.GetValue(AuthenticationMessages.Fields.Tenant))
+                            .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.TenantAliasAlreadyUsed))
+                            .WithName(localization.LocalizeString(AuthenticationMessages.Fields.Tenant))
                         .DependentRules(() =>
                         {
                             RuleFor(x => x.Name)
                                 .IsRequired(localization)
                                 .MustAsync(NameNotBeingUsed)
-                                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.NameAlreadyUsed))
-                                    .WithName(localization.GetValue(AuthenticationMessages.Fields.Name));
+                                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.NameAlreadyUsed))
+                                    .WithName(localization.LocalizeString(AuthenticationMessages.Fields.Name));
                         });
                 });
 

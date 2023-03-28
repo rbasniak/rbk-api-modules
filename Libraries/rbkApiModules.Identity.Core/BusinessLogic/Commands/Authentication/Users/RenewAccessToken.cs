@@ -23,9 +23,9 @@ public class RenewAccessToken
 
             RuleFor(x => x.RefreshToken)
                 .IsRequired(localization)
-                .MustAsync(RefreshTokenExistOnDatabase).WithMessage(localization.GetValue(AuthenticationMessages.Validations.RefreshTokenNotFound))
-                .MustAsync(TokenMustBeWithinValidity).WithMessage(localization.GetValue(AuthenticationMessages.Validations.RefreshTokenExpired))
-                .WithName(localization.GetValue(AuthenticationMessages.Fields.RefreshToken));
+                .MustAsync(RefreshTokenExistOnDatabase).WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.RefreshTokenNotFound))
+                .MustAsync(TokenMustBeWithinValidity).WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.RefreshTokenExpired))
+                .WithName(localization.LocalizeString(AuthenticationMessages.Fields.RefreshToken));
         }
 
         public async Task<bool> TokenMustBeWithinValidity(Request comman, string refreshToken, CancellationToken cancelation)

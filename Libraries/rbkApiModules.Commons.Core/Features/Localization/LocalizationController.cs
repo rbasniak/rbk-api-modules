@@ -32,7 +32,7 @@ public class LocalizationController : BaseController
     [HttpGet("test")]
     public ActionResult<string> Test()
     {
-        return _localizationService.GetValue(AuthenticationMessages.Erros.CannotDeleteUsedTenant);
+        return _localizationService.LocalizeString(AuthenticationMessages.Erros.CannotDeleteUsedTenant);
 
         // Carregar o dicionario básico, com todos enums e descriptions
         // Procurar todos os arquivos com extensao .localization

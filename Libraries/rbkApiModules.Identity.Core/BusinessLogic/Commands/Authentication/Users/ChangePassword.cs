@@ -26,12 +26,12 @@ public class ChangePassword
 
             RuleFor(x => x.OldPassword)
                 .MustAsync(MatchPassword)
-                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.OldPasswordDoesNotMatch));
+                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.OldPasswordDoesNotMatch));
 
             RuleFor(x => x.NewPassword)
                 .IsRequired(localization)
                 .Must(PasswordsBeTheSame)
-                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.PasswordsMustBeTheSame))
+                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.PasswordsMustBeTheSame))
                 .PasswordPoliciesAreValid(passwordValidators, localization);
         }
 

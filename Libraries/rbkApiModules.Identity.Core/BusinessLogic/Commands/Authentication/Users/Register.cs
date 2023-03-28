@@ -34,25 +34,25 @@ public class Register
             RuleFor(x => x.Username)
                 .IsRequired(localization)
                 .MustAsync(UserDoesNotExistOnDatabase)
-                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.UserAlreadyExists))
-                .WithName(localization.GetValue(AuthenticationMessages.Fields.User));
+                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.UserAlreadyExists))
+                .WithName(localization.LocalizeString(AuthenticationMessages.Fields.User));
 
             RuleFor(x => x.Tenant)
                 .IsRequired(localization)
                 .MustAsync(TenantExistInDatabase)
-                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.TenantNotFound))
-                .WithName(localization.GetValue(AuthenticationMessages.Fields.TenantAlias));
+                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.TenantNotFound))
+                .WithName(localization.LocalizeString(AuthenticationMessages.Fields.TenantAlias));
 
             RuleFor(x => x.Email)
                 .IsRequired(localization)
                 .MustBeEmail(localization)
                 .MustAsync(EmailDoesNotExistOnDatabase)
-                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.EmailAlreadyUsed))
-                .WithName(localization.GetValue(AuthenticationMessages.Fields.Email));
+                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.EmailAlreadyUsed))
+                .WithName(localization.LocalizeString(AuthenticationMessages.Fields.Email));
 
             RuleFor(x => x.DisplayName)
                 .IsRequired(localization)
-                .WithName(localization.GetValue(AuthenticationMessages.Fields.DisplayName));
+                .WithName(localization.LocalizeString(AuthenticationMessages.Fields.DisplayName));
 
             RuleFor(x => x)
                 .UserMetadataIsValid(metadataValidators, localization);
@@ -60,7 +60,7 @@ public class Register
             RuleFor(x => x.Password)
                 .IsRequired(localization)
                 .Must(PasswordsBeTheSame)
-                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.PasswordsMustBeTheSame))
+                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.PasswordsMustBeTheSame))
                 .PasswordPoliciesAreValid(passwordValidators, localization);
         }
 

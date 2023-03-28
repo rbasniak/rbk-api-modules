@@ -25,20 +25,20 @@ public class RemoveClaimOverride
             RuleFor(x => x.Username)
                 .IsRequired(localization)
                 .MustAsync(UserExistInDatabaseUnderTheSameTenant)
-                .WithMessage(localization.GetValue(AuthenticationMessages.Validations.UserNotFound))
-                .WithName(localization.GetValue(AuthenticationMessages.Fields.User))
+                .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.UserNotFound))
+                .WithName(localization.LocalizeString(AuthenticationMessages.Fields.User))
                 .DependentRules(() =>
                 {
                     RuleFor(x => x.ClaimIds)
                         .Must(HaveAtLeastOneItem)
-                        .WithMessage(localization.GetValue(AuthenticationMessages.Validations.RoleListMustNotBeEmpty))
+                        .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.RoleListMustNotBeEmpty))
                         .DependentRules(() =>
                         {
                             RuleForEach(x => x.ClaimIds)
                                 .ClaimExistOnDatabase(claimsService, localization)
                                 .MustAsync(ClaimIsOverrideInUser)
-                                .WithMessage(localization.GetValue(AuthenticationMessages.Validations.ClaimNotOverridedInUser))
-                                .WithName(localization.GetValue(AuthenticationMessages.Fields.Claim));
+                                .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.ClaimNotOverridedInUser))
+                                .WithName(localization.LocalizeString(AuthenticationMessages.Fields.Claim));
                         });
                 });
         }

@@ -19,7 +19,7 @@ public class DeleteFaq
         {
             RuleFor(x => x.Id)
                 .MustAsync(async (command, id, cancellation) => await faqsService.ExistsAsync(command.Identity.Tenant, id, cancellation))
-                    .WithMessage(localization.GetValue(FaqMessages.Validation.EntityNotFound));
+                    .WithMessage(localization.LocalizeString(FaqMessages.Validation.EntityNotFound));
         }
     }
 

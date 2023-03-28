@@ -12,7 +12,7 @@ namespace rbkApiModules.Commons.Core.Localization;
 
 public interface ILocalizationService
 {
-    string GetValue(Enum value);
+    string LocalizeString(Enum value);
 
     string GetLanguageTemplate(string localization = null);
 }
@@ -123,7 +123,7 @@ public class LocalizationService : ILocalizationService
         }
     }
 
-    public string GetValue(Enum value)
+    public string LocalizeString(Enum value)
     {
         var dictionary = _defaultValues;
 

@@ -37,8 +37,8 @@ public class DeleteTenant
                 .IsRequired(localization)
                 .MustAsync(ExistInDatabase)
                     .WithErrorCode(ValidationErrorCodes.NOT_FOUND)
-                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.TenantNotFound))
-                    .WithName(localization.GetValue(AuthenticationMessages.Fields.TenantAlias));
+                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.TenantNotFound))
+                    .WithName(localization.LocalizeString(AuthenticationMessages.Fields.TenantAlias));
         }
 
         private async Task<bool> ExistInDatabase(Request request, string alias, CancellationToken cancellation)
@@ -74,7 +74,7 @@ public class DeleteTenant
             }
             catch 
             {
-                throw new SafeException(_localization.GetValue(AuthenticationMessages.Erros.CannotDeleteUsedTenant));
+                throw new SafeException(_localization.LocalizeString(AuthenticationMessages.Erros.CannotDeleteUsedTenant));
             }
 
             return CommandResponse.Success();

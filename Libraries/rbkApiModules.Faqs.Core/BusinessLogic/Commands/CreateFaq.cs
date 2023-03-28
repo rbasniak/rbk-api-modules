@@ -21,15 +21,15 @@ public class CreateFaq
         {
             RuleFor(x => x.Tag)
                 .IsRequired(localization)
-                .WithName(localization.GetValue(FaqMessages.Fields.Tag));
+                .WithName(localization.LocalizeString(FaqMessages.Fields.Tag));
 
             RuleFor(x => x.Question)
                 .IsRequired(localization)
-                .WithName(localization.GetValue(FaqMessages.Fields.Question));
+                .WithName(localization.LocalizeString(FaqMessages.Fields.Question));
 
             RuleFor(x => x.Answer)
                 .IsRequired(localization)
-                .WithName(localization.GetValue(FaqMessages.Fields.Answer));
+                .WithName(localization.LocalizeString(FaqMessages.Fields.Answer));
         }
     }
 

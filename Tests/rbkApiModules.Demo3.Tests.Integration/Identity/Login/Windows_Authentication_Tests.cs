@@ -48,7 +48,7 @@ public class WindowsAuthenticationTests : SequentialTest, IClassFixture<ServerFi
         var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", command, credentials: "tony.stark");
 
         // Assert
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Invalid credentials");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Credenciais inválidas");
     }
 
     /// <summary>
@@ -66,7 +66,7 @@ public class WindowsAuthenticationTests : SequentialTest, IClassFixture<ServerFi
         var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", command, credentials: "lucius.fox");
 
         // Assert
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Invalid credentials");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Credenciais inválidas");
     }
 }
 

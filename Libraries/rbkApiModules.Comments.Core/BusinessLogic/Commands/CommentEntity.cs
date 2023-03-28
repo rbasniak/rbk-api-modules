@@ -21,13 +21,13 @@ public class CommentEntity
         {
             RuleFor(x => x.Comment)
                 .IsRequired(localization)
-                .WithName(localization.GetValue(CommentMessages.Fields.Comment));
+                .WithName(localization.LocalizeString(CommentMessages.Fields.Comment));
 
             When(x => x.ParentId != null, () => 
             {
                 RuleFor(x => x.ParentId)
                     .MustAsync(async (command, parentId, cancellation) => await commentsService.ExistsAsync(command.Identity.Tenant, parentId.Value, cancellation))
-                    .WithMessage(localization.GetValue(CommentMessages.Validation.CouldNotFindParentComment));
+                    .WithMessage(localization.LocalizeString(CommentMessages.Validation.CouldNotFindParentComment));
             });
         }
     }

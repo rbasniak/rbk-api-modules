@@ -28,8 +28,8 @@ public class UpdateClaim
             RuleFor(x => x.Description)
                 .IsRequired(localization)
                 .MustAsync(NotExistsInDatabaseWithSameDescription)
-                .WithMessage(localization.GetValue(AuthenticationMessages.Validations.ClaimDescriptionAlreadyUsed))
-                .WithName(localization.GetValue(AuthenticationMessages.Fields.Description));
+                .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.ClaimDescriptionAlreadyUsed))
+                .WithName(localization.LocalizeString(AuthenticationMessages.Fields.Description));
         }
 
         private async Task<bool> NotExistsInDatabaseWithSameDescription(Request request, string identification, CancellationToken cancelation)

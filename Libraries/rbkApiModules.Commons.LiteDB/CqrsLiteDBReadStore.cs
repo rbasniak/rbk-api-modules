@@ -50,7 +50,7 @@ public class CqrsLiteDBStore<T> : ICqrsReadStore<T> where T : class
 
         if (!success)
         {
-            throw new LiteException(-1, String.Format(_localization.GetValue(LiteDBCommonMessages.Errors.CannotDeleteEntity), id));
+            throw new LiteException(-1, String.Format(_localization.LocalizeString(LiteDBCommonMessages.Errors.CannotDeleteEntity), id));
         }
     }
 
@@ -62,7 +62,7 @@ public class CqrsLiteDBStore<T> : ICqrsReadStore<T> where T : class
 
         if (!success)
         {
-            throw new LiteException(-1, String.Format(_localization.GetValue(LiteDBCommonMessages.Errors.CannotUpdateEntity), id));
+            throw new LiteException(-1, String.Format(_localization.LocalizeString(LiteDBCommonMessages.Errors.CannotUpdateEntity), id));
         }
 
         await Task.CompletedTask;

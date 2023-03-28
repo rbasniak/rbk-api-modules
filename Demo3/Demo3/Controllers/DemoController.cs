@@ -2,7 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.CodeGeneration;
+using rbkApiModules.Commons.Core.Localization;
+using rbkApiModules.Commons.Core.Utilities.Localization;
 using rbkApiModules.Identity.Core;
+using System.ComponentModel;
 
 namespace Demo3;
 
@@ -54,10 +57,40 @@ public class DemoController : BaseController
             Message = "You should not have access to this",
         });
     }
+
+    [AllowAnonymous()]
+    [HttpGet("localization/resource-from-application/with-description")]
+    public ActionResult<Response> GetLocalizedResourceFromApplicationWithDescription([FromServices] ILocalizationService localization)
+    {
+        return Ok(localization.LocalizeString(ApplicationMessages.Common.ValueWithDescription));
+    }
+
+    [AllowAnonymous()]
+    [HttpGet("localization/resource-from-application/without-description")]
+    public ActionResult<Response> GetLocalizedResourceFromApplicationWithoutDescription([FromServices] ILocalizationService localization)
+    {
+        return Ok(localization.LocalizeString(ApplicationMessages.Common.ValueWithoutDescription));
+    }
+
+    [AllowAnonymous()]
+    [HttpGet("localization/localized-string")]
+    public ActionResult<Response> GetLocalizedResource([FromServices] ILocalizationService localization)
+    {
+        return Ok(localization.LocalizeString(AuthenticationMessages.Validations.InvalidCredentials));
+    }
 }
 
 public class Response
 {
     public required DateTime Timestamp { get; set; }
     public required string Message { get; set; }
+}
+
+public class ApplicationMessages : ILocalizedResource
+{
+    public enum Common
+    {
+        [Description("Message from description attribute")] ValueWithDescription,
+        ValueWithoutDescription,
+    }
 }

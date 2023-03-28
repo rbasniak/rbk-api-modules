@@ -74,6 +74,7 @@ public class Startup
             .UseDefaultSwagger("Demo using Windows authentication")
             .UseHttpContextAccessor()
             .UseStaticFiles()
+            .UseDefaultLocalizationLanguage("pt-br")
             .SuppressPipeline(typeof(CqrsReplicaBehavior<,>)) 
         );
 

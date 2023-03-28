@@ -25,14 +25,14 @@ public class CreateClaim
             RuleFor(x => x.Identification)
                 .IsRequired(localization)
                 .MustAsync(NotExistsInDatabaseWithSameIdentification)
-                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.ClaimIdentificationAlreadyUsed))
-                .WithName(localization.GetValue(AuthenticationMessages.Fields.Identification));
+                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.ClaimIdentificationAlreadyUsed))
+                .WithName(localization.LocalizeString(AuthenticationMessages.Fields.Identification));
 
             RuleFor(x => x.Description)
                 .IsRequired(localization)
                 .MustAsync(NotExistsInDatabaseWithSameDescription)
-                    .WithMessage(localization.GetValue(AuthenticationMessages.Validations.ClaimDescriptionAlreadyUsed))
-                .WithName(localization.GetValue(AuthenticationMessages.Fields.Description));
+                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.ClaimDescriptionAlreadyUsed))
+                .WithName(localization.LocalizeString(AuthenticationMessages.Fields.Description));
         }
 
         private async Task<bool> NotExistsInDatabaseWithSameIdentification(Request request, string identification, CancellationToken cancelation)
