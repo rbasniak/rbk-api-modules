@@ -35,8 +35,6 @@ public static class ModelBuilderExtensions
 
             foreach (var tenantProperty in properties)
             {
-                Debug.WriteLine(entityType.Name + "::" + tenantProperty.Name + " >> " + entityType.ClrType.Name);
-
                 modelBuilder
                     .Entity(entityType.ClrType, x =>
                     {

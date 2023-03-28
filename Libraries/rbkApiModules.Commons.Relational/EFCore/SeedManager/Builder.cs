@@ -19,7 +19,7 @@ public static class SeedBuilder
         {
             var context = scope.ServiceProvider.GetService<T>();
 
-            if (options._resetOnStartup || TestEnvironmentChecker.IsTestEnvironment)
+            if (options._resetOnStartup || TestingEnvironmentChecker.IsTestingEnvironment)
             {
                 context.Database.EnsureDeleted();
                 context.Database.Migrate();

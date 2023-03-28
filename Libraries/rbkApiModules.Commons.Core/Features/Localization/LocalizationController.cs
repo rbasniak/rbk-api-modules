@@ -11,6 +11,8 @@ using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using rbkApiModules.Commons.Core.Localization;
+using Microsoft.AspNetCore.Authorization;
 
 namespace rbkApiModules.Comments.Core.Controllers;
 
@@ -19,6 +21,14 @@ namespace rbkApiModules.Comments.Core.Controllers;
 [Route("api/[controller]")]
 public class LocalizationController : BaseController
 {
+    private readonly ILocalizationService _localizationService;
+
+    public LocalizationController(ILocalizationService localizationService)
+    {
+        _localizationService = localizationService;
+    }
+
+    [AllowAnonymous]
     [HttpGet("test")]
     public ActionResult<string> Test()
     {
@@ -39,83 +49,85 @@ public class LocalizationController : BaseController
         //   - olhara para os options da lib caso nao seja dinamico
     }
 
+    [AllowAnonymous]
     [HttpGet("localization-template")]
     public ActionResult<string> GetLocalizationTemplate()
     {
-        var results = new List<string>();
+        return _localizationService.GetLanguageTemplate();
+        //var results = new List<string>();
 
-        AppDomain currentDomain = AppDomain.CurrentDomain;
-        var assemblies = currentDomain.GetAssemblies();
+        //AppDomain currentDomain = AppDomain.CurrentDomain;
+        //var assemblies = currentDomain.GetAssemblies();
 
-        foreach (var assembly in assemblies)
-        {
-            var localizedResourceTypes = assembly.GetTypes()
-                    .Where(x => typeof(ILocalizedResource).IsAssignableFrom(x) && !x.IsInterface);
+        //foreach (var assembly in assemblies)
+        //{
+        //    var localizedResourceTypes = assembly.GetTypes()
+        //            .Where(x => typeof(ILocalizedResource).IsAssignableFrom(x) && !x.IsInterface);
 
-            foreach (var localizedResourceType in localizedResourceTypes)
-            {
-                var localizedResourceChildTypes = localizedResourceType.GetNestedTypes();
+        //    foreach (var localizedResourceType in localizedResourceTypes)
+        //    {
+        //        var localizedResourceChildTypes = localizedResourceType.GetNestedTypes();
 
-                foreach (var localizedResourceChildType in localizedResourceChildTypes)
-                {
-                    if (localizedResourceChildType.IsEnum)
-                    {
-                        var enumValues = Enum.GetValues(localizedResourceChildType);
+        //        foreach (var localizedResourceChildType in localizedResourceChildTypes)
+        //        {
+        //            if (localizedResourceChildType.IsEnum)
+        //            {
+        //                var enumValues = Enum.GetValues(localizedResourceChildType);
 
-                        foreach (var enumValue in enumValues)
-                        {
-                            var enumType = localizedResourceChildType;
-                            var memberInfos = enumType.GetMember(((Enum)enumValue).ToString());
-                            var enumValueMemberInfo = memberInfos.FirstOrDefault(m => m.DeclaringType == enumType);
-                            var valueAttributes = enumValueMemberInfo.GetCustomAttributes(typeof(DescriptionAttribute), false);
+        //                foreach (var enumValue in enumValues)
+        //                {
+        //                    var enumType = localizedResourceChildType;
+        //                    var memberInfos = enumType.GetMember(((Enum)enumValue).ToString());
+        //                    var enumValueMemberInfo = memberInfos.FirstOrDefault(m => m.DeclaringType == enumType);
+        //                    var valueAttributes = enumValueMemberInfo.GetCustomAttributes(typeof(DescriptionAttribute), false);
 
-                            var message = "*** Missing localized message ***";
+        //                    var message = "*** Missing localized message ***";
 
-                            if (valueAttributes != null && valueAttributes.Length > 0)
-                            {
-                                message = ((DescriptionAttribute)valueAttributes[0]).Description;
-                            }
+        //                    if (valueAttributes != null && valueAttributes.Length > 0)
+        //                    {
+        //                        message = ((DescriptionAttribute)valueAttributes[0]).Description;
+        //                    }
 
-                            results.Add($"{localizedResourceType.Name}::{localizedResourceChildType.Name}::{enumValue.ToString()}={message}");
-                        }
-                    }
-                    else
-                    {
-                        var localizedResourceGrandChildTypes = localizedResourceChildType.GetNestedTypes();
+        //                    results.Add($"{localizedResourceType.Name}::{localizedResourceChildType.Name}::{enumValue.ToString()}={message}");
+        //                }
+        //            }
+        //            else
+        //            {
+        //                var localizedResourceGrandChildTypes = localizedResourceChildType.GetNestedTypes();
 
-                        foreach (var localizedResourceGrandChildType in localizedResourceGrandChildTypes)
-                        {
-                            if (localizedResourceGrandChildType.IsEnum)
-                            {
-                                var enumValues = Enum.GetValues(localizedResourceGrandChildType);
+        //                foreach (var localizedResourceGrandChildType in localizedResourceGrandChildTypes)
+        //                {
+        //                    if (localizedResourceGrandChildType.IsEnum)
+        //                    {
+        //                        var enumValues = Enum.GetValues(localizedResourceGrandChildType);
 
-                                foreach (var enumValue in enumValues)
-                                {
-                                    var enumType = localizedResourceGrandChildType;
-                                    var memberInfos = enumType.GetMember(((Enum)enumValue).ToString());
-                                    var enumValueMemberInfo = memberInfos.FirstOrDefault(m => m.DeclaringType == enumType);
-                                    var valueAttributes = enumValueMemberInfo.GetCustomAttributes(typeof(DescriptionAttribute), false);
+        //                        foreach (var enumValue in enumValues)
+        //                        {
+        //                            var enumType = localizedResourceGrandChildType;
+        //                            var memberInfos = enumType.GetMember(((Enum)enumValue).ToString());
+        //                            var enumValueMemberInfo = memberInfos.FirstOrDefault(m => m.DeclaringType == enumType);
+        //                            var valueAttributes = enumValueMemberInfo.GetCustomAttributes(typeof(DescriptionAttribute), false);
 
-                                    var message = "*** Missing localized message ***";
+        //                            var message = "*** Missing localized message ***";
 
-                                    if (valueAttributes != null && valueAttributes.Length > 0)
-                                    {
-                                        message = ((DescriptionAttribute)valueAttributes[0]).Description;
-                                    }
+        //                            if (valueAttributes != null && valueAttributes.Length > 0)
+        //                            {
+        //                                message = ((DescriptionAttribute)valueAttributes[0]).Description;
+        //                            }
 
-                                    results.Add($"{localizedResourceType.Name}::{localizedResourceChildType.Name}::{localizedResourceGrandChildType.Name}::{enumValue.ToString()}={message}");
-                                }
-                            }
-                            else
-                            {
-                                throw new SafeException("Localization services does not support classes nested more than 2 levels deep");
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        //                            results.Add($"{localizedResourceType.Name}::{localizedResourceChildType.Name}::{localizedResourceGrandChildType.Name}::{enumValue.ToString()}={message}");
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        throw new SafeException("Localization services does not support classes nested more than 2 levels deep");
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
 
-        return String.Join(Environment.NewLine, results);
+        //return String.Join(Environment.NewLine, results);
     }
 }

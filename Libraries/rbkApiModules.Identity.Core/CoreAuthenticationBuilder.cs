@@ -162,7 +162,7 @@ public static class CoreAuthenticationBuilder
         {
             var validSchemas = new List<string> { JwtBearerDefaults.AuthenticationScheme };
 
-            if (TestEnvironmentChecker.IsTestEnvironment && authenticationOptions._loginMode == LoginMode.WindowsAuthentication)
+            if (TestingEnvironmentChecker.IsTestingEnvironment && authenticationOptions._loginMode == LoginMode.WindowsAuthentication)
             {
                 validSchemas.Add("TestScheme");
             }

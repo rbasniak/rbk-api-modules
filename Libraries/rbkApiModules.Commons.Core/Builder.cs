@@ -23,6 +23,7 @@ using rbkApiModules.Commons.Core.Pipelines;
 using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Authentication.Negotiate;
 using rbkApiModules.Commons.Core.Utilities;
+using System.Globalization;
 
 [assembly: InternalsVisibleTo("rbkApiModules.Commons.Relational")]
 
@@ -446,6 +447,20 @@ public class RbkApiCoreOptions
 
     //    return this;
     //}
+
+    #endregion
+
+    #region Localization
+
+    internal string _defaultLocalization = "en-us";
+
+    public RbkApiCoreOptions UseDefaultLocalizationLanguage(string code)
+    {
+        if (code == null) throw new ArgumentNullException(nameof(code));
+
+        _defaultLocalization = code;
+        return this;
+    }
 
     #endregion
 }

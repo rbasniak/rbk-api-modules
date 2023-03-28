@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace rbkApiModules.Commons.Core.Utilities;
 
-public static class TestEnvironmentChecker
+public static class TestingEnvironmentChecker
 {
-    public static bool IsTestEnvironment => AppDomain.CurrentDomain.GetAssemblies().Any(assembly => assembly.FullName.ToLowerInvariant().StartsWith("xunit"));
+    public static bool IsTestingEnvironment => AppDomain.CurrentDomain.GetAssemblies().Any(assembly => assembly.FullName.ToLowerInvariant().StartsWith("xunit"));
 }
