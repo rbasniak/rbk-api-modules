@@ -84,6 +84,7 @@ public class Startup
             .AllowAnonymousAccessToTenants()
             .AllowUserCreationByAdmins()
             .AllowTenantSwitching()
+            // .UseMockedWindowsAuthentication()
         );
 
         services.AddRbkUIDefinitions(AssembliesForUiDefinitions);

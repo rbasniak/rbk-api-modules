@@ -5,20 +5,20 @@ namespace rbkApiModules.Identity.Core;
 
 public class RbkAuthenticationOptions
 {
-    // TODO: export internals para as libs corretas
-    public bool _disablePasswordReset = false;
-    public bool _disableEmailConfirmation = false;
-    public bool _disableRefreshToken = false;
-    public bool _useAssymetricEncryptationKey = false;
-    public bool _useSymetricEncryptationKey = false;
-    public bool _allowAnonymousTenantAccess = false;
-    public Type _tenantPostCreationActionType = null;
-    public LoginMode _loginMode = LoginMode.Credentials;
-    public bool _allowUserSelfRegistration = false;
-    public bool _allowTenantSwitching = false;
-    public bool _allowUserCreationByAdmin = false;
-    public string _userAvatarPath = "users/images";
-    public Type _customAvatarStorageType = typeof(DefaultAvatarStorageService);
+    internal bool _disablePasswordReset = false;
+    internal bool _disableEmailConfirmation = false;
+    internal bool _disableRefreshToken = false;
+    internal bool _useAssymetricEncryptationKey = false;
+    internal bool _useSymetricEncryptationKey = false;
+    internal bool _allowAnonymousTenantAccess = false;
+    internal Type _tenantPostCreationActionType = null;
+    internal LoginMode _loginMode = LoginMode.Credentials;
+    internal bool _allowUserSelfRegistration = false;
+    internal bool _allowTenantSwitching = false;
+    internal bool _allowUserCreationByAdmin = false;
+    internal string _userAvatarPath = "users/images";
+    internal Type _customAvatarStorageType = typeof(DefaultAvatarStorageService);
+    internal bool _useMockedWindowsAuthentication = false;
 
     public RbkAuthenticationOptions UseCustomAvatarStorage<T>() where T : IAvatarStorage
     {
@@ -107,6 +107,13 @@ public class RbkAuthenticationOptions
     public RbkAuthenticationOptions AllowUserCreationByAdmins()
     {
         _allowUserCreationByAdmin = true;
+
+        return this;
+    }
+    
+    public RbkAuthenticationOptions UseMockedWindowsAuthentication()
+    {
+        _useMockedWindowsAuthentication = true;
 
         return this;
     }

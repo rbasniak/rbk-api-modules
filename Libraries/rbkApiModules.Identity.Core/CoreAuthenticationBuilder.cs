@@ -162,21 +162,37 @@ public static class CoreAuthenticationBuilder
             configureOptions.SaveToken = true;
         });
 
-        services.AddAuthorization(options =>
+        if (TestingEnvironmentChecker.IsTestingEnvironment && authenticationOptions._loginMode == LoginMode.WindowsAuthentication ||
+                authenticationOptions._useMockedWindowsAuthentication && authenticationOptions._loginMode == LoginMode.WindowsAuthentication)
         {
-            if (TestingEnvironmentChecker.IsTestingEnvironment && authenticationOptions._loginMode == LoginMode.WindowsAuthentication)
+            services.AddAuthentication(MockedWindowsAuthenticationHandler.AuthenticationScheme)
+                .AddScheme<TestAuthHandlerOptions, MockedWindowsAuthenticationHandler>(MockedWindowsAuthenticationHandler.AuthenticationScheme, options => { });
+
+            services.AddAuthorization(options =>
             {
-                var validSchemas = new List<string> { JwtBearerDefaults.AuthenticationScheme };
+                if (TestingEnvironmentChecker.IsTestingEnvironment && authenticationOptions._loginMode == LoginMode.WindowsAuthentication ||
+                    authenticationOptions._useMockedWindowsAuthentication && authenticationOptions._loginMode == LoginMode.WindowsAuthentication)
+                {
+                    var validSchemas = new List<string>
+                    {
+                        MockedWindowsAuthenticationHandler.AuthenticationScheme,
+                        JwtBearerDefaults.AuthenticationScheme,
+                    };
 
-                validSchemas.Add("TestScheme");
+                    var defaultAuthorizationPolicyBuilder = new AuthorizationPolicyBuilder(validSchemas.ToArray());
 
-                var defaultAuthorizationPolicyBuilder = new AuthorizationPolicyBuilder(validSchemas.ToArray());
+                    defaultAuthorizationPolicyBuilder = defaultAuthorizationPolicyBuilder.RequireAuthenticatedUser();
 
-                defaultAuthorizationPolicyBuilder = defaultAuthorizationPolicyBuilder.RequireAuthenticatedUser();
+                    options.DefaultPolicy = defaultAuthorizationPolicyBuilder.Build();
+                }
+            });
+        }
+        else
+        {
+            services.AddAuthorization();
+        }
 
-                options.DefaultPolicy = defaultAuthorizationPolicyBuilder.Build();
-            }
-        });
+
 
         services.RegisterApplicationServices(Assembly.GetAssembly(typeof(IJwtFactory)));
 
