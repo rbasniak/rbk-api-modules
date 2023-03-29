@@ -20,7 +20,7 @@ public class EndpointsAvailabilityTests : SequentialTest, IClassFixture<ServerFi
     public async Task Switch_domain_endpoint_should_not_be_available()
     {
         // Prepare
-        var request = new SwitchDomain.Request();
+        var request = new SwitchTenant.Request();
 
         // Act
         var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/switch-domain", request, credentials: null);

@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using Serilog.Core;
+using System.Diagnostics;
 using System.Reflection;
+using System.Reflection.Metadata;
 using System.Text;
 
 namespace rbkApiModules.Commons.Core.CodeGeneration;
@@ -78,6 +80,7 @@ public class AngularCodeGenerator
         {
             if (!models.Any(x => x.Name == model.Name) && !CodeGenerationUtilities.IsNative(new TypeInfo(model.Type).Type))
             {
+                Log.Information("Adding model to the list of models that will have a .ts file (from return types): {model}", model.Name);
                 models.Add(model);
             }
             index++;
@@ -88,11 +91,13 @@ public class AngularCodeGenerator
         {
             if (!models.Any(x => x.Name == model.Name) && !CodeGenerationUtilities.IsNative(new TypeInfo(model.Type).Type))
             {
+                Log.Information("Adding model to the list of models that will have a .ts file (from input types): {model}", model.Name);
                 models.Add(model);
             }
         }
 
         // Recursively include other used models for ts code generation
+        Log.Information("Recursivelly finding all other associated models");
         while (true)
         {
             var foundNewModel = false;
@@ -100,14 +105,21 @@ public class AngularCodeGenerator
             for (int i = 0; i < models.Count; i++)
             {
                 var model = models[i];
+
+                Log.Information("  Analysing model: {model}", model.Name);
+
                 foreach (var property in model.Type.GetProperties())
                 {
                     var propertyTypeInfo = new TypeInfo(property.PropertyType);
 
-                    if (!CodeGenerationUtilities.IsNative(propertyTypeInfo.Type))
+                    var isNative = CodeGenerationUtilities.IsNative(propertyTypeInfo.Type);
+
+                    if (!isNative)
                     {
                         if (!models.Any(x => x.Name == propertyTypeInfo.Name))
                         {
+                            Log.Information("Adding model to the list of models that will have a .ts file (associated from {parent}): {model}", model.Name, propertyTypeInfo.Name);
+
                             foundNewModel = true;
                             models.Add(propertyTypeInfo);
                         }

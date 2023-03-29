@@ -74,6 +74,12 @@ public class TypescriptType
             Name = "any";
         }
 
+        if (type.Type.FullName == typeof(Dictionary<string, string>).FullName)
+        {
+            IsNative = true;
+            Name = "{ [key: string]: string }";
+        }
+
         if (type.Type.FullName == typeof(SimpleNamedEntity<int>).FullName)
         {
             IsNative = true;

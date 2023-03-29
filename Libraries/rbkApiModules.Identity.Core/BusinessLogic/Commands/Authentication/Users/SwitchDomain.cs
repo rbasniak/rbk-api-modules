@@ -8,11 +8,11 @@ using rbkApiModules.Commons.Core.Utilities.Localization;
 
 namespace rbkApiModules.Identity.Core;
 
-public class SwitchDomain
+public class SwitchTenant
 {
     public class Request : AuthenticatedRequest, IRequest<CommandResponse>
     {
-        public string DestinationDomain { get; set; }
+        public string Tenant { get; set; }
     }
 
     public class Validator : AbstractValidator<Request>
@@ -25,7 +25,7 @@ public class SwitchDomain
             _usersService = usersService;
             _tenantsService = tenantsService;
 
-            RuleFor(x => x.DestinationDomain)
+            RuleFor(x => x.Tenant)
                 .IsRequired(localization)
                 .MustAsync(ExistInDatabase)
                     .WithErrorCode(ValidationErrorCodes.NOT_FOUND)
@@ -67,9 +67,9 @@ public class SwitchDomain
         {
             var refreshToken = Guid.NewGuid().ToString().ToLower().Replace("-", "");
 
-            await _usersService.UpdateRefreshTokenAsync(request.Identity.Username, request.DestinationDomain, refreshToken, _jwtOptions.RefreshTokenLife, cancellation);
+            await _usersService.UpdateRefreshTokenAsync(request.Identity.Username, request.Tenant, refreshToken, _jwtOptions.RefreshTokenLife, cancellation);
 
-            var user = await _usersService.GetUserWithDependenciesAsync(request.Identity.Username, request.DestinationDomain, cancellation);
+            var user = await _usersService.GetUserWithDependenciesAsync(request.Identity.Username, request.Tenant, cancellation);
 
             var extraClaims = new Dictionary<string, string[]>();
 

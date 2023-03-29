@@ -48,9 +48,9 @@ public class UserChangeDomainTests : SequentialTest, IClassFixture<ServerFixture
     public async Task User_cannot_change_access_change_domain_anonymously()
     {
         // Prepare
-        var command = new SwitchDomain.Request
+        var command = new SwitchTenant.Request
         {
-            DestinationDomain = "wayne inc",
+            Tenant = "wayne inc",
         };
 
         // Act
@@ -77,9 +77,9 @@ public class UserChangeDomainTests : SequentialTest, IClassFixture<ServerFixture
 
         loginResponse.ShouldBeSuccess();
 
-        var command = new SwitchDomain.Request
+        var command = new SwitchTenant.Request
         {
-            DestinationDomain = "oscorp",
+            Tenant = "oscorp",
         };
 
         // Act
@@ -106,9 +106,9 @@ public class UserChangeDomainTests : SequentialTest, IClassFixture<ServerFixture
 
         loginResponse.ShouldBeSuccess();
 
-        var command = new SwitchDomain.Request
+        var command = new SwitchTenant.Request
         {
-            DestinationDomain = "Stark Enterprises",
+            Tenant = "Stark Enterprises",
         };
 
         // Act
@@ -135,9 +135,9 @@ public class UserChangeDomainTests : SequentialTest, IClassFixture<ServerFixture
 
         loginResponse.ShouldBeSuccess();
 
-        var command = new SwitchDomain.Request
+        var command = new SwitchTenant.Request
         {
-            DestinationDomain = "Stark Enterprises",
+            Tenant = "Stark Enterprises",
         };
 
         // Act
