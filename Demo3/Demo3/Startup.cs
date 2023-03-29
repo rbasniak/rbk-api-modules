@@ -80,9 +80,10 @@ public class Startup
 
         services.AddRbkRelationalAuthentication(options => options
             .UseSymetricEncryptationKey()
-            .AllowAnonymousAccessToTenants()
             .UseLoginWithWindowsAuthentication()
+            .AllowAnonymousAccessToTenants()
             .AllowUserCreationByAdmins()
+            .AllowTenantSwitching()
         );
 
         services.AddRbkUIDefinitions(AssembliesForUiDefinitions);

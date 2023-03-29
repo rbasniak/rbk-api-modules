@@ -15,6 +15,7 @@ public class RbkAuthenticationOptions
     public Type _tenantPostCreationActionType = null;
     public LoginMode _loginMode = LoginMode.Credentials;
     public bool _allowUserSelfRegistration = false;
+    public bool _allowTenantSwitching = false;
     public bool _allowUserCreationByAdmin = false;
     public string _userAvatarPath = "users/images";
     public Type _customAvatarStorageType = typeof(DefaultAvatarStorageService);
@@ -92,6 +93,13 @@ public class RbkAuthenticationOptions
     public RbkAuthenticationOptions AllowUserSelfRegistration()
     {
         _allowUserSelfRegistration = true;
+
+        return this;
+    }
+
+    public RbkAuthenticationOptions AllowTenantSwitching()
+    {
+        _allowTenantSwitching = true;
 
         return this;
     }

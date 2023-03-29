@@ -114,7 +114,7 @@ public class AuthenticationController : BaseController
 
     [Authorize]
     [HttpPost("switch-tenant")]
-    public async Task<ActionResult<JwtResponse>> SwitchDomain(SwitchTenant.Request data, CancellationToken cancellation)
+    public async Task<ActionResult<JwtResponse>> SwitchTenant(SwitchTenant.Request data, CancellationToken cancellation)
     {
         return HttpResponse<JwtResponse>(await Mediator.Send(data, cancellation));
     }

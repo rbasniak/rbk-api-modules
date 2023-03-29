@@ -66,11 +66,15 @@ public static class CoreAuthenticationBuilder
             else if (authenticationOptions._loginMode == LoginMode.Credentials)
             {
                 actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.LoginWithNegotiate)));
-                actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.SwitchDomain)));
             }
             else
             {
                 throw new NotImplementedException();
+            }
+
+            if (!authenticationOptions._allowTenantSwitching)
+            {
+                actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.SwitchTenant)));
             }
 
             if (!authenticationOptions._allowUserSelfRegistration)
