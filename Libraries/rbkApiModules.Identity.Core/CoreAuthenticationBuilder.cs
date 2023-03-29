@@ -41,7 +41,7 @@ public static class CoreAuthenticationBuilder
             {
                 actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.RefreshToken)));
             }
-            
+
             if (authenticationOptions._allowAnonymousTenantAccess)
             {
                 actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthorizationController), nameof(AuthorizationController.GetAllTenantsAuthenticated)));
@@ -62,7 +62,7 @@ public static class CoreAuthenticationBuilder
                 actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.RegisterAnonymously)));
 
                 o.Filters.Add(new WindowsAuthenticationFilter());
-            } 
+            }
             else if (authenticationOptions._loginMode == LoginMode.Credentials)
             {
                 actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.LoginWithNegotiate)));
@@ -164,18 +164,18 @@ public static class CoreAuthenticationBuilder
 
         services.AddAuthorization(options =>
         {
-            var validSchemas = new List<string> { JwtBearerDefaults.AuthenticationScheme };
-
             if (TestingEnvironmentChecker.IsTestingEnvironment && authenticationOptions._loginMode == LoginMode.WindowsAuthentication)
             {
+                var validSchemas = new List<string> { JwtBearerDefaults.AuthenticationScheme };
+
                 validSchemas.Add("TestScheme");
+
+                var defaultAuthorizationPolicyBuilder = new AuthorizationPolicyBuilder(validSchemas.ToArray());
+
+                defaultAuthorizationPolicyBuilder = defaultAuthorizationPolicyBuilder.RequireAuthenticatedUser();
+
+                options.DefaultPolicy = defaultAuthorizationPolicyBuilder.Build();
             }
-
-            var defaultAuthorizationPolicyBuilder = new AuthorizationPolicyBuilder(validSchemas.ToArray());
-
-            defaultAuthorizationPolicyBuilder = defaultAuthorizationPolicyBuilder.RequireAuthenticatedUser();
-
-            options.DefaultPolicy = defaultAuthorizationPolicyBuilder.Build();
         });
 
         services.RegisterApplicationServices(Assembly.GetAssembly(typeof(IJwtFactory)));
@@ -289,7 +289,7 @@ public static class CoreAuthenticationBuilder
         {
             // Avoiid duplicated registrations. Depending on naming convention used, it could be already registered by the generic .AddApplicationServices() method
             if (services.None(x => x.ServiceType == typeof(ICustomLoginPolicyValidator) && x.ImplementationType == type))
-            { 
+            {
                 services.AddScoped(typeof(ICustomLoginPolicyValidator), type);
             }
         }
