@@ -85,7 +85,7 @@ public class SwitchTenant
                 }
             }
 
-            var jwt = TokenGenerator.Generate(_jwtFactory, user, extraClaims);
+            var jwt = await TokenGenerator.GenerateAsync(_jwtFactory, user, extraClaims);
 
             await _usersService.RefreshLastLogin(user.Username, user.TenantId, cancellation);
 

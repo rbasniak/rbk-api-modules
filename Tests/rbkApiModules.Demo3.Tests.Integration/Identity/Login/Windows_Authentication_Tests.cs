@@ -1,4 +1,7 @@
-﻿namespace rbkApiModules.Demo3.Tests.Integration.Identity;
+﻿using rbkApiModules.Commons.Core;
+using System.IdentityModel.Tokens.Jwt;
+
+namespace rbkApiModules.Demo3.Tests.Integration.Identity;
 
 [TestCaseOrderer(PriorityOrderer.Name, PriorityOrderer.Assembly)]
 public class WindowsAuthenticationTests : SequentialTest, IClassFixture<ServerFixture>
@@ -31,6 +34,25 @@ public class WindowsAuthenticationTests : SequentialTest, IClassFixture<ServerFi
         response.Data.AccessToken.ShouldNotBeEmpty("Access token is empty");
         response.Data.RefreshToken.ShouldNotBeNull("Refresh token is null");
         response.Data.RefreshToken.ShouldNotBeEmpty("Refresh token is empty");
+
+        var handler = new JwtSecurityTokenHandler();
+        var tokenData = handler.ReadJwtToken(response.Data.AccessToken);
+
+        var tenant = tokenData.Claims.First(claim => claim.Type == JwtClaimIdentifiers.Tenant).Value;
+        var username1 = tokenData.Claims.First(claim => claim.Type == JwtRegisteredClaimNames.Sub).Value;
+        var username2 = tokenData.Claims.First(claim => claim.Type == System.Security.Claims.ClaimTypes.Name).Value;
+        var displayName = tokenData.Claims.First(claim => claim.Type == JwtClaimIdentifiers.DisplayName).Value;
+        var avatar = tokenData.Claims.First(claim => claim.Type == JwtClaimIdentifiers.Avatar).Value;
+        var roles = tokenData.Claims.Where(claim => claim.Type == JwtClaimIdentifiers.Roles).ToList();
+        var allowedTenants = tokenData.Claims.Where(claim => claim.Type == JwtClaimIdentifiers.AllowedTenants).ToList();
+
+        tenant.ShouldBe("PARKER INDUSTRIES");
+        username1.ShouldBe(Environment.UserName);
+        username2.ShouldBe(Environment.UserName);
+        displayName.ShouldBe("John Doe");
+        allowedTenants.Count.ShouldBe(2);
+        allowedTenants.FirstOrDefault(x => x.Value == "PARKER INDUSTRIES").ShouldNotBeNull();
+        allowedTenants.FirstOrDefault(x => x.Value == "OSCORP INDUSTRIES").ShouldNotBeNull();
     }
 
     /// <summary>

@@ -16,4 +16,5 @@ public static class JwtClaimIdentifiers
     public const string Tenant = "tenant";
     public const string DisplayName = "display-name";
     public const string AuthenticationMode = "authentication-mode";
+    public const string AllowedTenants = "allowed-tenants";
 }

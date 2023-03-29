@@ -15,6 +15,7 @@ public class UserDetails : BaseDataTransferObject
     public ClaimOverride[] OverridedClaims { get; set; }
     public SimpleNamedEntity[] Claims { get; set; }
     public Dictionary<string, string> Metadata { get; set; }
+    public string[] AllowedTenants { get; set; }
 }
 
 public class ClaimOverride
@@ -31,9 +32,10 @@ public class UserMappings : Profile
             .ForMember(dto => dto.OverridedClaims, map => map.MapFrom(entity => entity.Claims.Select(x => new ClaimOverride
             {
                 Claim = new SimpleNamedEntity(x.Claim.Id.ToString(), x.Claim.Description),
-                Access = new SimpleNamedEntity<int>((int)x.Access, x.Access.GetDescription())
+                Access = new SimpleNamedEntity<int>((int)x.Access, x.Access.GetDescription()),
             })))
-            .ForMember(dto => dto.Claims, map => map.MapFrom(entity => entity.GetAccessClaims().Select(x => new SimpleNamedEntity(x.Identification, x.Description))));
+            .ForMember(dto => dto.Claims, map => map.MapFrom(entity => entity.GetAccessClaims().Select(x => new SimpleNamedEntity(x.Identification, x.Description))))
+            .ForMember(dto => dto.AllowedTenants, map => map.Ignore());
 
         CreateMap<UserToClaim, ClaimOverride>()
             .ForMember(dto => dto.Claim, map => map.MapFrom(entity => new SimpleNamedEntity(entity.Claim.Id.ToString(), entity.Claim.Description)))
