@@ -57,7 +57,7 @@ public class DefaultAvatarStorageService : IAvatarStorage
         }
 
         parts.Insert(0, wwwrootPath);
-        parts.Add($"{filenameWithoutExtension}.{extension}".ToLower());
+        parts.Add($"{filenameWithoutExtension}{extension}".ToLower());
 
         var outputPath = Path.Combine(parts.ToArray());
 

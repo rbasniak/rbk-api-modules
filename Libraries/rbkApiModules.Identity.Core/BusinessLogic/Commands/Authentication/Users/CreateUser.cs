@@ -18,6 +18,7 @@ public class CreateUser
         public string Username { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
+        public string Picture { get; set; }
         public string PasswordConfirmation { get; set; }
         public Guid[] RoleIds { get; set; }
         public Dictionary<string, string> Metadata { get; set; }
@@ -135,10 +136,19 @@ public class CreateUser
                 password = Guid.NewGuid().ToString("N");
             }
 
-            var avatar = AvatarGenerator.GenerateBase64Avatar(request.DisplayName);
+            var avatarUrl = request.Picture;
+            var avatarBase64 = String.Empty;
 
-            var filename = await _avatarStorage.SaveAsync(avatar, _options._userAvatarPath, Guid.NewGuid().ToString("N"), cancellation);
-            var avatarUrl = _avatarStorage.GetRelativePath(filename); 
+            if (String.IsNullOrEmpty(request.Picture))
+            {
+                avatarBase64 = AvatarGenerator.GenerateBase64Avatar(request.DisplayName);
+            }
+
+            if (!avatarBase64.ToLower().StartsWith("http"))
+            {
+                var filename = await _avatarStorage.SaveAsync(avatarBase64, _options._userAvatarPath, Guid.NewGuid().ToString("N"), cancellation);
+                avatarUrl = _avatarStorage.GetRelativePath(filename);
+            }
 
             var user = await _usersService.CreateUserAsync(request.Identity.Tenant, request.Username, password, request.Email, request.DisplayName,
                avatarUrl, true, request.Metadata, cancellation);
