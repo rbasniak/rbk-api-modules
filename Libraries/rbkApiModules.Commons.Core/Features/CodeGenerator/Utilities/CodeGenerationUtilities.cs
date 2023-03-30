@@ -17,6 +17,7 @@ public static class CodeGenerationUtilities
             type == typeof(Int32) ||
             type == typeof(Int64) ||
             type == typeof(Object) ||
+            type == typeof(Dictionary<string, string>) ||
             type.Name == typeof(SimpleNamedEntity<>).Name;
     }
 

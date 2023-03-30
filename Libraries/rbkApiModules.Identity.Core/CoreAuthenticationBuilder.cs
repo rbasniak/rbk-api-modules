@@ -41,7 +41,7 @@ public static class CoreAuthenticationBuilder
             {
                 actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.RefreshToken)));
             }
-            
+
             if (authenticationOptions._allowAnonymousTenantAccess)
             {
                 actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthorizationController), nameof(AuthorizationController.GetAllTenantsAuthenticated)));
@@ -62,15 +62,19 @@ public static class CoreAuthenticationBuilder
                 actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.RegisterAnonymously)));
 
                 o.Filters.Add(new WindowsAuthenticationFilter());
-            } 
+            }
             else if (authenticationOptions._loginMode == LoginMode.Credentials)
             {
                 actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.LoginWithNegotiate)));
-                actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.SwitchDomain)));
             }
             else
             {
                 throw new NotImplementedException();
+            }
+
+            if (!authenticationOptions._allowTenantSwitching)
+            {
+                actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.SwitchTenant)));
             }
 
             if (!authenticationOptions._allowUserSelfRegistration)
@@ -158,21 +162,37 @@ public static class CoreAuthenticationBuilder
             configureOptions.SaveToken = true;
         });
 
-        services.AddAuthorization(options =>
+        if (TestingEnvironmentChecker.IsTestingEnvironment && authenticationOptions._loginMode == LoginMode.WindowsAuthentication ||
+                authenticationOptions._useMockedWindowsAuthentication && authenticationOptions._loginMode == LoginMode.WindowsAuthentication)
         {
-            var validSchemas = new List<string> { JwtBearerDefaults.AuthenticationScheme };
+            services.AddAuthentication(MockedWindowsAuthenticationHandler.AuthenticationScheme)
+                .AddScheme<TestAuthHandlerOptions, MockedWindowsAuthenticationHandler>(MockedWindowsAuthenticationHandler.AuthenticationScheme, options => { });
 
-            if (TestingEnvironmentChecker.IsTestingEnvironment && authenticationOptions._loginMode == LoginMode.WindowsAuthentication)
+            services.AddAuthorization(options =>
             {
-                validSchemas.Add("TestScheme");
-            }
+                if (TestingEnvironmentChecker.IsTestingEnvironment && authenticationOptions._loginMode == LoginMode.WindowsAuthentication ||
+                    authenticationOptions._useMockedWindowsAuthentication && authenticationOptions._loginMode == LoginMode.WindowsAuthentication)
+                {
+                    var validSchemas = new List<string>
+                    {
+                        MockedWindowsAuthenticationHandler.AuthenticationScheme,
+                        JwtBearerDefaults.AuthenticationScheme,
+                    };
 
-            var defaultAuthorizationPolicyBuilder = new AuthorizationPolicyBuilder(validSchemas.ToArray());
+                    var defaultAuthorizationPolicyBuilder = new AuthorizationPolicyBuilder(validSchemas.ToArray());
 
-            defaultAuthorizationPolicyBuilder = defaultAuthorizationPolicyBuilder.RequireAuthenticatedUser();
+                    defaultAuthorizationPolicyBuilder = defaultAuthorizationPolicyBuilder.RequireAuthenticatedUser();
 
-            options.DefaultPolicy = defaultAuthorizationPolicyBuilder.Build();
-        });
+                    options.DefaultPolicy = defaultAuthorizationPolicyBuilder.Build();
+                }
+            });
+        }
+        else
+        {
+            services.AddAuthorization();
+        }
+
+
 
         services.RegisterApplicationServices(Assembly.GetAssembly(typeof(IJwtFactory)));
 
@@ -285,7 +305,7 @@ public static class CoreAuthenticationBuilder
         {
             // Avoiid duplicated registrations. Depending on naming convention used, it could be already registered by the generic .AddApplicationServices() method
             if (services.None(x => x.ServiceType == typeof(ICustomLoginPolicyValidator) && x.ImplementationType == type))
-            { 
+            {
                 services.AddScoped(typeof(ICustomLoginPolicyValidator), type);
             }
         }

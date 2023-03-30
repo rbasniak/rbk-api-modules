@@ -70,10 +70,6 @@ public class BaseServerFixture : IDisposable
                 .UseStartup(startupClassType)
                 .ConfigureTestServices(services =>
                 {
-                    services.Configure<TestAuthHandlerOptions>(options => { });
-
-                    services.AddAuthentication(TestAuthHandler.AuthenticationScheme)
-                        .AddScheme<TestAuthHandlerOptions, TestAuthHandler>(TestAuthHandler.AuthenticationScheme, options => { });
                 })
                 .UseSerilog());
 #pragma warning restore CS0618 // Type or member is obsolete
@@ -122,8 +118,8 @@ public class BaseServerFixture : IDisposable
                     Tenant = tenant
                 };
 
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(TestAuthHandler.AuthenticationScheme);
-                httpClient.DefaultRequestHeaders.Add(TestAuthHandler.UserId, username);
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(MockedWindowsAuthenticationHandler.AuthenticationScheme);
+                httpClient.DefaultRequestHeaders.Add(MockedWindowsAuthenticationHandler.UserId, username);
 
                 var response = await httpClient.PostAsync("api/authentication/login", new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json"));
 
@@ -155,8 +151,8 @@ public class BaseServerFixture : IDisposable
 
                 if (AuthenticationMode == AuthenticationMode.Windows)
                 {
-                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(TestAuthHandler.AuthenticationScheme);
-                    httpClient.DefaultRequestHeaders.Add(TestAuthHandler.UserId, username);
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(MockedWindowsAuthenticationHandler.AuthenticationScheme);
+                    httpClient.DefaultRequestHeaders.Add(MockedWindowsAuthenticationHandler.UserId, username);
                 }
 
                 var response = await httpClient.PostAsync("api/authentication/login",

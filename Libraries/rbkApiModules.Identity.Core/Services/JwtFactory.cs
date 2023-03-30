@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using rbkApiModules.Commons.Core;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
@@ -6,7 +7,7 @@ namespace rbkApiModules.Identity.Core;
 
 public interface IJwtFactory
 {
-    string GenerateEncodedToken(string username, Dictionary<string, string[]> roles);
+    Task<string> GenerateEncodedTokenAsync(string username, Dictionary<string, string[]> roles);
 }
 
 /// <summary>
@@ -14,14 +15,19 @@ public interface IJwtFactory
 /// </summary>
 public class JwtFactory : IJwtFactory
 {
+    private readonly IAuthService _usersService;
     private readonly JwtIssuerOptions _jwtOptions;
+    private readonly RbkAuthenticationOptions _authenticationOptions;
 
     /// <summary>
     /// Construtor padrão
     /// </summary>
-    public JwtFactory(IOptions<JwtIssuerOptions> jwtOptions)
+    public JwtFactory(IOptions<JwtIssuerOptions> jwtOptions, RbkAuthenticationOptions authenticationOptions, IAuthService usersService)
     {
+        _usersService = usersService;
         _jwtOptions = jwtOptions.Value;
+        _authenticationOptions = authenticationOptions;
+
         ThrowIfInvalidOptions(_jwtOptions);
     }
 
@@ -31,7 +37,7 @@ public class JwtFactory : IJwtFactory
     /// <param name="username">Nome do usuário</param>
     /// <param name="roles">Permissões do usuário (claims)</param>
     /// <returns>Access token</returns>
-    public string GenerateEncodedToken(string username, Dictionary<string, string[]> roles)
+    public async Task<string> GenerateEncodedTokenAsync(string username, Dictionary<string, string[]> roles)
     {
         var claims = new List<System.Security.Claims.Claim>
             {
@@ -46,6 +52,22 @@ public class JwtFactory : IJwtFactory
             {
                 claims.Add(new System.Security.Claims.Claim(pair.Key, value ?? ""));
             }
+        }
+
+        if (_authenticationOptions._allowTenantSwitching)
+        {
+            var tenants = await _usersService.GetAllowedTenantsAsync(username);
+
+            foreach (var tenant in tenants)
+            {
+                claims.Add(new System.Security.Claims.Claim(JwtClaimIdentifiers.AllowedTenants, tenant));
+            }
+        }
+        else
+        {
+            var tenant = roles[JwtClaimIdentifiers.Tenant].First();
+
+            claims.Add(new System.Security.Claims.Claim(JwtClaimIdentifiers.AllowedTenants, tenant ?? ""));
         }
 
         var jwt = new JwtSecurityToken(

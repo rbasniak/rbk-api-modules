@@ -200,6 +200,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
         var displayName = tokenData.Claims.First(claim => claim.Type == JwtClaimIdentifiers.DisplayName).Value;
         var avatar = tokenData.Claims.First(claim => claim.Type == JwtClaimIdentifiers.Avatar).Value;
         var roles = tokenData.Claims.Where(claim => claim.Type == JwtClaimIdentifiers.Roles).ToList();
+        var allowedTenants = tokenData.Claims.Where(claim => claim.Type == JwtClaimIdentifiers.AllowedTenants).ToList();
 
         tenant.ShouldBe("BUZIOS");
         username1.ShouldBe("john.doe");
@@ -209,6 +210,8 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
         roles.Count.ShouldBe(2);
         roles.FirstOrDefault(x => x.Value == "CAN_GENERATE_REPORTS").ShouldNotBeNull();
         roles.FirstOrDefault(x => x.Value == "CAN_SHARE_REPORTS").ShouldNotBeNull();
+        allowedTenants.Count.ShouldBe(1);
+        allowedTenants.FirstOrDefault(x => x.Value == "BUZIOS").ShouldNotBeNull();
     }
 
     /// <summary>

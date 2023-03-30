@@ -18,16 +18,11 @@ public class Startup
 {
     private readonly IConfiguration _configuration;
     private readonly IWebHostEnvironment _environment;
-    private readonly bool _isInTestMode;
 
     public Startup(IConfiguration configuration, IWebHostEnvironment environment)
     {
         _configuration = configuration;
         _environment = environment;
-
-        _isInTestMode = AppDomain.CurrentDomain.GetAssemblies().Any(assembly => assembly.FullName.ToLowerInvariant().StartsWith("xunit"));
-
-        var temp = environment.EnvironmentName;
     }
 
     public IConfiguration Configuration => _configuration;
@@ -80,9 +75,11 @@ public class Startup
 
         services.AddRbkRelationalAuthentication(options => options
             .UseSymetricEncryptationKey()
-            .AllowAnonymousAccessToTenants()
             .UseLoginWithWindowsAuthentication()
+            .AllowAnonymousAccessToTenants()
             .AllowUserCreationByAdmins()
+            .AllowTenantSwitching()
+            // .UseMockedWindowsAuthentication()
         );
 
         services.AddRbkUIDefinitions(AssembliesForUiDefinitions);

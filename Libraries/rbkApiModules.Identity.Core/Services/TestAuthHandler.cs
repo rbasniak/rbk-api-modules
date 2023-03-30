@@ -9,18 +9,18 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
-namespace rbkApiModules.Testing.Core;
+namespace rbkApiModules.Identity.Core;
 
 public class TestAuthHandlerOptions : AuthenticationSchemeOptions
 {
 }
 
-public class TestAuthHandler : AuthenticationHandler<TestAuthHandlerOptions>
+public class MockedWindowsAuthenticationHandler : AuthenticationHandler<TestAuthHandlerOptions>
 {
     public const string UserId = "UserId";
     public const string AuthenticationScheme = "TestScheme";
 
-    public TestAuthHandler(
+    public MockedWindowsAuthenticationHandler(
         IOptionsMonitor<TestAuthHandlerOptions> options,
         ILoggerFactory logger,
         UrlEncoder encoder,
@@ -30,20 +30,18 @@ public class TestAuthHandler : AuthenticationHandler<TestAuthHandlerOptions>
 
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {
-        var claims = new List<Claim>();
+        var claims = new List<System.Security.Claims.Claim>();
 
         // Extract User ID from the request headers if it exists,
         // otherwise use the default User ID from the options.
         if (Context.Request.Headers.TryGetValue(UserId, out var userId))
         {
-            claims.Add(new Claim(ClaimTypes.Name, userId[0]));
+            claims.Add(new System.Security.Claims.Claim(ClaimTypes.Name, userId[0]));
         }
         else
         {
             return Task.FromResult(AuthenticateResult.Fail(new UnauthorizedAccessException("No UserId was specified in the request header (needed for integration tests)")));
         }
-
-        // TODO: Add as many claims as you need here
 
         var identity = new ClaimsIdentity(claims, AuthenticationScheme);
         var principal = new ClaimsPrincipal(identity);

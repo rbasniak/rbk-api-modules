@@ -321,4 +321,9 @@ public class RelationalAuthService: IAuthService
 
         return user;
     }
+
+    public async Task<string[]> GetAllowedTenantsAsync(string username)
+    {
+        return await _context.Set<User>().Where(x => x.Username.ToLower() == username.ToLower()).Select(x => x.TenantId).Distinct().ToArrayAsync();
+    }
 }

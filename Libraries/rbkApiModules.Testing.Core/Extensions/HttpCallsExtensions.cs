@@ -3,6 +3,7 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using System.Net.Http;
+using rbkApiModules.Identity.Core;
 
 namespace rbkApiModules.Testing.Core;
 
@@ -42,8 +43,8 @@ public static class HttpCallsExtensions
             }
             else
             {
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(TestAuthHandler.AuthenticationScheme);
-                httpClient.DefaultRequestHeaders.Add(TestAuthHandler.UserId, credentials);
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(MockedWindowsAuthenticationHandler.AuthenticationScheme);
+                httpClient.DefaultRequestHeaders.Add(MockedWindowsAuthenticationHandler.UserId, credentials);
             }
 
             var response = await httpClient.PostAsync(url, new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json"));
@@ -83,8 +84,8 @@ public static class HttpCallsExtensions
             }
             else
             {
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(TestAuthHandler.AuthenticationScheme);
-                httpClient.DefaultRequestHeaders.Add(TestAuthHandler.UserId, credentials);
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(MockedWindowsAuthenticationHandler.AuthenticationScheme);
+                httpClient.DefaultRequestHeaders.Add(MockedWindowsAuthenticationHandler.UserId, credentials);
             }
 
             var response = await httpClient.PostAsync(url, new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json"));

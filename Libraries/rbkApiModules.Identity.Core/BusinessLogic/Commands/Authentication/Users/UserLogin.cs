@@ -153,7 +153,7 @@ public class UserLogin
                 }
             }
 
-            var jwt = TokenGenerator.Generate(_jwtFactory, user, extraClaims);
+            var jwt = await TokenGenerator.GenerateAsync(_jwtFactory, user, extraClaims);
 
             await _authService.RefreshLastLogin(request.Username, request.Tenant, cancellation);
 

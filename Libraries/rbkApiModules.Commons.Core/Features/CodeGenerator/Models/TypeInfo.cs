@@ -4,7 +4,7 @@ public class TypeInfo
 {
     public TypeInfo(Type type)
     {
-        if (type.IsList())
+        if (type.IsList() && type != typeof(Dictionary<string, string>))
         {
             IsList = true;
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
@@ -41,6 +41,10 @@ public class TypeInfo
             || (Type.BaseType.IsGenericType && Type.BaseType.GetGenericTypeDefinition() == typeof(TreeNode<>))))
         {
             Name = "TreeNode";
+        }
+        else if (Type == typeof(Dictionary<string, string>))
+        {
+            Name = "{ [key: string]: string }";
         }
         else
         {
