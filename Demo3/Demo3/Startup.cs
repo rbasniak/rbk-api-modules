@@ -31,7 +31,7 @@ public class Startup
     {
         services.AddDbContext<DatabaseContext>((scope, options) => options
             .UseNpgsql(
-                _configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Database"))
+                _configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", ""))
             .EnableDetailedErrors()
             .EnableSensitiveDataLogging()
         );

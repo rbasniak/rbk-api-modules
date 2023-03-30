@@ -53,29 +53,23 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        var writeConnection = Environment.OSVersion.Platform == PlatformID.Unix ? "DockerWriteConnection" : "DefaultWriteConnection";
-        var readConnection = Environment.OSVersion.Platform == PlatformID.Unix ? "DockerReadConnection" : "DefaultReadConnection";
+        services.AddDbContext<ReadDatabaseContext>((scope, options) => options
+            .UseNpgsql(
+                _configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Read"))
+            //.AddInterceptors(scope.GetRequiredService<DatabaseAnalyticsInterceptor>())
+            //.AddInterceptors(scope.GetRequiredService<DatabaseDiagnosticsInterceptor>())
+            .EnableDetailedErrors()
+            .EnableSensitiveDataLogging()
+        );
 
-        var temp1 = _configuration.GetConnectionString(writeConnection);
-        var temp2 = _configuration.GetConnectionString("DefaultConnection");
-
-            services.AddDbContext<ReadDatabaseContext>((scope, options) => options
-                .UseNpgsql(
-                    _configuration.GetConnectionString(readConnection).Replace("**CONTEXT**", "Database.Read"))
-                //.AddInterceptors(scope.GetRequiredService<DatabaseAnalyticsInterceptor>())
-                //.AddInterceptors(scope.GetRequiredService<DatabaseDiagnosticsInterceptor>())
-                .EnableDetailedErrors()
-                .EnableSensitiveDataLogging()
-            );
-
-            services.AddDbContext<DatabaseContext>((scope, options) => options
-                .UseNpgsql(
-                    _configuration.GetConnectionString(writeConnection).Replace("**CONTEXT**", "Database.Write"))
-                //.AddInterceptors(scope.GetRequiredService<DatabaseAnalyticsInterceptor>())
-                //.AddInterceptors(scope.GetRequiredService<DatabaseDiagnosticsInterceptor>())
-                .EnableDetailedErrors()
-                .EnableSensitiveDataLogging()
-            );
+        services.AddDbContext<DatabaseContext>((scope, options) => options
+            .UseNpgsql(
+                _configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Write"))
+            //.AddInterceptors(scope.GetRequiredService<DatabaseAnalyticsInterceptor>())
+            //.AddInterceptors(scope.GetRequiredService<DatabaseDiagnosticsInterceptor>())
+            .EnableDetailedErrors()
+            .EnableSensitiveDataLogging()
+        );
 
         services.AddScoped<DbContext, DatabaseContext>();
         services.AddScoped<DbContext, ReadDatabaseContext>();

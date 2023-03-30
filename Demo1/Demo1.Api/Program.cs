@@ -8,6 +8,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Hosting;
 using System.Collections.Generic;
 using System.Text.Json;
+using NpgsqlTypes;
+using Serilog.Sinks.PostgreSQL.ColumnWriters;
+using Serilog.Sinks.PostgreSQL;
+using Microsoft.Extensions.Configuration;
 
 namespace Demo1.Api;
 
@@ -43,11 +47,28 @@ public class Program
                 {
                     // var temp1 = context.Configuration.GetValue<string>("Log:SQLite");
 
+                    var connectionString = context.Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Logs");
+
+                    IDictionary<string, ColumnWriterBase> columnOptions = new Dictionary<string, ColumnWriterBase>
+                    {
+                        { "Message", new RenderedMessageColumnWriter(NpgsqlDbType.Text) },
+                        { "MessageTemplate", new MessageTemplateColumnWriter(NpgsqlDbType.Text) },
+                        { "Level", new LevelColumnWriter(true, NpgsqlDbType.Varchar) },
+                        { "Timestamp", new TimestampColumnWriter(NpgsqlDbType.TimestampTz) },
+                        { "Exception", new ExceptionColumnWriter(NpgsqlDbType.Text) },
+                        { "Properties", new LogEventSerializedColumnWriter(NpgsqlDbType.Jsonb) },
+                        { "PropertiesTest", new PropertiesColumnWriter(NpgsqlDbType.Jsonb) },
+                        { "MachineName", new SinglePropertyColumnWriter("MachineName", PropertyWriteMethod.ToString, NpgsqlDbType.Text, "l") }
+                    };
+
                     configuration
                         .ReadFrom.Configuration(context.Configuration)
                         .ReadFrom.Services(services)
                         .Enrich.FromLogContext()
                         .Enrich.WithExceptionDetails()
+
+                        .WriteTo.PostgreSQL(connectionString, tableName: "Logs", columnOptions: columnOptions, needAutoCreateTable: true, 
+                            useCopy: true, queueLimit: 3000, batchSizeLimit: 40, period: new TimeSpan(0, 0, 10), formatProvider: null)
 
                         .WriteTo.Debug(LogEventLevel.Debug)
 
