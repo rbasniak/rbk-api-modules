@@ -45,20 +45,22 @@ public class Program
             Host.CreateDefaultBuilder(args)
                 .UseSerilog((context, services, configuration) =>
                 {
+                    Serilog.Debugging.SelfLog.Enable(msg => Console.WriteLine(">>>>>>>>>>>>>>>>>>> " + msg));
+
                     // var temp1 = context.Configuration.GetValue<string>("Log:SQLite");
 
                     var connectionString = context.Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Logs");
 
                     IDictionary<string, ColumnWriterBase> columnOptions = new Dictionary<string, ColumnWriterBase>
                     {
+                        { "Timestamp", new TimestampColumnWriter(NpgsqlDbType.TimestampTz) },
+                        { "Group", new SinglePropertyColumnWriter("Group", PropertyWriteMethod.ToString, NpgsqlDbType.Text, "l") },
+                        { "Level", new LevelColumnWriter(true, NpgsqlDbType.Varchar) },
+                        { "Properties", new LogEventSerializedColumnWriter(NpgsqlDbType.Jsonb) },
                         { "Message", new RenderedMessageColumnWriter(NpgsqlDbType.Text) },
                         { "MessageTemplate", new MessageTemplateColumnWriter(NpgsqlDbType.Text) },
-                        { "Level", new LevelColumnWriter(true, NpgsqlDbType.Varchar) },
-                        { "Timestamp", new TimestampColumnWriter(NpgsqlDbType.TimestampTz) },
                         { "Exception", new ExceptionColumnWriter(NpgsqlDbType.Text) },
-                        { "Properties", new LogEventSerializedColumnWriter(NpgsqlDbType.Jsonb) },
-                        { "PropertiesTest", new PropertiesColumnWriter(NpgsqlDbType.Jsonb) },
-                        { "MachineName", new SinglePropertyColumnWriter("MachineName", PropertyWriteMethod.ToString, NpgsqlDbType.Text, "l") }
+                        // { "PropertiesTest", new PropertiesColumnWriter(NpgsqlDbType.Jsonb) },
                     };
 
                     configuration
@@ -67,22 +69,30 @@ public class Program
                         .Enrich.FromLogContext()
                         .Enrich.WithExceptionDetails()
 
-                        .WriteTo.PostgreSQL(connectionString, tableName: "Logs", columnOptions: columnOptions, needAutoCreateTable: true, 
-                            useCopy: true, queueLimit: 3000, batchSizeLimit: 40, period: new TimeSpan(0, 0, 10), formatProvider: null)
+                        .WriteTo.PostgreSQL(connectionString, 
+                            restrictedToMinimumLevel: LogEventLevel.Verbose, 
+                            tableName: "Logs", 
+                            columnOptions: columnOptions, 
+                            needAutoCreateTable: true, 
+                            useCopy: true, 
+                            queueLimit: 3000, 
+                            batchSizeLimit: 1, 
+                            period: new TimeSpan(0, 0, 1), 
+                            formatProvider: null)
 
                         .WriteTo.Debug(LogEventLevel.Debug)
 
                         .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Error)
 
                         .WriteTo.File(Path.Combine(Environment.CurrentDirectory, "Logs", "log-.log"),
-                            restrictedToMinimumLevel: LogEventLevel.Debug,
+                            restrictedToMinimumLevel: LogEventLevel.Verbose,
                             fileSizeLimitBytes: 1024 * 1024,
                             shared: true,
                             rollOnFileSizeLimit: true,
                             rollingInterval: RollingInterval.Day)
 
                         .WriteTo.File(new JsonFormatter(renderMessage: true), Path.Combine(Environment.CurrentDirectory, "Logs", "log-.json"),
-                            restrictedToMinimumLevel: LogEventLevel.Debug,
+                            restrictedToMinimumLevel: LogEventLevel.Verbose,
                             fileSizeLimitBytes: 1024 * 1024,
                             shared: true,
                             rollOnFileSizeLimit: true,

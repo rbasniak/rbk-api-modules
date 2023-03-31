@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 using rbkApiModules.Commons.Core.Localization;
 using Microsoft.AspNetCore.Authorization;
 
-namespace rbkApiModules.Comments.Core.Controllers;
+namespace rbkApiModules.Commons.Core.Localization;
 
 [IgnoreOnCodeGeneration]
 [ApiController]

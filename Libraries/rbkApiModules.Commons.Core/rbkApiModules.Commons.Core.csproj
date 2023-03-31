@@ -42,6 +42,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Folder Include="Features\Logging\Analytics\" />
+		<Folder Include="Features\Logging\Diagnostics\" />
 		<Folder Include="Features\UiDefinitions\Commands\" />
 		<Folder Include="Features\UiDefinitions\Utilities\" />
 	</ItemGroup>

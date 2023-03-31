@@ -7,6 +7,8 @@ using LiteDB;
 using System.Threading.Tasks;
 using System;
 using Microsoft.Extensions.Logging;
+using rbkApiModules.Commons.Core.Logging;
+using Serilog;
 
 namespace Demo1.Api.Controllers;
 
@@ -14,77 +16,33 @@ namespace Demo1.Api.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 public class LoggingController : BaseController
-{ 
-    [HttpPost("log-exception-test")]
-    public async Task<ActionResult<BaseResponse>> LogExceptionTest(LogExceptionTest.Request data)
+{
+
+    [AllowAnonymous()]
+    [HttpGet("logging/test")]
+    public ActionResult<string> TestDifferentLoggersAndLevels([FromServices] IInternalLogger internalLogger)
     {
-        Logger.Verbose("request to {Method} {Url}", HttpContext.Request.Method.ToString(), HttpContext.Request.GetDisplayUrl());
+        internalLogger.Logger.Verbose("[Internal Logger] Verbose message");
+        internalLogger.Logger.Debug("[Internal Logger] Debug message");
+        internalLogger.Logger.Information("[Internal Logger] Information message");
+        internalLogger.Logger.Warning("[Internal Logger] Warning message");
+        internalLogger.Logger.Error("[Internal Logger] Error message");
+        internalLogger.Logger.Fatal("[Internal Logger] Fatal message");
 
-        var response = await Mediator.Send(data);
+        Log.Logger.Verbose("[Internal Logger] Static Verbose message");
+        Log.Logger.Debug("[Internal Logger] Static Debug message");
+        Log.Logger.Information("[Internal Logger] Static Information message");
+        Log.Logger.Warning("[Internal Logger] Static Warning message");
+        Log.Logger.Error("[Internal Logger] Static Error message");
+        Log.Logger.Fatal("[Internal Logger] Static Fatal message");
 
-        return Ok(response);
-    }
+        Log.Logger.ForContext("Group", "Application").Verbose("[Internal Logger] Static Verbose message");
+        Log.Logger.ForContext("Group", "Application").Debug("[Internal Logger] Static Debug message");
+        Log.Logger.ForContext("Group", "Application").Information("[Internal Logger] Static Information message");
+        Log.Logger.ForContext("Group", "Application").Warning("[Internal Logger] Static Warning message");
+        Log.Logger.ForContext("Group", "Application").Error("[Internal Logger] Static Error message");
+        Log.Logger.ForContext("Group", "Application").Fatal("[Internal Logger] Static Fatal message");
 
-    [HttpPost("scoped-log-test")]
-    public async Task<ActionResult<BaseResponse>> ScopeLogTest(ScopeLogTest.Request data)
-    {
-        Logger.Verbose("request to {Method} {Url}", HttpContext.Request.Method.ToString(), HttpContext.Request.GetDisplayUrl());
-
-        var response = await Mediator.Send(data);
-
-        Logger.Verbose("request to {Method} {Url} handled with success", HttpContext.Request.Method.ToString(), HttpContext.Request.GetDisplayUrl());
-
-        return Ok(response);
-    }
-
-    [AllowAnonymous]
-    [HttpPost("log-levels-test")]
-    public ActionResult LogLevelsTest([FromServices] ILogger<LoggingController> logger)
-    {
-        Logger.Debug("DEBUG DATA 1");
-        Logger.Information("INFORMATION DATA 1");
-        Logger.Warning("WARNING DATA 1");
-        Logger.Error("ERROR DATA 1");
-
-        try
-        {
-            throw new ArgumentNullException("parameter");
-        }
-        catch (Exception ex)
-        {
-            Logger.Fatal(ex, "FATAL DATA 1");
-        }
-
-        logger.LogDebug("DEBUG DATA 2");
-        logger.LogInformation("INFORMATION DATA 2");
-        logger.LogWarning("WARNING DATA 2");
-        logger.LogError("ERROR DATA 2");
-
-        try
-        {
-            throw new ArgumentNullException("parameter");
-        }
-        catch (Exception ex)
-        {
-            logger.LogCritical(ex, "FATAL DATA 2");
-        }
-
-        return Ok();
-    }
-
-    [AllowAnonymous]
-    [HttpPost("read-logs")]
-    public ActionResult ReadLogsTest()
-    {
-        //using (var db = new LiteDatabase(Path.Combine(Environment.CurrentDirectory, "Logs", "log.lt")))
-        //{
-        //    var temp1 = db.GetCollection("log").Count();
-
-        //    var temp2 = db.GetCollection("log").Query().Where(x => x["SourceContext"].AsString.StartsWith("rbk")).ToList();
-        //}
-
-        Mediator.Publish(new EventHappened());
-
-        return Ok();
+        return Ok("Done");
     }
 }
