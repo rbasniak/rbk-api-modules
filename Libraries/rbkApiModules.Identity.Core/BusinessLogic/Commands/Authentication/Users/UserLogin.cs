@@ -66,6 +66,7 @@ public class UserLogin
         {
             if (request.AuthenticationMode == AuthenticationMode.Windows)
             {
+
                 return true;
             }   
             else if (request.AuthenticationMode == AuthenticationMode.Credentials)

@@ -24,6 +24,7 @@ using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Authentication.Negotiate;
 using rbkApiModules.Commons.Core.Utilities;
 using System.Globalization;
+using rbkApiModules.Commons.Core.Logging;
 
 [assembly: InternalsVisibleTo("rbkApiModules.Commons.Relational")]
 
@@ -475,6 +476,12 @@ public static class CommonsCoreBuilder
 
         // Log.Logger.Debug($"Registering {nameof(IInMemoryDatabase)}");
         // services.AddScoped<IInMemoryDatabase, InMemoryDatabase>();
+
+        #region Logging basic setup
+
+        services.AddSingleton<HttpContextEnricher>(); 
+
+        #endregion
 
         #region Response Compression
 

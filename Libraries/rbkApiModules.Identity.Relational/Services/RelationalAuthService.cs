@@ -326,4 +326,19 @@ public class RelationalAuthService: IAuthService
     {
         return await _context.Set<User>().Where(x => x.Username.ToLower() == username.ToLower()).Select(x => x.TenantId).Distinct().ToArrayAsync();
     }
+
+    public Task ActivateUserAsync(string tenant, string username, CancellationToken cancellation)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task DeactivateUserAsync(string tenant, string username, CancellationToken cancellation)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task DeleteUserAsync(string tenant, string username, CancellationToken cancellation)
+    {
+        throw new NotImplementedException();
+    }
 }

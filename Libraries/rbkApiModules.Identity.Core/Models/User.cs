@@ -111,6 +111,16 @@ public class User : TenantEntity
         Email = email;
     }
 
+    public void ActivateUser()
+    {
+        IsActive = true;
+    }
+
+    public void DeactivateUser()
+    {
+        IsActive = false;
+    }
+
     /// <summary>
     /// Método que processa as roles e claims de um usuário 
     /// e retorma uma lista compilada apenas do que do usuário tem acesso
