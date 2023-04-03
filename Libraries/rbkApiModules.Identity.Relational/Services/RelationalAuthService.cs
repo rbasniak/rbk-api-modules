@@ -5,6 +5,7 @@ using rbkApiModules.Commons.Relational.CQRS;
 using rbkApiModules.Commons.Relational;
 using rbkApiModules.Commons.Core.Localization;
 using rbkApiModules.Commons.Core.Utilities.Localization;
+using Serilog;
 
 namespace rbkApiModules.Identity.Relational;
 
@@ -40,6 +41,8 @@ public class RelationalAuthService: IAuthService
 
     public async Task<User> GetUserWithDependenciesAsync(string username, string tenant, CancellationToken cancellation = default)
     {
+        Log.Logger.Information("Getting user and its dependencies from database");
+
         tenant = tenant != null ? tenant.ToUpper() : null;
 
         var user = await _context.Set<User>()
@@ -56,6 +59,8 @@ public class RelationalAuthService: IAuthService
 
     public async Task UpdateRefreshTokenAsync(string username, string tenant, string refreshToken, double duration, CancellationToken cancellation = default)
     {
+        Log.Logger.Information("Updating refresh token");
+
         tenant = tenant != null ? tenant.ToUpper() : null;
 
         var user = await LoadUserEntityAsync(username, tenant, cancellation);
@@ -322,8 +327,17 @@ public class RelationalAuthService: IAuthService
         return user;
     }
 
-    public async Task<string[]> GetAllowedTenantsAsync(string username)
+    public async Task<string[]> GetAllowedTenantsAsync(string username, CancellationToken cancellation)
     {
-        return await _context.Set<User>().Where(x => x.Username.ToLower() == username.ToLower()).Select(x => x.TenantId).Distinct().ToArrayAsync();
+        return await _context.Set<User>().Where(x => x.Username.ToLower() == username.ToLower()).Select(x => x.TenantId).Distinct().ToArrayAsync(cancellation);
+    }
+
+    public async Task DeleteUser(string username, string tenant, CancellationToken cancellation)
+    {
+        var user = await GetUserWithDependenciesAsync(username, tenant, cancellation);
+        _context.RemoveRange(user.Roles);
+        _context.RemoveRange(user.Claims);
+        _context.Remove(user);
+        await _context.SaveChangesAsync(cancellation);
     }
 }

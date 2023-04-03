@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.Localization;
 using rbkApiModules.Commons.Core.Utilities.Localization;
+using Serilog;
 
 namespace rbkApiModules.Identity.Core;
 
@@ -73,7 +74,18 @@ public class SwitchTenant
 
             var extraClaims = new Dictionary<string, string[]>();
 
-            var authenticationMode = _httpContextAccessor.HttpContext.User.Claims.First(claim => claim.Type == JwtClaimIdentifiers.AuthenticationMode).Value;
+            var authenticationModeClaim = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == JwtClaimIdentifiers.AuthenticationMode);
+
+            string authenticationMode = "credentials";
+
+            if (authenticationModeClaim != null)
+            {
+                authenticationMode = _httpContextAccessor.HttpContext.User.Claims.First(claim => claim.Type == JwtClaimIdentifiers.AuthenticationMode).Value;
+            }
+            else
+            {
+                Log.Fatal("Token without authentication mode");
+            }    
 
             extraClaims.Add(JwtClaimIdentifiers.AuthenticationMode, new[] { authenticationMode });
 

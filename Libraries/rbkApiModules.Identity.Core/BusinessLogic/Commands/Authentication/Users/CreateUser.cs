@@ -6,7 +6,10 @@ using Microsoft.IdentityModel.Tokens;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.Localization;
 using rbkApiModules.Commons.Core.Utilities.Localization;
+using Serilog;
+using System.Data;
 using System.Text.Json.Serialization;
+using static rbkApiModules.Commons.Core.Utilities.Localization.AuthenticationMessages;
 
 namespace rbkApiModules.Identity.Core;
 
@@ -37,7 +40,30 @@ public class CreateUser
             _rolesService = rolesService;
 
             var authenticationModeClaim = httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == JwtClaimIdentifiers.AuthenticationMode);
-            _authenticationMode = authenticationModeClaim != null && authenticationModeClaim.Value == "windows" ? AuthenticationMode.Windows : AuthenticationMode.Credentials;
+
+            Log.Information("Looking for authentication mode in access token");
+
+            _authenticationMode = AuthenticationMode.Credentials;
+
+            if (authenticationModeClaim != null)
+            {
+                Log.Information("Claim found: {value}", authenticationModeClaim.Value);
+
+                if (authenticationModeClaim.Value == "windows")
+                {
+                    Log.Information("Setting up creation for Windows Authentication scenario");
+
+                    _authenticationMode = AuthenticationMode.Windows;
+                }    
+                else
+                {
+                    Log.Information("Setting up creation for Credentials scenario");
+                }
+            }
+            else
+            {
+                Log.Information("Claim not found. Setting up creation for Credentials scenario");
+            }
 
             RuleFor(x => x.Username)
                 .IsRequired(localization)
@@ -84,31 +110,108 @@ public class CreateUser
 
         private async Task<bool> EmailDoesNotExistOnDatabase(Request request, string email, CancellationToken cancellation)
         {
-            return !await _usersService.IsUserRegisteredAsync(email, request.Identity.Tenant, cancellation);
+            Log.Information("Validation: Checking if e-mail is not already used: {email}", email);
+
+            var isRegistered = await _usersService.IsUserRegisteredAsync(email, request.Identity.Tenant, cancellation);
+
+            if (isRegistered) 
+            {
+                Log.Information("E-mail is being used");
+            }
+            else
+            {
+                Log.Information("E-mail is not being used");
+            }
+
+            return !isRegistered;
         } 
 
         private async Task<bool> RoleExistOnDatabase(Request request, Guid roleId, CancellationToken cancellation)
         {
+            Log.Information("Validation: Checking is role exists: {role}", roleId);
+
             var role = await _rolesService.FindAsync(roleId, cancellation);
 
-            return role != null;
+            var result = role != null;
+
+            if (result)
+            {
+                Log.Information("Role found: {role}", role.Name);
+            }
+            else
+            {
+                Log.Information("Role not found");
+            }
+
+            return result;
         }
 
         private bool PasswordsBeTheSame(Request request, string _)
         {
-            return _authenticationMode == AuthenticationMode.Windows ? true : request.PasswordConfirmation == request.Password;
+            Log.Information("Validation: Checking is passwords match");
+
+            if (_authenticationMode == AuthenticationMode.Windows)
+            {
+                Log.Information("Using Windows Authentication, password is not used in this scenario");
+
+                return true;
+            }
+
+            var result = request.PasswordConfirmation == request.Password;
+
+            if (result)
+            {
+                Log.Information("Passwords match");
+            }
+            else
+            {
+                Log.Information("Passwords do not match");
+            }
+
+            return result;
         }
 
         private bool PasswordsIsRequired(Request request, string _)
         {
-            return _authenticationMode == AuthenticationMode.Windows ? true : !String.IsNullOrEmpty(request.Password);
+            Log.Information("Validation: Checking password");
+
+            if (_authenticationMode == AuthenticationMode.Windows)
+            {
+                Log.Information("Using Windows Authentication, password is not used in this scenario");
+
+                return true;
+            }
+
+            var result = !String.IsNullOrEmpty(request.Password);
+
+            if (result)
+            {
+                Log.Information("Password is not empty");
+            }
+            else
+            {
+                Log.Information("Password is empty");
+            }
+
+            return result;
         } 
 
         private async Task<bool> UserDoesNotExistOnDatabase(Request request, string username, CancellationToken cancellation)
         {
+            Log.Information("Validation: Checking if user exists on database");
             var user = await _usersService.FindUserAsync(username, request.Identity.Tenant, cancellation);
+            var result = user == null;
 
-            return user == null;
+            if (result)
+            {
+                Log.Information("User found: {username}", username);
+            }
+            else
+            {
+                Log.Information("User not found: {username}", username);
+            }
+
+            return result;
         }
     }
 
@@ -129,28 +232,21 @@ public class CreateUser
 
         public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)
         {
-            var password = request.Password;
-
-            if (password == null)
-            {
-                password = Guid.NewGuid().ToString("N");
-            }
-
-            var avatarUrl = request.Picture;
-            var avatarBase64 = String.Empty;
+            string avatarUrl = request.Picture;
+            string avatarBase64 = null;
 
             if (String.IsNullOrEmpty(request.Picture))
             {
                 avatarBase64 = AvatarGenerator.GenerateBase64Avatar(request.DisplayName);
             }
 
-            if (!avatarBase64.ToLower().StartsWith("http"))
+            if (!String.IsNullOrEmpty(request.Picture) && !request.Picture.ToLower().StartsWith("http"))
             {
                 var filename = await _avatarStorage.SaveAsync(avatarBase64, _options._userAvatarPath, Guid.NewGuid().ToString("N"), cancellation);
                 avatarUrl = _avatarStorage.GetRelativePath(filename);
             }
 
-            var user = await _usersService.CreateUserAsync(request.Identity.Tenant, request.Username, password, request.Email, request.DisplayName,
+            var user = await _usersService.CreateUserAsync(request.Identity.Tenant, request.Username, request.Password, request.Email, request.DisplayName,
                avatarUrl, true, request.Metadata, cancellation);
 
             var allMetadata = new Dictionary<string, string>();

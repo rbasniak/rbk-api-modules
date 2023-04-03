@@ -98,6 +98,7 @@ public class NgxsStore
         code.AppendLine($"import {{ Observable }} from 'rxjs';");
         code.AppendLine($"import {{ tap }} from 'rxjs/operators';");
         code.AppendLine($"import {{ Injectable }} from '@angular/core';");
+        code.AppendLine($"import {{ ToastActions }} from 'ngx-smz-ui';");
         code.AppendLine($"import {{ {Name}Actions }} from './{CodeGenerationUtilities.ToTypeScriptFileCase(Name)}.actions';");
         code.AppendLine($"import {{ {Name}Service }} from '@services/api/{CodeGenerationUtilities.ToTypeScriptFileCase(Name)}.service';");
 
@@ -253,16 +254,20 @@ public class NgxsStore
         code.AppendLine($"  public {CodeGenerationUtilities.ToCamelCase(action.Type.ToString())}$(ctx: StateContext<{Name}StateModel>{(action.Type != ActionType.LoadAll ? $", action: {Name}Actions.{action.Type.ToString()}" : "")}): {(action.Endpoint != null ? $"Observable<{returnType}>" : returnType)} {{");
         code.AppendLine($"    return this.apiService.{CodeGenerationUtilities.ToCamelCase(action.Endpoint.Name)}({(action.Type != ActionType.LoadAll ? $"action.{actionPayloadName}" : "")}).pipe(");
         code.AppendLine($"      tap({(action.Endpoint != null && action.Endpoint.ReturnType != null ? $"(result: {returnType})" : "()")} => {{");
-        code.AppendLine($"        ctx.patchState({{");
 
         if (action.Type == ActionType.LoadAll)
         {
+            code.AppendLine($"        ctx.patchState({{");
             code.AppendLine($"          lastUpdated: new Date(),");
             code.AppendLine($"          items: result,");
+            code.AppendLine($"        }});");
         }
 
         if (action.Type == ActionType.Create)
         {
+            code.AppendLine($"        ctx.dispatch(new ToastActions.Success('Criação realizada com sucesso'));");
+            code.AppendLine($"        ctx.patchState({{");
+
             if (action.Endpoint.StoreBehavior == StoreBehavior.General)
             {
                 code.AppendLine($"          items: [ result, ...ctx.getState().items ]");
@@ -276,10 +281,14 @@ public class NgxsStore
             {
                 throw new NotSupportedException($"{action.Endpoint.StoreBehavior} not supported for {action.Endpoint.Route}");
             }
+            code.AppendLine($"        }});");
         }
 
         if (action.Type == ActionType.Update)
         {
+            code.AppendLine($"        ctx.dispatch(new ToastActions.Success('Atualização realizada com sucesso'));");
+            code.AppendLine($"        ctx.patchState({{");
+
             if (action.Endpoint.StoreBehavior == StoreBehavior.General)
             {
                 code.AppendLine($"          items: replaceItem(ctx.getState().items, result)");
@@ -293,10 +302,14 @@ public class NgxsStore
             {
                 throw new NotSupportedException($"{action.Endpoint.StoreBehavior} not supported for {action.Endpoint.Route}");
             }
+            code.AppendLine($"        }});");
         }
 
         if (action.Type == ActionType.Delete)
         {
+            code.AppendLine($"        ctx.dispatch(new ToastActions.Success('Exclusão realizada com sucesso'));");
+            code.AppendLine($"        ctx.patchState({{");
+
             if (action.Endpoint.StoreBehavior == StoreBehavior.General)
             {
                 code.AppendLine($"          items: [ ...ctx.getState().items.filter(x => x.id !== action.id) ]");
@@ -310,9 +323,9 @@ public class NgxsStore
             {
                 throw new NotSupportedException($"{action.Endpoint.StoreBehavior} not supported for {action.Endpoint.Route}");
             }
+            code.AppendLine($"        }});");
         }
 
-        code.AppendLine($"        }});");
         code.AppendLine($"      }})");
         code.AppendLine($"    );");
         code.AppendLine($"  }}");

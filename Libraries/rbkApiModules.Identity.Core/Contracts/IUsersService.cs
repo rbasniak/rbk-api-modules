@@ -24,5 +24,6 @@ public interface IAuthService
     Task<User> CreateUserAsync(string tenant, string username, string password, string email, string displayName, string avatar, bool isConfirmed, Dictionary<string, string> metadata, CancellationToken cancellation);
     Task DeleteUsersFromTenant(string tenant, CancellationToken cancellation);
     Task<User> AppendUserMetadata(string username, string tenant, Dictionary<string, string> metadata, CancellationToken cancellation);
-    Task<string[]> GetAllowedTenantsAsync(string username);
+    Task<string[]> GetAllowedTenantsAsync(string username, CancellationToken cancellation);
+    Task DeleteUser(string username, string tenant, CancellationToken cancellation);
 }

@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace rbkApiModules.Commons.Core.Pipelines;
 
@@ -24,13 +25,19 @@ public class ExceptionHandlerBehavior<TRequest, TResponse> : IPipelineBehavior<T
     {
         try
         {
-            return await next();
+            Log.Logger.Information("Exception handler pipeline started for {request}", request.GetType().FullName.Split('.').Last());
+
+            var response = await next();
+
+            Log.Logger.Information("Exception handler pipeline finished for {request}", request.GetType().FullName.Split('.').Last());
+
+            return response;
         }
         catch (SafeException ex)
         {
             if (ex.ShouldBeLogged)
             {
-                _logger.LogWarning(ex, "Exception thrown while handling MediatR command");
+                _logger.LogWarning(ex, "Exception thrown while handling MediatR command: {command}", request.GetType().FullName.Split('.').Last());
             }
 
             var response = (TResponse)Activator.CreateInstance(typeof(TResponse), new object[0]);
@@ -41,7 +48,7 @@ public class ExceptionHandlerBehavior<TRequest, TResponse> : IPipelineBehavior<T
         }
         catch (Exception ex)
         {
-            _logger.LogCritical(ex, "Exception thrown while handling MediatR command");
+            _logger.LogCritical(ex, "Exception thrown while handling MediatR command: {command}", request.GetType().FullName.Split('.').Last());
 
             var response = (TResponse)Activator.CreateInstance(typeof(TResponse), new object[0]);
 

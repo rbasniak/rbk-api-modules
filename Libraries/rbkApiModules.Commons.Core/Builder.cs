@@ -24,6 +24,7 @@ using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Authentication.Negotiate;
 using rbkApiModules.Commons.Core.Utilities;
 using System.Globalization;
+using rbkApiModules.Commons.Core.Localization;
 
 [assembly: InternalsVisibleTo("rbkApiModules.Commons.Relational")]
 
@@ -979,6 +980,12 @@ public static class CommonsCoreBuilder
 
         //    services.AddSingleton(cqrsOptions);
         //}
+
+        #endregion
+
+        #region Localization
+
+        services.AddSingleton(new LocalizationCache());
 
         #endregion
 

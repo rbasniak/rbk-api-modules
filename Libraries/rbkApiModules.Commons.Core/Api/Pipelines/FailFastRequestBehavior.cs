@@ -3,6 +3,7 @@ using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace rbkApiModules.Commons.Core.Pipelines;
 
@@ -23,6 +24,8 @@ public class FailFastRequestBehavior<TRequest, TResponse> : IPipelineBehavior<TR
 
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellation)
     {
+        Log.Logger.Information("Validation pipeline started for {request}", request.GetType().FullName.Split('.').Last());
+
         // The base validator (the one for the specific command) comes from the pipeline
         var context = new ValidationContext<object>(request);
 
@@ -47,12 +50,16 @@ public class FailFastRequestBehavior<TRequest, TResponse> : IPipelineBehavior<TR
             
         foreach (var composedValidator in composedValidators)
         {
+            Log.Logger.Information("Running validator {validator}", composedValidator.GetType().FullName);
+
             var validationResults = await composedValidator.ValidateAsync(context);
 
             foreach (var error in validationResults.Errors)
             {
                 if (!String.IsNullOrEmpty(error.ErrorMessage) && error.ErrorMessage != "none")
                 {
+                    Log.Logger.Information("Validator has error: {error}", error.ErrorMessage);
+
                     failures.Add(error);    
                 }
             }
@@ -60,10 +67,14 @@ public class FailFastRequestBehavior<TRequest, TResponse> : IPipelineBehavior<TR
 
         if (failures.Any())
         {
+            Log.Logger.Information("Validation pipeline finished with errors {request}", request.GetType().FullName.Split('.').Last());
+
             return await Errors(failures);
         }
         else
         {
+            Log.Logger.Information("Validation pipeline finished for {request}", request.GetType().FullName.Split('.').Last());
+
             return await next();
         } 
     }

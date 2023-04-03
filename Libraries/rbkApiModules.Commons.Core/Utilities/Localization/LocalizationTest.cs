@@ -80,7 +80,8 @@ public class AuthenticationMessages : ILocalizedResource
     public enum Erros
     {
         [Description("Cannot delete the tenant, probably it has data associated with it")] CannotDeleteUsedTenant,
-        [Description("Could not find the user associate with that password reset code")] CouldNotFindTheUserAssociatedWithThePasswordResetCode
+        [Description("Could not find the user associate with that password reset code")] CouldNotFindTheUserAssociatedWithThePasswordResetCode,
+        [Description("Could not delete the user, ensure it is not being used by any related entities")] CannotDeleteUser
     }
 }
 

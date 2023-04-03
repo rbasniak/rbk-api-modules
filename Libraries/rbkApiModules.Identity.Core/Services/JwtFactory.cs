@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using rbkApiModules.Commons.Core;
+using Serilog;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
@@ -56,7 +57,7 @@ public class JwtFactory : IJwtFactory
 
         if (_authenticationOptions._allowTenantSwitching)
         {
-            var tenants = await _usersService.GetAllowedTenantsAsync(username);
+            var tenants = await _usersService.GetAllowedTenantsAsync(username, CancellationToken.None);
 
             foreach (var tenant in tenants)
             {
@@ -68,6 +69,13 @@ public class JwtFactory : IJwtFactory
             var tenant = roles[JwtClaimIdentifiers.Tenant].First();
 
             claims.Add(new System.Security.Claims.Claim(JwtClaimIdentifiers.AllowedTenants, tenant ?? ""));
+        }
+
+        var authenticationMode = claims.FirstOrDefault(x => x.Type == JwtClaimIdentifiers.AuthenticationMode);
+
+        if (authenticationMode == null)
+        {
+            Log.Fatal("Token generated without authentication mode");
         }
 
         var jwt = new JwtSecurityToken(

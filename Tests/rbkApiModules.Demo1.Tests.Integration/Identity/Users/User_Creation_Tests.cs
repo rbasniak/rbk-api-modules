@@ -147,7 +147,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
     /// DEPENDENCIES: none
     /// </summary>
     [FriendlyNamedFact("IT-437"), Priority(140)]
-    public async Task User_can_be_created()
+    public async Task User_can_be_created_without_picture()
     {
         var role1 = _serverFixture.Context.Set<Role>().First(x => x.Name == "Role1");
 
@@ -187,7 +187,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
         var user = _serverFixture.Context.Set<User>()
             .Include(x => x.Claims)
             .Include(x => x.Roles)
-            .First(x => x.Username == "new-user");
+            .First(x => x.Username == "new-user" && x.TenantId == "WAYNE INC"); ;
 
         PasswordHasher.VerifyPassword("admin123", user.Password).ShouldBeTrue();
         user.ActivationCode.ShouldBeNull();
@@ -206,5 +206,110 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
         user.Username.ShouldBe("new-user");
         user.Roles.Count().ShouldBe(1);
         (DateTime.UtcNow - user.CreationDate).TotalSeconds.ShouldBeLessThan(5);
+    }
+
+    /// <summary>
+    /// User can be deleted
+    /// DEPENDENCIES: none
+    /// </summary>
+    [FriendlyNamedFact("IT-zxxxxxxxxxxxxx"), Priority(150)]
+    public async Task User_can_be_deleted()
+    {
+        var role1 = _serverFixture.Context.Set<Role>().First(x => x.Name == "Role1");
+
+        // Prepare
+        var request = new DeleteUser.Request
+        {
+            Username = "new-user" 
+        };
+
+        // Act
+        var response = await _serverFixture.PostAsync("api/authentication/delete-user", request, _serverFixture.GetDefaultAccessToken());
+
+        // Assert the response
+        response.ShouldBeSuccess();
+
+        // Assert the database
+        var user = _serverFixture.Context.Set<User>()
+            .Include(x => x.Claims)
+            .Include(x => x.Roles)
+            .FirstOrDefault(x => x.Username == "new-user" && x.TenantId == "WAYNE INC");
+
+        user.ShouldBeNull();
+    }
+
+    /// <summary>
+    /// User can be created with url for the avatar
+    /// DEPENDENCIES: none
+    /// </summary>
+    [FriendlyNamedFact("IT-xxxxxxxx"), Priority(160)]
+    public async Task User_can_be_created_with_url_picture()
+    {
+        var role1 = _serverFixture.Context.Set<Role>().First(x => x.Name == "Role1");
+
+        // Prepare
+        var request = new CreateUser.Request
+        {
+            Username = "new-user",
+            DisplayName = "John Doe",
+            Email = "new-user@wayne-inc.com",
+            RoleIds = new[] { role1.Id },
+            Password = "admin123",
+            PasswordConfirmation = "admin123",
+            Picture = "https://my-domain.com/avatar/new-user.png",
+            Metadata = new Dictionary<string, string>
+            {
+                { "sector", "Research" },
+                { "age", "18" }
+            }
+        };
+
+        // Act
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/create-user", request, true);
+
+        // Assert the response
+        response.ShouldBeSuccess();
+        response.Data.ShouldNotBeNull();
+        response.Data.ShouldBeOfType<UserDetails>();
+        response.Data.DisplayName.ShouldBe("John Doe");
+        response.Data.Username.ShouldBe("new-user");
+        response.Data.Email.ShouldBe("new-user@wayne-inc.com");
+        response.Data.Avatar.ShouldNotBeNull();
+        response.Data.IsConfirmed.ShouldBeTrue();
+        response.Data.Roles.Length.ShouldBe(1);
+        response.Data.Claims.Length.ShouldBe(0);
+        response.Data.OverridedClaims.Length.ShouldBe(0);
+
+        // Assert the database
+        var context = _serverFixture.Context;
+        
+        var user = context.Set<User>()
+            .Include(x => x.Claims)
+            .Include(x => x.Roles)
+            .First(x => x.Username == "new-user" && x.TenantId == "WAYNE INC"); 
+
+        PasswordHasher.VerifyPassword("admin123", user.Password).ShouldBeTrue();
+        user.ActivationCode.ShouldBeNull();
+        user.Avatar.ShouldNotBeNull();
+        user.Claims.Count().ShouldBe(0);
+        user.DisplayName.ShouldBe("John Doe");
+        user.Avatar.ShouldBe("https://my-domain.com/avatar/new-user.png");
+        user.Email.ShouldBe("new-user@wayne-inc.com");
+        user.HasTenant.ShouldBeTrue();
+        user.IsActive.ShouldBeTrue();
+        user.IsConfirmed.ShouldBeTrue();
+        user.Metadata.ShouldNotBeNull();
+        user.Metadata["sector"].ShouldBe("Research");
+        user.Metadata["age"].ShouldBe("18");
+        user.PasswordRedefineCode.ShouldBeNull();
+        user.TenantId.ShouldBe("WAYNE INC");
+        user.Username.ShouldBe("new-user");
+        user.Roles.Count().ShouldBe(1);
+        (DateTime.UtcNow - user.CreationDate).TotalSeconds.ShouldBeLessThan(5);
+
+        context.RemoveRange(user.Roles);
+        context.RemoveRange(user.Claims);
+        context.Remove(user);
+        context.SaveChanges();
     }
 }

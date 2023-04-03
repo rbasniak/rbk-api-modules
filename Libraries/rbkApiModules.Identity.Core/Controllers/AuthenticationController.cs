@@ -139,4 +139,11 @@ public class AuthenticationController : BaseController
     {
         return HttpResponse<UserDetails>(await Mediator.Send(data, cancellation));
     }
+
+    [RbkAuthorize(AuthenticationClaims.MANAGE_USERS)]
+    [HttpPost("delete-user")]
+    public async Task<ActionResult> DeleteUser(DeleteUser.Request data, CancellationToken cancellation)
+    {
+        return HttpResponse(await Mediator.Send(data, cancellation));
+    }
 }

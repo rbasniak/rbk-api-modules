@@ -3,6 +3,7 @@ using MediatR;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.Localization;
 using rbkApiModules.Commons.Core.Utilities.Localization;
+using Serilog;
 
 namespace rbkApiModules.Identity.Core;
 
@@ -30,12 +31,38 @@ public class RenewAccessToken
 
         public async Task<bool> TokenMustBeWithinValidity(Request comman, string refreshToken, CancellationToken cancelation)
         {
-            return await _usersService.IsRefreshTokenValidAsync(refreshToken, cancelation);
+            Log.Logger.Information("Validation: Verifying refresh token validity");
+
+            var isRefreshTokenValid = await _usersService.IsRefreshTokenValidAsync(refreshToken, cancelation);
+
+            if (isRefreshTokenValid)
+            {
+                Log.Logger.Information("Refresh token is valid");
+            }
+            else
+            {
+                Log.Logger.Information("Refresh token is not valid");
+            }
+
+            return isRefreshTokenValid;
         }
 
         public async Task<bool> RefreshTokenExistOnDatabase(Request request, string refreshToken, CancellationToken cancelation)
         {
-            return await _usersService.RefreshTokenExistsOnDatabaseAsync(refreshToken, cancelation);
+            Log.Logger.Information("Validation: Checking if refresh token exists on database");
+
+            var tokenExists = await _usersService.RefreshTokenExistsOnDatabaseAsync(refreshToken, cancelation);
+
+            if (tokenExists)
+            {
+                Log.Logger.Information("Refresh token was found");
+            }
+            else
+            {
+                Log.Logger.Information("Refresh token was not found");
+            }
+
+            return tokenExists;
         }
     }
 
