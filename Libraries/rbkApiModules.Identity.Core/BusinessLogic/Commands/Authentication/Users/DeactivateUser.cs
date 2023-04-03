@@ -6,16 +6,13 @@ using Microsoft.IdentityModel.Tokens;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.Localization;
 using rbkApiModules.Commons.Core.Utilities.Localization;
-using Serilog;
-using System.Data;
 using System.Text.Json.Serialization;
-using static rbkApiModules.Commons.Core.Utilities.Localization.AuthenticationMessages;
 
 namespace rbkApiModules.Identity.Core;
 
-public class DeleteUser
+public class DeativateUser
 {
-    public class Request : AuthenticatedRequest, IRequest<CommandResponse> 
+    public class Request : AuthenticatedRequest, IRequest<CommandResponse>
     {
         public string Username { get; set; }
     }
@@ -33,13 +30,13 @@ public class DeleteUser
                 .MustAsync(UserExistsOnDatabase)
                     .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.UserNotFound))
                 .WithName(localization.LocalizeString(AuthenticationMessages.Fields.User));
-        } 
+        }
 
         private async Task<bool> UserExistsOnDatabase(Request request, string username, CancellationToken cancellation)
         {
             var user = await _usersService.FindUserAsync(username, request.Identity.Tenant, cancellation);
-            var result = user != null;
-            return result;
+
+            return user != null;
         }
     }
 
@@ -54,14 +51,7 @@ public class DeleteUser
 
         public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)
         {
-            try
-            {
-                await _usersService.DeleteUserAsync(request.Identity.Tenant, request.Username, cancellation);
-            }
-            catch (Exception ex)
-            {
-                throw new SafeException(_localization.LocalizeString(AuthenticationMessages.Erros.CannotDeleteUser), ex, true);
-            }
+            await _usersService.DeactivateUserAsync(request.Identity.Tenant, request.Username, cancellation);
 
             return CommandResponse.Success();
         }

@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace rbkApiModules.Commons.Core.Pipelines;
 
@@ -13,22 +13,17 @@ public class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, 
         where TRequest : IRequest<TResponse>
         where TResponse : BaseResponse
 {
-    private readonly ILogger<TRequest> _logger;
+    private readonly ILogger _logger;
 
-    public LoggingBehavior(ILogger<TRequest> logger)
+    public LoggingBehavior(ILogger logger)
     {
         _logger = logger;
     }
 
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellation)
     {
-        using (_logger.BeginScope(new Dictionary<string, object> 
-        { 
-            ["Command"] = typeof(TRequest).FullName,
-        }))
-        {
-            return await next();
-
-        }
+        _logger.ForContext("Command", typeof(TRequest).FullName);
+        
+        return await next();
     }
 }

@@ -1,17 +1,22 @@
-using Serilog.Events;
-using Serilog;
-using Serilog.Formatting.Json;
-using Serilog.Exceptions;
-using System.IO;
-using System;
 using Microsoft.Extensions.Hosting;
+using Serilog;
+using Microsoft.Extensions.DependencyInjection;
+using Serilog.Formatting.Compact;
+using Serilog.Events;
+using System;
+using Serilog.Core;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
-using System.Collections.Generic;
-using System.Text.Json;
-using NpgsqlTypes;
-using Serilog.Sinks.PostgreSQL.ColumnWriters;
-using Serilog.Sinks.PostgreSQL;
+using rbkApiModules.Commons.Core.Logging;
 using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
+using Serilog.Sinks.PostgreSQL.ColumnWriters;
+using NpgsqlTypes;
+using Serilog.Sinks.PostgreSQL;
+using System.IO;
+using Serilog.Formatting.Json;
+using System.Diagnostics;
+using Serilog.Exceptions;
 
 namespace Demo1.Api;
 
@@ -20,65 +25,102 @@ public class Program
     public static int Main(string[] args)
     {
         Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Verbose()
-                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-                .Enrich.WithExceptionDetails()
+            .MinimumLevel.Verbose()
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Debug)
+            .Enrich.WithExceptionDetails()
 
-                .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Error)
+            .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Error)
 
-                .WriteTo.File(Path.Combine(Environment.CurrentDirectory, "Logs", "startup-.log"),
-                    restrictedToMinimumLevel: LogEventLevel.Debug,
-                    fileSizeLimitBytes: 1024 * 1024,
-                    shared: true,
-                    rollOnFileSizeLimit: true,
-                    retainedFileTimeLimit: TimeSpan.FromDays(10),
-                    rollingInterval: RollingInterval.Day)
+            .WriteTo.File(Path.Combine(Environment.CurrentDirectory, "Logs", "startup-.log"),
+                restrictedToMinimumLevel: LogEventLevel.Debug,
+                fileSizeLimitBytes: 1024 * 1024,
+                shared: true,
+                rollOnFileSizeLimit: true,
+                retainedFileTimeLimit: TimeSpan.FromDays(10),
+                rollingInterval: RollingInterval.Day)
 
-                .WriteTo.Debug(LogEventLevel.Debug)
+            .WriteTo.Debug(LogEventLevel.Debug)
 
-                .CreateBootstrapLogger();
+            .CreateBootstrapLogger();
 
         try
         {
-            Log.Information("Starting API host");
-
             Host.CreateDefaultBuilder(args)
-                .UseSerilog((context, services, configuration) =>
+                .UseSerilog(configureLogger: (context, services, configuration) =>
                 {
-                    Serilog.Debugging.SelfLog.Enable(msg => Console.WriteLine(">>>>>>>>>>>>>>>>>>> " + msg));
+                    Serilog.Debugging.SelfLog.Enable(msg => Debug.WriteLine(">>>>>>>>>>>>>>>>>>> " + msg));
 
-                    // var temp1 = context.Configuration.GetValue<string>("Log:SQLite");
+                    //// var temp1 = context.Configuration.GetValue<string>("Log:SQLite");
 
                     var connectionString = context.Configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Logs");
 
-                    IDictionary<string, ColumnWriterBase> columnOptions = new Dictionary<string, ColumnWriterBase>
+                    var analyticsColumnOptions = new Dictionary<string, ColumnWriterBase>
+                    {
+                        { "Timestamp", new TimestampColumnWriter(NpgsqlDbType.TimestampTz) },    
+                        { "Path", new SinglePropertyColumnWriter("Path", PropertyWriteMethod.ToString, NpgsqlDbType.Text, "l") },
+                        { "PathBase", new SinglePropertyColumnWriter("PathBase", PropertyWriteMethod.ToString, NpgsqlDbType.Text, "l") },
+                        { "Method", new SinglePropertyColumnWriter("Method", PropertyWriteMethod.Raw, NpgsqlDbType.Text, "l") },
+                        { "Response", new SinglePropertyColumnWriter("Response", PropertyWriteMethod.Raw, NpgsqlDbType.Integer) },
+                        { "Username", new SinglePropertyColumnWriter("Username", PropertyWriteMethod.ToString, NpgsqlDbType.Text, "l") },
+                        { "IpAddress", new SinglePropertyColumnWriter("IpAddress", PropertyWriteMethod.ToString, NpgsqlDbType.Text, "l") },
+                        { "ConnectionId", new SinglePropertyColumnWriter("ConnectionId", PropertyWriteMethod.ToString, NpgsqlDbType.Text, "l") },
+                    };
+
+                    var diagnosticsColumnOptions = new Dictionary<string, ColumnWriterBase>
                     {
                         { "Timestamp", new TimestampColumnWriter(NpgsqlDbType.TimestampTz) },
-                        { "Group", new SinglePropertyColumnWriter("Group", PropertyWriteMethod.ToString, NpgsqlDbType.Text, "l") },
                         { "Level", new LevelColumnWriter(true, NpgsqlDbType.Varchar) },
-                        { "Properties", new LogEventSerializedColumnWriter(NpgsqlDbType.Jsonb) },
+                        { "Properties", new PropertiesColumnWriter(NpgsqlDbType.Jsonb) },
                         { "Message", new RenderedMessageColumnWriter(NpgsqlDbType.Text) },
-                        { "MessageTemplate", new MessageTemplateColumnWriter(NpgsqlDbType.Text) },
-                        { "Exception", new ExceptionColumnWriter(NpgsqlDbType.Text) },
-                        // { "PropertiesTest", new PropertiesColumnWriter(NpgsqlDbType.Jsonb) },
+                        { "Template", new MessageTemplateColumnWriter(NpgsqlDbType.Text) },
+                        { "Exception", new ExceptionColumnWriter(NpgsqlDbType.Text) }
                     };
 
                     configuration
-                        .ReadFrom.Configuration(context.Configuration)
-                        .ReadFrom.Services(services)
-                        .Enrich.FromLogContext()
-                        .Enrich.WithExceptionDetails()
+                    // .ReadFrom.Configuration(context.Configuration)
+                    // .ReadFrom.Services(services)
+                    // .Enrich.FromLogContext()
+                    // .Enrich.WithExceptionDetails()
 
-                        .WriteTo.PostgreSQL(connectionString, 
-                            restrictedToMinimumLevel: LogEventLevel.Verbose, 
-                            tableName: "Logs", 
-                            columnOptions: columnOptions, 
-                            needAutoCreateTable: true, 
-                            useCopy: true, 
-                            queueLimit: 3000, 
-                            batchSizeLimit: 1, 
-                            period: new TimeSpan(0, 0, 1), 
-                            formatProvider: null)
+                        .MinimumLevel.Verbose()
+                        .WriteTo.Logger(configuration => configuration
+                            .MinimumLevel.Debug()
+                            .Filter.ByIncludingOnly(x => x.Properties.ContainsKey("SourceContext") && x.Properties["SourceContext"].ToString() == "\"Diagnostics\"")
+                            .Enrich.WithExceptionDetails()
+                            .WriteTo.File(new RenderedCompactJsonFormatter(), "Logs\\log_diagnostics.json",
+                                restrictedToMinimumLevel: LogEventLevel.Verbose,
+                                shared: true,
+                                flushToDiskInterval: TimeSpan.FromSeconds(1))
+                            .WriteTo.PostgreSQL(connectionString,
+                                restrictedToMinimumLevel: LogEventLevel.Verbose,
+                                tableName: "Diagnostics",
+                                columnOptions: diagnosticsColumnOptions,
+                                needAutoCreateTable: true,
+                                useCopy: true,
+                                queueLimit: 50,
+                                batchSizeLimit: 5,
+                                period: new TimeSpan(0, 0, 5),
+                                formatProvider: null)
+                        )
+                        .WriteTo.Logger(configuration => configuration
+                            .MinimumLevel.Information()
+                            .Filter.ByIncludingOnly(x => x.Properties.ContainsKey("SourceContext") && x.Properties["SourceContext"].ToString() == "\"Analytics\"")
+                            .Enrich.With(services.GetRequiredService<HttpContextEnricher>())
+                            .WriteTo.File(new RenderedCompactJsonFormatter(), "Logs\\log_analytics.json",
+                                restrictedToMinimumLevel: LogEventLevel.Verbose,
+                                shared: true,
+                                flushToDiskInterval: TimeSpan.FromSeconds(1))
+                            .WriteTo.PostgreSQL(connectionString,
+                                restrictedToMinimumLevel: LogEventLevel.Verbose,
+                                tableName: "Analytics",
+                                columnOptions: analyticsColumnOptions,
+                                needAutoCreateTable: true,
+                                useCopy: true,
+                                queueLimit: 50,
+                                batchSizeLimit: 25,
+                                period: new TimeSpan(0, 0, 30),
+                                formatProvider: null)
+                        )
 
                         .WriteTo.Debug(LogEventLevel.Debug)
 
@@ -108,7 +150,28 @@ public class Program
 
                         .WriteTo.Seq("http://localhost:5341/")
                         ;
-                }, writeToProviders: true)
+
+                    //configuration
+                    //    .MinimumLevel.Verbose()
+                    //    .WriteTo.Logger(configuration => configuration
+                    //        .MinimumLevel.Debug()
+                    //        .Filter.ByIncludingOnly(x => x.Properties.ContainsKey("SourceContext") && x.Properties["SourceContext"].ToString() == "\"Diagnostics\"")
+                    //        .Enrich.With(enricher)
+                    //        .WriteTo.File(new RenderedCompactJsonFormatter(), "Logs\\log_diagnostics.json",
+                    //            restrictedToMinimumLevel: LogEventLevel.Verbose,
+                    //            shared: true,
+                    //            flushToDiskInterval: TimeSpan.FromSeconds(1))
+                    //    )
+                    //    .WriteTo.Logger(configuration => configuration
+                    //        .MinimumLevel.Information()
+                    //        .Filter.ByIncludingOnly(x => x.Properties.ContainsKey("SourceContext") && x.Properties["SourceContext"].ToString() == "\"Analytics\"")
+                    //        .WriteTo.File(new RenderedCompactJsonFormatter(), "Logs\\log_analytics.json",
+                    //            restrictedToMinimumLevel: LogEventLevel.Verbose,
+                    //            shared: true,
+                    //            flushToDiskInterval: TimeSpan.FromSeconds(1))
+                    //    )
+                    //    .WriteTo.Console();
+                })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
@@ -132,3 +195,4 @@ public class Program
         }
     }
 }
+

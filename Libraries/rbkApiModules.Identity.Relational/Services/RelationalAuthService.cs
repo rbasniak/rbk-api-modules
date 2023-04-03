@@ -340,4 +340,19 @@ public class RelationalAuthService: IAuthService
         _context.Remove(user);
         await _context.SaveChangesAsync(cancellation);
     }
+
+    public Task ActivateUserAsync(string tenant, string username, CancellationToken cancellation)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task DeactivateUserAsync(string tenant, string username, CancellationToken cancellation)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task DeleteUserAsync(string tenant, string username, CancellationToken cancellation)
+    {
+        throw new NotImplementedException();
+    }
 }
