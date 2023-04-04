@@ -201,6 +201,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
         var avatar = tokenData.Claims.First(claim => claim.Type == JwtClaimIdentifiers.Avatar).Value;
         var roles = tokenData.Claims.Where(claim => claim.Type == JwtClaimIdentifiers.Roles).ToList();
         var allowedTenants = tokenData.Claims.Where(claim => claim.Type == JwtClaimIdentifiers.AllowedTenants).ToList();
+        var authenticationMode = tokenData.Claims.First(claim => claim.Type == JwtClaimIdentifiers.AuthenticationMode).Value;
 
         tenant.ShouldBe("BUZIOS");
         username1.ShouldBe("john.doe");
@@ -212,6 +213,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
         roles.FirstOrDefault(x => x.Value == "CAN_SHARE_REPORTS").ShouldNotBeNull();
         allowedTenants.Count.ShouldBe(1);
         allowedTenants.FirstOrDefault(x => x.Value == "BUZIOS").ShouldNotBeNull();
+        authenticationMode.ShouldBe("credentials");
     }
 
     /// <summary>
@@ -421,11 +423,29 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
         var handler = new JwtSecurityTokenHandler();
         var tokenData = handler.ReadJwtToken(response.Data.AccessToken);
 
-        var hasTenantClaim = tokenData.Claims.FirstOrDefault(claim => claim.Type == "has-tenant");
         var lastLoginClaim = tokenData.Claims.FirstOrDefault(claim => claim.Type == "last-login");
 
-        hasTenantClaim.ShouldNotBeNull();   
         lastLoginClaim.ShouldNotBeNull();
+
+        var tenant = tokenData.Claims.First(claim => claim.Type == JwtClaimIdentifiers.Tenant).Value;
+        var username1 = tokenData.Claims.First(claim => claim.Type == JwtRegisteredClaimNames.Sub).Value;
+        var username2 = tokenData.Claims.First(claim => claim.Type == System.Security.Claims.ClaimTypes.Name).Value;
+        var displayName = tokenData.Claims.First(claim => claim.Type == JwtClaimIdentifiers.DisplayName).Value;
+        var avatar = tokenData.Claims.First(claim => claim.Type == JwtClaimIdentifiers.Avatar).Value;
+        var roles = tokenData.Claims.Where(claim => claim.Type == JwtClaimIdentifiers.Roles).ToList();
+        var allowedTenants = tokenData.Claims.Where(claim => claim.Type == JwtClaimIdentifiers.AllowedTenants).ToList();
+        var authenticationMode = tokenData.Claims.First(claim => claim.Type == JwtClaimIdentifiers.AuthenticationMode).Value;
+
+        tenant.ShouldBe("UN-BS");
+        username1.ShouldBe("jane.doe");
+        username2.ShouldBe("jane.doe");
+        displayName.ShouldBe("Jane Doe");
+        avatar.ShouldStartWith("data:image/svg+xml;base64,");
+        roles.Count.ShouldBe(1);
+        roles.FirstOrDefault(x => x.Value == "CAN_APPROVE_REPORTS").ShouldNotBeNull();
+        allowedTenants.Count.ShouldBe(1);
+        allowedTenants.FirstOrDefault(x => x.Value == "UN-BS").ShouldNotBeNull();
+        authenticationMode.ShouldBe("credentials");
     }
 
     /// <summary>

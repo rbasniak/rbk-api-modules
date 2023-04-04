@@ -9,7 +9,6 @@ using rbkApiModules.Commons.Core.Utilities.Localization;
 using Serilog;
 using System.Data;
 using System.Text.Json.Serialization;
-using static rbkApiModules.Commons.Core.Utilities.Localization.AuthenticationMessages;
 
 namespace rbkApiModules.Identity.Core;
 
@@ -46,10 +45,12 @@ public class DeleteUser
     public class Handler : IRequestHandler<Request, CommandResponse>
     {
         private readonly IAuthService _usersService;
+        private readonly ILocalizationService _localization;
 
-        public Handler(IAuthService usersService)
+        public Handler(IAuthService usersService, ILocalizationService localization)
         {
             _usersService = usersService;
+            _localization = localization;
         }
 
         public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)
