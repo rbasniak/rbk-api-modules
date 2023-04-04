@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.Localization;
 using rbkApiModules.Commons.Core.Utilities.Localization;
@@ -70,13 +71,15 @@ public class RenewAccessToken
     {
         private readonly IJwtFactory _jwtFactory;
         private readonly IAuthService _usersService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IEnumerable<ICustomClaimHandler> _claimHandlers;
 
-        public Handler(IJwtFactory jwtFactory, IAuthService usersService, IEnumerable<ICustomClaimHandler> claimHandlers)
+        public Handler(IJwtFactory jwtFactory, IAuthService usersService, IEnumerable<ICustomClaimHandler> claimHandlers, IHttpContextAccessor httpContextAccessor)
         {
             _jwtFactory = jwtFactory;
             _usersService = usersService;
             _claimHandlers = claimHandlers;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)
@@ -84,6 +87,21 @@ public class RenewAccessToken
             var user = await _usersService.GetUserFromRefreshtokenAsync(request.RefreshToken, cancellation);
 
             var extraClaims = new Dictionary<string, string[]>();
+
+            var authenticationModeClaim = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == JwtClaimIdentifiers.AuthenticationMode);
+
+            string authenticationMode = "credentials";
+
+            if (authenticationModeClaim != null)
+            {
+                authenticationMode = _httpContextAccessor.HttpContext.User.Claims.First(claim => claim.Type == JwtClaimIdentifiers.AuthenticationMode).Value;
+            }
+            else
+            {
+                Log.Fatal("Token without authentication mode");
+            }
+
+            extraClaims.Add(JwtClaimIdentifiers.AuthenticationMode, new[] { authenticationMode });
 
             foreach (var claimHandler in _claimHandlers)
             {

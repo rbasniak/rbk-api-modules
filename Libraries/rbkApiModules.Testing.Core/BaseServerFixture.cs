@@ -54,7 +54,7 @@ public class BaseServerFixture : IDisposable
                     .Build()
                 )
                 .UseStartup(startupClassType)
-                .UseSerilog());
+                .UseSerilog(Log.Logger));
 #pragma warning restore CS0618 // Type or member is obsolete
         }
         else
@@ -71,7 +71,7 @@ public class BaseServerFixture : IDisposable
                 .ConfigureTestServices(services =>
                 {
                 })
-                .UseSerilog());
+                .UseSerilog(Log.Logger));
 #pragma warning restore CS0618 // Type or member is obsolete
         }
 
