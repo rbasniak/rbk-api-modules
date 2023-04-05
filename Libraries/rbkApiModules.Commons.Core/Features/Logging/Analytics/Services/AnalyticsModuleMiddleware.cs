@@ -87,11 +87,6 @@ public class AnalyticsModuleMiddleware
                     var pathData = context.Items.FirstOrDefault(x => x.Key.ToString() == AnalyticsMvcFilter.LOG_DATA_PATH);
                     var wasCached = context.Items.FirstOrDefault(x => x.Key.ToString() == "was-cached");
 
-                    if (areaData.Key != null)
-                    {
-                        data.Area = areaData.Value as string;
-                    }
-
                     if (pathData.Key != null)
                     {
                         data.Action = context.Request.Method + " " + pathData.Value as string;
@@ -104,8 +99,6 @@ public class AnalyticsModuleMiddleware
 
                     data.Duration = (int)stopwatch.ElapsedMilliseconds;
                     data.Response = context.Response.StatusCode;
-                    data.RequestSize = requestSize;
-                    data.ResponseSize = responseSize;
 
                     var transactionTime = 0;
                     var transactionCount = 0;
@@ -128,19 +121,19 @@ public class AnalyticsModuleMiddleware
                     //  Get identity of the user
 
                     var username = String.Empty;
-                    var domain = String.Empty;
+                    var tenant = String.Empty;
 
                     if (context.User.Identity.IsAuthenticated)
                     {
                         username = context.User.Identity.Name.ToLower();
 
                         var user = (System.Security.Claims.ClaimsIdentity)context.User.Identity;
-                        domain = user.Claims.FirstOrDefault(c => c.Type.ToLower() == "domain")?.Value;
+                        tenant = user.Claims.FirstOrDefault(c => c.Type.ToLower() == "tenant")?.Value;
                     }
 
                     data.Identity = identity;
                     data.Username = username;
-                    data.Domain = domain;
+                    data.Tenant = tenant;
 
                     var store = context.RequestServices.GetService<IAnalyticModuleStore>();
 

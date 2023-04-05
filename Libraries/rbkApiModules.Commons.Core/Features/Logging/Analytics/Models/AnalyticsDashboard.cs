@@ -20,6 +20,7 @@ public class AnalyticsDashboard
     public object MostResourceHungryEndpoint { get; set; }
     public object MostActiveHours { get; set; }
     public object MostActiveDays { get; set; }
+    public object TotalTimeComsumptionPerEndpoint { get; set; }
 
     public object DailyActiveUsers { get; set; }
     public object DailyErrors { get; set; }

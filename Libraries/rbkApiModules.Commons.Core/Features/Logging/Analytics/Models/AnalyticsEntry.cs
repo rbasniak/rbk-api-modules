@@ -14,6 +14,7 @@ public class AnalyticsEntry
     public Guid Id { get; set; }
     public string Version { get; set; }
     public DateTime Timestamp { get; set; }
+    public string Identity{ get; set; }
     public string Username
     {
         get
@@ -43,6 +44,7 @@ public class AnalyticsEntry
     public string Action { get; set; }
     public int Response { get; set; }
     public int Duration { get; set; }
+    public bool WasCached { get; set; }
     public int TotalTransactionTime { get; set; }
     public int TransactionCount { get; set; }
 

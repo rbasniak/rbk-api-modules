@@ -14,9 +14,7 @@ using System.Threading.Tasks;
 
 namespace rbkApiModules.Commons.Localization;
 
-[ExcludeFromCodeCoverage]
 [IgnoreOnCodeGeneration]
-[AllowAnonymous]
 [ApiController]
 [Route("api/[controller]")]
 public class AnalyticsController : BaseController
@@ -25,14 +23,14 @@ public class AnalyticsController : BaseController
     [Route("filter-options/all")]
     public async Task<ActionResult<FilterOptionListData>> GetFilterData()
     {
-        var result = await Mediator.Send(new GetFilteringLists.Command());
+        var result = await Mediator.Send(new GetFilteringLists.Request());
 
         return HttpResponse(result);
     }
 
     [HttpPost]
     [Route("search")]
-    public async Task<ActionResult<FilterAnalyticsEntries.Results>> Search([FromBody] FilterAnalyticsEntries.Command data)
+    public async Task<ActionResult<FilterAnalyticsEntries.Results>> Search([FromBody] FilterAnalyticsEntries.Request data)
     {
         var result = await Mediator.Send(data);
 
@@ -41,7 +39,7 @@ public class AnalyticsController : BaseController
 
     [HttpPost]
     [Route("dashboard")]
-    public async Task<ActionResult<AnalyticsDashboard>> GetDashboardData([FromBody] GetDashboardData.Command data)
+    public async Task<ActionResult<AnalyticsDashboard>> GetDashboardData([FromBody] GetDashboardData.Request data)
     {
         var result = await Mediator.Send(data);
 
@@ -50,7 +48,7 @@ public class AnalyticsController : BaseController
 
     [HttpPost]
     [Route("performance")]
-    public async Task<ActionResult<PerformanceDashboard>> GetPerformanceData([FromBody] GetPerformanceData.Command data)
+    public async Task<ActionResult<PerformanceDashboard>> GetPerformanceData([FromBody] GetPerformanceData.Request data)
     {
         var result = await Mediator.Send(data);
 
@@ -59,36 +57,9 @@ public class AnalyticsController : BaseController
 
     [HttpPost]
     [Route("sessions")]
-    public async Task<ActionResult<SessionsDashboard>> GetSessionsData([FromBody] GetSessionData.Command data)
+    public async Task<ActionResult<SessionsDashboard>> GetSessionsData([FromBody] GetSessionData.Request data)
     {
         var result = await Mediator.Send(data);
-
-        return HttpResponse(result);
-    }
-
-    [HttpPost]
-    [Route("delete-matching-path")]
-    public async Task<ActionResult<SessionsDashboard>> DeleteMatchingPath([FromBody] DeleteFromPath.Command data)
-    {
-        var result = await Mediator.Send(data);
-
-        return HttpResponse(result);
-    }
-
-    [HttpPost]
-    [Route("current-sessions")]
-    public async Task<ActionResult<SessionsDashboard>> CurrentSessions([FromBody] GetCurrentSessions.Command data)
-    {
-        var result = await Mediator.Send(data);
-
-        return HttpResponse(result);
-    }
-
-    [HttpPost]
-    [Route("fix-api-slash")]
-    public async Task<ActionResult> FixApiSlash()
-    {
-        var result = await Mediator.Send(new NormalizePathsAndActions.Command());
 
         return HttpResponse(result);
     }

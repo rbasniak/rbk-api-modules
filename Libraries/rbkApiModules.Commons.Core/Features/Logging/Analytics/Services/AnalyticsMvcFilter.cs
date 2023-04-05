@@ -23,8 +23,7 @@ public class AnalyticsMvcFilter : IActionFilter
 
     public void OnActionExecuting(ActionExecutingContext context)
     {
-        var path = "unknown";
-        var area = "not defined";
+        string path;
 
         var endpoint = context.HttpContext.Features.Get<IEndpointFeature>().Endpoint;
 
@@ -37,26 +36,6 @@ public class AnalyticsMvcFilter : IActionFilter
             path = "/" + context.HttpContext.Request.Path;
         }
 
-        var action = context.ActionDescriptor as ControllerActionDescriptor;
-        if (action != null)
-        {
-            var controller = action.ControllerTypeInfo;
-
-            var controllerAttribute = action.ControllerTypeInfo.GetCustomAttributes(inherit: true).FirstOrDefault(x => x.GetType() == typeof(ApplicationAreaAttribute));
-
-            var actionAttribute = action.MethodInfo.GetCustomAttributes(inherit: true).FirstOrDefault(x => x.GetType() == typeof(ApplicationAreaAttribute));
-
-            if (actionAttribute != null)
-            {
-                area = (actionAttribute as ApplicationAreaAttribute).Area;
-            }
-            else if (controllerAttribute != null)
-            {
-                area = (controllerAttribute as ApplicationAreaAttribute).Area;
-            }
-        }
-
-        context.HttpContext.Items.Add(LOG_DATA_AREA, area);
         context.HttpContext.Items.Add(LOG_DATA_PATH, path);
     }
 

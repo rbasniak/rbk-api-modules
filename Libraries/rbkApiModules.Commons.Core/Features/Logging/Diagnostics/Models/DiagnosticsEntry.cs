@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Xml;
 
@@ -36,8 +37,8 @@ public class DiagnosticsEntry : BaseEntity
         ClientDevice = "Server";
         Domain = domain;
         StackTrace = exception.ToBetterString();
-        DatabaseExceptions = hasSqlException ? JsonConvert.SerializeObject((sqlExceptions as List<Exception>).Select(x => x.ToBetterString()), Formatting.Indented) : null;
-        InputData = JsonConvert.SerializeObject(input, Formatting.Indented);
+        DatabaseExceptions = hasSqlException ? JsonSerializer.Serialize((sqlExceptions as List<Exception>).Select(x => x.ToBetterString()), new JsonSerializerOptions { WriteIndented = true }) : null;
+        InputData = JsonSerializer.Serialize(input, new JsonSerializerOptions { WriteIndented = true });
         ExceptionMessage = exception.Message;
         ClientOperatingSystem = Environment.OSVersion.Platform.ToString();
         ClientOperatingSystemVersion = Environment.OSVersion.VersionString;
