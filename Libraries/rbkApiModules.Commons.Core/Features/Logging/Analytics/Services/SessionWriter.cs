@@ -74,28 +74,29 @@ public class SessionWriter : IHostedService, IDisposable
         {
             using (var scope = _services.CreateScope())
             {
-                var diagnosticsStore = scope.ServiceProvider.GetRequiredService<IDiagnosticsModuleStore>();
-                diagnosticsStore.StoreData(new DiagnosticsEntry
-                {
-                    ApplicationArea = "Analytics",
-                    ApplicationLayer = "API",
-                    ApplicationVersion = "",
-                    ClientBrowser = "",
-                    ClientDevice = "",
-                    ClientOperatingSystem = "",
-                    ClientOperatingSystemVersion = "",
-                    ClientUserAgent = "",
-                    DatabaseExceptions = "",
-                    Domain = "",
-                    ExceptionMessage = ex.Message,
-                    ExceptionSource = "SessionsBackgroundService",
-                    ExtraData = "",
-                    InputData = "",
-                    RequestId = "",
-                    StackTrace = ex.ToBetterString(),
-                    Timestamp = DateTime.UtcNow,
-                    Username = "SYSTEM",
-                });
+                // TODO: substituir pelo logger correto
+                //var diagnosticsStore = scope.ServiceProvider.GetRequiredService<IDiagnosticsModuleStore>();
+                //diagnosticsStore.StoreData(new DiagnosticsEntry
+                //{
+                //    ApplicationArea = "Analytics",
+                //    ApplicationLayer = "API",
+                //    ApplicationVersion = "",
+                //    ClientBrowser = "",
+                //    ClientDevice = "",
+                //    ClientOperatingSystem = "",
+                //    ClientOperatingSystemVersion = "",
+                //    ClientUserAgent = "",
+                //    DatabaseExceptions = "",
+                //    Domain = "",
+                //    ExceptionMessage = ex.Message,
+                //    ExceptionSource = "SessionsBackgroundService",
+                //    ExtraData = "",
+                //    InputData = "",
+                //    RequestId = "",
+                //    StackTrace = ex.ToBetterString(),
+                //    Timestamp = DateTime.UtcNow,
+                //    Username = "SYSTEM",
+                //});
             }
         }
 

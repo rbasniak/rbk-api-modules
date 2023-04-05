@@ -12,8 +12,8 @@ public class AnalyticsEntry
     private string _username;
 
     public Guid Id { get; set; }
-    public string Version { get; set; }
     public DateTime Timestamp { get; set; }
+    public string Version { get; set; }
     public string Identity{ get; set; }
     public string Username
     {

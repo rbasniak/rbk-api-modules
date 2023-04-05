@@ -332,15 +332,6 @@ public class RelationalAuthService: IAuthService
         return await _context.Set<User>().Where(x => x.Username.ToLower() == username.ToLower()).Select(x => x.TenantId).Distinct().ToArrayAsync(cancellation);
     }
 
-    public async Task DeleteUser(string username, string tenant, CancellationToken cancellation)
-    {
-        var user = await GetUserWithDependenciesAsync(username, tenant, cancellation);
-        _context.RemoveRange(user.Roles);
-        _context.RemoveRange(user.Claims);
-        _context.Remove(user);
-        await _context.SaveChangesAsync(cancellation);
-    }
-
     public Task ActivateUserAsync(string tenant, string username, CancellationToken cancellation)
     {
         throw new NotImplementedException();
@@ -351,8 +342,12 @@ public class RelationalAuthService: IAuthService
         throw new NotImplementedException();
     }
 
-    public Task DeleteUserAsync(string tenant, string username, CancellationToken cancellation)
+    public async Task DeleteUserAsync(string tenant, string username, CancellationToken cancellation)
     {
-        throw new NotImplementedException();
+        var user = await GetUserWithDependenciesAsync(username, tenant, cancellation);
+        _context.RemoveRange(user.Roles);
+        _context.RemoveRange(user.Claims);
+        _context.Remove(user);
+        await _context.SaveChangesAsync(cancellation);
     }
 }

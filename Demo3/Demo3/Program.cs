@@ -10,6 +10,7 @@ public class Program
         try
         {
             Host.CreateDefaultBuilder(args)
+                .ConfigureWebHost(host => host.ConfigureKestrel(options => options.AddServerHeader = false))
                 .UseSerilog((context, services, configuration) =>
                 {
                     // var temp1 = context.Configuration.GetValue<string>("Log:SQLite");

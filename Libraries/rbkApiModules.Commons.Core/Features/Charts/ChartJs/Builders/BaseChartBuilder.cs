@@ -1,9 +1,8 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Dynamic;
 using System.Linq;
+using System.Text.Json;
 
 namespace rbkApiModules.Commons.Charts.ChartJs
 {
@@ -166,21 +165,19 @@ namespace rbkApiModules.Commons.Charts.ChartJs
                 Builder.Type = "empty";
             }
 
-            var serializedWithoutNulls = JsonConvert.SerializeObject(Builder, Formatting.Indented, new JsonSerializerSettings 
-            { 
-                NullValueHandling = NullValueHandling.Ignore,
-                ContractResolver = new DefaultContractResolver
-                {
-                    NamingStrategy = new CamelCaseNamingStrategy()
-                }
-            });
-
-            var deserialized = JsonConvert.DeserializeObject<ExpandoObject>(serializedWithoutNulls);
-
-            if (debug)
+            var serializedWithoutNulls = JsonSerializer.Serialize(Builder, new JsonSerializerOptions
             {
-                Debug.WriteLine(JsonConvert.SerializeObject(JsonConvert.DeserializeObject(serializedWithoutNulls), Formatting.Indented));
-            }
+                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                // WriteIndented = true
+            }); 
+
+            var deserialized = JsonSerializer.Deserialize<ExpandoObject>(serializedWithoutNulls);
+
+            //if (debug)
+            //{
+            //    Debug.WriteLine(JsonSerializer.Serialize(JsonSerializer.Deserialize<>(serializedWithoutNulls), new JsonSerializerOptions));
+            //}
 
             return deserialized;
         } 

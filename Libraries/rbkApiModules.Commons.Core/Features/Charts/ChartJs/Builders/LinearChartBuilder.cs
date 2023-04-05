@@ -1,8 +1,5 @@
-﻿using rbkApiModules.Infrastructure.Models;
-using System;
-using System.Collections.Generic;
+﻿using rbkApiModules.Commons.Core;
 using System.Dynamic;
-using System.Linq;
 
 namespace rbkApiModules.Commons.Charts.ChartJs
 {

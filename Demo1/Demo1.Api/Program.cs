@@ -46,6 +46,7 @@ public class Program
         try
         {
             Host.CreateDefaultBuilder(args)
+                .ConfigureWebHost(host => host.ConfigureKestrel(options => options.AddServerHeader = false))
                 .UseSerilog(configureLogger: (context, services, configuration) =>
                 {
                     Serilog.Debugging.SelfLog.Enable(msg => Debug.WriteLine(">>>>>>>>>>>>>>>>>>> " + msg));
@@ -57,13 +58,20 @@ public class Program
                     var analyticsColumnOptions = new Dictionary<string, ColumnWriterBase>
                     {
                         { "Timestamp", new TimestampColumnWriter(NpgsqlDbType.TimestampTz) },    
-                        { "Path", new SinglePropertyColumnWriter("Path", PropertyWriteMethod.ToString, NpgsqlDbType.Text, "l") },
-                        { "PathBase", new SinglePropertyColumnWriter("PathBase", PropertyWriteMethod.ToString, NpgsqlDbType.Text, "l") },
-                        { "Method", new SinglePropertyColumnWriter("Method", PropertyWriteMethod.Raw, NpgsqlDbType.Text, "l") },
-                        { "Response", new SinglePropertyColumnWriter("Response", PropertyWriteMethod.Raw, NpgsqlDbType.Integer) },
+                        { "Version", new SinglePropertyColumnWriter("Version", PropertyWriteMethod.ToString, NpgsqlDbType.Text, "l") },
+                        { "Identity", new SinglePropertyColumnWriter("Identity", PropertyWriteMethod.ToString, NpgsqlDbType.Text, "l") },
                         { "Username", new SinglePropertyColumnWriter("Username", PropertyWriteMethod.ToString, NpgsqlDbType.Text, "l") },
+                        { "Tenant", new SinglePropertyColumnWriter("Tenant", PropertyWriteMethod.ToString, NpgsqlDbType.Text, "l") },
                         { "IpAddress", new SinglePropertyColumnWriter("IpAddress", PropertyWriteMethod.ToString, NpgsqlDbType.Text, "l") },
-                        { "ConnectionId", new SinglePropertyColumnWriter("ConnectionId", PropertyWriteMethod.ToString, NpgsqlDbType.Text, "l") },
+                        { "UserAgent", new SinglePropertyColumnWriter("UserAgent", PropertyWriteMethod.ToString, NpgsqlDbType.Text, "l") },
+                        { "Method", new SinglePropertyColumnWriter("Method", PropertyWriteMethod.Raw, NpgsqlDbType.Text, "l") },
+                        { "Path", new SinglePropertyColumnWriter("Path", PropertyWriteMethod.ToString, NpgsqlDbType.Text, "l") },
+                        { "Action", new SinglePropertyColumnWriter("Action", PropertyWriteMethod.ToString, NpgsqlDbType.Text, "l") },
+                        { "Response", new SinglePropertyColumnWriter("Response", PropertyWriteMethod.Raw, NpgsqlDbType.Integer) },
+                        { "Duration", new SinglePropertyColumnWriter("Duration", PropertyWriteMethod.Raw, NpgsqlDbType.Integer) },
+                        { "WasCached", new SinglePropertyColumnWriter("WasCached", PropertyWriteMethod.Raw, NpgsqlDbType.Boolean) },
+                        { "TransactionsTime", new SinglePropertyColumnWriter("TransactionsTime", PropertyWriteMethod.Raw, NpgsqlDbType.Boolean) },
+                        { "TransactionsCount", new SinglePropertyColumnWriter("TransactionsCount", PropertyWriteMethod.Raw, NpgsqlDbType.Boolean) },
                     };
 
                     var diagnosticsColumnOptions = new Dictionary<string, ColumnWriterBase>
