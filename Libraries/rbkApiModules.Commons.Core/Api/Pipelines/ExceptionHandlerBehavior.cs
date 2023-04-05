@@ -1,5 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
+using rbkApiModules.Commons.Core.Localization;
+using rbkApiModules.Commons.Core.Utilities.Localization;
 using Serilog;
 
 namespace rbkApiModules.Commons.Core.Pipelines;
@@ -15,9 +17,11 @@ public class ExceptionHandlerBehavior<TRequest, TResponse> : IPipelineBehavior<T
         where TResponse : BaseResponse
 {
     private readonly ILogger<TRequest> _logger;
+    private readonly ILocalizationService _localization;
 
-    public ExceptionHandlerBehavior(ILogger<TRequest> logger)
+    public ExceptionHandlerBehavior(ILogger<TRequest> logger, ILocalizationService localization)
     {
+        _localization = localization;
         _logger = logger;
     }
 
@@ -52,7 +56,7 @@ public class ExceptionHandlerBehavior<TRequest, TResponse> : IPipelineBehavior<T
 
             var response = (TResponse)Activator.CreateInstance(typeof(TResponse), new object[0]);
 
-            response.AddUnhandledError(ex.Message);
+            response.AddUnhandledError(_localization.LocalizeString(CommentMessages.Errors.InternalServerError));
 
             return response;
         }

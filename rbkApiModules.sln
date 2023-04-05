@@ -106,9 +106,29 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo4", "Demo4\Demo4\Demo4.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Commons.LiteDB", "Libraries\rbkApiModules.Commons.LiteDB\rbkApiModules.Commons.LiteDB.csproj", "{5EA981C3-7EB9-4F37-8FFD-46A5BF48F1D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.Demo3.Tests.Integration", "Tests\rbkApiModules.Demo3.Tests.Integration\rbkApiModules.Demo3.Tests.Integration.csproj", "{4FBDEE08-7940-45E2-99D5-07FF4EA33944}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Demo3.Tests.Integration", "Tests\rbkApiModules.Demo3.Tests.Integration\rbkApiModules.Demo3.Tests.Integration.csproj", "{4FBDEE08-7940-45E2-99D5-07FF4EA33944}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Demo1.Tests.Integration", "Tests\rbkApiModules.Demo1.Tests.Integration\rbkApiModules.Demo1.Tests.Integration.csproj", "{3CEE0252-3B12-4F02-AC87-3247FAB28E3C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.Analytics.Core", "Libraries\rbkApiModules.Analytics.Core\rbkApiModules.Analytics.Core.csproj", "{84D0D2DA-423D-4444-9BE8-7CA12A3B4454}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.Analytics.SQLServer", "Libraries\rbkApiModules.Analytics.SqlServer\rbkApiModules.Analytics.SQLServer.csproj", "{A5836761-7754-4D2A-AD5D-4C4B0E4256D9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.Analytics.Postgres", "Libraries\rbkApiModules.Analytics.Postgres\rbkApiModules.Analytics.Postgres.csproj", "{C7141FCF-5419-4958-83E2-75169E9ABDFC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.Analytics.SQLite", "Libraries\rbkApiModules.Analytics.SQLite\rbkApiModules.Analytics.SQLite.csproj", "{2C9D600F-A0F8-49EB-B6D2-E2DFB1FF303D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.Analytics.LiteDB", "Libraries\rbkApiModules.Analytics.LiteDB\rbkApiModules.Analytics.LiteDB.csproj", "{9207D5CB-6F9D-4A8C-8D9B-360F5B86066C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.Diagnostics.Core", "Libraries\rbkApiModules.Diagnostics.Core\rbkApiModules.Diagnostics.Core.csproj", "{D9C0AB4B-D2EE-4A57-8D5B-7AF64FE0C7EF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.Diagnostics.SQLite", "Libraries\rbkApiModules.Diagnostics.SQLite\rbkApiModules.Diagnostics.SQLite.csproj", "{2D9E5310-2BC5-4653-8196-C32231F2FE38}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.Diagnostics.Postgres", "Libraries\rbkApiModules.Diagnostics.Postgres\rbkApiModules.Diagnostics.Postgres.csproj", "{80E58392-AAA8-42A0-AD2F-34DB540AA835}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.Diagnostics.LiteDB", "Libraries\rbkApiModules.Diagnostics.LiteDB\rbkApiModules.Diagnostics.LiteDB.csproj", "{A0B9393B-17C4-4C65-9A91-2C6571026825}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Diagnostics.SQLServer", "Libraries\rbkApiModules.Diagnostics.SQLServer\rbkApiModules.Diagnostics.SQLServer.csproj", "{EEE87B14-DD5E-47F0-97C0-CDA6EBA38519}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -244,6 +264,46 @@ Global
 		{3CEE0252-3B12-4F02-AC87-3247FAB28E3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3CEE0252-3B12-4F02-AC87-3247FAB28E3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3CEE0252-3B12-4F02-AC87-3247FAB28E3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84D0D2DA-423D-4444-9BE8-7CA12A3B4454}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84D0D2DA-423D-4444-9BE8-7CA12A3B4454}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84D0D2DA-423D-4444-9BE8-7CA12A3B4454}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84D0D2DA-423D-4444-9BE8-7CA12A3B4454}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5836761-7754-4D2A-AD5D-4C4B0E4256D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5836761-7754-4D2A-AD5D-4C4B0E4256D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5836761-7754-4D2A-AD5D-4C4B0E4256D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5836761-7754-4D2A-AD5D-4C4B0E4256D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7141FCF-5419-4958-83E2-75169E9ABDFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7141FCF-5419-4958-83E2-75169E9ABDFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7141FCF-5419-4958-83E2-75169E9ABDFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7141FCF-5419-4958-83E2-75169E9ABDFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C9D600F-A0F8-49EB-B6D2-E2DFB1FF303D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C9D600F-A0F8-49EB-B6D2-E2DFB1FF303D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C9D600F-A0F8-49EB-B6D2-E2DFB1FF303D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C9D600F-A0F8-49EB-B6D2-E2DFB1FF303D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9207D5CB-6F9D-4A8C-8D9B-360F5B86066C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9207D5CB-6F9D-4A8C-8D9B-360F5B86066C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9207D5CB-6F9D-4A8C-8D9B-360F5B86066C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9207D5CB-6F9D-4A8C-8D9B-360F5B86066C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9C0AB4B-D2EE-4A57-8D5B-7AF64FE0C7EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9C0AB4B-D2EE-4A57-8D5B-7AF64FE0C7EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9C0AB4B-D2EE-4A57-8D5B-7AF64FE0C7EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9C0AB4B-D2EE-4A57-8D5B-7AF64FE0C7EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D9E5310-2BC5-4653-8196-C32231F2FE38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D9E5310-2BC5-4653-8196-C32231F2FE38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D9E5310-2BC5-4653-8196-C32231F2FE38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D9E5310-2BC5-4653-8196-C32231F2FE38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80E58392-AAA8-42A0-AD2F-34DB540AA835}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80E58392-AAA8-42A0-AD2F-34DB540AA835}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80E58392-AAA8-42A0-AD2F-34DB540AA835}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80E58392-AAA8-42A0-AD2F-34DB540AA835}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0B9393B-17C4-4C65-9A91-2C6571026825}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0B9393B-17C4-4C65-9A91-2C6571026825}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0B9393B-17C4-4C65-9A91-2C6571026825}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0B9393B-17C4-4C65-9A91-2C6571026825}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EEE87B14-DD5E-47F0-97C0-CDA6EBA38519}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEE87B14-DD5E-47F0-97C0-CDA6EBA38519}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEE87B14-DD5E-47F0-97C0-CDA6EBA38519}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEE87B14-DD5E-47F0-97C0-CDA6EBA38519}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -292,6 +352,16 @@ Global
 		{5EA981C3-7EB9-4F37-8FFD-46A5BF48F1D9} = {31E68E16-8360-4E9A-BBB8-AFF160F67851}
 		{4FBDEE08-7940-45E2-99D5-07FF4EA33944} = {17637C69-C691-4368-8C26-DF6B58677214}
 		{3CEE0252-3B12-4F02-AC87-3247FAB28E3C} = {17637C69-C691-4368-8C26-DF6B58677214}
+		{84D0D2DA-423D-4444-9BE8-7CA12A3B4454} = {31E68E16-8360-4E9A-BBB8-AFF160F67851}
+		{A5836761-7754-4D2A-AD5D-4C4B0E4256D9} = {31E68E16-8360-4E9A-BBB8-AFF160F67851}
+		{C7141FCF-5419-4958-83E2-75169E9ABDFC} = {31E68E16-8360-4E9A-BBB8-AFF160F67851}
+		{2C9D600F-A0F8-49EB-B6D2-E2DFB1FF303D} = {31E68E16-8360-4E9A-BBB8-AFF160F67851}
+		{9207D5CB-6F9D-4A8C-8D9B-360F5B86066C} = {31E68E16-8360-4E9A-BBB8-AFF160F67851}
+		{D9C0AB4B-D2EE-4A57-8D5B-7AF64FE0C7EF} = {31E68E16-8360-4E9A-BBB8-AFF160F67851}
+		{2D9E5310-2BC5-4653-8196-C32231F2FE38} = {31E68E16-8360-4E9A-BBB8-AFF160F67851}
+		{80E58392-AAA8-42A0-AD2F-34DB540AA835} = {31E68E16-8360-4E9A-BBB8-AFF160F67851}
+		{A0B9393B-17C4-4C65-9A91-2C6571026825} = {31E68E16-8360-4E9A-BBB8-AFF160F67851}
+		{EEE87B14-DD5E-47F0-97C0-CDA6EBA38519} = {31E68E16-8360-4E9A-BBB8-AFF160F67851}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5ABCFC25-B782-4553-8645-2A49D30D429E}

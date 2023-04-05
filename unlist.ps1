@@ -1,12 +1,23 @@
 $apiKey = "oy2pyvbxsqymi rgbcsuafx4irl4aqe hu7ek2h35og3362u"
 
 $packages = @(
+#   "rbkApiModules.Analytics.Core";
+#   "rbkApiModules.Analytics.LiteDB";    
+#   "rbkApiModules.Analytics.Postgres";
+#   "rbkApiModules.Analytics.SQLite";
+#   "rbkApiModules.Analytics.SQLServer";
 #   "rbkApiModules.Auditing.Core";
-#   "rbkApiModules.Auditing.Relational";    
+#   "rbkApiModules.Auditing.Relational";
 #   "rbkApiModules.Comments.Core";
 #   "rbkApiModules.Comments.Relational";
 #   "rbkApiModules.Commons.Core";
+#   "rbkApiModules.Commons.LiteDB";
 #   "rbkApiModules.Commons.Relational";
+#   "rbkApiModules.Diagnostics.Core";
+#   "rbkApiModules.Diagnostics.LiteDB";
+#   "rbkApiModules.Diagnostics.Postgres";
+#   "rbkApiModules.Diagnostics.SQLite";
+#   "rbkApiModules.Diagnostics.SQLServer";
 #   "rbkApiModules.Faqs.Core";
 #   "rbkApiModules.Faqs.Relational";
 #   "rbkApiModules.Identity.Core";
@@ -15,7 +26,7 @@ $packages = @(
 #   "rbkApiModules.Notifications.Relational";
 #   "rbkApiModules.SharedUI.Core";
 #   "rbkApiModules.Testing.Core";
-#   "rbkApiModules.Workflow";
+#   "rbkApiModules.Workflow.Core";
 #   "rbkApiModules.Workflow.Relational";
 
     "rbkApiModules.Analytics.Core";

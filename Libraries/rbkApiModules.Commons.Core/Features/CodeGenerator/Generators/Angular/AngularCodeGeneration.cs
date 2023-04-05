@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using rbkApiModules.Commons.Core.Localization;
 using Serilog;
 using Serilog.Core;
 using System.Diagnostics;
@@ -12,10 +13,13 @@ public class AngularCodeGenerator
 {
     private string _basePath = "";
     private string _projectId = "";
+    private readonly ILocalizationService _localization;
 
-    public AngularCodeGenerator(string projectId, string basePath)
+    public AngularCodeGenerator(string projectId, string basePath, ILocalizationService localization)
     {
         Log.Information("Code generator initialized for {project} in {path}", projectId, basePath);
+
+        _localization = localization;
 
         _basePath = basePath;
         _projectId = projectId;
@@ -133,7 +137,7 @@ public class AngularCodeGenerator
             }
         }
 
-        var frontendModel = new FrontendModel(controllers, models.ToArray(), _basePath);
+        var frontendModel = new FrontendModel(controllers, models.ToArray(), _basePath, _localization);
 
         frontendModel.GenerateModels();
         frontendModel.GenerateServices();

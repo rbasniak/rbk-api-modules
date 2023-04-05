@@ -1,4 +1,5 @@
-﻿using Serilog;
+﻿using rbkApiModules.Commons.Core.Localization;
+using Serilog;
 using System.Reflection;
 using System.Text;
 
@@ -9,7 +10,7 @@ public class FrontendModel
     private readonly string _basePath;
     private readonly string _modelsPath;
 
-    public FrontendModel(ControllerInfo[] controllers, TypeInfo[] models, string basePath)
+    public FrontendModel(ControllerInfo[] controllers, TypeInfo[] models, string basePath, ILocalizationService localization)
     {
         _basePath = basePath;
 
@@ -31,7 +32,7 @@ public class FrontendModel
 
             if (controller.Type.GetCodeGenerationIgnoreMode() == IgnoreMode.None)
             {
-                Stores.Add(new NgxsStore(controller));
+                Stores.Add(new NgxsStore(controller, localization));
             } 
         }
     }

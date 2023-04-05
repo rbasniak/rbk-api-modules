@@ -1,12 +1,18 @@
-﻿using Serilog;
+﻿using rbkApiModules.Commons.Core.Localization;
+using rbkApiModules.Commons.Core.Utilities.Localization;
+using Serilog;
+using System.ComponentModel;
 using System.Text;
 
 namespace rbkApiModules.Commons.Core.CodeGeneration;
 
 public class NgxsStore
 {
-    public NgxsStore(ControllerInfo controller)
+    private readonly ILocalizationService _localization;
+    public NgxsStore(ControllerInfo controller, ILocalizationService localization)
     {
+        _localization = localization;
+
         Name = controller.Name;
         Controller = controller;
         ActionsFilepath = $"{CodeGenerationUtilities.ToTypeScriptFileCase(controller.Name)}.actions";
@@ -265,7 +271,7 @@ public class NgxsStore
 
         if (action.Type == ActionType.Create)
         {
-            code.AppendLine($"        ctx.dispatch(new ToastActions.Success('Criação realizada com sucesso'));");
+            code.AppendLine($"        ctx.dispatch(new ToastActions.Success('{_localization.LocalizeString(CodeGenerationMessages.Common.CreateSuccess)}'));");
             code.AppendLine($"        ctx.patchState({{");
 
             if (action.Endpoint.StoreBehavior == StoreBehavior.General)
@@ -286,7 +292,7 @@ public class NgxsStore
 
         if (action.Type == ActionType.Update)
         {
-            code.AppendLine($"        ctx.dispatch(new ToastActions.Success('Atualização realizada com sucesso'));");
+            code.AppendLine($"        ctx.dispatch(new ToastActions.Success('{_localization.LocalizeString(CodeGenerationMessages.Common.UpdateSuccess)}'));");
             code.AppendLine($"        ctx.patchState({{");
 
             if (action.Endpoint.StoreBehavior == StoreBehavior.General)
@@ -307,7 +313,7 @@ public class NgxsStore
 
         if (action.Type == ActionType.Delete)
         {
-            code.AppendLine($"        ctx.dispatch(new ToastActions.Success('Exclusão realizada com sucesso'));");
+            code.AppendLine($"        ctx.dispatch(new ToastActions.Success('{_localization.LocalizeString(CodeGenerationMessages.Common.DeleteSuccess)}'));");
             code.AppendLine($"        ctx.patchState({{");
 
             if (action.Endpoint.StoreBehavior == StoreBehavior.General)
@@ -371,4 +377,14 @@ public class NgxsFile<T>
 
     public List<T> Items { get; set; }
     public List<TypeInfo> ModelsToImport { get; set; }
+}
+
+public class CodeGenerationMessages: ILocalizedResource
+{
+    public enum Common
+    {
+        [Description("Entity successfully created")] CreateSuccess,
+        [Description("Entity successfully updated")] UpdateSuccess,
+        [Description("Entity successfully deleted")] DeleteSuccess,
+    }
 }

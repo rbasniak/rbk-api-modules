@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using rbkApiModules.Commons.Core.Localization;
 using System.IO.Compression;
 
 namespace rbkApiModules.Commons.Core.CodeGeneration;
@@ -12,9 +13,11 @@ namespace rbkApiModules.Commons.Core.CodeGeneration;
 public class CodeGeneratorController : BaseController
 {
     private readonly IWebHostEnvironment _environment;
+    private readonly ILocalizationService _localization;
 
-    public CodeGeneratorController(IWebHostEnvironment environment)
+    public CodeGeneratorController(IWebHostEnvironment environment, ILocalizationService localization)
     {
+        _localization = localization;
         _environment = environment;
     }
 
@@ -79,14 +82,14 @@ public class CodeGeneratorController : BaseController
 
         if (directUpdate)
         {
-            var codeGenerator = new AngularCodeGenerator(projectId, basePath);
+            var codeGenerator = new AngularCodeGenerator(projectId, basePath, _localization);
             codeGenerator.Generate();
 
             return Ok("File successfully updated :)");
         }
         else
         {
-            var codeGenerator = new AngularCodeGenerator(projectId, Path.Combine(basePath, "code"));
+            var codeGenerator = new AngularCodeGenerator(projectId, Path.Combine(basePath, "code"), _localization);
             codeGenerator.Generate();
 
             var zipFile = Path.Combine(basePath, "code.zip");

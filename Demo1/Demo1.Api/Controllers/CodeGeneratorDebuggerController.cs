@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.CodeGeneration;
+using rbkApiModules.Commons.Core.Localization;
 using Serilog;
 using System.IO;
 using System.Linq;
@@ -21,7 +22,7 @@ namespace Demo1.Api.Controllers
     public class CodeGeneratorDebuggerController: ControllerBase
     {
         [HttpGet]
-        public IActionResult TestCodeGenerator([FromServices] IWebHostEnvironment environment, string path, string applicationName)
+        public IActionResult TestCodeGenerator([FromServices] IWebHostEnvironment environment, [FromServices] ILocalizationService localization, string path, string applicationName)
         {
             var outputPath = environment.WebRootPath;
 
@@ -29,7 +30,7 @@ namespace Demo1.Api.Controllers
 
             var assemblies = files.Where(x => Path.GetFileName(x).ToLower().Contains(applicationName) && Path.GetFileName(x).ToLower().EndsWith(".dll")).ToArray();
 
-            var codeGenerator = new AngularCodeGenerator(null, Path.Combine(environment.WebRootPath, "_code-generator"));
+            var codeGenerator = new AngularCodeGenerator(null, Path.Combine(environment.WebRootPath, "_code-generator"), localization);
 
             codeGenerator.Generate(assemblies.Select(x => Assembly.LoadFrom(x)).ToArray());
 

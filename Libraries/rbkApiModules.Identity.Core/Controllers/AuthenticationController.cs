@@ -31,18 +31,7 @@ public class AuthenticationController : BaseController
         data.Username = HttpContext.User.Identity.Name.Split('\\').Last().ToLower();
         data.AuthenticationMode = AuthenticationMode.Windows;
 
-        try
-        {
-            return HttpResponse<JwtResponse>(await Mediator.Send(data, cancellation));
-        }
-        catch (Exception ex)
-        {
-            return new ContentResult()
-            {
-                Content = JsonSerializer.Serialize(new[] { ex.Message }),
-                StatusCode = (int)HttpStatusCode.InternalServerError
-            };
-        }
+        return HttpResponse<JwtResponse>(await Mediator.Send(data, cancellation));
     }
 
     [AllowAnonymous]
@@ -50,19 +39,8 @@ public class AuthenticationController : BaseController
     public async Task<ActionResult<JwtResponse>> LoginWithCredentials(UserLogin.Request data, CancellationToken cancellation)
     {
         data.AuthenticationMode = AuthenticationMode.Credentials;
-
-        try
-        {
-            return HttpResponse<JwtResponse>(await Mediator.Send(data, cancellation));
-        }
-        catch (Exception ex)
-        {
-            return new ContentResult()
-            {
-                Content = JsonSerializer.Serialize(new[] { ex.Message }),
-                StatusCode = (int)HttpStatusCode.InternalServerError
-            };
-        }
+        
+        return HttpResponse<JwtResponse>(await Mediator.Send(data, cancellation));
     }
 
     [AllowAnonymous]

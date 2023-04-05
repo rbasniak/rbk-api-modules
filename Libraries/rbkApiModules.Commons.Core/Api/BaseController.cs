@@ -1,10 +1,16 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using rbkApiModules.Commons.Core.Localization;
+using rbkApiModules.Commons.Core.Utilities.Localization;
 using Serilog;
+using System.Diagnostics;
 using System.Net;
+using System.Reflection;
+using System.Reflection.Metadata;
 using System.Text.Json;
 
 namespace rbkApiModules.Commons.Core;
@@ -15,10 +21,12 @@ public class BaseController : ControllerBase
     private IMemoryCache _cache;
     private IMediator _mediator;
     private ILogger _logger;
+    private ILocalizationService _localization;
 
     protected IMediator Mediator => _mediator ??= HttpContext.RequestServices.GetService(typeof(IMediator)) as IMediator;
     protected IMapper Mapper => _mapper ??= HttpContext.RequestServices.GetService(typeof(IMapper)) as IMapper;
     protected IMemoryCache Cache => _cache ??= HttpContext.RequestServices.GetService(typeof(IMemoryCache)) as IMemoryCache;
+    protected ILocalizationService Localization => _localization ??= HttpContext.RequestServices.GetService(typeof(ILocalizationService)) as ILocalizationService;
     protected ILogger Logger => _logger;
 
     public BaseController()
@@ -77,7 +85,7 @@ public class BaseController : ControllerBase
                     }
                 }
 
-                response.AddUnhandledError(ex.Message);
+                response.AddUnhandledError(_localization.LocalizeString(CommentMessages.Errors.InternalServerError));
 
                 _logger.Fatal(ex, "AutoMapper exception was thrown while mapping results in an endpoint");
 
@@ -87,8 +95,8 @@ public class BaseController : ControllerBase
             {
                 _logger.Fatal(ex, "Exception was thrown while mapping results in an endpoint");
 
-                response.AddUnhandledError(ex.Message);
-                
+                response.AddUnhandledError(_localization.LocalizeString(CommentMessages.Errors.InternalServerError));
+
                 return HttpErrorResponse(response);
             }
         }
@@ -96,7 +104,7 @@ public class BaseController : ControllerBase
         {
             return HttpErrorResponse(response);
         }
-    }
+    } 
 
     protected ActionResult HttpResponse(BaseResponse response, string cacheId = null)
     {
@@ -152,7 +160,14 @@ public class BaseController : ControllerBase
                     return BadRequest(messages);
                 }
             case CommandStatus.HasUnhandledError:
-                return StatusCode(500, messages);
+                if (HttpContext.Request.Method.ToUpper() == "GET")
+                {
+                    return StatusCode(500, messages);
+                }
+                else
+                {
+                    return BadRequest(messages);
+                }
             default:
                 throw new ArgumentException("Unknow error status code.");
         }

@@ -97,6 +97,11 @@ public class CommentMessages : ILocalizedResource
     {
         [Description("Could not find parent comment")] CouldNotFindParentComment,
     }
+
+    public enum Errors
+    {
+        [Description("Internal server error")] InternalServerError,
+    }
 }
 
 public class FaqMessages : ILocalizedResource
