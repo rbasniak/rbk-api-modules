@@ -105,10 +105,11 @@ public class User : TenantEntity
         PasswordRedefineCode = null;
     }
 
-    public void UpdateDetails(string displayName, string email)
+    public void UpdateDetails(string displayName, string email, string avatar)
     {
         DisplayName = displayName;
         Email = email;
+        Avatar = avatar;
     }
 
     public void ActivateUser()

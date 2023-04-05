@@ -324,6 +324,8 @@ public class RelationalAuthService: IAuthService
             }
         }
 
+        await _context.SaveChangesAsync();
+        
         return user;
     }
 
