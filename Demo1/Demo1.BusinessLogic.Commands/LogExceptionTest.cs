@@ -28,7 +28,16 @@ public class LogExceptionTest
 
     public class Validator: AbstractValidator<Request>
     {
-        
+        public Validator()
+        {
+            RuleFor(x => x)
+                .Must(ValidatorTest);
+        }
+
+        private bool ValidatorTest(Request request)
+        {
+            return false;
+        }
     }
 
     public class Handler : IRequestHandler<Request, CommandResponse>

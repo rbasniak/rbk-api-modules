@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Demo1.BusinessLogic.Commands;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.CodeGeneration;
+using System.Threading.Tasks;
 
 namespace Demo1.Api.Controllers;
 
-[Authorize]
 [IgnoreOnCodeGeneration(IgnoreMode.StateOnly)]
 [ApiController]
 [Route("api/[controller]")]
@@ -19,8 +20,8 @@ public class MaintenanceController: BaseController
     }
 
     [HttpGet]
-    public string Test()
+    public async Task<ActionResult> Test()
     {
-        return "Ok";
+        return HttpResponse(await Mediator.Send(new LogExceptionTest.Request()));
     }
 }
