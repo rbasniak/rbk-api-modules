@@ -2,6 +2,7 @@
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.Localization;
 using rbkApiModules.Commons.Core.Utilities.Localization;
+using Serilog;
 
 namespace rbkApiModules.Identity.Core;
 
@@ -111,10 +112,14 @@ internal static class Validators
         return rule
             .MustAsync(async (command, property, validationContext, cancellation) =>
             {
+                Log.Logger.Information("Validating custom login policies");
+
                 bool hasError = false;
 
                 foreach (var validator in validators)
                 {
+                    Log.Logger.Information("Running custom login policy: {validator} [Thread={thread}]", validator.GetType().Name, Thread.CurrentThread.ManagedThreadId);
+
                     var result = await validator.Validate(command.Tenant, command.Username, command.Password);
 
                     hasError = hasError || result.HasErrors;

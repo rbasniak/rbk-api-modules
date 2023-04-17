@@ -2,6 +2,8 @@
 using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
 
@@ -46,6 +48,8 @@ public class FailFastRequestBehavior<TRequest, TResponse> : IPipelineBehavior<TR
             }
         }
 
+        composedValidators = composedValidators.DistinctBy(x => x.GetType()).ToList();
+
         var failures = new List<ValidationFailure>();
             
         foreach (var composedValidator in composedValidators)
@@ -60,7 +64,7 @@ public class FailFastRequestBehavior<TRequest, TResponse> : IPipelineBehavior<TR
                 {
                     Log.Logger.Information("Validator has error: {error}", error.ErrorMessage);
 
-                    failures.Add(error);    
+                    failures.Add(error);
                 }
             }
         }

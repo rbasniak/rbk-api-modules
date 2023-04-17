@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -29,6 +31,27 @@ public static class ServicesCollectionExtensions
                 }
             }
         }
+    }
+
+    public static void RegisterFluentValidators(this IServiceCollection services, Assembly assembly)
+    {
+        AssemblyScanner
+            .FindValidatorsInAssembly(assembly)
+            .ForEach(result =>
+            {
+                var notRegistered = services.None(x => x.ServiceType != null && x.ServiceType == result.InterfaceType && x.ImplementationType == result.ValidatorType);
+
+                if (notRegistered)
+                {
+                    Log.Logger.Debug($"Registering validator: {result.InterfaceType.FullName}");
+
+                    services.AddScoped(result.InterfaceType, result.ValidatorType);
+                }
+                else
+                {
+                    Log.Logger.Debug($"Skipping validator: {result.InterfaceType.FullName}");
+                }    
+            });
     }
 }
 

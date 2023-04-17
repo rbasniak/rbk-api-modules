@@ -18,9 +18,7 @@ public static class CoreCommentBuilder
         
         services.AddScoped(typeof(IUserdataCommentService), options._userDataServiceType);
 
-        AssemblyScanner
-            .FindValidatorsInAssembly(Assembly.GetAssembly(typeof(CommentEntity.Request)))
-                .ForEach(result => services.AddScoped(result.InterfaceType, result.ValidatorType));
+        services.RegisterFluentValidators(Assembly.GetAssembly(typeof(CommentEntity.Request)));
 
 
         return services;

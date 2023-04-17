@@ -911,9 +911,9 @@ public static class CommonsCoreBuilder
 
         foreach (var assembly in options._assembliesForMediatR)
         {
-            AssemblyScanner
-                .FindValidatorsInAssembly(assembly)
-                .ForEach(result => services.AddScoped(result.InterfaceType, result.ValidatorType));
+            Log.Logger.Debug($"Registering validators in '{assembly.FullName}'");
+
+            services.RegisterFluentValidators(assembly); 
         }
 
         foreach (var type in options._pipelines)
@@ -968,9 +968,9 @@ public static class CommonsCoreBuilder
 
         foreach (var assembly in options._assembliesForCustomValidators)
         {
-            AssemblyScanner
-                .FindValidatorsInAssembly(assembly)
-                .ForEach(result => services.AddScoped(result.InterfaceType, result.ValidatorType));
+            Log.Logger.Debug($"Registering validators in '{assembly.FullName}'");
+
+            services.RegisterFluentValidators(assembly);
         }
 
         #endregion
