@@ -1,12 +1,4 @@
 ﻿using Serilog;
-using Serilog.Context;
-using Serilog.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace rbkApiModules.Commons.Core.Logging;
 

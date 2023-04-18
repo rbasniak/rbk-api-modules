@@ -2,7 +2,6 @@
 using System.Net;
 using System.Text;
 using System.Text.Json;
-using System.Net.Http;
 using rbkApiModules.Identity.Core;
 
 namespace rbkApiModules.Testing.Core;

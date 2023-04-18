@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace rbkApiModules.Commons.Charts.ChartJs
+﻿namespace rbkApiModules.Commons.Charts.ChartJs
 {
     public class CartesianScaleBuilder<TFactory, TChart> where TChart : BaseChart where TFactory : BaseChartBuilder<TFactory, TChart>
     {

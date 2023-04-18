@@ -1,12 +1,8 @@
 ﻿using FluentValidation;
 using MediatR;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.Localization;
 using rbkApiModules.Commons.Core.Utilities.Localization;
-using System.Text.Json.Serialization;
 
 namespace rbkApiModules.Identity.Core;
 

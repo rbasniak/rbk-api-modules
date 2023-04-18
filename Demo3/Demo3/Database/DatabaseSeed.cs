@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using rbkApiModules.Identity.Core;
+﻿using rbkApiModules.Identity.Core;
 using rbkApiModules.Commons.Relational;
 
 namespace Demo3;

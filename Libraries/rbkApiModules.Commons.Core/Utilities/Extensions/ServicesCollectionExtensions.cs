@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
-using System.Diagnostics;
 using System.Reflection;
 
 namespace rbkApiModules.Commons.Core;

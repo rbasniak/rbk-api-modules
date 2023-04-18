@@ -1,6 +1,4 @@
 ﻿using rbkApiModules.Commons.Core;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace rbkApiModules.Commons.Charts.ChartJs
 {

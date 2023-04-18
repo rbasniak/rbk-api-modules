@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace rbkApiModules.Commons.Charts
+﻿namespace rbkApiModules.Commons.Charts
 {
     public static class DateTimeExtensions
     {

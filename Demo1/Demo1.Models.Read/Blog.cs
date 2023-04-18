@@ -1,5 +1,4 @@
-﻿using rbkApiModules.Commons.Relational;
-using rbkApiModules.Commons.Core;
+﻿using rbkApiModules.Commons.Core;
 
 namespace Demo1.Models.Read;
 

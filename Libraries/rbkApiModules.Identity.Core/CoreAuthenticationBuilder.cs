@@ -7,9 +7,6 @@ using System.Globalization;
 using System.Reflection;
 using System.Text;
 using rbkApiModules.Commons.Core;
-using Microsoft.AspNetCore.Authentication.Negotiate;
-using System.Reflection.PortableExecutable;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using rbkApiModules.Commons.Core.Utilities;
 

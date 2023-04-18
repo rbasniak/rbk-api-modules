@@ -1,10 +1,5 @@
 ﻿using rbkApiModules.Commons.Core;
 using rbkApiModules.Identity.Core.DataTransfer.Users;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace rbkApiModules.Demo1.Tests.Integration.Identity;
 

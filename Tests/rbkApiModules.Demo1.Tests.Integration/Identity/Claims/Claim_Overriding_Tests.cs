@@ -1,5 +1,4 @@
-﻿using rbkApiModules.Identity.Core.DataTransfer.Claims;
-using rbkApiModules.Identity.Core.DataTransfer.Users;
+﻿using rbkApiModules.Identity.Core.DataTransfer.Users;
 
 namespace rbkApiModules.Demo1.Tests.Integration.Identity;
 

@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using MimeKit;
-using rbkApiModules.Identity.Core;
 
 namespace rbkApiModules.Testing.Core;
 

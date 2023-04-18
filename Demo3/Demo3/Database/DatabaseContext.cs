@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Authentication;
 using rbkApiModules.Identity.Core;
 using rbkApiModules.Commons.Relational;

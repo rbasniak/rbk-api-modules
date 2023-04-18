@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
 using rbkApiModules.Commons.Core;
-using System.Diagnostics;
 
 namespace rbkApiModules.Commons.Relational;
 public static class ModelBuilderExtensions

@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-namespace rbkApiModules.Commons.Charts.ChartJs
+﻿namespace rbkApiModules.Commons.Charts.ChartJs
 {
     public static class ChartJsExtensions
     {

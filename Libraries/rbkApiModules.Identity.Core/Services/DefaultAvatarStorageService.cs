@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Hosting;
-using System.Runtime.CompilerServices;
 
 namespace rbkApiModules.Identity.Core;
 

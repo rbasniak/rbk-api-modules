@@ -1,18 +1,10 @@
-﻿using AutoMapper;
-using MediatR;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
-using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.CodeGeneration;
 using rbkApiModules.Commons.Core.Localization;
-using Serilog;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Reflection;
-using System.Text.Json;
 
 namespace Demo1.Api.Controllers
 {

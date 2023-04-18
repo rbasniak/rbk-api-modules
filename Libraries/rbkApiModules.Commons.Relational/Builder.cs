@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using rbkApiModules.Commons.Core;
-using rbkApiModules.Commons.Core.CQRS;
-using rbkApiModules.Commons.Relational.CQRS;
 using rbkApiModules.Commons.Core.Pipelines;
 
 namespace rbkApiModules.Commons.Relational;

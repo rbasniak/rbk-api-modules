@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Http;
 using rbkApiModules.Commons.Core;
 
 namespace rbkApiModules.Notifications.Core;

@@ -1,13 +1,5 @@
-﻿using rbkApiModules.Commons.Core;
-using rbkApiModules.Identity.Core;
-using rbkApiModules.Identity.Core.DataTransfer.Users;
-using System;
-using System.Collections.Generic;
+﻿using rbkApiModules.Identity.Core.DataTransfer.Users;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static rbkApiModules.Commons.Core.Utilities.Localization.AuthenticationMessages;
 
 namespace rbkApiModules.Demo3.Tests.Integration.Identity;
 

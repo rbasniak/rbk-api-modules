@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Identity.Core;
 using rbkApiModules.Commons.Core;
-using rbkApiModules.Commons.Relational.CQRS;
 using rbkApiModules.Commons.Relational;
 using rbkApiModules.Commons.Core.Localization;
 using rbkApiModules.Commons.Core.Utilities.Localization;

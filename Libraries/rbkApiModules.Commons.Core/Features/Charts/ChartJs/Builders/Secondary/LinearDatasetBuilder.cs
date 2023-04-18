@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-
-namespace rbkApiModules.Commons.Charts.ChartJs
+﻿namespace rbkApiModules.Commons.Charts.ChartJs
 {
     public class LinearDatasetBuilder<TFactory, TChart> : DatasetBuilder<TFactory, TChart> where TChart : BaseChart where TFactory : BaseChartBuilder<TFactory, TChart>
     {

@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace rbkApiModules.Commons.Localization;
+﻿namespace rbkApiModules.Commons.Localization;
 
 /// <summary>
 /// Had to creathe this interface to work as a cache for the transactions count

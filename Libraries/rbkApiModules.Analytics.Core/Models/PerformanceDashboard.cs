@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace rbkApiModules.Commons.Analytics;
+﻿namespace rbkApiModules.Commons.Analytics;
 
 public class PerformanceDashboard
 {

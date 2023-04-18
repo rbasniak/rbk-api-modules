@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using System.Net;
-using System.Text.Json;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.CodeGeneration;
-using Microsoft.Win32;
 using rbkApiModules.Identity.Core.DataTransfer.Users;
 
 namespace rbkApiModules.Identity.Core;

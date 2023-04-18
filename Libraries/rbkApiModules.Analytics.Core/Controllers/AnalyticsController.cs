@@ -1,16 +1,7 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using rbkApiModules.Commons.Analytics;
 using rbkApiModules.Commons.Core.CodeGeneration;
 using rbkApiModules.Commons.Core;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace rbkApiModules.Commons.Localization;
 

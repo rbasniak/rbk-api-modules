@@ -1,6 +1,5 @@
 ﻿using rbkApiModules.Commons.Core;
 using rbkApiModules.Identity.Core.DataTransfer.Users;
-using System.Security.Cryptography;
 
 namespace rbkApiModules.Demo1.Tests.Integration.Identity;
 

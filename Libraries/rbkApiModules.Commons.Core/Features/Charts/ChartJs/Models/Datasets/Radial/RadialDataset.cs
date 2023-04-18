@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace rbkApiModules.Commons.Charts.ChartJs
+﻿namespace rbkApiModules.Commons.Charts.ChartJs
 {
     public class RadialDataset : BaseDataset
     {

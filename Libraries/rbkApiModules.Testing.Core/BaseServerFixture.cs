@@ -6,17 +6,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Identity.Core;
-using rbkApiModules.Commons.Relational.CQRS;
 using rbkApiModules.Commons.Relational;
 using Serilog;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using System.Security.Claims;
-using System.Text.Encodings.Web;
-using Claim = System.Security.Claims.Claim;
 using System.Net.Http.Headers;
-using System;
 using System.Net;
 
 namespace rbkApiModules.Testing.Core;

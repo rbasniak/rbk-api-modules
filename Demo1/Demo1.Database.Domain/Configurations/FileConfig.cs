@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
-using Demo1.Models.Domain.Demo;
-using Demo1.Models.Domain.Folders;
 using File = Demo1.Models.Domain.Folders.File;
 
 namespace Demo1.Database.Domain;

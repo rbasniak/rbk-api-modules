@@ -1,13 +1,5 @@
 ﻿using rbkApiModules.Commons.Core;
-using rbkApiModules.Identity.Core;
 using rbkApiModules.Identity.Core.DataTransfer.Users;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static rbkApiModules.Commons.Core.Utilities.Localization.AuthenticationMessages;
 
 namespace rbkApiModules.Demo1.Tests.Integration.Identity;
 
@@ -212,7 +204,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
     /// User can be deleted
     /// DEPENDENCIES: none
     /// </summary>
-    [FriendlyNamedFact("IT-zxxxxxxxxxxxxx"), Priority(150)]
+    [FriendlyNamedFact("IT-???"), Priority(150)]
     public async Task User_can_be_deleted()
     {
         var role1 = _serverFixture.Context.Set<Role>().First(x => x.Name == "Role1");
@@ -242,7 +234,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
     /// User can be created with url for the avatar
     /// DEPENDENCIES: none
     /// </summary>
-    [FriendlyNamedFact("IT-xxxxxxxx"), Priority(160)]
+    [FriendlyNamedFact("IT-???"), Priority(160)]
     public async Task User_can_be_created_with_url_picture()
     {
         var role1 = _serverFixture.Context.Set<Role>().First(x => x.Name == "Role1");

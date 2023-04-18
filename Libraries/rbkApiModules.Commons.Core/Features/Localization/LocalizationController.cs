@@ -1,17 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.CodeGeneration;
 using rbkApiModules.Commons.Core.Utilities.Localization;
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-using rbkApiModules.Commons.Core.Localization;
 using Microsoft.AspNetCore.Authorization;
 
 namespace rbkApiModules.Commons.Core.Localization;

@@ -1,8 +1,6 @@
-﻿using Demo3;
-using rbkApiModules.Commons.Core.Utilities.Localization;
+﻿using rbkApiModules.Commons.Core.Utilities.Localization;
 using rbkApiModules.Identity.Core;
 using System.ComponentModel;
-using Claim = System.Security.Claims.Claim;
 
 namespace Demo3;
 

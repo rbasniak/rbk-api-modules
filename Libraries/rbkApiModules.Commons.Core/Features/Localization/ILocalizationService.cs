@@ -1,12 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.OpenApi.Extensions;
 using rbkApiModules.Commons.Core.Utilities.Localization;
 using Serilog;
-using System;
 using System.ComponentModel;
 using System.Reflection;
-using System.Text;
 using System.Text.Json;
 
 namespace rbkApiModules.Commons.Core.Localization;

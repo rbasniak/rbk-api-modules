@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Text.Json;
 using rbkApiModules.Commons.Core;
 
 namespace rbkApiModules.Identity.Core;

@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography;
-
-namespace rbkApiModules.Demo3.Tests.Integration.Identity;
+﻿namespace rbkApiModules.Demo3.Tests.Integration.Identity;
 
 [TestCaseOrderer(PriorityOrderer.Name, PriorityOrderer.Assembly)]
 public class EndpointsAvailabilityTests : SequentialTest, IClassFixture<ServerFixture>

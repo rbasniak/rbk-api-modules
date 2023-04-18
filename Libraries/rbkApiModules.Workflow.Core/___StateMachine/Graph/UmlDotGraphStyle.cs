@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace Stateless.Graph
+﻿namespace Stateless.Graph
 {
     /// <summary>
     /// Generate DOT graphs in basic UML style

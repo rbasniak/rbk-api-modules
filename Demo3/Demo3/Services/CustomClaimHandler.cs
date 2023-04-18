@@ -1,5 +1,4 @@
-﻿using Demo3;
-using rbkApiModules.Identity.Core;
+﻿using rbkApiModules.Identity.Core;
 using Claim = System.Security.Claims.Claim;
 
 namespace Demo3;

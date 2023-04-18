@@ -1,15 +1,4 @@
-﻿using rbkApiModules.Commons.Core;
-using rbkApiModules.Identity.Core;
-using rbkApiModules.Identity.Core.DataTransfer.Users;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static rbkApiModules.Commons.Core.Utilities.Localization.AuthenticationMessages;
-
-namespace rbkApiModules.Demo1.Tests.Integration.Identity;
+﻿namespace rbkApiModules.Demo1.Tests.Integration.Identity;
 
 [TestCaseOrderer(PriorityOrderer.Name, PriorityOrderer.Assembly)]
 public class UserDeletionTests : SequentialTest, IClassFixture<ServerFixture>

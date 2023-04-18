@@ -1,8 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Demo1.BusinessLogic.Commands;
-using Demo1.DataTransfer;
 using rbkApiModules.Commons.Core;
-using Demo1.BusinessLogic.Queries;
 using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
 

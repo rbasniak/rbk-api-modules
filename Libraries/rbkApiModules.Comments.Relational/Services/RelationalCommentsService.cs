@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Comments.Core;
 using rbkApiModules.Commons.Relational;
-using rbkApiModules.Commons.Relational.CQRS;
 
 namespace rbkApiModules.Comments.Relational;
 

@@ -1,9 +1,7 @@
 ﻿using FluentValidation;
 using rbkApiModules.Commons.Core.Localization;
 using rbkApiModules.Commons.Core.Utilities.Localization;
-using static rbkApiModules.Commons.Core.Utilities.Localization.AuthenticationMessages;
 using System.Net.Mail;
-using System.Diagnostics;
 
 namespace rbkApiModules.Commons.Core;
 

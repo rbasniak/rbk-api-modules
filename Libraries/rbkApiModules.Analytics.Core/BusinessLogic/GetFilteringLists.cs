@@ -1,12 +1,6 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Http;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Localization;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace rbkApiModules.Commons.Analytics;
 

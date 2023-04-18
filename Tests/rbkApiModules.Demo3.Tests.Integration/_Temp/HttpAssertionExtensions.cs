@@ -1,7 +1,4 @@
-﻿using Shouldly;
-using System.Net;
-
-namespace rbkApiModules.Testing.Core;
+﻿namespace rbkApiModules.Testing.Core;
 
 public static class HttpAssertionExtensions
 {

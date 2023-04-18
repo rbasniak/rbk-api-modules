@@ -21,9 +21,6 @@ using Swashbuckle.AspNetCore.SwaggerUI;
 using Serilog;
 using rbkApiModules.Commons.Core.Pipelines;
 using System.Runtime.CompilerServices;
-using Microsoft.AspNetCore.Authentication.Negotiate;
-using rbkApiModules.Commons.Core.Utilities;
-using System.Globalization;
 using rbkApiModules.Commons.Core.Localization;
 using rbkApiModules.Commons.Core.Logging;
 

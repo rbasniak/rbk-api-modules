@@ -1,5 +1,4 @@
-﻿using AutoMapper.Configuration.Annotations;
-using MediatR;
+﻿using MediatR;
 using rbkApiModules.Commons.Core;
 
 namespace rbkApiModules.Identity.Core;

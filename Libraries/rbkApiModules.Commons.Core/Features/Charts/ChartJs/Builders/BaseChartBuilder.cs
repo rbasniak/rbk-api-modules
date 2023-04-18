@@ -1,7 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Dynamic;
-using System.Linq;
+﻿using System.Dynamic;
 using System.Text.Json;
 
 namespace rbkApiModules.Commons.Charts.ChartJs

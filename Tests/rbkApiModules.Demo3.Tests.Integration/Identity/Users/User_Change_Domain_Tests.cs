@@ -1,6 +1,5 @@
 ﻿using rbkApiModules.Commons.Core;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Cryptography;
 
 namespace rbkApiModules.Demo3.Tests.Integration.Identity;
 

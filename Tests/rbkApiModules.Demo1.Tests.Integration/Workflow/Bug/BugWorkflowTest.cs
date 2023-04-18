@@ -1,6 +1,4 @@
-﻿using rbkApiModules.Demo1.Tests.Integration.Workflow.Document.Sync;
-using Stateless;
-using Stateless.Graph;
+﻿using Stateless.Graph;
 using State = rbkApiModules.Demo1.Tests.Integration.Workflow.Bug.BugWorkflow.State;
 using Trigger = rbkApiModules.Demo1.Tests.Integration.Workflow.Bug.BugWorkflow.Trigger;
 

@@ -4,8 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Serilog.Formatting.Compact;
 using Serilog.Events;
 using System;
-using Serilog.Core;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using rbkApiModules.Commons.Core.Logging;
 using Microsoft.Extensions.Configuration;

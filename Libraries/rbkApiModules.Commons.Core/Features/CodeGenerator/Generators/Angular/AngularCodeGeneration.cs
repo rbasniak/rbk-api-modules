@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using rbkApiModules.Commons.Core.Localization;
 using Serilog;
-using Serilog.Core;
-using System.Diagnostics;
 using System.Reflection;
-using System.Reflection.Metadata;
 using System.Text;
 
 namespace rbkApiModules.Commons.Core.CodeGeneration;

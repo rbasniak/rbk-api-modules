@@ -1,8 +1,4 @@
-﻿using rbkApiModules.Testing.Core;
-using System.Net.Http.Headers;
-using System;
-
-namespace rbkApiModules.Demo3.Tests.Integration.Identity;
+﻿namespace rbkApiModules.Demo3.Tests.Integration.Identity;
 
 [TestCaseOrderer(PriorityOrderer.Name, PriorityOrderer.Assembly)]
 public class LocalizationTests : SequentialTest, IClassFixture<ServerFixture>

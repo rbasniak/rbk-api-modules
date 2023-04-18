@@ -1,16 +1,12 @@
 ﻿using AutoMapper;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using rbkApiModules.Commons.Core.Localization;
 using rbkApiModules.Commons.Core.Utilities.Localization;
 using Serilog;
-using System.Diagnostics;
 using System.Net;
-using System.Reflection;
-using System.Reflection.Metadata;
 using System.Text.Json;
 
 namespace rbkApiModules.Commons.Core;
