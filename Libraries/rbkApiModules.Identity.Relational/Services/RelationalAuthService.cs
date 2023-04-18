@@ -334,14 +334,20 @@ public class RelationalAuthService: IAuthService
         return await _context.Set<User>().Where(x => x.Username.ToLower() == username.ToLower()).Select(x => x.TenantId).Distinct().ToArrayAsync(cancellation);
     }
 
-    public Task ActivateUserAsync(string tenant, string username, CancellationToken cancellation)
+    public async Task ActivateUserAsync(string tenant, string username, CancellationToken cancellation)
     {
-        throw new NotImplementedException();
+        var user = await LoadUserEntityAsync(username, tenant, cancellation);
+        user.ActivateUser();
+        
+        await _context.SaveChangesAsync();
     }
 
-    public Task DeactivateUserAsync(string tenant, string username, CancellationToken cancellation)
+    public async Task DeactivateUserAsync(string tenant, string username, CancellationToken cancellation)
     {
-        throw new NotImplementedException();
+        var user = await LoadUserEntityAsync(username, tenant, cancellation);
+        user.DeactivateUser();
+
+        await _context.SaveChangesAsync();
     }
 
     public async Task DeleteUserAsync(string tenant, string username, CancellationToken cancellation)

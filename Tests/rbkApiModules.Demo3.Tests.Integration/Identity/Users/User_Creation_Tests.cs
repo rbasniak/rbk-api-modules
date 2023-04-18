@@ -81,7 +81,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/create-user", request, true);
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/user/create", request, true);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "O campo 'Usuário' não pode ser vazio(a)");
@@ -111,7 +111,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/create-user", request, true);
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/user/create", request, true);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Usuário já existe"); 
@@ -143,7 +143,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/create-user", request, true);
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/user/create", request, true);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "O campo 'E-mail' não pode ser vazio(a)");
@@ -179,7 +179,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/create-user", request, true);
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/user/create", request, true);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "E-mail inválido");
@@ -209,7 +209,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/create-user", request, true);
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/user/create", request, true);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "E-mail já utilizado");
@@ -241,7 +241,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/create-user", request, true);
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/user/create", request, true);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "O campo 'Nome' não pode ser vazio(a)");
@@ -271,7 +271,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/create-user", request, true);
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/user/create", request, true);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Age is not valid", "Sector is required");
@@ -299,7 +299,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/create-user", request, true);
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/user/create", request, true);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "A lista de perfis precisa ter ao menos um item");
@@ -327,7 +327,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/create-user", request, true);
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/user/create", request, true);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "A lista de perfis precisa ter ao menos um item");
@@ -357,7 +357,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/create-user", request, true);
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/user/create", request, true);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Perfil não encontrado");
@@ -387,7 +387,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/create-user", request, await _serverFixture.GetAccessTokenAsync("user", "wayne inc"));
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/user/create", request, await _serverFixture.GetAccessTokenAsync("user", "wayne inc"));
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.Forbidden);
@@ -418,7 +418,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/create-user", request, true);
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/user/create", request, true);
 
         // Assert the response
         response.ShouldBeSuccess();

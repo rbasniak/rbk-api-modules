@@ -75,6 +75,9 @@ public class AuthenticationMessages : ILocalizedResource
         [Description("User already exists")] UserAlreadyExists,
         [Description("E-mail already used")] EmailAlreadyUsed,
         [Description("Password is required")] PasswordIsRequired,
+        [Description("User cannot delete itself")] UserCannotDeleteItselft,
+        [Description("User cannot deactivate itself")] UserCannotDeactivateItselft,
+        [Description("Account is deactivated")] AccountDeactivated,
     }
 
     public enum Erros

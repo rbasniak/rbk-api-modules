@@ -17,6 +17,7 @@ using System.Text.Encodings.Web;
 using Claim = System.Security.Claims.Claim;
 using System.Net.Http.Headers;
 using System;
+using System.Net;
 
 namespace rbkApiModules.Testing.Core;
 
@@ -123,7 +124,10 @@ public class BaseServerFixture : IDisposable
 
                 var response = await httpClient.PostAsync("api/authentication/login", new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json"));
 
-                response.EnsureSuccessStatusCode();
+                if (response.StatusCode != HttpStatusCode.OK)
+                {
+                    throw new Exception($"Could not login with the provided credentials: {body.Username}///{body.Password} ({body.Tenant})");
+                }
 
                 var responseBodyData = await response.Content.ReadAsStringAsync();
 

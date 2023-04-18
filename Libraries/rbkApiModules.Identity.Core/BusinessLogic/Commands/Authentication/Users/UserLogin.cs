@@ -49,6 +49,8 @@ public class UserLogin
                         .DependentRules(() =>
                         {
                             RuleFor(x => x.Username)
+                                .MustAsync(BeActive)
+                                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.AccountDeactivated))
                                 .MustAsync(BeConfirmed)
                                     .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.UserNotYetConfirmed));
 
@@ -93,6 +95,12 @@ public class UserLogin
             return user.IsConfirmed;
         }
 
+        public async Task<bool> BeActive(Request request, string username, CancellationToken cancellation)
+        {
+            var user = await _userService.FindUserAsync(username, request.Tenant, cancellation);
+
+            return user.IsActive;
+        }
 
         public async Task<bool> MatchPassword(Request request, string password, CancellationToken cancellation)
         {

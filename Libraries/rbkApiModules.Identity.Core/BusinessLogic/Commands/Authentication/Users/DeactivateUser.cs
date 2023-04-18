@@ -29,7 +29,14 @@ public class DeativateUser
                 .IsRequired(localization)
                 .MustAsync(UserExistsOnDatabase)
                     .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.UserNotFound))
+                .Must(UserCannotDeactivateItself)
+                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.UserCannotDeactivateItselft))
                 .WithName(localization.LocalizeString(AuthenticationMessages.Fields.User));
+        }
+
+        private bool UserCannotDeactivateItself(Request request, string username)
+        {
+            return username.ToLower() != request.Identity.Username.ToLower();
         }
 
         private async Task<bool> UserExistsOnDatabase(Request request, string username, CancellationToken cancellation)

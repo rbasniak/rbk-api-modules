@@ -105,22 +105,36 @@ public class AuthenticationController : BaseController
     }
 
     [AllowAnonymous]
-    [HttpPost("register")]
+    [HttpPost("user/register")]
     public async Task<ActionResult> RegisterAnonymously(Register.Request data, CancellationToken cancellation)
     {
         return HttpResponse(await Mediator.Send(data, cancellation));
     }
 
     [RbkAuthorize(AuthenticationClaims.MANAGE_USERS)]
-    [HttpPost("create-user")]
+    [HttpPost("user/create")]
     public async Task<ActionResult<UserDetails>> CreateUser(CreateUser.Request data, CancellationToken cancellation)
     {
         return HttpResponse<UserDetails>(await Mediator.Send(data, cancellation));
     }
 
     [RbkAuthorize(AuthenticationClaims.MANAGE_USERS)]
-    [HttpPost("delete-user")]
+    [HttpPost("user/delete")]
     public async Task<ActionResult> DeleteUser(DeleteUser.Request data, CancellationToken cancellation)
+    {
+        return HttpResponse(await Mediator.Send(data, cancellation));
+    }
+
+    [RbkAuthorize(AuthenticationClaims.MANAGE_USERS)]
+    [HttpPost("user/deactivate")]
+    public async Task<ActionResult> DeactivateUser(DeativateUser.Request data, CancellationToken cancellation)
+    {
+        return HttpResponse(await Mediator.Send(data, cancellation));
+    }
+
+    [RbkAuthorize(AuthenticationClaims.MANAGE_USERS)]
+    [HttpPost("user/activate")]
+    public async Task<ActionResult> ActivateUser(ActivateUser.Request data, CancellationToken cancellation)
     {
         return HttpResponse(await Mediator.Send(data, cancellation));
     }

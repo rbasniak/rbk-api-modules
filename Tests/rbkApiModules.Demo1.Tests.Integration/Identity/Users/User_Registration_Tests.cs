@@ -56,7 +56,7 @@ public class UserRegistrationTests : SequentialTest, IClassFixture<ServerFixture
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/register", request, false);
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/user/register", request, false);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'User' cannot be empty");
@@ -86,7 +86,7 @@ public class UserRegistrationTests : SequentialTest, IClassFixture<ServerFixture
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/register", request, false);
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/user/register", request, false);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "User already exists");
@@ -116,7 +116,7 @@ public class UserRegistrationTests : SequentialTest, IClassFixture<ServerFixture
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/register", request, false);
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/user/register", request, false);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Tenant not found");
@@ -148,7 +148,7 @@ public class UserRegistrationTests : SequentialTest, IClassFixture<ServerFixture
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/register", request, false);
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/user/register", request, false);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'Tenant' cannot be empty");
@@ -180,7 +180,7 @@ public class UserRegistrationTests : SequentialTest, IClassFixture<ServerFixture
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/register", request, false);
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/user/register", request, false);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'E-mail' cannot be empty");
@@ -214,7 +214,7 @@ public class UserRegistrationTests : SequentialTest, IClassFixture<ServerFixture
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/register", request, false);
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/user/register", request, false);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "E-mail is invalid");
@@ -244,7 +244,7 @@ public class UserRegistrationTests : SequentialTest, IClassFixture<ServerFixture
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/register", request, false);
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/user/register", request, false);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "E-mail already used");
@@ -276,7 +276,7 @@ public class UserRegistrationTests : SequentialTest, IClassFixture<ServerFixture
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/register", request, false);
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/user/register", request, false);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'Display name' cannot be empty");
@@ -306,7 +306,7 @@ public class UserRegistrationTests : SequentialTest, IClassFixture<ServerFixture
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/register", request, false);
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/user/register", request, false);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Age is not valid", "Sector is required");
@@ -338,7 +338,7 @@ public class UserRegistrationTests : SequentialTest, IClassFixture<ServerFixture
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/register", request, false);
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/user/register", request, false);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'Password' cannot be empty");
@@ -368,7 +368,7 @@ public class UserRegistrationTests : SequentialTest, IClassFixture<ServerFixture
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/register", request, false);
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/user/register", request, false);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Password and confirmation must match");
@@ -398,7 +398,7 @@ public class UserRegistrationTests : SequentialTest, IClassFixture<ServerFixture
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/register", request, false);
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/user/register", request, false);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The password must have at least 3 characteres");
@@ -428,7 +428,7 @@ public class UserRegistrationTests : SequentialTest, IClassFixture<ServerFixture
         };
 
         // Act
-        var response = await _serverFixture.PostAsync("api/authentication/register", request, null);
+        var response = await _serverFixture.PostAsync("api/authentication/user/register", request, null);
 
         // Assert the response
         response.ShouldBeSuccess();

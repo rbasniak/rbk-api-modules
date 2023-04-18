@@ -69,7 +69,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/create-user", request, true);
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/user/create", request, true);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Password is required");
@@ -104,7 +104,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/create-user", request, true);
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/user/create", request, true);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Password and confirmation must match");
@@ -136,7 +136,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/create-user", request, true);
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/user/create", request, true);
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The password must have at least 3 characteres");
@@ -168,7 +168,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/create-user", request, true);
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/user/create", request, true);
 
         // Assert the response
         response.ShouldBeSuccess();
@@ -224,7 +224,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
         };
 
         // Act
-        var response = await _serverFixture.PostAsync("api/authentication/delete-user", request, _serverFixture.GetDefaultAccessToken());
+        var response = await _serverFixture.PostAsync("api/authentication/user/delete", request, _serverFixture.GetDefaultAccessToken());
 
         // Assert the response
         response.ShouldBeSuccess();
@@ -265,7 +265,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
         };
 
         // Act
-        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/create-user", request, true);
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/user/create", request, true);
 
         // Assert the response
         response.ShouldBeSuccess();
