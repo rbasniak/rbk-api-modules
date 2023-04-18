@@ -49,7 +49,9 @@ public class ActivateUser
         {
             await _usersService.ActivateUserAsync(request.Identity.Tenant, request.Username, cancellation);
 
-            return CommandResponse.Success();
+            var user = await _usersService.GetUserWithDependenciesAsync(request.Username, request.Identity.Tenant, cancellation);
+
+            return CommandResponse.Success(user);
         }
     }
 }
