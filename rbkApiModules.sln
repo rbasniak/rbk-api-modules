@@ -7,8 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo1.Api", "Demo1\Demo1.Ap
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo1.BusinessLogic.Commands", "Demo1\Demo1.BusinessLogic.Commands\Demo1.BusinessLogic.Commands.csproj", "{C72E31FA-C729-4320-A71F-BC4600A2EAA9}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{24A80F2D-E586-4703-9DB6-FB25259FC236}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "!Solution Items", "!Solution Items", "{24A80F2D-E586-4703-9DB6-FB25259FC236}"
 	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
 		discussions.txt = discussions.txt
 		LICENSE = LICENSE
 	EndProjectSection
