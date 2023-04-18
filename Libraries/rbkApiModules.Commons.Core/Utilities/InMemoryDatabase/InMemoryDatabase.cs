@@ -5,7 +5,6 @@ namespace rbkApiModules.Commons.Core;
 
 public abstract class InMemoryDatabase<T> : IInMemoryDatabase<T> where T : BaseEntity
 {
-    private static bool _isInitialized = false;
     private static readonly ConcurrentDictionary<Guid, T> _database = new ConcurrentDictionary<Guid, T>();
 
     private readonly IServiceProvider _services;

@@ -4,7 +4,7 @@
     {
         public IndexAxis? Axis { get; internal set; }
         public bool? Display { get; internal set; }
-        public GridLineOptions? Grid { get; internal set; }
+        public GridLineOptions Grid { get; internal set; }
         public double? Min { get; internal set; }
         public double? Max { get; internal set; }
         public bool? Offset { get; internal set; }

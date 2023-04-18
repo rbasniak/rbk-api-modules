@@ -13,7 +13,7 @@ public class UiDefinitionsController : BaseController
 
     [AllowAnonymous]
     [HttpGet]
-    public async Task<ActionResult<object>> All([FromServices] UIDefinitionOptions options)
+    public ActionResult<object> All([FromServices] UIDefinitionOptions options)
     {
         try
         {

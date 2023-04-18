@@ -1,5 +1,4 @@
 Get-ChildItem * -Include *.*nupkg -Recurse | Remove-Item
-./@Tools/VersionUpdater.exe
 dotnet restore
 dotnet build --configuration Release --no-restore
 dotnet pack -c Release -P:IncludeSymbols=true -p:SymbolPackageFormat=snupkg

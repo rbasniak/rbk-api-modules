@@ -629,8 +629,6 @@ namespace rbkApiModules.Commons.Charts.ChartJs
         private LinearChartBuilder<T> _linearChartBuilder;
         private Func<T, object> _converter;
         private bool _appendExtraData;
-        private int? _decimalPlaces;
-        private string _lastCall;
 
         private int _intervals;
         private double? _intervalRound;

@@ -15,7 +15,7 @@ public static class PasswordHasher
         provider.GetNonZeroBytes(saltBytes);
         string salt = Convert.ToBase64String(saltBytes);
 
-        var rfc2898DeriveBytes = new Rfc2898DeriveBytes(password, saltBytes, 10000);
+        var rfc2898DeriveBytes = new Rfc2898DeriveBytes(password, saltBytes, 100000, HashAlgorithmName.SHA512);
         string hash = Convert.ToBase64String(rfc2898DeriveBytes.GetBytes(256));
 
         return salt + hash;
@@ -33,7 +33,7 @@ public static class PasswordHasher
         var hash = hashedPassword.Substring(88, hashedPassword.Length - 88);
 
         var saltBytes = Convert.FromBase64String(salt);
-        var rfc2898DerivedBytes = new Rfc2898DeriveBytes(enteredPassword, saltBytes, 10000);
+        var rfc2898DerivedBytes = new Rfc2898DeriveBytes(enteredPassword, saltBytes, 100000, HashAlgorithmName.SHA512);
 
         return Convert.ToBase64String(rfc2898DerivedBytes.GetBytes(256)) == hash;
     }
