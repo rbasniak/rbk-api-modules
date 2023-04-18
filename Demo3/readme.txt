@@ -1,0 +1,1 @@
+Sample focused on Windows Authentication

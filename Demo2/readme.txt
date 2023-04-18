@@ -1,0 +1,1 @@
+PoC experimenting with eventsourcing 

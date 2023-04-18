@@ -1,0 +1,1 @@
+All purpose sample, uses most of the features in the library and credentials authentication 

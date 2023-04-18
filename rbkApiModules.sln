@@ -41,12 +41,18 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{D6DB387F-FCCD-4ED5-B2E2-84DEE62CF8BB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demo1", "Demo1", "{84FDE0F6-0E39-46F4-BE4C-B0CCA431D13A}"
+	ProjectSection(SolutionItems) = preProject
+		Demo1\readme.txt = Demo1\readme.txt
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{17637C69-C691-4368-8C26-DF6B58677214}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demos", "Demos", "{54EA380B-014B-475D-AD85-204BA261E614}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demo2", "Demo2", "{30F0C25D-7C28-4616-A8AA-C4370B09D3BC}"
+	ProjectSection(SolutionItems) = preProject
+		Demo2\readme.txt = Demo2\readme.txt
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Commons.Core", "Libraries\rbkApiModules.Commons.Core\rbkApiModules.Commons.Core.csproj", "{7F472334-93CA-42FF-A18B-637C72C1E056}"
 EndProject
@@ -96,6 +102,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Testing.Core", "Libraries\rbkApiModules.Testing.Core\rbkApiModules.Testing.Core.csproj", "{75F81C8A-322E-460C-AE50-EA7147583B90}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demo3", "Demo3", "{09F8AC1C-E203-476D-A59B-551405C12ED7}"
+	ProjectSection(SolutionItems) = preProject
+		Demo3\readme.txt = Demo3\readme.txt
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo2", "Demo2\Demo2\Demo2.csproj", "{509EE73F-C09C-4320-8728-2102B6FD5A7D}"
 EndProject
