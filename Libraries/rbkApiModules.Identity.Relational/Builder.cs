@@ -29,12 +29,14 @@ public static class Builder
             services.AddScoped<ITenantPostCreationAction, DummyTenantPostCreationActions>();
         }
 
+        services.AddSingleton(new rbkDefaultAdminOptions());
+
         return services;
     }
 
     public static IApplicationBuilder SetupRbkDefaultAdmin(this IApplicationBuilder app, Action<rbkDefaultAdminOptions> configureOptions)
     {
-        var options = new rbkDefaultAdminOptions();
+        var options = app.ApplicationServices.GetService<rbkDefaultAdminOptions>();
         configureOptions(options);
 
         if (String.IsNullOrEmpty(options._username)) throw new ArgumentNullException("Username", "You must provide a name for the admin user");

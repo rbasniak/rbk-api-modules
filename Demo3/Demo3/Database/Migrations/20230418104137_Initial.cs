@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -81,6 +82,8 @@ namespace Demo3.Database.Migrations
                     IsConfirmed = table.Column<bool>(type: "boolean", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     ActivationCode = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    PasswordRedefineCode_CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    PasswordRedefineCode_Hash = table.Column<string>(type: "character varying(1024)", maxLength: 1024, nullable: true),
                     RefreshTokenValidity = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     LastLogin = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
