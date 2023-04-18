@@ -13,10 +13,12 @@ namespace rbkApiModules.Identity.Core;
 public class AuthenticationController : BaseController
 {
     private readonly AuthEmailOptions _authEmailOptions;
+    private readonly rbkDefaultAdminOptions _adminOptions;
 
-    public AuthenticationController(IOptions<AuthEmailOptions> config) : base()
+    public AuthenticationController(IOptions<AuthEmailOptions> config, rbkDefaultAdminOptions adminOptions) : base()
     {
         _authEmailOptions = config.Value;
+        _adminOptions = adminOptions;
     }
 
     [Authorize]
@@ -25,8 +27,13 @@ public class AuthenticationController : BaseController
     {
         var isAuthenticated = HttpContext.User.Identity.IsAuthenticated;
 
-        data.Username = HttpContext.User.Identity.Name.Split('\\').Last().ToLower();
-        data.AuthenticationMode = AuthenticationMode.Windows;
+        if (String.IsNullOrEmpty(data.Username) ||                            // No username was provided, use the one from Windows Authentication
+            data.Username.ToLower() != _adminOptions._username.ToLower() ||   // Username is different from superuser
+            !String.IsNullOrEmpty(data.Tenant))                               // A tenant was specified in the request
+        {
+            data.Username = HttpContext.User.Identity.Name.Split('\\').Last().ToLower();
+            data.AuthenticationMode = AuthenticationMode.Windows;
+        }
 
         return HttpResponse<JwtResponse>(await Mediator.Send(data, cancellation));
     }

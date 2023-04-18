@@ -55,7 +55,7 @@ public class User : TenantEntity
     [Required, MinLength(5), MaxLength(255)]
     public virtual string Email { get; protected set; }
 
-    [Required, MinLength(1), MaxLength(4096)]
+    [MinLength(1), MaxLength(4096)]
     public virtual string Password { get; protected set; }
 
     [MaxLength(128)]

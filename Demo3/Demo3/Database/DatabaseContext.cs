@@ -28,8 +28,8 @@ public class DatabaseContext : DbContext
         modelBuilder.AddJsonFields();
         modelBuilder.SetupTenants();
 
-        modelBuilder.Entity<User>().Ignore(x => x.Password);
-        modelBuilder.Entity<User>().Ignore(x => x.PasswordRedefineCode);
+        // modelBuilder.Entity<User>().Ignore(x => x.Password);
+        // modelBuilder.Entity<User>().Ignore(x => x.PasswordRedefineCode);
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)

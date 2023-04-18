@@ -90,5 +90,43 @@ public class WindowsAuthenticationTests : SequentialTest, IClassFixture<ServerFi
         // Assert
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Credenciais inválidas");
     }
+
+    /// <summary>
+    /// With Windows Authentication, user can still login as superuser
+    /// </summary>
+    [FriendlyNamedFact("IT-???"), Priority(40)]
+    public async Task User_can_login_with_superuser_when_using_Windows_Authentication()
+    {
+        var command = new UserLogin.Request
+        {
+            Username = "superuser",
+            Password = "admin"
+        };
+
+        // Act
+        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", command, credentials: Environment.UserName);
+
+        // Assert
+        response.ShouldBeSuccess();
+        response.Data.ShouldNotBeNull("Response from server is null");
+        response.Data.AccessToken.ShouldNotBeNull("Access token is null");
+        response.Data.AccessToken.ShouldNotBeEmpty("Access token is empty");
+        response.Data.RefreshToken.ShouldNotBeNull("Refresh token is null");
+        response.Data.RefreshToken.ShouldNotBeEmpty("Refresh token is empty");
+
+        var handler = new JwtSecurityTokenHandler();
+        var tokenData = handler.ReadJwtToken(response.Data.AccessToken);
+
+        var tenant = tokenData.Claims.First(claim => claim.Type == JwtClaimIdentifiers.Tenant).Value;
+        var username1 = tokenData.Claims.First(claim => claim.Type == JwtRegisteredClaimNames.Sub).Value;
+        var username2 = tokenData.Claims.First(claim => claim.Type == System.Security.Claims.ClaimTypes.Name).Value;
+        var allowedTenants = tokenData.Claims.Where(claim => claim.Type == JwtClaimIdentifiers.AllowedTenants).ToList();
+
+        tenant.ShouldBeEmpty();
+        username1.ShouldBe("superuser");
+        username2.ShouldBe("superuser");
+        allowedTenants.Count.ShouldBe(1);
+        allowedTenants[0].Value.ToString().ShouldBeEmpty();
+    }
 }
 

@@ -55,7 +55,9 @@ public class JwtFactory : IJwtFactory
             }
         }
 
-        if (_authenticationOptions._allowTenantSwitching)
+        var currentTenant = roles[JwtClaimIdentifiers.Tenant].First();
+
+        if (_authenticationOptions._allowTenantSwitching && !String.IsNullOrEmpty(currentTenant))
         {
             var tenants = await _usersService.GetAllowedTenantsAsync(username, CancellationToken.None);
 
@@ -66,9 +68,7 @@ public class JwtFactory : IJwtFactory
         }
         else
         {
-            var tenant = roles[JwtClaimIdentifiers.Tenant].First();
-
-            claims.Add(new System.Security.Claims.Claim(JwtClaimIdentifiers.AllowedTenants, tenant ?? ""));
+            claims.Add(new System.Security.Claims.Claim(JwtClaimIdentifiers.AllowedTenants, currentTenant ?? ""));
         }
 
         var authenticationMode = claims.FirstOrDefault(x => x.Type == JwtClaimIdentifiers.AuthenticationMode);
