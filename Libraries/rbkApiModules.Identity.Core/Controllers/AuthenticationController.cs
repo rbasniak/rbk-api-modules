@@ -133,13 +133,13 @@ public class AuthenticationController : BaseController
     [HttpPost("user/deactivate")]
     public async Task<ActionResult<UserDetails>> DeactivateUser(DeativateUser.Request data, CancellationToken cancellation)
     {
-        return HttpResponse(await Mediator.Send(data, cancellation));
+        return HttpResponse<UserDetails>(await Mediator.Send(data, cancellation));
     }
 
     [RbkAuthorize(AuthenticationClaims.MANAGE_USERS)]
     [HttpPost("user/activate")]
     public async Task<ActionResult<UserDetails>> ActivateUser(ActivateUser.Request data, CancellationToken cancellation)
     {
-        return HttpResponse(await Mediator.Send(data, cancellation));
+        return HttpResponse<UserDetails>(await Mediator.Send(data, cancellation));
     }
 }
