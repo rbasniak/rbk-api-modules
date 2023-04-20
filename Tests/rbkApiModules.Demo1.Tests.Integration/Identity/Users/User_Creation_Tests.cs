@@ -204,7 +204,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
     /// User can be deleted
     /// DEPENDENCIES: none
     /// </summary>
-    [FriendlyNamedFact("IT-???"), Priority(150)]
+    [FriendlyNamedFact("IT-490"), Priority(150)]
     public async Task User_can_be_deleted()
     {
         var role1 = _serverFixture.Context.Set<Role>().First(x => x.Name == "Role1");
@@ -234,7 +234,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
     /// User can be created with url for the avatar
     /// DEPENDENCIES: none
     /// </summary>
-    [FriendlyNamedFact("IT-???"), Priority(160)]
+    [FriendlyNamedFact("IT-492"), Priority(160)]
     public async Task User_can_be_created_with_url_picture()
     {
         var role1 = _serverFixture.Context.Set<Role>().First(x => x.Name == "Role1");

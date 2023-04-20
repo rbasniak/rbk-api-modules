@@ -94,7 +94,7 @@ public class WindowsAuthenticationTests : SequentialTest, IClassFixture<ServerFi
     /// <summary>
     /// With Windows Authentication, user can still login as superuser
     /// </summary>
-    [FriendlyNamedFact("IT-???"), Priority(40)]
+    [FriendlyNamedFact("IT-497"), Priority(40)]
     public async Task User_can_login_with_superuser_when_using_Windows_Authentication()
     {
         var command = new UserLogin.Request

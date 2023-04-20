@@ -1,4 +1,6 @@
-﻿namespace rbkApiModules.Demo1.Tests.Integration.Identity;
+﻿using rbkApiModules.Identity.Core.DataTransfer.Users;
+
+namespace rbkApiModules.Demo1.Tests.Integration.Identity;
 
 [TestCaseOrderer(PriorityOrderer.Name, PriorityOrderer.Assembly)]
 public class User_Activation_Tests : SequentialTest, IClassFixture<ServerFixture>
@@ -44,7 +46,7 @@ public class User_Activation_Tests : SequentialTest, IClassFixture<ServerFixture
     /// User cannot be deactivated when username is null or empty
     /// DEPENDENCIES: none
     /// </summary>
-    [FriendlyNamedTheory("IT-???"), Priority(10)]
+    [FriendlyNamedTheory("IT-502"), Priority(10)]
     [InlineData(null)]
     [InlineData("")]
     public async Task User_cannot_be_deactivated_when_username_is_null_or_empty(string username)
@@ -66,7 +68,7 @@ public class User_Activation_Tests : SequentialTest, IClassFixture<ServerFixture
     /// User cannot deactivate itself
     /// DEPENDENCIES: none
     /// </summary>
-    [FriendlyNamedFact("IT-???"), Priority(40)]
+    [FriendlyNamedFact("IT-495"), Priority(20)]
     public async Task User_cannot_deactivate_itself()
     {
         // Prepare
@@ -86,7 +88,7 @@ public class User_Activation_Tests : SequentialTest, IClassFixture<ServerFixture
     /// User cannot be deactivated when it does not exist
     /// DEPENDENCIES: none
     /// </summary>
-    [FriendlyNamedFact("IT-???"), Priority(30)]
+    [FriendlyNamedFact("IT-493"), Priority(30)]
     public async Task User_cannot_be_deactivated_when_it_does_not_exist()
     {
         // Prepare
@@ -106,7 +108,7 @@ public class User_Activation_Tests : SequentialTest, IClassFixture<ServerFixture
     /// User can be deactivated
     /// DEPENDENCIES: none
     /// </summary>
-    [FriendlyNamedFact("IT-???"), Priority(50)]
+    [FriendlyNamedFact("IT-498"), Priority(40)]
     public async Task User_can_be_deactivated()
     {
         var user = _serverFixture.Context.Set<User>().FirstOrDefault(x => x.TenantId == "WAYNE INC" && x.Username == "user");
@@ -119,7 +121,7 @@ public class User_Activation_Tests : SequentialTest, IClassFixture<ServerFixture
         };
 
         // Act
-        var response = await _serverFixture.PostAsync("api/authentication/user/deactivate", request, await _serverFixture.GetAccessTokenAsync("admin", "admin123", "wayne inc"));
+        var response = await _serverFixture.PostAsync<UserDetails>("api/authentication/user/deactivate", request, await _serverFixture.GetAccessTokenAsync("admin", "admin123", "wayne inc"));
 
         // Assert the response
         response.ShouldBeSuccess();
@@ -134,7 +136,7 @@ public class User_Activation_Tests : SequentialTest, IClassFixture<ServerFixture
     /// User cannot login when it is deactivated
     /// DEPENDENCIES: none
     /// </summary>
-    [FriendlyNamedFact("IT-???"), Priority(60)]
+    [FriendlyNamedFact("IT-499"), Priority(50)]
     public async Task User_cannot_login_when_it_is_deactivated()
     {
         // Prepare
@@ -156,7 +158,7 @@ public class User_Activation_Tests : SequentialTest, IClassFixture<ServerFixture
     /// User cannot be activated when username is null or empty
     /// DEPENDENCIES: none
     /// </summary>
-    [FriendlyNamedTheory("IT-???"), Priority(70)]
+    [FriendlyNamedTheory("IT-504"), Priority(60)]
     [InlineData(null)]
     [InlineData("")]
     public async Task User_cannot_be_activated_when_username_is_null_or_empty(string username)
@@ -178,7 +180,7 @@ public class User_Activation_Tests : SequentialTest, IClassFixture<ServerFixture
     /// User cannot be activated when it does not exist
     /// DEPENDENCIES: none
     /// </summary>
-    [FriendlyNamedFact("IT-???"), Priority(80)]
+    [FriendlyNamedFact("IT-500"), Priority(70)]
     public async Task User_cannot_be_activated_when_it_does_not_exist()
     {
         // Prepare
@@ -198,7 +200,7 @@ public class User_Activation_Tests : SequentialTest, IClassFixture<ServerFixture
     /// User can be reactivated
     /// DEPENDENCIES: none
     /// </summary>
-    [FriendlyNamedFact("IT-???"), Priority(90)]
+    [FriendlyNamedFact("IT-501"), Priority(80)]
     public async Task User_can_be_reactivated()
     {
         var user = _serverFixture.Context.Set<User>().FirstOrDefault(x => x.TenantId == "WAYNE INC" && x.Username == "user");

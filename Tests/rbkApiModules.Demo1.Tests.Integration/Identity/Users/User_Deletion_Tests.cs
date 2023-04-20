@@ -44,7 +44,7 @@ public class UserDeletionTests : SequentialTest, IClassFixture<ServerFixture>
     /// User cannot be deleted when username is null or empty
     /// DEPENDENCIES: none
     /// </summary>
-    [FriendlyNamedTheory("IT-???"), Priority(10)]
+    [FriendlyNamedTheory("IT-503"), Priority(10)]
     [InlineData(null)]
     [InlineData("")]
     public async Task User_cannot_be_deleted_when_username_is_null_or_empty(string username)
@@ -66,7 +66,7 @@ public class UserDeletionTests : SequentialTest, IClassFixture<ServerFixture>
     /// User cannot delete itself
     /// DEPENDENCIES: none
     /// </summary>
-    [FriendlyNamedFact("IT-???"), Priority(40)]
+    [FriendlyNamedFact("IT-496"), Priority(20)]
     public async Task User_cannot_delete_itself()
     {
         // Prepare
@@ -86,7 +86,7 @@ public class UserDeletionTests : SequentialTest, IClassFixture<ServerFixture>
     /// User cannot be deleted when it does not exist
     /// DEPENDENCIES: none
     /// </summary>
-    [FriendlyNamedFact("IT-???"), Priority(30)]
+    [FriendlyNamedFact("IT-494"), Priority(30)]
     public async Task User_cannot_be_deleted_when_it_does_not_exist()
     {
         // Prepare
@@ -106,7 +106,7 @@ public class UserDeletionTests : SequentialTest, IClassFixture<ServerFixture>
     /// User can be deleted
     /// DEPENDENCIES: none
     /// </summary>
-    [FriendlyNamedFact("IT-???"), Priority(200)]
+    [FriendlyNamedFact("IT-491"), Priority(40)]
     public async Task User_can_be_deleted()
     {
         var user = _serverFixture.Context.Set<User>().FirstOrDefault(x => x.TenantId == "WAYNE INC" && x.Username == "user");
