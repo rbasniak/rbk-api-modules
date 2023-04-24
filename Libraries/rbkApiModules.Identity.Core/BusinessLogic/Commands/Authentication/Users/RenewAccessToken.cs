@@ -85,6 +85,8 @@ public class RenewAccessToken
         public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)
         {
             var user = await _usersService.GetUserFromRefreshtokenAsync(request.RefreshToken, cancellation);
+            
+            Log.Information($"Renewing access token for user {user.Username}");
 
             var extraClaims = new Dictionary<string, string[]>();
 
@@ -102,6 +104,7 @@ public class RenewAccessToken
             }
 
             extraClaims.Add(JwtClaimIdentifiers.AuthenticationMode, new[] { authenticationMode });
+            Log.Information($"Token generated with AuthenticationMode={authenticationMode}");
 
             foreach (var claimHandler in _claimHandlers)
             {
@@ -114,6 +117,8 @@ public class RenewAccessToken
             var jwt = await TokenGenerator.GenerateAsync(_jwtFactory, user, extraClaims);
 
             await _usersService.RefreshLastLogin(user.Username, user.TenantId, cancellation);
+
+            Log.Information($"New token is {jwt.AccessToken}");
 
             return CommandResponse.Success(jwt);
         }

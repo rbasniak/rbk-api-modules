@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.Localization;
 using rbkApiModules.Commons.Core.Utilities.Localization;
+using Serilog;
 using System.Text.Json.Serialization;
 
 namespace rbkApiModules.Identity.Core;
@@ -140,6 +141,8 @@ public class UserLogin
         {
             var user = await _authService.FindUserAsync(request.Username, request.Tenant, cancellation);
 
+            Log.Information($"Loging in with user {user.Username}");
+
             if (user.RefreshTokenValidity < DateTime.UtcNow)
             {
                 var refreshToken = Guid.NewGuid().ToString().ToLower().Replace("-", "");
@@ -153,6 +156,8 @@ public class UserLogin
             {
                 { JwtClaimIdentifiers.AuthenticationMode, new[] { request.AuthenticationMode.ToString().ToLower() } }
             };
+
+            Log.Information($"Token generated with AuthenticationMode={request.AuthenticationMode.ToString().ToLower()}");
 
             foreach (var claimHandler in _claimHandlers)
             {

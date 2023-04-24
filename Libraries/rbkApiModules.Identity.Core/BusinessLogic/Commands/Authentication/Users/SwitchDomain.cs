@@ -72,6 +72,8 @@ public class SwitchTenant
 
             var user = await _usersService.GetUserWithDependenciesAsync(request.Identity.Username, request.Tenant, cancellation);
 
+            Log.Information($"Switching domain for user {user.Username}");
+
             var extraClaims = new Dictionary<string, string[]>();
 
             var authenticationModeClaim = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == JwtClaimIdentifiers.AuthenticationMode);
@@ -88,6 +90,7 @@ public class SwitchTenant
             }    
 
             extraClaims.Add(JwtClaimIdentifiers.AuthenticationMode, new[] { authenticationMode });
+            Log.Information($"Token generated with AuthenticationMode={authenticationMode}");
 
             foreach (var claimHandler in _claimHandlers)
             {
