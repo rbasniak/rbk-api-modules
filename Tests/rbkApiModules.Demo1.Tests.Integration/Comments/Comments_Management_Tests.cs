@@ -37,7 +37,7 @@ public class CommentsManagementTests : SequentialTest, IClassFixture<ServerFixtu
         {
             EntityId = Guid.NewGuid(),
             ParentId = null,
-            Comment = ""
+            Comment = comment
         };
 
         // Act

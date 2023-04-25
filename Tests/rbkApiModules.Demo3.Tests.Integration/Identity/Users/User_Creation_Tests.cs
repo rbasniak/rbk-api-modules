@@ -20,8 +20,8 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
 
         context.Set<Tenant>().Add(new Tenant("WAYNE INC", "Wayne Industries"));
 
-        var admin = context.Set<User>().Add(new User("WAYNE INC", "admin", "admin@wayne-inc.com", null, String.Empty, "Admin")).Entity;
-        var user = context.Set<User>().Add(new User("WAYNE INC", "user", "user@wayne-inc.com", null, String.Empty, "User")).Entity;
+        var admin = context.Set<User>().Add(new User("WAYNE INC", "admin", "admin@wayne-inc.com", null, String.Empty, "Admin", AuthenticationMode.Windows)).Entity;
+        var user = context.Set<User>().Add(new User("WAYNE INC", "user", "user@wayne-inc.com", null, String.Empty, "User", AuthenticationMode.Windows)).Entity;
 
         admin.Confirm();
         user.Confirm();

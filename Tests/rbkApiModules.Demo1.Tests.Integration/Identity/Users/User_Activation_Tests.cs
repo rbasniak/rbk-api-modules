@@ -19,12 +19,12 @@ public class User_Activation_Tests : SequentialTest, IClassFixture<ServerFixture
 
         context.Set<Tenant>().Add(new Tenant("WAYNE INC", "Wayne Industries"));
 
-        var admin = context.Set<User>().Add(new User("WAYNE INC", "admin", "admin@wayne-inc.com", "admin123", String.Empty, "Admin")).Entity;
+        var admin = context.Set<User>().Add(new User("WAYNE INC", "admin", "admin@wayne-inc.com", "admin123", String.Empty, "Admin", AuthenticationMode.Credentials)).Entity;
         admin.Confirm();
         admin.AddClaim(context.Set<Claim>().First(x => x.Identification == AuthenticationClaims.MANAGE_USERS), ClaimAccessType.Allow);
 
 
-        var user = context.Set<User>().Add(new User("WAYNE INC", "user", "user@wayne-inc.com", "user123", String.Empty, "User")).Entity;
+        var user = context.Set<User>().Add(new User("WAYNE INC", "user", "user@wayne-inc.com", "user123", String.Empty, "User", AuthenticationMode.Credentials)).Entity;
         user.Confirm();
         user.AddClaim(context.Set<Claim>().First(x => x.Identification == AuthenticationClaims.MANAGE_TENANT_SPECIFIC_ROLES), ClaimAccessType.Allow);
         user.AddClaim(context.Set<Claim>().First(x => x.Identification == AuthenticationClaims.MANAGE_CLAIMS), ClaimAccessType.Block);

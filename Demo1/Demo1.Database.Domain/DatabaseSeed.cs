@@ -44,30 +44,30 @@ public class DatabaseSeed: DatabaseSeedManager<DatabaseContext>, IDatabaseSeeder
         var canOverrideClaims = context.Set<Claim>().First(x => x.Identification == AuthenticationClaims.OVERRIDE_USER_CLAIMS);
         var manageUSerRoles = context.Set<Claim>().First(x => x.Identification == AuthenticationClaims.MANAGE_USER_ROLES);
 
-        var adminBuzios = new User(buzios.Alias, "admin1", "admin1@buzios.com", "123", "", "Administrador BUZIOS 1", JsonSerializer.Deserialize<Dictionary<string, string>>("""{ "phone": "911112190", "management": "ABAST/CPQ" }"""));
+        var adminBuzios = new User(buzios.Alias, "admin1", "admin1@buzios.com", "123", "", "Administrador BUZIOS 1", AuthenticationMode.Credentials, JsonSerializer.Deserialize<Dictionary<string, string>>("""{ "phone": "911112190", "management": "ABAST/CPQ" }"""));
         adminBuzios.AddClaim(canManageTenantRolesClaim, ClaimAccessType.Allow);
         adminBuzios.AddClaim(canManageUsers, ClaimAccessType.Allow);
         adminBuzios.AddClaim(canOverrideClaims, ClaimAccessType.Allow);
         adminBuzios.AddClaim(manageUSerRoles, ClaimAccessType.Allow);
         adminBuzios.Confirm();
 
-        var adminUnEs = new User(unBs.Alias, "admin1", "admin1@bs.com", "123", "", "Administrador UN-ES 1", JsonSerializer.Deserialize<Dictionary<string, string>>("""{ "phone": "190911112", "management": "PPR/EP" }"""));
+        var adminUnEs = new User(unBs.Alias, "admin1", "admin1@bs.com", "123", "", "Administrador UN-ES 1", AuthenticationMode.Credentials, JsonSerializer.Deserialize<Dictionary<string, string>>("""{ "phone": "190911112", "management": "PPR/EP" }"""));
         adminUnEs.AddClaim(canManageTenantRolesClaim, ClaimAccessType.Allow);
         adminUnEs.AddClaim(canManageUsers, ClaimAccessType.Allow);
         adminUnEs.AddClaim(canOverrideClaims, ClaimAccessType.Allow);
         adminUnEs.AddClaim(manageUSerRoles, ClaimAccessType.Allow);
         adminUnEs.Confirm();
 
-        var johnDoeBuzios = new User(buzios.Alias, "john.doe", "john.doe@buzios.com", "123", "", "John Doe", JsonSerializer.Deserialize<Dictionary<string, string>>("""{ "phone": "11111111", "management": "MQT/ES/EG" }"""));
+        var johnDoeBuzios = new User(buzios.Alias, "john.doe", "john.doe@buzios.com", "123", "", "John Doe", AuthenticationMode.Credentials, JsonSerializer.Deserialize<Dictionary<string, string>>("""{ "phone": "11111111", "management": "MQT/ES/EG" }"""));
         johnDoeBuzios.Confirm();
-        var janeDoeBuzios = new User(buzios.Alias, "jane.doe", "jane.doe@buzios.com", "123", "", "Jane Doe", JsonSerializer.Deserialize<Dictionary<string, string>>("""{ "phone": "22222222", "management": "MQT/BZ/EP" }"""));
+        var janeDoeBuzios = new User(buzios.Alias, "jane.doe", "jane.doe@buzios.com", "123", "", "Jane Doe", AuthenticationMode.Credentials, JsonSerializer.Deserialize<Dictionary<string, string>>("""{ "phone": "22222222", "management": "MQT/BZ/EP" }"""));
         janeDoeBuzios.Confirm();
 
-        var johnDoeUnBs = new User(unBs.Alias, "john.doe", "john.doe@bs.com", "abc", "", "John Doe", JsonSerializer.Deserialize<Dictionary<string, string>>("""{ "phone": "11111111", "management": "MQT/ES/EG" }"""));
+        var johnDoeUnBs = new User(unBs.Alias, "john.doe", "john.doe@bs.com", "abc", "", "John Doe", AuthenticationMode.Credentials, JsonSerializer.Deserialize<Dictionary<string, string>>("""{ "phone": "11111111", "management": "MQT/ES/EG" }"""));
         johnDoeUnBs.Confirm();        
-        var janeDoeUnBs = new User(unBs.Alias, "jane.doe", "jane.doe@bs.com", "abc", "", "Jane Doe", JsonSerializer.Deserialize<Dictionary<string, string>>("""{ "phone": "11111111", "management": "MQT/ES/EG" }"""));
+        var janeDoeUnBs = new User(unBs.Alias, "jane.doe", "jane.doe@bs.com", "abc", "", "Jane Doe", AuthenticationMode.Credentials, JsonSerializer.Deserialize<Dictionary<string, string>>("""{ "phone": "11111111", "management": "MQT/ES/EG" }"""));
         janeDoeUnBs.Confirm();
-        var starkUnBs = new User(unBs.Alias, "tony.stark", "tony.stark@bs.com", "abc", "", "Tony Stark", JsonSerializer.Deserialize<Dictionary<string, string>>("""{ "phone": "11111111", "management": "MQT/ES/EG" }"""));
+        var starkUnBs = new User(unBs.Alias, "tony.stark", "tony.stark@bs.com", "abc", "", "Tony Stark", AuthenticationMode.Credentials, JsonSerializer.Deserialize<Dictionary<string, string>>("""{ "phone": "11111111", "management": "MQT/ES/EG" }"""));
         starkUnBs.Confirm();
 
 

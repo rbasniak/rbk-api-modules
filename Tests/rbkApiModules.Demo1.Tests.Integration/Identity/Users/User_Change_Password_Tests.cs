@@ -20,7 +20,7 @@ public class UserChangePasswordTests : SequentialTest, IClassFixture<ServerFixtu
 
         context.Set<Tenant>().Add(new Tenant("WAYNE INC", "Wayne Industries"));
 
-        var admin = context.Set<User>().Add(new User("WAYNE INC", "admin", "admin@wayne-inc.com", "admin123", String.Empty, "Admin")).Entity;
+        var admin = context.Set<User>().Add(new User("WAYNE INC", "admin", "admin@wayne-inc.com", "admin123", String.Empty, "Admin", AuthenticationMode.Credentials)).Entity;
         admin.Confirm();
 
         context.SaveChanges();

@@ -26,7 +26,7 @@ public class StatesService : IStatesService
                     .Single(x => x.Id == queryId)
                 ).ToArray();
 
-        return queries;
+        return await Task.FromResult(queries);
     }
 
     public async Task<QueryDefinition> FindQueryDefinition(Guid id, CancellationToken cancellation = default)

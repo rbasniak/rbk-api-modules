@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
 using rbkApiModules.Commons.Core;
+using System.Diagnostics.CodeAnalysis;
 
 namespace rbkApiModules.Commons.Relational;
 public static class ModelBuilderExtensions
@@ -26,6 +27,7 @@ public static class ModelBuilderExtensions
     /// <remarks>
     /// Adapted from https://github.com/Innofactor/EfCoreJsonValueConverter
     /// </remarks>
+    [SuppressMessage("Usage", "EF1001:Internal EF Core API usage.", Justification = "That's fine, we're ok with breaking changes")]
     public static void AddJsonFields(this ModelBuilder modelBuilder, bool skipConventionalEntities = true)
     {
         if (modelBuilder == null) throw new ArgumentNullException(nameof(modelBuilder));

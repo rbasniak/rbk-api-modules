@@ -45,11 +45,13 @@ public class WindowsAuthenticationTests : SequentialTest, IClassFixture<ServerFi
         var avatar = tokenData.Claims.First(claim => claim.Type == JwtClaimIdentifiers.Avatar).Value;
         var roles = tokenData.Claims.Where(claim => claim.Type == JwtClaimIdentifiers.Roles).ToList();
         var allowedTenants = tokenData.Claims.Where(claim => claim.Type == JwtClaimIdentifiers.AllowedTenants).ToList();
+        var authenticationMode = tokenData.Claims.First(claim => claim.Type == JwtClaimIdentifiers.AuthenticationMode).Value;
 
         tenant.ShouldBe("PARKER INDUSTRIES");
         username1.ShouldBe(Environment.UserName);
         username2.ShouldBe(Environment.UserName);
         displayName.ShouldBe("John Doe");
+        authenticationMode.ShouldBe("Windows");
         allowedTenants.Count.ShouldBe(2);
         allowedTenants.FirstOrDefault(x => x.Value == "PARKER INDUSTRIES").ShouldNotBeNull();
         allowedTenants.FirstOrDefault(x => x.Value == "OSCORP INDUSTRIES").ShouldNotBeNull();
@@ -127,6 +129,76 @@ public class WindowsAuthenticationTests : SequentialTest, IClassFixture<ServerFi
         username2.ShouldBe("superuser");
         allowedTenants.Count.ShouldBe(1);
         allowedTenants[0].Value.ToString().ShouldBeEmpty();
+    }
+
+    /// <summary>
+    /// User can refresh token with valid data
+    /// </summary>
+    [FriendlyNamedFact("IT-???"), Priority(50)]
+    public async Task User_Can_Refresh_Token_With_Valid_Data()
+    {
+        // Prepare
+        var loginRequest = new UserLogin.Request
+        {
+            Tenant = "PARKER INDUSTRIES"
+        };
+        var authDataResponse = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", loginRequest, credentials: Environment.UserName);
+
+        authDataResponse.ShouldBeSuccess();
+
+        // To allow for the token data to change between calls
+        Thread.Sleep(1500);
+
+        // Act
+        var request = new RenewAccessToken.Request
+        {
+            RefreshToken = authDataResponse.Data.RefreshToken
+        };
+
+        // Act
+        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/refresh-token", request, credentials: null);
+
+        // Assert
+        response.ShouldBeSuccess();
+        response.Data.AccessToken.ShouldNotBe(authDataResponse.Data.AccessToken);
+
+        var handler = new JwtSecurityTokenHandler();
+        var tokenData = handler.ReadJwtToken(response.Data.AccessToken);
+
+        var tenant = tokenData.Claims.First(claim => claim.Type == JwtClaimIdentifiers.Tenant).Value;
+        var username1 = tokenData.Claims.First(claim => claim.Type == JwtRegisteredClaimNames.Sub).Value;
+        var username2 = tokenData.Claims.First(claim => claim.Type == System.Security.Claims.ClaimTypes.Name).Value;
+        var displayName = tokenData.Claims.First(claim => claim.Type == JwtClaimIdentifiers.DisplayName).Value;
+        var avatar = tokenData.Claims.First(claim => claim.Type == JwtClaimIdentifiers.Avatar).Value;
+        var roles = tokenData.Claims.Where(claim => claim.Type == JwtClaimIdentifiers.Roles).ToList();
+        var allowedTenants = tokenData.Claims.Where(claim => claim.Type == JwtClaimIdentifiers.AllowedTenants).ToList();
+        var authenticationMode = tokenData.Claims.First(claim => claim.Type == JwtClaimIdentifiers.AuthenticationMode).Value;
+
+        tenant.ShouldBe("PARKER INDUSTRIES");
+        username1.ShouldBe(Environment.UserName);
+        username2.ShouldBe(Environment.UserName);
+        displayName.ShouldBe("John Doe");
+        authenticationMode.ShouldBe("Windows");
+        allowedTenants.Count.ShouldBe(2);
+        allowedTenants.FirstOrDefault(x => x.Value == "PARKER INDUSTRIES").ShouldNotBeNull();
+        allowedTenants.FirstOrDefault(x => x.Value == "OSCORP INDUSTRIES").ShouldNotBeNull();
+    }
+
+    [FriendlyNamedFact("IT-???"), Priority(60)]
+    public async Task User_Cannot_Login_Using_Credentials()
+    {
+        // Precondition checks
+        var user = _serverFixture.Context.Set<User>().Single(x => x.Username == Environment.UserName && x.TenantId == "PARKER INDUSTRIES");
+
+        // Prepare
+        var loginRequest = new UserLogin.Request
+        {
+            Username = Environment.UserName,
+            Password = "123",
+            Tenant = "buzios"
+        };
+        var loginResponse = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", loginRequest, credentials: null);
+        loginResponse.ShouldHaveErrors(HttpStatusCode.Unauthorized);
     }
 }
 

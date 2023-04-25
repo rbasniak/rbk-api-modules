@@ -35,6 +35,8 @@ public class Program
         }
         catch (Exception ex)
         {
+            Log.Fatal(ex, "Application crashed");
+
             return 1;
         }
         finally

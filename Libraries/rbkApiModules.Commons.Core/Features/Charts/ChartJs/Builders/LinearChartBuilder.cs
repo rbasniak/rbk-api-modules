@@ -631,9 +631,9 @@ namespace rbkApiModules.Commons.Charts.ChartJs
         private bool _appendExtraData;
 
         private int _intervals;
-        private double? _intervalRound;
-        private double? _intervalMin;
-        private double? _intervalMax;
+        private double? _intervalRound = null;
+        private double? _intervalMin = null;
+        private double? _intervalMax = null;
 
         public LinearChartBuilder<T> Chart
         {

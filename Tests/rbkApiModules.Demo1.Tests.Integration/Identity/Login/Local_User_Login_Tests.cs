@@ -1,4 +1,5 @@
 ﻿using rbkApiModules.Commons.Core;
+using rbkApiModules.Testing.Core;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace rbkApiModules.Demo1.Tests.Integration.Identity;
@@ -213,7 +214,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
         roles.FirstOrDefault(x => x.Value == "CAN_SHARE_REPORTS").ShouldNotBeNull();
         allowedTenants.Count.ShouldBe(1);
         allowedTenants.FirstOrDefault(x => x.Value == "BUZIOS").ShouldNotBeNull();
-        authenticationMode.ShouldBe("credentials");
+        authenticationMode.ShouldBe("Credentials");
     }
 
     /// <summary>
@@ -445,7 +446,7 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
         roles.FirstOrDefault(x => x.Value == "CAN_APPROVE_REPORTS").ShouldNotBeNull();
         allowedTenants.Count.ShouldBe(1);
         allowedTenants.FirstOrDefault(x => x.Value == "UN-BS").ShouldNotBeNull();
-        authenticationMode.ShouldBe("credentials");
+        authenticationMode.ShouldBe("Credentials");
     }
 
     /// <summary>
@@ -482,6 +483,21 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
 
         // Assert the response
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Refresh token expired");
+    }
+
+    [FriendlyNamedFact("IT-???"), Priority(120)]
+    public async Task User_Cannot_Login_Using_Windows_Authentication()
+    {
+        // Precondition checks
+        var user = _serverFixture.Context.Set<User>().Single(x => x.Username == "john.doe" && x.TenantId == "BUZIOS");
+
+        // Prepare
+        var loginRequest = new UserLogin.Request
+        {
+            Tenant = "buzios"
+        };
+        var loginResponse = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", loginRequest, credentials: Environment.UserName);
+        loginResponse.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'User' cannot be empty");
     }
 }
 

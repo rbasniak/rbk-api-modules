@@ -74,23 +74,10 @@ public class SwitchTenant
 
             Log.Information($"Switching domain for user {user.Username}");
 
-            var extraClaims = new Dictionary<string, string[]>();
-
-            var authenticationModeClaim = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == JwtClaimIdentifiers.AuthenticationMode);
-
-            string authenticationMode = "credentials";
-
-            if (authenticationModeClaim != null)
+            var extraClaims = new Dictionary<string, string[]>
             {
-                authenticationMode = _httpContextAccessor.HttpContext.User.Claims.First(claim => claim.Type == JwtClaimIdentifiers.AuthenticationMode).Value;
-            }
-            else
-            {
-                Log.Fatal("Token without authentication mode");
-            }    
-
-            extraClaims.Add(JwtClaimIdentifiers.AuthenticationMode, new[] { authenticationMode });
-            Log.Information($"Token generated with AuthenticationMode={authenticationMode}");
+                { JwtClaimIdentifiers.AuthenticationMode, new[] { user.AuthenticationMode.ToString() } }
+            };
 
             foreach (var claimHandler in _claimHandlers)
             {

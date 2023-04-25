@@ -15,7 +15,7 @@ public class DatabaseSeed : DatabaseSeedManager<DatabaseContext>, IDatabaseSeede
         var tenant1 = context.Add(new Tenant("PARKER INDUSTRIES", "Parker Industries")).Entity;
         var tenant2 = context.Add(new Tenant("OSCORP INDUSTRIES", "Oscorp Industries")).Entity;
 
-        var user1 = context.Add(new User("PARKER INDUSTRIES", Environment.UserName, "admin@parker-industries.com", null, null, "John Doe", new Dictionary<string, string>
+        var user1 = context.Add(new User("PARKER INDUSTRIES", Environment.UserName, "admin@parker-industries.com", null, null, "John Doe", AuthenticationMode.Windows, new Dictionary<string, string>
         {
             { "Sector", "Administration" },
             { "IsManager", "false" }
@@ -23,7 +23,7 @@ public class DatabaseSeed : DatabaseSeedManager<DatabaseContext>, IDatabaseSeede
         user1.Confirm();
         user1.AddClaim(context.Claims.First(x => x.Identification == AuthenticationClaims.MANAGE_USERS), ClaimAccessType.Allow);
 
-        var user2 = context.Add(new User("OSCORP INDUSTRIES", Environment.UserName, "admin@oscorp-industries.com", null, null, "John Doe", new Dictionary<string, string>
+        var user2 = context.Add(new User("OSCORP INDUSTRIES", Environment.UserName, "admin@oscorp-industries.com", null, null, "John Doe", AuthenticationMode.Windows, new Dictionary<string, string>
         {
             { "Sector", "Research" },
             { "IsManager", "true" }

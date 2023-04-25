@@ -73,6 +73,7 @@ public class AuthenticationMessages : ILocalizedResource
         [Description("User cannot delete itself")] UserCannotDeleteItselft,
         [Description("User cannot deactivate itself")] UserCannotDeactivateItselft,
         [Description("Account is deactivated")] AccountDeactivated,
+        [Description("Invalid login mode")] InvalidLoginMode,
     }
 
     public enum Erros

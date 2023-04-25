@@ -37,7 +37,7 @@ public class CqrsPerformanceTextController : BaseController
     }
 
     [HttpPost("count")]
-    public async Task<ActionResult<int>> Count([FromServices] ReadDatabaseContext context)
+    public ActionResult<int> Count([FromServices] ReadDatabaseContext context)
     {
         return Ok(context.Set<PerformanceTest1>().Count());
     }

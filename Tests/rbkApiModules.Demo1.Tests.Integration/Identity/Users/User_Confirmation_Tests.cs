@@ -21,7 +21,7 @@ public class UserConfirmationTests : SequentialTest, IClassFixture<ServerFixture
     {
         // Prepare
         var context = _serverFixture.Context;
-        context.Set<User>().Add(new User("BUZIOS", "new_user", "new_user@company.com", "123456", "", "Newcomer"));
+        context.Set<User>().Add(new User("BUZIOS", "new_user", "new_user@company.com", "123456", "", "Newcomer", AuthenticationMode.Credentials));
         context.SaveChanges();
 
         var user = _serverFixture.Context.Set<User>().First(x => x.Username == "new_user" && x.TenantId == "BUZIOS");

@@ -28,9 +28,9 @@ public class UserChangeDomainTests : SequentialTest, IClassFixture<ServerFixture
 
         context.SaveChanges();
 
-        var user1 = context.Set<User>().Add(new User("WAYNE INC", "bruce.wayne", "bruce.wayne@wayne-inc.com", null, String.Empty, "Bruce Wayne")).Entity;
-        var user2 = context.Set<User>().Add(new User("WAYNE INC", "spy", "spy@wayne-inc.com", null, String.Empty, "Spy (Waynce Inc.)")).Entity;
-        var user3 = context.Set<User>().Add(new User("STARK ENTERPRISES", "spy", "spy@stark-enterprises.com", null, String.Empty, "Spy (Stark Enterprises)")).Entity;
+        var user1 = context.Set<User>().Add(new User("WAYNE INC", "bruce.wayne", "bruce.wayne@wayne-inc.com", null, String.Empty, "Bruce Wayne", AuthenticationMode.Windows)).Entity;
+        var user2 = context.Set<User>().Add(new User("WAYNE INC", "spy", "spy@wayne-inc.com", null, String.Empty, "Spy (Waynce Inc.)", AuthenticationMode.Windows)).Entity;
+        var user3 = context.Set<User>().Add(new User("STARK ENTERPRISES", "spy", "spy@stark-enterprises.com", null, String.Empty, "Spy (Stark Enterprises)", AuthenticationMode.Windows)).Entity;
 
         user1.Confirm();
         user2.Confirm();
@@ -163,6 +163,6 @@ public class UserChangeDomainTests : SequentialTest, IClassFixture<ServerFixture
         username1.ShouldBe("spy");
         username2.ShouldBe("spy");
         displayName.ShouldBe("Spy (Stark Enterprises)");
-        authenticationMode.ShouldBe("windows");
+        authenticationMode.ShouldBe("Windows");
     }
 }

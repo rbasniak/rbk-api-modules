@@ -14,13 +14,13 @@ public class UserRegistrationTests : SequentialTest, IClassFixture<ServerFixture
     }
 
     [FriendlyNamedFact("IT-000"), Priority(-1)]
-    public async Task Seed()
+    public void Seed()
     {
         var context = _serverFixture.Context;
 
         context.Set<Tenant>().Add(new Tenant("WAYNE INC", "Wayne Industries"));
 
-        context.Set<User>().Add(new User("WAYNE INC", "user", "user@wayne-inc.com", "admin123", String.Empty, "Admin"));
+        context.Set<User>().Add(new User("WAYNE INC", "user", "user@wayne-inc.com", "admin123", String.Empty, "Admin", AuthenticationMode.Credentials));
 
         context.SaveChanges();
     }
@@ -449,6 +449,7 @@ public class UserRegistrationTests : SequentialTest, IClassFixture<ServerFixture
         user.PasswordRedefineCode.ShouldBeNull();
         user.TenantId.ShouldBe("WAYNE INC");
         user.Username.ShouldBe("new-user");
+        user.AuthenticationMode.ShouldBe(AuthenticationMode.Credentials);
         (DateTime.UtcNow - user.CreationDate).TotalSeconds.ShouldBeLessThan(5);
 
         _serverFixture.ShouldHaveSentEmail(options => options

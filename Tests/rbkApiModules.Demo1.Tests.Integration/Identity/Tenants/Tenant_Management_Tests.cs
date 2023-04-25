@@ -507,9 +507,9 @@ public class TenantManagementTests : SequentialTest, IClassFixture<ServerFixture
         }
 
         var context = _serverFixture.Context;
-        context.Add(new User("STARK", "user1", "user1@stark-industries.com", "123", "", "username1"));
-        context.Add(new User("STARK", "user2", "user2@stark-industries.com", "123", "", "username2"));
-        context.Add(new User("STARK", "user3", "user3@stark-industries.com", "123", "", "username3"));
+        context.Add(new User("STARK", "user1", "user1@stark-industries.com", "123", "", "username1", AuthenticationMode.Credentials));
+        context.Add(new User("STARK", "user2", "user2@stark-industries.com", "123", "", "username2", AuthenticationMode.Credentials));
+        context.Add(new User("STARK", "user3", "user3@stark-industries.com", "123", "", "username3", AuthenticationMode.Credentials));
         context.SaveChanges();
 
         var relationResponse1 = await _serverFixture.PostAsync<UserDetails>("api/authorization/users/set-roles", new ReplaceUserRoles.Request 

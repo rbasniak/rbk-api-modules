@@ -52,6 +52,8 @@ public class UserLogin
                             RuleFor(x => x.Username)
                                 .MustAsync(BeActive)
                                     .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.AccountDeactivated))
+                                .MustAsync(UseCorrectAuthenticationMode)
+                                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.InvalidLoginMode))
                                 .MustAsync(BeConfirmed)
                                     .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.UserNotYetConfirmed));
 
@@ -101,6 +103,13 @@ public class UserLogin
             var user = await _userService.FindUserAsync(username, request.Tenant, cancellation);
 
             return user.IsActive;
+        }
+
+        public async Task<bool> UseCorrectAuthenticationMode(Request request, string username, CancellationToken cancellation)
+        {
+            var user = await _userService.FindUserAsync(username, request.Tenant, cancellation);
+
+            return user.AuthenticationMode == request.AuthenticationMode;
         }
 
         public async Task<bool> MatchPassword(Request request, string password, CancellationToken cancellation)
@@ -154,10 +163,10 @@ public class UserLogin
 
             var extraClaims = new Dictionary<string, string[]>
             {
-                { JwtClaimIdentifiers.AuthenticationMode, new[] { request.AuthenticationMode.ToString().ToLower() } }
+                { JwtClaimIdentifiers.AuthenticationMode, new[] { user.AuthenticationMode.ToString() } }
             };
 
-            Log.Information($"Token generated with AuthenticationMode={request.AuthenticationMode.ToString().ToLower()}");
+            Log.Information($"Token generated with AuthenticationMode={user.AuthenticationMode}");
 
             foreach (var claimHandler in _claimHandlers)
             {

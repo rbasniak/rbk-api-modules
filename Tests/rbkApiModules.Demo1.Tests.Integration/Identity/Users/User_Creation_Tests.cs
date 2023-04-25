@@ -20,7 +20,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
 
         context.Set<Tenant>().Add(new Tenant("WAYNE INC", "Wayne Industries"));
 
-        var admin = context.Set<User>().Add(new User("WAYNE INC", "admin", "admin@wayne-inc.com", "admin123", String.Empty, "Admin")).Entity;
+        var admin = context.Set<User>().Add(new User("WAYNE INC", "admin", "admin@wayne-inc.com", "admin123", String.Empty, "Admin", AuthenticationMode.Credentials)).Entity;
 
         admin.Confirm();
 
@@ -197,6 +197,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
         user.TenantId.ShouldBe("WAYNE INC");
         user.Username.ShouldBe("new-user");
         user.Roles.Count().ShouldBe(1);
+        user.AuthenticationMode.ShouldBe(AuthenticationMode.Credentials);
         (DateTime.UtcNow - user.CreationDate).TotalSeconds.ShouldBeLessThan(5);
     }
 
@@ -297,6 +298,7 @@ public class UserCreationTests : SequentialTest, IClassFixture<ServerFixture>
         user.TenantId.ShouldBe("WAYNE INC");
         user.Username.ShouldBe("new-user");
         user.Roles.Count().ShouldBe(1);
+        user.AuthenticationMode.ShouldBe(AuthenticationMode.Credentials);
         (DateTime.UtcNow - user.CreationDate).TotalSeconds.ShouldBeLessThan(5);
 
         context.RemoveRange(user.Roles);

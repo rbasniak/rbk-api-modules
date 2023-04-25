@@ -11,7 +11,7 @@ namespace Demo1.Api.Controllers;
 public class SecurityController : BaseController
 {
     [HttpGet("ntlm")]
-    public async Task<ActionResult> NtlmTest()
+    public ActionResult NtlmTest()
     {
         return Ok(new 
         { 

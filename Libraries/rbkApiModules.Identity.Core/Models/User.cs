@@ -14,8 +14,9 @@ public class User : TenantEntity
 
     }
 
-    public User(string tenant, string username, string email, string password, string avatarPath, string displayName, Dictionary<string, string> metadata = null)
+    public User(string tenant, string username, string email, string password, string avatarPath, string displayName, AuthenticationMode authenticationMode, Dictionary<string, string> metadata = null)
     {
+        AuthenticationMode = authenticationMode;
         TenantId = tenant;
         DisplayName = displayName;
         Username = username?.ToLower();
@@ -60,6 +61,8 @@ public class User : TenantEntity
 
     [MaxLength(128)]
     public virtual string RefreshToken { get; protected set; }
+
+    public virtual AuthenticationMode AuthenticationMode { get; protected set; }
 
     [MaxLength(32)]
     public virtual string DisplayName { get; protected set; }
@@ -234,5 +237,5 @@ public class User : TenantEntity
     public override string ToString()
     {
         return $"[{TenantId}] {Username}";
-    } 
+    }
 } 

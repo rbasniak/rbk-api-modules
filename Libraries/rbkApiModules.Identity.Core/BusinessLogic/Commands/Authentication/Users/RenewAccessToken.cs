@@ -71,15 +71,13 @@ public class RenewAccessToken
     {
         private readonly IJwtFactory _jwtFactory;
         private readonly IAuthService _usersService;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IEnumerable<ICustomClaimHandler> _claimHandlers;
 
-        public Handler(IJwtFactory jwtFactory, IAuthService usersService, IEnumerable<ICustomClaimHandler> claimHandlers, IHttpContextAccessor httpContextAccessor)
+        public Handler(IJwtFactory jwtFactory, IAuthService usersService, IEnumerable<ICustomClaimHandler> claimHandlers)
         {
             _jwtFactory = jwtFactory;
             _usersService = usersService;
             _claimHandlers = claimHandlers;
-            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)
@@ -88,23 +86,10 @@ public class RenewAccessToken
             
             Log.Information($"Renewing access token for user {user.Username}");
 
-            var extraClaims = new Dictionary<string, string[]>();
-
-            var authenticationModeClaim = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == JwtClaimIdentifiers.AuthenticationMode);
-
-            string authenticationMode = "credentials";
-
-            if (authenticationModeClaim != null)
+            var extraClaims = new Dictionary<string, string[]>
             {
-                authenticationMode = _httpContextAccessor.HttpContext.User.Claims.First(claim => claim.Type == JwtClaimIdentifiers.AuthenticationMode).Value;
-            }
-            else
-            {
-                Log.Fatal("Token without authentication mode");
-            }
-
-            extraClaims.Add(JwtClaimIdentifiers.AuthenticationMode, new[] { authenticationMode });
-            Log.Information($"Token generated with AuthenticationMode={authenticationMode}");
+                { JwtClaimIdentifiers.AuthenticationMode, new[] { user.AuthenticationMode.ToString() } }
+            };
 
             foreach (var claimHandler in _claimHandlers)
             {

@@ -119,6 +119,7 @@ public class CreateTenant
                 displayName: request.AdminInfo.DisplayName,
                 avatar: AvatarGenerator.GenerateBase64Avatar(request.AdminInfo.DisplayName),
                 isConfirmed: true,
+                authenticationMode: AuthenticationMode.Credentials,
                 metadata: new Dictionary<string, string>(),
                 cancellation
             );

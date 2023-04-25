@@ -55,7 +55,7 @@ public static class Builder
 
             if (user == null)
             {
-                user = new User(null, options._username, options._email, options._password, options._avatar, options._displayName);
+                user = new User(null, options._username, options._email, options._password, options._avatar, options._displayName, AuthenticationMode.Credentials);
                 user.Confirm();
                 var manageTenantsClaim = context.Set<Claim>().FirstOrDefault(x => x.Identification == AuthenticationClaims.MANAGE_TENANTS);
                 if (manageTenantsClaim == null) throw new NullReferenceException($"Could not find the {AuthenticationClaims.MANAGE_TENANTS} claim");

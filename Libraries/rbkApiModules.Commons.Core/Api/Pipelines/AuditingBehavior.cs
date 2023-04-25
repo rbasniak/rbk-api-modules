@@ -23,7 +23,7 @@ public class AuditingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest,
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILogger<TRequest> _logger;
-    private readonly ITraceLogStore _traceLogStore;
+    // private readonly ITraceLogStore _traceLogStore;
 
     public AuditingBehavior(ILogger<TRequest> logger, IHttpContextAccessor httpContextAccessor)
     {
@@ -53,7 +53,7 @@ public class AuditingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest,
                 }
             }
 
-            await _traceLogStore.Add(entities.ToArray());
+            // await _traceLogStore.Add(entities.ToArray());
         }
 
         return response;

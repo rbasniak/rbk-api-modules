@@ -5,11 +5,13 @@ using rbkApiModules.Commons.Core;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
 using rbkApiModules.Identity.Core;
+using System.Diagnostics.CodeAnalysis;
 
 namespace rbkApiModules.Identity;
 
 public static class ModelBuilderExtensions
 {
+    [SuppressMessage("Usage", "EF1001:Internal EF Core API usage.", Justification = "That's fine, we're ok with breaking changes")]
     public static void SetupTenants(this ModelBuilder modelBuilder)
     {
         if (modelBuilder == null) throw new ArgumentNullException(nameof(modelBuilder));

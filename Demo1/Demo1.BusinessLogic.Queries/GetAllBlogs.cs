@@ -13,7 +13,7 @@ public class GetAllBlogs
 
     public class Handler : IRequestHandler<Request, QueryResponse>
     {
-        private readonly IInMemoryDatabase<Blog> _context;
+        //private readonly IInMemoryDatabase<Blog> _context;
 
         //public Handler(IInMemoryDatabase<Blog> context)
         //{
@@ -22,7 +22,10 @@ public class GetAllBlogs
 
         public async Task<QueryResponse> Handle(Request request, CancellationToken cancellationToken)
         {
-            return await Task.FromResult(QueryResponse.Success( _context.All()));
+            return await Task.FromResult(QueryResponse.Success( 
+                // _context.All()
+                ""
+            ));
         }
     }
 }

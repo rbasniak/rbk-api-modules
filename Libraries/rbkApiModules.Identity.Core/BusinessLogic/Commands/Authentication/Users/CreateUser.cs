@@ -38,69 +38,54 @@ public class CreateUser
 
             Log.Information("Looking for authentication mode in access token");
 
-            _authenticationMode = AuthenticationMode.Credentials;
-
-            if (authenticationModeClaim != null)
+            if (authenticationModeClaim == null)
             {
-                Log.Information("Claim found: {value}", authenticationModeClaim.Value);
-
-                if (authenticationModeClaim.Value == "windows")
-                {
-                    Log.Information("Setting up creation for Windows Authentication scenario");
-
-                    _authenticationMode = AuthenticationMode.Windows;
-                }    
-                else
-                {
-                    Log.Information("Setting up creation for Credentials scenario");
-                }
+                throw new Exception("Cannot create a new user using a token without authentication mode");
             }
-            else
-            {
-                Log.Information("Claim not found. Setting up creation for Credentials scenario");
-            }
+
+            _authenticationMode = Enum.Parse<AuthenticationMode>(authenticationModeClaim.Value);
 
             RuleFor(x => x.Username)
-                .IsRequired(localization)
-                .MustAsync(UserDoesNotExistOnDatabase)
-                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.UserAlreadyExists))
-                .WithName(localization.LocalizeString(AuthenticationMessages.Fields.User));
+                        .IsRequired(localization)
+                        .MustAsync(UserDoesNotExistOnDatabase)
+                            .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.UserAlreadyExists))
+                        .WithName(localization.LocalizeString(AuthenticationMessages.Fields.User));
 
             RuleFor(x => x.Email)
-                .IsRequired(localization)
-                .MustBeEmail(localization)
-                .MustAsync(EmailDoesNotExistOnDatabase)
-                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.EmailAlreadyUsed))
-                .WithName(localization.LocalizeString(AuthenticationMessages.Fields.Email));
+                        .IsRequired(localization)
+                        .MustBeEmail(localization)
+                        .MustAsync(EmailDoesNotExistOnDatabase)
+                            .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.EmailAlreadyUsed))
+                        .WithName(localization.LocalizeString(AuthenticationMessages.Fields.Email));
 
             RuleFor(x => x.DisplayName)
-                .IsRequired(localization)
-                .WithName(localization.LocalizeString(AuthenticationMessages.Fields.DisplayName));
+                        .IsRequired(localization)
+                        .WithName(localization.LocalizeString(AuthenticationMessages.Fields.DisplayName));
 
             RuleFor(x => x)
-                .UserMetadataIsValid(metadataValidators, localization);
+                        .UserMetadataIsValid(metadataValidators, localization);
 
             RuleFor(x => x.Password)
-                .Must(PasswordsIsRequired)
-                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.PasswordIsRequired))
-                .Must(PasswordsBeTheSame)
-                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.PasswordsMustBeTheSame))
-                .PasswordPoliciesAreValid(passwordValidators, localization);
+                        .Must(PasswordsIsRequired)
+                            .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.PasswordIsRequired))
+                        .Must(PasswordsBeTheSame)
+                            .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.PasswordsMustBeTheSame))
+                        .PasswordPoliciesAreValid(passwordValidators, localization);
 
             RuleFor(x => x.RoleIds)
-                .NotNull()
-                .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.RoleListMustNotBeEmpty))
-                .DependentRules(() =>
-                {
-                    RuleFor(x => x.RoleIds.Length)
+                        .NotNull()
+                        .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.RoleListMustNotBeEmpty))
+                        .DependentRules(() =>
+                        {
+                            RuleFor(x => x.RoleIds.Length)
                         .GreaterThan(0)
                         .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.RoleListMustNotBeEmpty));
 
-                    RuleForEach(x => x.RoleIds)
+                            RuleForEach(x => x.RoleIds)
                         .MustAsync(RoleExistOnDatabase)
                         .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.RoleNotFound))
                         .WithName(localization.LocalizeString(AuthenticationMessages.Fields.Role));
-                });
+                        });
         }
 
         private async Task<bool> EmailDoesNotExistOnDatabase(Request request, string email, CancellationToken cancellation)
@@ -109,7 +94,7 @@ public class CreateUser
 
             var isRegistered = await _usersService.IsUserRegisteredAsync(email, request.Identity.Tenant, cancellation);
 
-            if (isRegistered) 
+            if (isRegistered)
             {
                 Log.Information("E-mail is being used");
             }
@@ -119,7 +104,7 @@ public class CreateUser
             }
 
             return !isRegistered;
-        } 
+        }
 
         private async Task<bool> RoleExistOnDatabase(Request request, Guid roleId, CancellationToken cancellation)
         {
@@ -189,7 +174,7 @@ public class CreateUser
             }
 
             return result;
-        } 
+        }
 
         private async Task<bool> UserDoesNotExistOnDatabase(Request request, string username, CancellationToken cancellation)
         {
@@ -215,13 +200,16 @@ public class CreateUser
         private readonly IAuthService _usersService;
         private readonly IAvatarStorage _avatarStorage;
         private readonly RbkAuthenticationOptions _options;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IEnumerable<IUserMetadataService> _userMetadataService;
 
-        public Handler(IAuthService usersService, IEnumerable<IUserMetadataService> userMetadataServices, IAvatarStorage avatarStorage, RbkAuthenticationOptions options)
+        public Handler(IAuthService usersService, IEnumerable<IUserMetadataService> userMetadataServices,
+            IAvatarStorage avatarStorage, IHttpContextAccessor httpContextAccessor, RbkAuthenticationOptions options)
         {
             _options = options;
             _usersService = usersService;
             _avatarStorage = avatarStorage;
+            _httpContextAccessor = httpContextAccessor;
             _userMetadataService = userMetadataServices;
         }
 
@@ -241,8 +229,26 @@ public class CreateUser
                 avatarUrl = _avatarStorage.GetRelativePath(filename);
             }
 
-            var user = await _usersService.CreateUserAsync(request.Identity.Tenant, request.Username, request.Password, request.Email, request.DisplayName,
-               avatarUrl, true, request.Metadata, cancellation);
+            var authenticationModeClaim = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == JwtClaimIdentifiers.AuthenticationMode);
+
+            if (authenticationModeClaim == null)
+            {
+                throw new Exception("Cannot create user using a token without authentication mode");
+            }
+
+            var authenticationMode = Enum.Parse<AuthenticationMode>(_httpContextAccessor.HttpContext.User.Claims.First(claim => claim.Type == JwtClaimIdentifiers.AuthenticationMode).Value);
+
+            var user = await _usersService.CreateUserAsync(
+                tenant: request.Identity.Tenant,
+                username: request.Username,
+                password: request.Password,
+                email: request.Email,
+                displayName: request.DisplayName,
+                avatar: avatarUrl,
+                isConfirmed: true,
+                authenticationMode: authenticationMode,
+                metadata: request.Metadata,
+                cancellation: cancellation);
 
             var allMetadata = new Dictionary<string, string>();
 

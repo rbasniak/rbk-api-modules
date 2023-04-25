@@ -9,6 +9,7 @@ using System.Text;
 using rbkApiModules.Commons.Core;
 using Microsoft.AspNetCore.Authorization;
 using rbkApiModules.Commons.Core.Utilities;
+using Serilog;
 
 namespace rbkApiModules.Identity.Core;
 
@@ -251,7 +252,8 @@ public static class CoreAuthenticationBuilder
                 }
                 catch (Exception ex)
                 {
-                    // TODO: log here
+                    Log.Error(ex, "Could not delete email output folder");
+
                     throw new DirectoryNotFoundException(testOutputFolder);
                 }
             }
