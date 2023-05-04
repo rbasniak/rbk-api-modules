@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using rbkApiModules.Identity.Core;
 using rbkApiModules.Commons.Relational;
+using System.Diagnostics;
 
 namespace rbkApiModules.Identity.Relational;
 
@@ -97,6 +98,8 @@ public static class Builder
             var contexts = scope.ServiceProvider.GetServices<DbContext>().ToList();
 
             var context = contexts.GetDefaultContext();
+
+            Debug.WriteLine(context.Database.GetDbConnection().ConnectionString);
 
             var claims = context.Set<Claim>().ToList();
 

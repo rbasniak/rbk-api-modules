@@ -111,6 +111,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo3", "Demo3\Demo3\Demo3.csproj", "{8FC8F013-E576-4D45-836E-E85CD029C07D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demo4", "Demo4", "{70FD2622-A886-43A5-9559-785A269CF07C}"
+	ProjectSection(SolutionItems) = preProject
+		Demo3\readme.txt = Demo3\readme.txt
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo4", "Demo4\Demo4\Demo4.csproj", "{85B1AF56-6173-4B52-A417-86036F603593}"
 EndProject
@@ -159,6 +162,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SharedUI", "SharedUI", "{0BDCB190-CC63-4E39-889B-90F43F0E7325}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflow", "Workflow", "{81525DC7-123D-43FE-9943-ED6181279EF3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Demo4.Tests.Integration", "Tests\rbkApiModules.Demo4.Tests.Integration\rbkApiModules.Demo4.Tests.Integration.csproj", "{33FB2BE1-3EA5-4E28-9582-50C54EE21443}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -334,6 +339,10 @@ Global
 		{EEE87B14-DD5E-47F0-97C0-CDA6EBA38519}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EEE87B14-DD5E-47F0-97C0-CDA6EBA38519}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EEE87B14-DD5E-47F0-97C0-CDA6EBA38519}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33FB2BE1-3EA5-4E28-9582-50C54EE21443}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33FB2BE1-3EA5-4E28-9582-50C54EE21443}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33FB2BE1-3EA5-4E28-9582-50C54EE21443}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33FB2BE1-3EA5-4E28-9582-50C54EE21443}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -401,6 +410,7 @@ Global
 		{D24DAAFF-F85A-4005-A71A-EF407EEC0BE3} = {31E68E16-8360-4E9A-BBB8-AFF160F67851}
 		{0BDCB190-CC63-4E39-889B-90F43F0E7325} = {31E68E16-8360-4E9A-BBB8-AFF160F67851}
 		{81525DC7-123D-43FE-9943-ED6181279EF3} = {31E68E16-8360-4E9A-BBB8-AFF160F67851}
+		{33FB2BE1-3EA5-4E28-9582-50C54EE21443} = {17637C69-C691-4368-8C26-DF6B58677214}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5ABCFC25-B782-4553-8645-2A49D30D429E}

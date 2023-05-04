@@ -1,18 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Authentication;
-using rbkApiModules.Identity.Core;
 using rbkApiModules.Commons.Relational;
 using rbkApiModules.Identity;
+using rbkApiModules.Identity.Core;
 
 namespace Demo3;
 
-public class DatabaseContext : DbContext
+public class TestingDatabaseContext : DbContext
 {
-    public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
-    {
-    }
-
-    public DatabaseContext(DbContextOptions<TestingDatabaseContext> options) : base(options)
+    public TestingDatabaseContext(DbContextOptions<TestingDatabaseContext> options) : base(options)
     {
     }
 
@@ -40,5 +36,5 @@ public class DatabaseContext : DbContext
     {
         configurationBuilder.Properties<DateTime>().HaveConversion<DateTimeWithoutKindConverter>();
         configurationBuilder.Properties<DateTime?>().HaveConversion<NullableDateTimeWithoutKindConverter>();
-    } 
+    }
 }

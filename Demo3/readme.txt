@@ -1,1 +1,1 @@
-Sample focused on Windows Authentication
+Sample focused on integration tests with SQLite

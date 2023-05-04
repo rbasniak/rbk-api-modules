@@ -13,7 +13,7 @@ using rbkApiModules.Commons.Core.Pipelines;
 using rbkApiModules.Identity.Core.DataTransfer.Tenants;
 using rbkApiModules.Commons.Core.Utilities;
 
-namespace Demo3;
+namespace Demo4;
 
 public class Startup
 {
@@ -29,12 +29,12 @@ public class Startup
     public IConfiguration Configuration => _configuration;
 
     public void ConfigureServices(IServiceCollection services)
-    {
-        if (TestingEnvironmentChecker.IsTestingEnvironment)
+     {
+        if (!TestingEnvironmentChecker.IsTestingEnvironment)
         {
             services.AddDbContext<DatabaseContext>((scope, options) => options
                 .UseNpgsql(
-                    _configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Application"))
+                    _configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", ""))
                 .EnableDetailedErrors()
                 .EnableSensitiveDataLogging()
             );
@@ -43,23 +43,14 @@ public class Startup
         }
         else
         {
-            services.AddDbContext<TestingDatabaseContext>((scope, options) => options
-                .UseSqlite($@"Data Source=C:\git\Repositories\rbk-api-modules\Tests\rbkApiModules.Demo3.Tests.Integration\bin\Debug\integration_test.db")
+            services.AddDbContext<DatabaseContext>((scope, options) => options
+                .UseSqlite($@"Data Source=integration_test.db")
                 .EnableDetailedErrors()
                 .EnableSensitiveDataLogging()
             );
 
-            services.AddScoped<DbContext, TestingDatabaseContext>(); 
+            services.AddScoped<DbContext, TestingDatabaseContext>();
         }
-
-        //services.AddDbContext<DatabaseContext>((scope, options) => options
-        //    .UseNpgsql(
-        //        _configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Application"))
-        //    .EnableDetailedErrors()
-        //    .EnableSensitiveDataLogging()
-        //);
-
-        //services.AddScoped<DbContext, DatabaseContext>();
 
         services.AddRbkApiRelationalSetup(options => options
             .RegisterMediatR(AssembliesForMediatR)
@@ -72,28 +63,18 @@ public class Startup
             .UseDefaultApiRouting()
             .UseDefaultAutoMapper()
             .UseDefaultCompression()
-            .UseDefaultCors()
-            //.UseCustomCors("_proteusPolicy", options =>
-            //        options.AddPolicy(name: "_proteusPolicy",
-            //                      builder =>
-            //                      {
-            //                          builder.AllowAnyMethod()
-            //                          .AllowAnyHeader()
-            //                          .WithOrigins("http://localhost:4107")
-            //                          .AllowCredentials()
-            //                          .WithExposedHeaders("Content-Disposition");
-            //                      }))
+            .UseDefaultCors() 
             .UseDefaultHsts(_environment.IsDevelopment())
             .UseDefaultHttpsRedirection()
             .UseDefaultMemoryCache()
             .UseDefaultHttpClient()
             .UseDefaultPipelines()
             .UseDefaultHttpClient()
-            .UseDefaultSwagger("Demo using Windows authentication")
+            .UseDefaultSwagger("Demo for integration tests with SQLite")
             .UseHttpContextAccessor()
             .UseStaticFiles()
             .UseDefaultLocalizationLanguage("pt-br")
-            .SuppressPipeline(typeof(CqrsReplicaBehavior<,>)) 
+            .SuppressPipeline(typeof(CqrsReplicaBehavior<,>))
         );
 
         services.AddRbkRelationalAuthentication(options => options
@@ -102,7 +83,6 @@ public class Startup
             .AllowAnonymousAccessToTenants()
             .AllowUserCreationByAdmins()
             .AllowTenantSwitching()
-            // .UseMockedWindowsAuthentication()
         );
 
         services.AddRbkUIDefinitions(AssembliesForUiDefinitions);

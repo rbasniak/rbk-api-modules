@@ -1,46 +1,46 @@
-using Microsoft.AspNetCore.Authentication.Negotiate;
+using Serilog;
+using Serilog.Events;
 
-namespace Demo4
+namespace Demo4;
+
+public class Program
 {
-    public class Program
+    public static int Main(string[] args)
     {
-        public static void Main(string[] args)
+        try
         {
-            var builder = WebApplication.CreateBuilder(args);
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHost(host => host.ConfigureKestrel(options => options.AddServerHeader = false))
+                .UseSerilog((context, services, configuration) =>
+                {
+                    // var temp1 = context.Configuration.GetValue<string>("Log:SQLite");
 
-            // Add services to the container.
+                    configuration
+                        .ReadFrom.Configuration(context.Configuration)
+                        .ReadFrom.Services(services)
+                        .Enrich.FromLogContext()
 
-            builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+                        .WriteTo.Debug(LogEventLevel.Debug)
 
-            builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
-                .AddNegotiate();
+                        .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Error);
+                }, writeToProviders: true)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                })
+                .Build()
+                .Run();
 
-            builder.Services.AddAuthorization(options =>
-            {
-                // By default, all incoming requests will be authorized according to the default policy.
-                options.FallbackPolicy = options.DefaultPolicy;
-            });
+            return 0;
+        }
+        catch (Exception ex)
+        {
+            Log.Fatal(ex, "Application crashed");
 
-            var app = builder.Build();
-
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
-
-            app.UseHttpsRedirection();
-
-            app.UseAuthorization();
-
-
-            app.MapControllers();
-
-            app.Run();
+            return 1;
+        }
+        finally
+        {
         }
     }
 }

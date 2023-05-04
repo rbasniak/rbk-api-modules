@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using rbkApiModules.Commons.Core.Utilities;
+using System.Diagnostics;
 
 namespace rbkApiModules.Commons.Relational;
 
@@ -19,6 +20,7 @@ public static class SeedBuilder
         {
             var context = scope.ServiceProvider.GetService<T>();
 
+            Debug.WriteLine(context.Database.GetConnectionString());
             if (options._resetOnStartup || TestingEnvironmentChecker.IsTestingEnvironment)
             {
                 context.Database.EnsureDeleted();
@@ -29,6 +31,7 @@ public static class SeedBuilder
             {
                 context.Database.Migrate();
             }
+
 
             context.Dispose();
         }
