@@ -30,7 +30,7 @@
     <PackageReference Include="Serilog.Sinks.LiteDB" Version="1.0.29" />
     <PackageReference Include="Serilog.Sinks.Postgresql.Alternative" Version="3.5.0" />
     <PackageReference Include="Serilog.Sinks.Seq" Version="5.2.2" />
-    <PackageReference Include="Serilog.Sinks.SQLite" Version="5.5.0" />
+    <PackageReference Include="Serilog.Sinks.SQLite" Version="6.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
