@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using Xunit;
 
 namespace rbkApiModules.Testing.Core;
 

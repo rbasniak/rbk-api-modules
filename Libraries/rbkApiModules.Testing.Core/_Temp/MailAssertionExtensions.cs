@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using MimeKit;
+using rbkApiModules.Commons.Core;
+using Shouldly;
 
 namespace rbkApiModules.Testing.Core;
 

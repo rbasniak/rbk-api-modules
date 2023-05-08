@@ -12,6 +12,7 @@ using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.Pipelines;
 using rbkApiModules.Identity.Core.DataTransfer.Tenants;
 using rbkApiModules.Commons.Core.Utilities;
+using rbkApiModules.Commons.Charts.ChartJs;
 
 namespace Demo4;
 
@@ -29,27 +30,30 @@ public class Startup
     public IConfiguration Configuration => _configuration;
 
     public void ConfigureServices(IServiceCollection services)
-     {
-        if (!TestingEnvironmentChecker.IsTestingEnvironment)
-        {
-            services.AddDbContext<DatabaseContext>((scope, options) => options
-                .UseNpgsql(
-                    _configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", ""))
-                .EnableDetailedErrors()
-                .EnableSensitiveDataLogging()
-            );
+    {
+        var providerForMigration = _configuration.GetValue("Provider", "SqlServer"); 
 
-            services.AddScoped<DbContext, DatabaseContext>();
-        }
-        else
+        if (TestingEnvironmentChecker.IsTestingEnvironment && TestingMode.GetMode("Demo4") == DatabaseType.SQLite || providerForMigration?.ToLower() == "sqlite")
         {
-            services.AddDbContext<DatabaseContext>((scope, options) => options
+            services.AddDbContext<TestingDatabaseContext>((scope, options) => options
                 .UseSqlite($@"Data Source=integration_test.db")
                 .EnableDetailedErrors()
                 .EnableSensitiveDataLogging()
             );
 
             services.AddScoped<DbContext, TestingDatabaseContext>();
+            services.AddScoped<DatabaseContext, TestingDatabaseContext>();
+        }
+        else
+        {
+            services.AddDbContext<DatabaseContext>((scope, options) => options
+                .UseNpgsql(
+                    _configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Application"))
+                .EnableDetailedErrors()
+                .EnableSensitiveDataLogging()
+            );
+
+            services.AddScoped<DbContext, DatabaseContext>();
         }
 
         services.AddRbkApiRelationalSetup(options => options

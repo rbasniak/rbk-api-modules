@@ -29,6 +29,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using rbkApiModules.Commons.Core.Utilities;
+using System;
 
 namespace Demo1.Api;
 
@@ -47,26 +49,35 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddDbContext<ReadDatabaseContext>((scope, options) => options
-            .UseNpgsql(
-                _configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Read"))
-            //.AddInterceptors(scope.GetRequiredService<DatabaseAnalyticsInterceptor>())
-            //.AddInterceptors(scope.GetRequiredService<DatabaseDiagnosticsInterceptor>())
-            .EnableDetailedErrors()
-            .EnableSensitiveDataLogging()
-        );
+        var providerForMigration = _configuration.GetValue<string>("provider");
 
-        services.AddDbContext<DatabaseContext>((scope, options) => options
-            .UseNpgsql(
-                _configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Write"))
-            //.AddInterceptors(scope.GetRequiredService<DatabaseAnalyticsInterceptor>())
-            //.AddInterceptors(scope.GetRequiredService<DatabaseDiagnosticsInterceptor>())
-            .EnableDetailedErrors()
-            .EnableSensitiveDataLogging()
-        );
+        if (TestingEnvironmentChecker.IsTestingEnvironment && TestingMode.GetMode("Demo1") == DatabaseType.SQLite || providerForMigration?.ToLower() == "sqlite")
+        {
+            throw new NotSupportedException("SQLite is not supported in this project");
+        }
+        else
+        {
+            services.AddDbContext<ReadDatabaseContext>((scope, options) => options
+                .UseNpgsql(
+                    _configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Read"))
+                //.AddInterceptors(scope.GetRequiredService<DatabaseAnalyticsInterceptor>())
+                //.AddInterceptors(scope.GetRequiredService<DatabaseDiagnosticsInterceptor>())
+                .EnableDetailedErrors()
+                .EnableSensitiveDataLogging()
+            );
 
-        services.AddScoped<DbContext, DatabaseContext>();
-        services.AddScoped<DbContext, ReadDatabaseContext>();
+            services.AddDbContext<DatabaseContext>((scope, options) => options
+                .UseNpgsql(
+                    _configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Write"))
+                //.AddInterceptors(scope.GetRequiredService<DatabaseAnalyticsInterceptor>())
+                //.AddInterceptors(scope.GetRequiredService<DatabaseDiagnosticsInterceptor>())
+                .EnableDetailedErrors()
+                .EnableSensitiveDataLogging()
+            );
+
+            services.AddScoped<DbContext, DatabaseContext>();
+            services.AddScoped<DbContext, ReadDatabaseContext>();
+        }
 
         services.AddRbkApiRelationalSetup(options => options
             .EnableBasicAuthenticationHandler()

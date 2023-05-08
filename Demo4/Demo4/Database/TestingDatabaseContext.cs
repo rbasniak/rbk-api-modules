@@ -4,7 +4,7 @@ namespace Demo4;
 
 public class TestingDatabaseContext : DatabaseContext
 {
-    public TestingDatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
+    public TestingDatabaseContext(DbContextOptions<TestingDatabaseContext> options) : base(options)
     {
     }
 }

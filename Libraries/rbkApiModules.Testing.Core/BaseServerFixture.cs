@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
-using rbkApiModules.Identity.Core;
 using rbkApiModules.Commons.Relational;
 using Serilog;
 using System.Net.Http.Headers;
@@ -18,8 +17,14 @@ public class BaseServerFixture : IDisposable
     private readonly Dictionary<Credentials, string> _accessTokens = new();
     private readonly string _contentFolder;
 
-    public BaseServerFixture(Type startupClassType, AuthenticationMode authenticationMode)
+    public BaseServerFixture(Type startupClassType, string authenticationMode)
     {
+        if (authenticationMode == null) throw new ArgumentNullException(nameof(authenticationMode));
+
+        authenticationMode = authenticationMode.ToLower();
+
+        if (authenticationMode != CredentialsAuthenticationModeName && authenticationMode != WindowsAuthenticationModeName) throw new ArgumentOutOfRangeException(nameof(authenticationMode));
+
         var projectDir = Path.GetDirectoryName(startupClassType.Assembly.Location);
 
         _contentFolder = Path.Combine(projectDir, "wwwroot");
@@ -36,7 +41,7 @@ public class BaseServerFixture : IDisposable
 
         AuthenticationMode = authenticationMode;
 
-        if (authenticationMode == AuthenticationMode.Credentials)
+        if (authenticationMode == CredentialsAuthenticationModeName)
         {
 #pragma warning disable CS0618 // Type or member is obsolete
             Server = new TestServer(new WebHostBuilder()
@@ -73,7 +78,13 @@ public class BaseServerFixture : IDisposable
 
     public TestServer Server { get; private set; }
 
-    public AuthenticationMode AuthenticationMode { get; private set; }
+    public string AuthenticationMode { get; private set; }
+
+    public virtual string MockedWindowsAuthenticationHeaderName => "UserId";
+    public virtual string MockedWindowsAuthenticationSchemeName => "TestScheme";
+
+    internal string WindowsAuthenticationModeName => "windows";
+    internal string CredentialsAuthenticationModeName => "credentials";
 
     public DbContext Context
     {
@@ -104,15 +115,15 @@ public class BaseServerFixture : IDisposable
         {
             using (var httpClient = Server.CreateClient())
             {
-                var body = new UserLogin.Request
+                var body = new 
                 {
                     Username = username,
                     Password = password,
                     Tenant = tenant
                 };
 
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(MockedWindowsAuthenticationHandler.AuthenticationScheme);
-                httpClient.DefaultRequestHeaders.Add(MockedWindowsAuthenticationHandler.UserId, username);
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(MockedWindowsAuthenticationSchemeName);
+                httpClient.DefaultRequestHeaders.Add(MockedWindowsAuthenticationHeaderName, username);
 
                 var response = await httpClient.PostAsync("api/authentication/login", new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json"));
 
@@ -140,15 +151,15 @@ public class BaseServerFixture : IDisposable
         {
             using (var httpClient = Server.CreateClient())
             {
-                var body = new UserLogin.Request
+                var body = new 
                 {
                     Tenant = tenant
                 };
 
-                if (AuthenticationMode == AuthenticationMode.Windows)
+                if (AuthenticationMode == WindowsAuthenticationModeName)
                 {
-                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(MockedWindowsAuthenticationHandler.AuthenticationScheme);
-                    httpClient.DefaultRequestHeaders.Add(MockedWindowsAuthenticationHandler.UserId, username);
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(MockedWindowsAuthenticationSchemeName);
+                    httpClient.DefaultRequestHeaders.Add(MockedWindowsAuthenticationHeaderName, username);
                 }
 
                 var response = await httpClient.PostAsync("api/authentication/login",
@@ -175,5 +186,10 @@ public class BaseServerFixture : IDisposable
     public void Dispose()
     {
         Server.Dispose();
+    }
+
+    internal class JwtResponse
+    {
+        public string AccessToken { get; set; }
     }
 }

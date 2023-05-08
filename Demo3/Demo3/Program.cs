@@ -13,8 +13,6 @@ public class Program
                 .ConfigureWebHost(host => host.ConfigureKestrel(options => options.AddServerHeader = false))
                 .UseSerilog((context, services, configuration) =>
                 {
-                    // var temp1 = context.Configuration.GetValue<string>("Log:SQLite");
-
                     configuration
                         .ReadFrom.Configuration(context.Configuration)
                         .ReadFrom.Services(services)

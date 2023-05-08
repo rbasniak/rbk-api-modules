@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using rbkApiModules.Commons.Core.Localization;
 using rbkApiModules.Commons.Core.Email;
 using rbkApiModules.Commons.Core.Utilities.Localization;
+using rbkApiModules.Commons.Core;
 
 namespace rbkApiModules.Identity.Core;
 

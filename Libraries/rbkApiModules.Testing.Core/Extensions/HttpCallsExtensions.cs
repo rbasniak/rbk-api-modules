@@ -2,7 +2,6 @@
 using System.Net;
 using System.Text;
 using System.Text.Json;
-using rbkApiModules.Identity.Core;
 
 namespace rbkApiModules.Testing.Core;
 
@@ -25,7 +24,7 @@ public static class HttpCallsExtensions
 
         using (var httpClient = fixture.Server.CreateClient())
         {
-            if (fixture.AuthenticationMode == Identity.Core.AuthenticationMode.Credentials || url != "api/authentication/login")
+            if (fixture.AuthenticationMode == fixture.CredentialsAuthenticationModeName || url != "api/authentication/login")
             {
                 if (credentials != null)
                 {
@@ -42,8 +41,8 @@ public static class HttpCallsExtensions
             }
             else
             {
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(MockedWindowsAuthenticationHandler.AuthenticationScheme);
-                httpClient.DefaultRequestHeaders.Add(MockedWindowsAuthenticationHandler.UserId, credentials);
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(fixture.MockedWindowsAuthenticationSchemeName);
+                httpClient.DefaultRequestHeaders.Add(fixture.MockedWindowsAuthenticationHeaderName, credentials);
             }
 
             var response = await httpClient.PostAsync(url, new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json"));
@@ -74,7 +73,7 @@ public static class HttpCallsExtensions
 
         using (var httpClient = fixture.Server.CreateClient())
         {
-            if (fixture.AuthenticationMode == Identity.Core.AuthenticationMode.Credentials || url != "api/authentication/login")
+            if (fixture.AuthenticationMode == fixture.CredentialsAuthenticationModeName || url != "api/authentication/login")
             {
                 if (credentials != null)
                 {
@@ -83,8 +82,8 @@ public static class HttpCallsExtensions
             }
             else
             {
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(MockedWindowsAuthenticationHandler.AuthenticationScheme);
-                httpClient.DefaultRequestHeaders.Add(MockedWindowsAuthenticationHandler.UserId, credentials);
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(fixture.MockedWindowsAuthenticationSchemeName);
+                httpClient.DefaultRequestHeaders.Add(fixture.MockedWindowsAuthenticationHeaderName, credentials);
             }
 
             var response = await httpClient.PostAsync(url, new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json"));

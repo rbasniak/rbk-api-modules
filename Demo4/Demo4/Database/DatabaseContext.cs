@@ -10,6 +10,10 @@ public class DatabaseContext : DbContext
 {
     public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
     {
+    }    
+    
+    public DatabaseContext(DbContextOptions<TestingDatabaseContext> options) : base(options)
+    {
     }
 
     public DbSet<User> Users { get; set; }

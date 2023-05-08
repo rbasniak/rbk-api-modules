@@ -4,7 +4,7 @@ namespace rbkApiModules.Demo1.Tests.Integration;
 
 public class ServerFixture: BaseServerFixture
 {
-    public ServerFixture(): base(typeof(Startup), AuthenticationMode.Credentials)
+    public ServerFixture(): base(typeof(Startup), "credentials")
     {
 
     }

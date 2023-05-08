@@ -30,7 +30,20 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        if (TestingEnvironmentChecker.IsTestingEnvironment)
+        var providerForMigration = _configuration.GetValue<string>("provider");
+
+        if (TestingEnvironmentChecker.IsTestingEnvironment && TestingMode.GetMode("Demo3") == DatabaseType.SQLite || providerForMigration?.ToLower() == "sqlite")
+        {
+            services.AddDbContext<TestingDatabaseContext>((scope, options) => options
+                .UseSqlite($@"Data Source=integration_test.db")
+                .EnableDetailedErrors()
+                .EnableSensitiveDataLogging()
+            );
+
+            services.AddScoped<DbContext, TestingDatabaseContext>();
+            services.AddScoped<DatabaseContext, TestingDatabaseContext>();
+        }
+        else
         {
             services.AddDbContext<DatabaseContext>((scope, options) => options
                 .UseNpgsql(
@@ -40,16 +53,6 @@ public class Startup
             );
 
             services.AddScoped<DbContext, DatabaseContext>();
-        }
-        else
-        {
-            services.AddDbContext<TestingDatabaseContext>((scope, options) => options
-                .UseSqlite($@"Data Source=C:\git\Repositories\rbk-api-modules\Tests\rbkApiModules.Demo3.Tests.Integration\bin\Debug\integration_test.db")
-                .EnableDetailedErrors()
-                .EnableSensitiveDataLogging()
-            );
-
-            services.AddScoped<DbContext, TestingDatabaseContext>(); 
         }
 
         //services.AddDbContext<DatabaseContext>((scope, options) => options

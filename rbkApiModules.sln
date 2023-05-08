@@ -48,6 +48,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{17637C69-C691-4368-8C26-DF6B58677214}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demos", "Demos", "{54EA380B-014B-475D-AD85-204BA261E614}"
+	ProjectSection(SolutionItems) = preProject
+		TestingMode.cs = TestingMode.cs
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demo2", "Demo2", "{30F0C25D-7C28-4616-A8AA-C4370B09D3BC}"
 	ProjectSection(SolutionItems) = preProject
