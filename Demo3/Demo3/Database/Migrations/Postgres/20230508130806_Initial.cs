@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Demo3.Database.Migrations
+namespace Demo3.Database.Migrations.Postgres
 {
     /// <inheritdoc />
     public partial class Initial : Migration
@@ -78,6 +78,7 @@ namespace Demo3.Database.Migrations
                     Email = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     Password = table.Column<string>(type: "character varying(4096)", maxLength: 4096, nullable: true),
                     RefreshToken = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: true),
+                    AuthenticationMode = table.Column<int>(type: "integer", nullable: false),
                     DisplayName = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true),
                     Avatar = table.Column<string>(type: "character varying(1024)", maxLength: 1024, nullable: true),
                     IsConfirmed = table.Column<bool>(type: "boolean", nullable: false),
