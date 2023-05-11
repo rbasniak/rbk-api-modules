@@ -1,4 +1,5 @@
-﻿using Demo2.Samples.Eventsourcing.EventOrientedChanges.Domain.Commands.Attachments;
+﻿using Demo2.Samples.Eventsourcing.EventOrientedChanges.Database;
+using Demo2.Samples.Eventsourcing.EventOrientedChanges.Domain.Commands.Attachments;
 using Demo2.Samples.Eventsourcing.EventOrientedChanges.Domain.Commands.ChangeRequests;
 using Demo2.Samples.Eventsourcing.EventOrientedChanges.Domain.Commands.Documents;
 using Demo2.Samples.Eventsourcing.EventOrientedChanges.Domain.Commands.EvidenceAttachments;
@@ -6,7 +7,9 @@ using Demo2.Samples.Eventsourcing.EventOrientedChanges.Domain.Commands.Fics;
 using Demo2.Samples.Eventsourcing.EventOrientedChanges.Infrastructure.Database.Repositories;
 using Demo2.Samples.Eventsourcing.EventOrientedChanges.Infrastructure.Models;
 using Demo2.Samples.Relational.Database;
+using Demo2.Samples.Relational.Database.Config.Relational;
 using Demo2.Samples.Relational.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Commons.Core;
 using System.Diagnostics;
 
@@ -351,11 +354,29 @@ namespace Demo2.Seed
 
             var esSaveElapsed = sw.Elapsed.TotalSeconds;
 
+            var totalRelational = rlContext.Set<Attachment>().Count() +
+                rlContext.Set<AttachmentType>().Count() +
+                rlContext.Set<ChangeRequest>().Count() +
+                rlContext.Set<ChangeRequestPriority>().Count() +
+                rlContext.Set<ChangeRequestSource>().Count() +
+                rlContext.Set<ChangeRequestToDiscipline>().Count() +
+                rlContext.Set<ChangeRequestType>().Count() +
+                rlContext.Set<Discipline>().Count() +
+                rlContext.Set<DocumentCategory>().Count() +
+                rlContext.Set<Document>().Count() +
+                rlContext.Set<EvidenceAttachment>().Count() +
+                rlContext.Set<FicCategory>().Count() +
+                rlContext.Set<Platform>().Count() +
+                rlContext.Set<State>().Count() +
+                rlContext.Set<Un>().Count();
+
+            var totalEventSourcing = await eventStore.Count();
+
             return new[]
             {
                 $"Entities generation time: {generationElapsed:0.00}s",
-                $"Entities relational saving time: {rlSaveElapsed:0.00}s",
-                $"Entities event sourcing saving time: {esSaveElapsed:0.00}s",
+                $"Entities relational saving time: {rlSaveElapsed:0.00}s ({totalRelational} total entities)",
+                $"Entities event sourcing saving time: {esSaveElapsed:0.00}s ({totalEventSourcing} events)",
             };
         }
 

@@ -96,11 +96,6 @@ public class CommentMessages : ILocalizedResource
     {
         [Description("Could not find parent comment")] CouldNotFindParentComment,
     }
-
-    public enum Errors
-    {
-        [Description("Internal server error")] InternalServerError,
-    }
 }
 
 public class FaqMessages : ILocalizedResource
@@ -143,6 +138,11 @@ public class SharedValidationMessages: ILocalizedResource
         [Description("E-mail is invalid")] InvalidEmailFormat,
         [Description("Id is invalid")] InvalidIdFormat,
         [Description("'{PropertyName}' not found in database")] EntityNotFoundInDatabase,
+    }
+
+    public enum Errors
+    {
+        [Description("Internal server error")] InternalServerError,
     }
 }
 

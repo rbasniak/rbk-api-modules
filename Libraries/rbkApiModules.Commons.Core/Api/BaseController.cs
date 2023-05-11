@@ -81,7 +81,7 @@ public class BaseController : ControllerBase
                     }
                 }
 
-                response.AddUnhandledError(_localization.LocalizeString(CommentMessages.Errors.InternalServerError));
+                response.AddUnhandledError(_localization.LocalizeString(SharedValidationMessages.Errors.InternalServerError));
 
                 _logger.Fatal(ex, "AutoMapper exception was thrown while mapping results in an endpoint");
 
@@ -91,7 +91,7 @@ public class BaseController : ControllerBase
             {
                 _logger.Fatal(ex, "Exception was thrown while mapping results in an endpoint");
 
-                response.AddUnhandledError(_localization.LocalizeString(CommentMessages.Errors.InternalServerError));
+                response.AddUnhandledError(_localization.LocalizeString(SharedValidationMessages.Errors.InternalServerError));
 
                 return HttpErrorResponse(response);
             }

@@ -34,7 +34,7 @@ public class ChangeRequestDomainModelRepository : IChangeRequestDomainModelRepos
 
         var changeRequestDataModels = await _changeRequestRepository.GetAllAsync();
 
-        Debug.WriteLine($"Events loading took {sw.Elapsed.TotalSeconds:0.00}s");
+        Debug.WriteLine($"Database entities loading took {sw.Elapsed.TotalSeconds:0.00}s");
 
         sw.Restart();
 
@@ -47,7 +47,7 @@ public class ChangeRequestDomainModelRepository : IChangeRequestDomainModelRepos
             results.Add(changeRequestDomainModel);
         }
 
-        Debug.WriteLine($"Entity rehydration took {sw.Elapsed.TotalSeconds:0.00}s");
+        Debug.WriteLine($"Entity mapping from database models to domain models took {sw.Elapsed.TotalSeconds:0.00}s");
 
         return results.ToArray();
     }

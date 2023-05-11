@@ -13,6 +13,8 @@ public interface IEventStore
 
     Task<IEnumerable<IDomainEvent>> LoadAsync(Guid aggregateRootId);
     Task<IEnumerable<IDomainEvent>> LoadAllAsync(Type type);
+
+    Task<int> Count();
 }
 
 public class RelationalEventStore : IEventStore
@@ -22,6 +24,11 @@ public class RelationalEventStore : IEventStore
     public RelationalEventStore(IEnumerable<DbContext> contexts)
     {
         _context = contexts.GetEventStoreContext();
+    }
+
+    public async Task<int> Count()
+    {
+        return await _context.Set<DomainEventDataObject>().CountAsync();
     }
 
     public async Task<IEnumerable<IDomainEvent>> LoadAllAsync(Type aggregateType)

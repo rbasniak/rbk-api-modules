@@ -2,6 +2,7 @@
 using Demo2.Samples.Eventsourcing.EventOrientedChanges.Infrastructure.Database.Repositories;
 using Demo2.Samples.Eventsourcing.EventOrientedChanges.Infrastructure.Models;
 using MediatR;
+using System.Diagnostics;
 
 namespace Demo2.Samples.Eventsourcing.EventOrientedChanges.Database.Repositories;
 
@@ -32,9 +33,19 @@ public class ChangeRequestRepository : IChangeRequestRepository
 
     public async Task<ChangeRequest[]> GetAllAsync()
     {
+        var sw = Stopwatch.StartNew();
+
         var events = await _eventStore.LoadAllAsync(typeof(ChangeRequest));
 
+        Debug.WriteLine($"Events loading took {sw.Elapsed.TotalSeconds:0.00}s");
+
+        sw.Restart();
+
         var groups = events.GroupBy(x => x.AggregateId).ToList();
+
+        Debug.WriteLine($"Events grouping took {sw.Elapsed.TotalSeconds:0.00}s");
+
+        sw.Restart();
 
         var results = new List<ChangeRequest>();
 
@@ -42,6 +53,8 @@ public class ChangeRequestRepository : IChangeRequestRepository
         {
             results.Add(new ChangeRequest(group.Select(x => (IDomainEvent<ChangeRequest>)x)));
         }
+
+        Debug.WriteLine($"Rehydratation took {sw.Elapsed.TotalSeconds:0.00}s");
 
         return results.ToArray();
     }

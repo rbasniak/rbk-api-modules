@@ -4,7 +4,6 @@
 //using System.Reflection.Emit;
 //using System.Text;
 //using System.Threading.Tasks;
-//using rbkApiModules.Commons.Diagnostics;
 
 //namespace rbkApiModules.Commons.Core.Features.Logging.Diagnostics.Services;
 
