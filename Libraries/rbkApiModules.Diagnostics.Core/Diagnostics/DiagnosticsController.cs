@@ -12,30 +12,30 @@ namespace rbkApiModules.Diagnostics.Core;
 [Route("api/[controller]")]
 public class DiagnosticsController : BaseController
 {
-    [HttpGet]
-    [Route("filter-options")]
-    public async Task<ActionResult<FilterDiagnosticsEntries>> GetFilterData()
-    {
-        var result = await Mediator.Send(new GetFilteringLists.Command());
+    //[HttpGet]
+    //[Route("filter-options")]
+    //public async Task<ActionResult<FilterDiagnosticsEntries>> GetFilterData()
+    //{
+    //    var result = await Mediator.Send(new GetFilteringLists.Command());
 
-        return HttpResponse(result);
-    }
+    //    return HttpResponse(result);
+    //}
 
-    [HttpPost]
-    [Route("search")]
-    public async Task<ActionResult<FilterDiagnosticsEntries.Results>> Search([FromBody] FilterDiagnosticsEntries.Command data)
-    {
-        var result = await Mediator.Send(data);
+    //[HttpPost]
+    //[Route("search")]
+    //public async Task<ActionResult<FilterDiagnosticsEntries.Results>> Search([FromBody] FilterDiagnosticsEntries.Command data)
+    //{
+    //    var result = await Mediator.Send(data);
 
-        return HttpResponse(result);
-    }
+    //    return HttpResponse(result);
+    //}
 
-    [HttpPost]
-    [Route("dashboard")]
-    public async Task<ActionResult<DiagnosticsDashboard>> GetDashboardData([FromBody] GetDashboardData.Command data)
-    {
-        var result = await Mediator.Send(data);
+    //[HttpPost]
+    //[Route("dashboard")]
+    //public async Task<ActionResult<DiagnosticsDashboard>> GetDashboardData([FromBody] GetDashboardData.Command data)
+    //{
+    //    var result = await Mediator.Send(data);
 
-        return HttpResponse(result);
-    } 
+    //    return HttpResponse(result);
+    //} 
 }

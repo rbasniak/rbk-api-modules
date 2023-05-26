@@ -13,11 +13,11 @@ public class DatabaseSeed: DatabaseSeedManager<DatabaseContext>, IDatabaseSeeder
 
     public DatabaseSeed()
     {
-        AddSeed("2022-10-28: Platforms seed", new SeedInfo<DatabaseContext>(context => PlatformsSeed(context), useInProduction: true));
+        AddSeed("2022-10-28: Platforms seed", new SeedInfo<DatabaseContext>((context, serviceProvider) => PlatformsSeed(context, serviceProvider), useInProduction: true));
         // AddSeed("2023-01-26: Folders seed", new SeedInfo<DatabaseContext>(context => FoldersSeed(context), useInProduction: true));
     }
 
-    public static void PlatformsSeed(DatabaseContext context)
+    public static void PlatformsSeed(DatabaseContext context, IServiceProvider serviceProvider)
     {
         var buzios = new Tenant("BUZIOS", "BUZIOS", JsonSerializer.Serialize(new { Description = "Unidade de produção da Bacia de Buzios" }));
         var unBs = new Tenant("UN-BS", "UN-BS", JsonSerializer.Serialize(new { Description = "Unidade de produção da Bacia de Santos" }));

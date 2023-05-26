@@ -7,10 +7,10 @@ public class DatabaseSeed : DatabaseSeedManager<DatabaseContext>, IDatabaseSeede
 {
     public DatabaseSeed()
     {
-        AddSeed("2023-05-04: Users seed", new SeedInfo<DatabaseContext>(context => UsersSeed(context), useInProduction: true));
+        AddSeed("2023-05-04: Users seed", new SeedInfo<DatabaseContext>((context, serviceProvider) => UsersSeed(context, serviceProvider), useInProduction: true));
     }
 
-    public static void UsersSeed(DatabaseContext context)
+    public static void UsersSeed(DatabaseContext context, IServiceProvider serviceProvider)
     {
         var tenant1 = context.Add(new Tenant("PARKER INDUSTRIES", "Parker Industries")).Entity;
         var tenant2 = context.Add(new Tenant("OSCORP INDUSTRIES", "Oscorp Industries")).Entity;
