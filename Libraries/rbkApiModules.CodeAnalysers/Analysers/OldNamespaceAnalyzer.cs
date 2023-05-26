@@ -32,18 +32,18 @@ namespace rbkApiModules.Commons.CodeAnalysers
 
         private static void AnalyzeNode(SyntaxNodeAnalysisContext context)
         {
-            if (!Debugger.IsAttached)
-            {
-                Debugger.Launch();
-            }
+            //if (!Debugger.IsAttached)
+            //{
+            //    Debugger.Launch();
+            //}
 
-            var usingDirective = (NamespaceDeclarationSyntax)context.Node;
+            //var usingDirective = (NamespaceDeclarationSyntax)context.Node;
 
-            if (usingDirective.Name.ToString().Contains("{"))
-            {
-                var diagnostic = Diagnostic.Create(Rule, usingDirective.GetLocation());
-                context.ReportDiagnostic(diagnostic);
-            }
+            //if (usingDirective.Name.ToString().Contains("{"))
+            //{
+            //    var diagnostic = Diagnostic.Create(Rule, usingDirective.GetLocation());
+            //    context.ReportDiagnostic(diagnostic);
+            //}
         }
     }
 }
