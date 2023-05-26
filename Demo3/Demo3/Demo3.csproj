@@ -25,7 +25,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Libraries\rbkApiModules.CodeAnalysers\rbkApiModules.CodeAnalysers.csproj" />
+		<ProjectReference Include="..\..\Libraries\rbkApiModules.CodeAnalysers\rbkApiModules.CodeAnalysers.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<OutputItemType>Analyzer</OutputItemType>
+		</ProjectReference>
 		<ProjectReference Include="..\..\Libraries\rbkApiModules.Identity.Relational\rbkApiModules.Identity.Relational.csproj" />
 	</ItemGroup>
 

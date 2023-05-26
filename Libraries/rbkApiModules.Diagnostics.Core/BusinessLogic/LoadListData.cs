@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Http.Features;
 
 namespace rbkApiModules.Comments.Core;
 
-public class adListData
+public class LoadListData
 {
     public class Request : IRequest<QueryResponse>
     {
@@ -86,12 +86,12 @@ public class adListData
 
             return QueryResponse.Success(result);
         }
+    }
 
-        public class Response
-        {
-            public DiagnosticsEntry[] Items { get; set; }
+    public class Response
+    {
+        public DiagnosticsEntry[] Items { get; set; }
 
-            public ChartDefinition[] Charts { get; set; }
-        }
+        public ChartDefinition[] Charts { get; set; }
     }
 }

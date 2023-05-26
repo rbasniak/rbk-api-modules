@@ -3,6 +3,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using System.Collections.Immutable;
+using System.Diagnostics;
 
 namespace rbkApiModules.Commons.CodeAnalysers
 {
@@ -26,20 +27,23 @@ namespace rbkApiModules.Commons.CodeAnalysers
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
 
-            context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.UsingDirective);
+            context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.NamespaceDeclaration);
         }
 
         private static void AnalyzeNode(SyntaxNodeAnalysisContext context)
         {
-            var diagnostic = Diagnostic.Create(Rule, Location.None);
-            context.ReportDiagnostic(diagnostic);
-            //var usingDirective = (UsingDirectiveSyntax)context.Node;
+            if (!Debugger.IsAttached)
+            {
+                Debugger.Launch();
+            }
 
-            //if (usingDirective.StaticKeyword.IsKind(SyntaxKind.None) && usingDirective.Name.ToString().Contains("["))
-            //{
-            //    var diagnostic = Diagnostic.Create(Rule, usingDirective.GetLocation());
-            //    context.ReportDiagnostic(diagnostic);
-            //}
+            var usingDirective = (NamespaceDeclarationSyntax)context.Node;
+
+            if (usingDirective.Name.ToString().Contains("{"))
+            {
+                var diagnostic = Diagnostic.Create(Rule, usingDirective.GetLocation());
+                context.ReportDiagnostic(diagnostic);
+            }
         }
     }
 }
