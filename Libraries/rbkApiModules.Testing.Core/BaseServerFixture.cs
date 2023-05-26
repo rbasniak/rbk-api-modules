@@ -46,6 +46,7 @@ public class BaseServerFixture : IDisposable
 #pragma warning disable CS0618 // Type or member is obsolete
             Server = new TestServer(new WebHostBuilder()
                 .UseWebRoot(Path.Combine(_contentFolder))
+                .UseEnvironment("Testing")
                 .UseConfiguration(new ConfigurationBuilder()
                     .SetBasePath(projectDir)
                     .AddJsonFile("appsettings.Testing.json")
@@ -60,6 +61,7 @@ public class BaseServerFixture : IDisposable
 #pragma warning disable CS0618 // Type or member is obsolete
             Server = new TestServer(new WebHostBuilder()
                 .UseWebRoot(Path.Combine(_contentFolder))
+                .UseEnvironment("Testing")
                 .UseConfiguration(new ConfigurationBuilder()
                     .SetBasePath(projectDir)
                     .AddJsonFile("appsettings.Testing.json")
