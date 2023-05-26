@@ -7,90 +7,92 @@ using rbkApiModules.Commons.Core.Utilities.Localization;
 using rbkApiModules.Identity.Core;
 using System.ComponentModel;
 
-namespace Demo3;
-
-[ApiController]
-[IgnoreOnCodeGeneration]
-[Route("api/[controller]")]
-public class DemoController : BaseController
+namespace Demo3
 {
-    [AllowAnonymous]
-    [HttpGet("anonymous")]
-    public ActionResult<Response> GetAnonymous()
+
+    [ApiController]
+    [IgnoreOnCodeGeneration]
+    [Route("api/[controller]")]
+    public class DemoController : BaseController
     {
-        return Ok(new Response
+        [AllowAnonymous]
+        [HttpGet("anonymous")]
+        public ActionResult<Response> GetAnonymous()
         {
-            Timestamp = DateTime.Now,
-            Message = "Successfully accessed an open endpoint",
-        });
-    }
+            return Ok(new Response
+            {
+                Timestamp = DateTime.Now,
+                Message = "Successfully accessed an open endpoint",
+            });
+        }
 
-    [Authorize]
-    [HttpGet("authorized/low-privilegies")]
-    public ActionResult<Response> GetAuthorizedWithLowPrivilegies()
-    {
-        return Ok(new Response
+        [Authorize]
+        [HttpGet("authorized/low-privilegies")]
+        public ActionResult<Response> GetAuthorizedWithLowPrivilegies()
         {
-            Timestamp = DateTime.Now,
-            Message = "Successfully accessed an authenticated endpoint with low privilegies",
-        });
-    }
+            return Ok(new Response
+            {
+                Timestamp = DateTime.Now,
+                Message = "Successfully accessed an authenticated endpoint with low privilegies",
+            });
+        }
 
-    [RbkAuthorize(AuthenticationClaims.MANAGE_USERS)]
-    [HttpGet("authorized/high-privilegies1")]
-    public ActionResult<Response> GetAuthorizedWithHighPrivilegies1()
-    {
-        return Ok(new Response
+        [RbkAuthorize(AuthenticationClaims.MANAGE_USERS)]
+        [HttpGet("authorized/high-privilegies1")]
+        public ActionResult<Response> GetAuthorizedWithHighPrivilegies1()
         {
-            Timestamp = DateTime.Now,
-            Message = "Successfully accessed an authenticated endpoint with high privilegies",
-        });
-    }    
-    
-    [RbkAuthorize("NON_EXISTENT_CLAIM")]
-    [HttpGet("authorized/high-privilegies2")]
-    public ActionResult<Response> GetAuthorizedWithHighPrivilegies2()
-    {
-        return Ok(new Response
+            return Ok(new Response
+            {
+                Timestamp = DateTime.Now,
+                Message = "Successfully accessed an authenticated endpoint with high privilegies",
+            });
+        }
+
+        [RbkAuthorize("NON_EXISTENT_CLAIM")]
+        [HttpGet("authorized/high-privilegies2")]
+        public ActionResult<Response> GetAuthorizedWithHighPrivilegies2()
         {
-            Timestamp = DateTime.Now,
-            Message = "You should not have access to this",
-        });
+            return Ok(new Response
+            {
+                Timestamp = DateTime.Now,
+                Message = "You should not have access to this",
+            });
+        }
+
+        [AllowAnonymous()]
+        [HttpGet("localization/resource-from-application/with-description")]
+        public ActionResult<Response> GetLocalizedResourceFromApplicationWithDescription([FromServices] ILocalizationService localization)
+        {
+            return Ok(localization.LocalizeString(ApplicationMessages.Common.ValueWithDescription));
+        }
+
+        [AllowAnonymous()]
+        [HttpGet("localization/resource-from-application/without-description")]
+        public ActionResult<Response> GetLocalizedResourceFromApplicationWithoutDescription([FromServices] ILocalizationService localization)
+        {
+            return Ok(localization.LocalizeString(ApplicationMessages.Common.ValueWithoutDescription));
+        }
+
+        [AllowAnonymous()]
+        [HttpGet("localization/localized-string")]
+        public ActionResult<Response> GetLocalizedResource([FromServices] ILocalizationService localization)
+        {
+            return Ok(localization.LocalizeString(AuthenticationMessages.Validations.InvalidCredentials));
+        }
     }
 
-    [AllowAnonymous()]
-    [HttpGet("localization/resource-from-application/with-description")]
-    public ActionResult<Response> GetLocalizedResourceFromApplicationWithDescription([FromServices] ILocalizationService localization)
+    public class Response
     {
-        return Ok(localization.LocalizeString(ApplicationMessages.Common.ValueWithDescription));
+        public required DateTime Timestamp { get; set; }
+        public required string Message { get; set; }
     }
 
-    [AllowAnonymous()]
-    [HttpGet("localization/resource-from-application/without-description")]
-    public ActionResult<Response> GetLocalizedResourceFromApplicationWithoutDescription([FromServices] ILocalizationService localization)
+    public class ApplicationMessages : ILocalizedResource
     {
-        return Ok(localization.LocalizeString(ApplicationMessages.Common.ValueWithoutDescription));
-    }
-
-    [AllowAnonymous()]
-    [HttpGet("localization/localized-string")]
-    public ActionResult<Response> GetLocalizedResource([FromServices] ILocalizationService localization)
-    {
-        return Ok(localization.LocalizeString(AuthenticationMessages.Validations.InvalidCredentials));
-    }
-}
-
-public class Response
-{
-    public required DateTime Timestamp { get; set; }
-    public required string Message { get; set; }
-}
-
-public class ApplicationMessages : ILocalizedResource
-{
-    public enum Common
-    {
-        [Description("Message from description attribute")] ValueWithDescription,
-        ValueWithoutDescription,
+        public enum Common
+        {
+            [Description("Message from description attribute")] ValueWithDescription,
+            ValueWithoutDescription,
+        }
     }
 }

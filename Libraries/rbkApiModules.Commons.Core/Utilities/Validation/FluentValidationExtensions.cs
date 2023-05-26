@@ -37,7 +37,7 @@ public static class FluentValidationExtensions
     {
         return rule
             .Must(x => String.IsNullOrEmpty(x) || (x.Length >= min && x.Length <= max))
-            .WithMessage(String.Format(localization.LocalizeString(SharedValidationMessages.Common.FieldMustHaveLengthBetweenMinAndMax), min, max));
+            .WithMessage(localization.LocalizeString(SharedValidationMessages.Common.FieldMustHaveLengthBetweenMinAndMax).Replace("{0}", min.ToString()).Replace("{1}", max.ToString()));
     }
 
     public static IRuleBuilderOptions<T, string[]> ListMustHaveItems<T>(this IRuleBuilder<T, string[]> rule)

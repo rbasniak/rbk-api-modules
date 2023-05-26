@@ -168,6 +168,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflow", "Workflow", "{81
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Demo4.Tests.Integration", "Tests\rbkApiModules.Demo4.Tests.Integration\rbkApiModules.Demo4.Tests.Integration.csproj", "{33FB2BE1-3EA5-4E28-9582-50C54EE21443}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.CodeAnalysers", "Libraries\rbkApiModules.CodeAnalysers\rbkApiModules.CodeAnalysers.csproj", "{9192D83F-3A5B-483B-A309-E8EA34E73AF6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -346,6 +348,10 @@ Global
 		{33FB2BE1-3EA5-4E28-9582-50C54EE21443}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33FB2BE1-3EA5-4E28-9582-50C54EE21443}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{33FB2BE1-3EA5-4E28-9582-50C54EE21443}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9192D83F-3A5B-483B-A309-E8EA34E73AF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9192D83F-3A5B-483B-A309-E8EA34E73AF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9192D83F-3A5B-483B-A309-E8EA34E73AF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9192D83F-3A5B-483B-A309-E8EA34E73AF6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -414,6 +420,7 @@ Global
 		{0BDCB190-CC63-4E39-889B-90F43F0E7325} = {31E68E16-8360-4E9A-BBB8-AFF160F67851}
 		{81525DC7-123D-43FE-9943-ED6181279EF3} = {31E68E16-8360-4E9A-BBB8-AFF160F67851}
 		{33FB2BE1-3EA5-4E28-9582-50C54EE21443} = {17637C69-C691-4368-8C26-DF6B58677214}
+		{9192D83F-3A5B-483B-A309-E8EA34E73AF6} = {3DBA63BD-A3F7-4371-8ACB-6F1CD16B40DC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5ABCFC25-B782-4553-8645-2A49D30D429E}

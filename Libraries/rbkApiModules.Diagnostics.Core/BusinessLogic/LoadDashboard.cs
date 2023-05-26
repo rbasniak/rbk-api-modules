@@ -51,4 +51,9 @@ public class GetDashboardData
             return QueryResponse.Success(await _diagnosticsService.GetAllAsync(startDate, endDate, cancellation));
         }
     }
+
+    public class Response
+    {
+
+    }
 }
