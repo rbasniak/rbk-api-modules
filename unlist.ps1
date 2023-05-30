@@ -1,76 +1,101 @@
-$apiKey = "oy2pyvbxsqymi rgbcsuafx4irl4aqe hu7ek2h35og3362u"
+$apiKey = "oy2iqjnvl3zsdxp7wl3ag6pdlm2elqsuxp7epv537utk6u"
 
 $packages = @(
-#   "rbkApiModules.Analytics.Core";
-#   "rbkApiModules.Analytics.LiteDB";    
-#   "rbkApiModules.Analytics.Postgres";
-#   "rbkApiModules.Analytics.SQLite";
-#   "rbkApiModules.Analytics.SQLServer";
-#   "rbkApiModules.Auditing.Core";
-#   "rbkApiModules.Auditing.Relational";
-#   "rbkApiModules.Comments.Core";
-#   "rbkApiModules.Comments.Relational";
-#   "rbkApiModules.Commons.Core";
-#   "rbkApiModules.Commons.LiteDB";
-#   "rbkApiModules.Commons.Relational";
-#   "rbkApiModules.Diagnostics.Core";
-#   "rbkApiModules.Diagnostics.LiteDB";
-#   "rbkApiModules.Diagnostics.Postgres";
-#   "rbkApiModules.Diagnostics.SQLite";
-#   "rbkApiModules.Diagnostics.SQLServer";
-#   "rbkApiModules.Faqs.Core";
-#   "rbkApiModules.Faqs.Relational";
-#   "rbkApiModules.Identity.Core";
-#   "rbkApiModules.Identity.Relational";
-#   "rbkApiModules.Notifications.Core";
-#   "rbkApiModules.Notifications.Relational";
-#   "rbkApiModules.SharedUI.Core";
-#   "rbkApiModules.Testing.Core";
-#   "rbkApiModules.Workflow.Core";
-#   "rbkApiModules.Workflow.Relational";
-
-    "rbkApiModules.Analytics.Core";
-    "rbkApiModules.Analytics.Relational.Core";
-    "rbkApiModules.Analytics.Relational.SqlServer";
-    "rbkApiModules.Analytics.Relational.SQLite";
-    "rbkApiModules.Auditing.SqlServer";
-    "rbkApiModules.Authentication";
-    "rbkApiModules.CodeGeneration";
-    "rbkApiModules.CodeGeneration.Commons";
-    "rbkApiModules.Comments";
-    "rbkApiModules.Diagnostics.Commons";
-    "rbkApiModules.Diagnostics.Core";
-    "rbkApiModules.Diagnostics.Relational.Core";
-    "rbkApiModules.Diagnostics.Relational.SqlServer";
-    "rbkApiModules.Diagnostics.Relational.SQLite";
-    "rbkApiModules.Faqs";
-    "rbkApiModules.Infrastructure.Api";
-    "rbkApiModules.Infrastructure.MediatR.Core";
-    "rbkApiModules.Infrastructure.MediatR.MongoDB";
-    "rbkApiModules.Infrastructure.MediatR.SqlServer";
-    "rbkApiModules.Infrastructure.Models";
-    "rbkApiModules.Logs.Core";
-    "rbkApiModules.Logs.Relational.Core";
-    "rbkApiModules.Logs.Relational.SQLite";
-    "rbkApiModules.Logs.Relational.SqlServer";
-    "rbkApiModules.Notifications";
-    "rbkApiModules.Payment.SqlServer";
-    "rbkApiModules.Paypal.SqlServer";
-    "rbkApiModules.SharedUI";
-    "rbkApiModules.UIAnnotations";
-    "rbkApiModules.UIAnnotations.Commons";
-    "rbkApiModules.Utilities";
-    "rbkApiModules.Utilities.EFCore";
-    "rbkApiModules.Utilities.Excel";
-    "rbkApiModules.Utilities.MongoDB";
-    "rbkApiModules.Utilities.Testing";
+    "rbkApiModules.Workflow.Relational";
 )
 
 $count = 0
 
+$versions = @(
+    "1";
+    "2";
+    "3";
+    "4";
+    "5";
+    "6";
+    "7";
+    "8";
+    "9";
+    "10";
+    "11";
+    "12";
+    "13";
+    "14";
+    "15";
+    "16";
+    "17";
+    "18";
+    "19";
+    "20";
+    "21";
+    "22";
+    "23";
+    "24";
+    "25";
+    "26";
+    "27";
+    "28";
+    "29";
+    "30";
+    "31";
+    "32";
+    "33";
+    "34";
+    "35";
+    "36";
+    "37";
+    "38";
+    "39";
+    "40";
+    "41";
+    "42";
+    "43";
+    "44";
+    "45";
+    "46";
+    "47";
+    "48";
+    "49";
+    "50";
+    "51";
+    "52";
+    "53";
+    "54";
+)
+
 foreach ($packageId in $packages)
 {
-    $searchResponse = Invoke-WebRequest -Uri "https://azuresearch-usnc.nuget.org/query?q=$packageId&prerelease=false" | ConvertFrom-Json
+    foreach($versionNumber in $versions)
+    {
+        dotnet nuget delete $packageId 7.0.0-beta.$versionNumber --source https://api.nuget.org/v3/index.json --non-interactive --api-key $apiKey
+
+        $count = $count + 1
+
+        # if ($count -eq 150)
+        # {
+        #     Write-Host "*****************************************************************"
+        #     Write-Host "   Maximum number of requests reached. Come back in one hour.    "
+        #     Write-Host "*****************************************************************"
+        # 
+        #     return;
+        # }
+    }   
+}
+
+
+
+
+
+
+
+
+
+
+
+return
+foreach ($packageId in $packages)
+{
+    $searchResponse = Invoke-WebRequest -Uri "https://azuresearch-usnc.nuget.org/query?q=$packageId" | ConvertFrom-Json
 
     $found = $false
 
