@@ -34,6 +34,7 @@ public class RelationalEventStore : IEventStore
     public async Task<IEnumerable<IDomainEvent>> LoadAllAsync(Type aggregateType)
     {
         var events = await _context.Set<DomainEventDataObject>()
+            .AsNoTracking()
             // TODO: salvar o tipo do agregado na store 
             // .Where(x => x.Type == type.FullName)
             .ToListAsync();
@@ -67,6 +68,7 @@ public class RelationalEventStore : IEventStore
         var results = new List<IDomainEvent>();
 
         var data = _context.Set<DomainEventDataObject>()
+            .AsNoTracking()
             .Where(x => x.AggregateId == aggregateRootId)
             .OrderBy(x => x.Version)
             .ToList();

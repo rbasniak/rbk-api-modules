@@ -51,6 +51,7 @@ public class ChangeRequestController: BaseController
         var sw = Stopwatch.StartNew();
 
         var entities = _rlContext.Set<ChangeRequest>()
+            .AsNoTracking()
             .Include(x => x.Priority)
             .Include(x => x.Source)
             .Include(x => x.Type)
