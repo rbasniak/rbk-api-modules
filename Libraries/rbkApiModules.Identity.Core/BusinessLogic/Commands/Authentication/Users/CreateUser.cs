@@ -46,46 +46,47 @@ public class CreateUser
             _authenticationMode = Enum.Parse<AuthenticationMode>(authenticationModeClaim.Value);
 
             RuleFor(x => x.Username)
-                        .IsRequired(localization)
-                        .MustAsync(UserDoesNotExistOnDatabase)
-                            .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.UserAlreadyExists))
-                        .WithName(localization.LocalizeString(AuthenticationMessages.Fields.User));
+                .IsRequired(localization)
+                .MustAsync(UserDoesNotExistOnDatabase)
+                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.UserAlreadyExists))
+                .WithName(localization.LocalizeString(AuthenticationMessages.Fields.User));
 
             RuleFor(x => x.Email)
-                        .IsRequired(localization)
-                        .MustBeEmail(localization)
-                        .MustAsync(EmailDoesNotExistOnDatabase)
-                            .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.EmailAlreadyUsed))
-                        .WithName(localization.LocalizeString(AuthenticationMessages.Fields.Email));
+                .IsRequired(localization)
+                .MustBeEmail(localization)
+                .MustAsync(EmailDoesNotExistOnDatabase)
+                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.EmailAlreadyUsed))
+                .WithName(localization.LocalizeString(AuthenticationMessages.Fields.Email));
 
             RuleFor(x => x.DisplayName)
-                        .IsRequired(localization)
-                        .WithName(localization.LocalizeString(AuthenticationMessages.Fields.DisplayName));
+                .IsRequired(localization)
+                .MustHasLengthBetween(3, 255, localization)
+                .WithName(localization.LocalizeString(AuthenticationMessages.Fields.DisplayName));
 
             RuleFor(x => x)
                         .UserMetadataIsValid(metadataValidators, localization);
 
             RuleFor(x => x.Password)
-                        .Must(PasswordsIsRequired)
-                            .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.PasswordIsRequired))
-                        .Must(PasswordsBeTheSame)
-                            .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.PasswordsMustBeTheSame))
-                        .PasswordPoliciesAreValid(passwordValidators, localization);
+                .Must(PasswordsIsRequired)
+                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.PasswordIsRequired))
+                .Must(PasswordsBeTheSame)
+                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.PasswordsMustBeTheSame))
+                .PasswordPoliciesAreValid(passwordValidators, localization);
 
             RuleFor(x => x.RoleIds)
-                        .NotNull()
-                        .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.RoleListMustNotBeEmpty))
-                        .DependentRules(() =>
-                        {
-                            RuleFor(x => x.RoleIds.Length)
-                        .GreaterThan(0)
-                        .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.RoleListMustNotBeEmpty));
+                .NotNull()
+                .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.RoleListMustNotBeEmpty))
+                .DependentRules(() =>
+                {
+                    RuleFor(x => x.RoleIds.Length)
+                .GreaterThan(0)
+                .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.RoleListMustNotBeEmpty));
 
-                            RuleForEach(x => x.RoleIds)
-                        .MustAsync(RoleExistOnDatabase)
-                        .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.RoleNotFound))
-                        .WithName(localization.LocalizeString(AuthenticationMessages.Fields.Role));
-                        });
+                    RuleForEach(x => x.RoleIds)
+                .MustAsync(RoleExistOnDatabase)
+                .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.RoleNotFound))
+                .WithName(localization.LocalizeString(AuthenticationMessages.Fields.Role));
+                });
         }
 
         private async Task<bool> EmailDoesNotExistOnDatabase(Request request, string email, CancellationToken cancellation)

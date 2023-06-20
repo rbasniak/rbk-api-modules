@@ -18,15 +18,17 @@ public class JwtFactory : IJwtFactory
 {
     private readonly IAuthService _usersService;
     private readonly JwtIssuerOptions _jwtOptions;
+    private readonly ITenantsService _tenantsService;
     private readonly RbkAuthenticationOptions _authenticationOptions;
 
     /// <summary>
     /// Construtor padrão
     /// </summary>
-    public JwtFactory(IOptions<JwtIssuerOptions> jwtOptions, RbkAuthenticationOptions authenticationOptions, IAuthService usersService)
+    public JwtFactory(IOptions<JwtIssuerOptions> jwtOptions, RbkAuthenticationOptions authenticationOptions, IAuthService usersService, ITenantsService tenantsService)
     {
         _usersService = usersService;
         _jwtOptions = jwtOptions.Value;
+        _tenantsService = tenantsService;
         _authenticationOptions = authenticationOptions;
 
         ThrowIfInvalidOptions(_jwtOptions);
@@ -59,11 +61,23 @@ public class JwtFactory : IJwtFactory
 
         if (_authenticationOptions._allowTenantSwitching && !String.IsNullOrEmpty(currentTenant))
         {
-            var tenants = await _usersService.GetAllowedTenantsAsync(username, CancellationToken.None);
-
-            foreach (var tenant in tenants)
+            if (_authenticationOptions._allowUserCreationOnFirstAccess && _authenticationOptions._loginMode == LoginMode.WindowsAuthentication)
             {
-                claims.Add(new System.Security.Claims.Claim(JwtClaimIdentifiers.AllowedTenants, tenant));
+                var tenants = await _tenantsService.GetAllAsync();
+
+                foreach (var tenant in tenants)
+                {
+                    claims.Add(new System.Security.Claims.Claim(JwtClaimIdentifiers.AllowedTenants, tenant.Alias));
+                }
+            }
+            else
+            {
+                var tenants = await _usersService.GetAllowedTenantsAsync(username, CancellationToken.None);
+
+                foreach (var tenant in tenants)
+                {
+                    claims.Add(new System.Security.Claims.Claim(JwtClaimIdentifiers.AllowedTenants, tenant));
+                }
             }
         }
         else

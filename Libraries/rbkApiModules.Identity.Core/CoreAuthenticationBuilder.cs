@@ -316,6 +316,15 @@ public static class CoreAuthenticationBuilder
             }
         }
 
+        foreach (var type in GetClassesImplementingInterface(typeof(ICustomUserPostProcessor)))
+        {
+            // Avoiid duplicated registrations. Depending on naming convention used, it could be already registered by the generic .AddApplicationServices() method
+            if (services.None(x => x.ServiceType == typeof(ICustomUserPostProcessor) && x.ImplementationType == type))
+            {
+                services.AddScoped(typeof(ICustomUserPostProcessor), type);
+            }
+        }
+
         foreach (var type in GetClassesImplementingInterface(typeof(ICustomPasswordPolicyValidator)))
         {
             // Avoiid duplicated registrations. Depending on naming convention used, it could be already registered by the generic .AddApplicationServices() method

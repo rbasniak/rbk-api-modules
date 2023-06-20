@@ -85,6 +85,7 @@ public class Startup
             .UseSymetricEncryptationKey()
             .UseLoginWithWindowsAuthentication()
             .AllowAnonymousAccessToTenants()
+            .AllowUserCreationOnFirstAccess("Readonly user")
             .AllowUserCreationByAdmins()
             .AllowTenantSwitching()
         );

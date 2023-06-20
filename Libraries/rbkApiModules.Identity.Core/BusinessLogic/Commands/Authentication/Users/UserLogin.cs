@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using rbkApiModules.Commons.Core;
@@ -34,10 +35,12 @@ public class UserLogin
     public class Validator : AbstractValidator<Request>
     {
         private readonly IAuthService _userService;
+        private readonly RbkAuthenticationOptions _authOptions;
 
-        public Validator(IAuthService userService, ILocalizationService localization, IEnumerable<ICustomLoginPolicyValidator> loginPolicies, IHttpContextAccessor httpContextAccessor)
+        public Validator(IAuthService userService, ILocalizationService localization, IEnumerable<ICustomLoginPolicyValidator> loginPolicies, RbkAuthenticationOptions authOptions)
         {
             _userService = userService;
+            _authOptions = authOptions;
 
             RuleFor(x => x)
                 .LoginPoliciesAreValid(loginPolicies, localization).DependentRules(() => 
@@ -71,7 +74,6 @@ public class UserLogin
         {
             if (request.AuthenticationMode == AuthenticationMode.Windows)
             {
-
                 return true;
             }   
             else if (request.AuthenticationMode == AuthenticationMode.Credentials)
@@ -86,30 +88,38 @@ public class UserLogin
 
         public async Task<bool> ExistOnDatabase(Request request, string username, CancellationToken cancellation)
         {
+            var userWillBeAutomaticallyCreated = _authOptions._allowUserCreationOnFirstAccess && _authOptions._loginMode == LoginMode.WindowsAuthentication;
+
             var user = await _userService.FindUserAsync(username, request.Tenant, cancellation);
 
-            return user != null;
+            return user != null || userWillBeAutomaticallyCreated;
         }
 
         public async Task<bool> BeConfirmed(Request request, string username, CancellationToken cancellation)
         {
+            var userWillBeAutomaticallyCreated = _authOptions._allowUserCreationOnFirstAccess && _authOptions._loginMode == LoginMode.WindowsAuthentication;
+
             var user = await _userService.FindUserAsync(username, request.Tenant, cancellation);
 
-            return user.IsConfirmed;
+            return user != null && user.IsConfirmed || user == null && userWillBeAutomaticallyCreated;
         }
 
         public async Task<bool> BeActive(Request request, string username, CancellationToken cancellation)
         {
+            var userWillBeAutomaticallyCreated = _authOptions._allowUserCreationOnFirstAccess && _authOptions._loginMode == LoginMode.WindowsAuthentication;
+
             var user = await _userService.FindUserAsync(username, request.Tenant, cancellation);
 
-            return user.IsActive;
+            return user != null && user.IsActive || user == null && userWillBeAutomaticallyCreated;
         }
 
         public async Task<bool> UseCorrectAuthenticationMode(Request request, string username, CancellationToken cancellation)
         {
+            var userWillBeAutomaticallyCreated = _authOptions._allowUserCreationOnFirstAccess && _authOptions._loginMode == LoginMode.WindowsAuthentication;
+
             var user = await _userService.FindUserAsync(username, request.Tenant, cancellation);
 
-            return user.AuthenticationMode == request.AuthenticationMode;
+            return user != null && user.AuthenticationMode == request.AuthenticationMode || user == null && userWillBeAutomaticallyCreated;
         }
 
         public async Task<bool> MatchPassword(Request request, string password, CancellationToken cancellation)
@@ -137,18 +147,26 @@ public class UserLogin
         private readonly IJwtFactory _jwtFactory;
         private readonly JwtIssuerOptions _jwtOptions;
         private readonly IEnumerable<ICustomClaimHandler> _claimHandlers;
+        private readonly IAutomaticUserCreator _automaticUserCreator;
 
-        public Handler(IJwtFactory jwtFactory, IOptions<JwtIssuerOptions> jwtOptions, IAuthService authService, IEnumerable<ICustomClaimHandler> claimHandlers)
+        public Handler(IJwtFactory jwtFactory, IOptions<JwtIssuerOptions> jwtOptions, IAuthService authService, 
+            IEnumerable<ICustomClaimHandler> claimHandlers, IAutomaticUserCreator automaticUserCreator)
         {
-            _authService = authService;
             _jwtFactory = jwtFactory;
+            _authService = authService;
             _jwtOptions = jwtOptions.Value;
             _claimHandlers = claimHandlers;
+            _automaticUserCreator = automaticUserCreator;
         }
 
         public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)
         {
             var user = await _authService.FindUserAsync(request.Username, request.Tenant, cancellation);
+
+            if (user == null)
+            {
+                user = await _automaticUserCreator.CreateIfAllowedAsync(request.Username, request.Tenant, cancellation);
+            }
 
             Log.Information($"Loging in with user {user.Username}");
 
@@ -190,3 +208,4 @@ public enum AuthenticationMode
     Credentials,
     Windows
 }
+

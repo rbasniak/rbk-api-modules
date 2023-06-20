@@ -64,7 +64,7 @@ public class User : TenantEntity
 
     public virtual AuthenticationMode AuthenticationMode { get; protected set; }
 
-    [MaxLength(32)]
+    [MaxLength(255)]
     public virtual string DisplayName { get; protected set; }
 
     [MaxLength(1024)]
