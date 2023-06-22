@@ -74,13 +74,16 @@ public class AuthenticationMessages : ILocalizedResource
         [Description("User cannot deactivate itself")] UserCannotDeactivateItselft,
         [Description("Account is deactivated")] AccountDeactivated,
         [Description("Invalid login mode")] InvalidLoginMode,
+        [Description("Cannot rename the default user role when the application allow for automatic user creation")] CannotRenameDefaultUserRole,
+        [Description("Cannot delete the default user role when the application allow for automatic user creation")] CannotDeleteDefaultUserRole,
     }
 
     public enum Erros
     {
         [Description("Cannot delete the tenant, probably it has data associated with it")] CannotDeleteUsedTenant,
         [Description("Could not find the user associate with that password reset code")] CouldNotFindTheUserAssociatedWithThePasswordResetCode,
-        [Description("Could not delete the user, ensure it is not being used by any related entities")] CannotDeleteUser
+        [Description("Could not delete the user, ensure it is not being used by any related entities")] CannotDeleteUser,
+        [Description("Could not find the default role for a new user")] CannotFindDefaultRole
     }
 }
 

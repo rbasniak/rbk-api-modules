@@ -18,9 +18,11 @@ public class RenameRole
     public class Validator : AbstractValidator<Request>
     {
         private readonly IRolesService _rolesService;
+        private readonly RbkAuthenticationOptions _authOptions;
 
-        public Validator(IRolesService rolesService, ITenantsService tenantsService, ILocalizationService localization)
+        public Validator(IRolesService rolesService, ITenantsService tenantsService, ILocalizationService localization, RbkAuthenticationOptions authOptions)
         {
+            _authOptions = authOptions;
             _rolesService = rolesService;
 
             RuleFor(x => x.Id)
@@ -28,13 +30,22 @@ public class RenameRole
 
             RuleFor(x => x.Name)
                 .IsRequired(localization)
-                .MustAsync(NameBeUnique)
-                .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.NameAlreadyUsed))
+                .MustAsync(NameBeUnique).WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.NameAlreadyUsed))
+                .MustAsync(NotBeTheDefaultUserRole).WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.CannotRenameDefaultUserRole))
                 .WithName(localization.LocalizeString(AuthenticationMessages.Fields.Name));
 
             RuleFor(x => x.Identity)
                 .TenantExistOnDatabase(tenantsService, localization)
                 .HasCorrectRoleManagementAccessRights(localization);
+        }
+
+        private async Task<bool> NotBeTheDefaultUserRole(Request request, string name, CancellationToken cancellation)
+        {
+            if (!_authOptions._allowUserCreationOnFirstAccess && _authOptions._loginMode != LoginMode.WindowsAuthentication) return true;
+
+            var role = await _rolesService.FindAsync(request.Id);
+            
+            return role.Name.ToLower() != _authOptions._defaultRoleName.ToLower();
         }
 
         private async Task<bool> NameBeUnique(Request request, string name, CancellationToken cancellation)

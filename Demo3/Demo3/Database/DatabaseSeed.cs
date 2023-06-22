@@ -31,7 +31,5 @@ public class DatabaseSeed : DatabaseSeedManager<DatabaseContext>, IDatabaseSeede
         user2.Confirm();
 
         context.SaveChanges();
-
-        var temp = context.Set<User>().ToList();
     }
 }

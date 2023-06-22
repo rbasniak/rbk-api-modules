@@ -16,21 +16,34 @@ public class DeleteRole
     public class Validator : AbstractValidator<Request>
     {
         private readonly IRolesService _rolesService;
+        private readonly RbkAuthenticationOptions _authOptions;
 
-        public Validator(IRolesService rolesService, ITenantsService tenantsService, ILocalizationService localization)
+        public Validator(IRolesService rolesService, ITenantsService tenantsService, ILocalizationService localization, RbkAuthenticationOptions authOptions)
         {
+            _authOptions = authOptions;
             _rolesService = rolesService;
 
             RuleFor(x => x.Id)
                 .RoleExistOnDatabaseForTheCurrentTenant(rolesService, localization)
                 .MustAsync(NotBeUsedInAnyUserUnlessThereIsAnAlternateRole)
-                .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.RoleIsBeingUsed))
+                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.RoleIsBeingUsed))
+                .MustAsync(NotBeTheDefaultUserRole)
+                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.CannotDeleteDefaultUserRole))
             .WithName(localization.LocalizeString(AuthenticationMessages.Fields.Role));
 
             RuleFor(x => x.Identity)
                 .TenantExistOnDatabase(tenantsService, localization)
                 .HasCorrectRoleManagementAccessRights(localization);
-        } 
+        }
+
+        private async Task<bool> NotBeTheDefaultUserRole(Request request, Guid Id, CancellationToken cancellation)
+        {
+            if (!_authOptions._allowUserCreationOnFirstAccess && _authOptions._loginMode != LoginMode.WindowsAuthentication) return true;
+
+            var role = await _rolesService.FindAsync(request.Id);
+
+            return role.Name.ToLower() != _authOptions._defaultRoleName.ToLower();
+        }
 
         private async Task<bool> NotBeUsedInAnyUserUnlessThereIsAnAlternateRole(Request request, Guid id, CancellationToken cancellation)
         {
@@ -44,7 +57,14 @@ public class DeleteRole
 
                 var applicationRole = roles.FirstOrDefault(x => x.HasNoTenant);
 
-                return applicationRole != null;
+                if (_authOptions != null && _authOptions._defaultRoleName != null)
+                {
+                    return applicationRole != null && _authOptions._defaultRoleName.ToLower() != applicationRole.Name.ToLower();
+                }
+                else
+                {
+                    return applicationRole != null;
+                }
             }
             else
             {

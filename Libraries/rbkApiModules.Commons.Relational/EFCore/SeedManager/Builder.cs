@@ -53,7 +53,7 @@ public static class SeedBuilder
             seeder.ApplySeed(app);
 
             context.Dispose();
-        }
+        } 
 
         return app;
     }

@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using rbkApiModules.Commons.Core;
@@ -20,9 +21,11 @@ public class SwitchTenant
     {
         private readonly IAuthService _usersService;
         private readonly ITenantsService _tenantsService;
+        private readonly RbkAuthenticationOptions _authOptions;
 
-        public Validator(IAuthService usersService, ITenantsService tenantsService, ILocalizationService localization)
+        public Validator(IAuthService usersService, ITenantsService tenantsService, ILocalizationService localization, RbkAuthenticationOptions authOptions)
         {
+            _authOptions = authOptions;
             _usersService = usersService;
             _tenantsService = tenantsService;
 
@@ -43,7 +46,11 @@ public class SwitchTenant
 
         public async Task<bool> BePartOfDomain(Request request, string destinationDomain, CancellationToken cancellation)
         {
-            return await _usersService.FindUserAsync(request.Identity.Username, destinationDomain, cancellation) != null;
+            var userWillBeAutomaticallyCreated = _authOptions._allowUserCreationOnFirstAccess && _authOptions._loginMode == LoginMode.WindowsAuthentication;
+
+            var userExists = await _usersService.FindUserAsync(request.Identity.Username, destinationDomain, cancellation) != null;
+
+            return userExists || userWillBeAutomaticallyCreated;
         }
     }
 
@@ -52,25 +59,33 @@ public class SwitchTenant
         private readonly IJwtFactory _jwtFactory;
         private readonly IAuthService _usersService;
         private readonly JwtIssuerOptions _jwtOptions;
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IAutomaticUserCreator _automaticUserCreator;
         private readonly IEnumerable<ICustomClaimHandler> _claimHandlers;
 
-        public Handler(IJwtFactory jwtFactory, IAuthService usersService, IEnumerable<ICustomClaimHandler> claimHandlers, IOptions<JwtIssuerOptions> jwtOptions, IHttpContextAccessor httpContextAccessor)
+        public Handler(IJwtFactory jwtFactory, IAuthService usersService, IEnumerable<ICustomClaimHandler> claimHandlers, 
+            IOptions<JwtIssuerOptions> jwtOptions, IAutomaticUserCreator automaticUserCreator)
         {
             _jwtFactory = jwtFactory;
             _usersService = usersService;
-            _claimHandlers = claimHandlers;
             _jwtOptions = jwtOptions.Value;
-            _httpContextAccessor = httpContextAccessor;
+            _claimHandlers = claimHandlers;
+            _automaticUserCreator = automaticUserCreator;
         }
 
         public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)
         {
+            var user = await _usersService.FindUserAsync(request.Identity.Username, request.Tenant, cancellation);
+
+            if (user == null)
+            {
+                await _automaticUserCreator.CreateIfAllowedAsync(request.Identity.Username, request.Tenant, cancellation);
+            }
+
             var refreshToken = Guid.NewGuid().ToString().ToLower().Replace("-", "");
 
             await _usersService.UpdateRefreshTokenAsync(request.Identity.Username, request.Tenant, refreshToken, _jwtOptions.RefreshTokenLife, cancellation);
 
-            var user = await _usersService.GetUserWithDependenciesAsync(request.Identity.Username, request.Tenant, cancellation);
+            user = await _usersService.GetUserWithDependenciesAsync(request.Identity.Username, request.Tenant, cancellation);
 
             Log.Information($"Switching domain for user {user.Username}");
 

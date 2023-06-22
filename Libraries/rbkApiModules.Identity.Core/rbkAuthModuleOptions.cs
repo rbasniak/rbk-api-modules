@@ -19,6 +19,21 @@ public class RbkAuthenticationOptions
     internal string _userAvatarPath = "users/images";
     internal Type _customAvatarStorageType = typeof(DefaultAvatarStorageService);
     internal bool _useMockedWindowsAuthentication = false;
+    internal bool _allowUserCreationOnFirstAccess = false;
+    internal string _defaultRoleName = null;
+
+    public RbkAuthenticationOptions AllowUserCreationOnFirstAccess(string roleName)
+    {
+        if (_loginMode != LoginMode.WindowsAuthentication)
+        {
+            throw new NotSupportedException($"Automatic user creation is supported with Windows Authentication only. Call '{nameof(UseLoginWithWindowsAuthentication)}' before calling '{nameof(AllowUserCreationOnFirstAccess)}'");
+        }
+
+        _allowUserCreationOnFirstAccess = true;
+        _defaultRoleName = roleName;
+
+        return this;
+    }
 
     public RbkAuthenticationOptions UseCustomAvatarStorage<T>() where T : IAvatarStorage
     {
@@ -110,13 +125,13 @@ public class RbkAuthenticationOptions
 
         return this;
     }
-    
+
     public RbkAuthenticationOptions UseMockedWindowsAuthentication()
     {
         _useMockedWindowsAuthentication = true;
 
         return this;
-    }
+    } 
 }
 
 public class rbkDefaultClaimOptions
@@ -142,7 +157,7 @@ public class rbkDefaultClaimOptions
         if (memberSelectorExpression != null)
         {
             var property = memberSelectorExpression.Member as PropertyInfo;
-            
+
             if (property != null)
             {
                 property.SetValue(_claimDescriptions, description, null);
@@ -150,14 +165,14 @@ public class rbkDefaultClaimOptions
         }
 
         return this;
-    } 
+    }
 
     public rbkDefaultClaimOptions WithCustomDescriptions(SeedClaimDescriptions descriptions)
     {
         _claimDescriptions = descriptions;
 
         return this;
-    } 
+    }
 }
 
 public class rbkDefaultAdminOptions

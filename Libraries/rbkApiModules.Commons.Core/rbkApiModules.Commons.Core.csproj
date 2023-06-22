@@ -34,7 +34,7 @@
 		<PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.5.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.5.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.5.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="7.0.5" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="7.0.7" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

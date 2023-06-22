@@ -32,6 +32,10 @@ public class DatabaseSeed : DatabaseSeedManager<DatabaseContext>, IDatabaseSeede
 
         context.SaveChanges();
 
-        var temp = context.Set<User>().ToList();
+        var role = context.Add(new Role("Readonly user")).Entity;
+
+        role.AddClaim(context.Set<Claim>().First());
+
+        context.SaveChanges();
     }
 }
