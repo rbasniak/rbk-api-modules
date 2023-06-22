@@ -58,6 +58,9 @@ public class DatabaseSeed: DatabaseSeedManager<DatabaseContext>, IDatabaseSeeder
         adminUnEs.AddClaim(manageUSerRoles, ClaimAccessType.Allow);
         adminUnEs.Confirm();
 
+        var superuserBuzios = new User(buzios.Alias, "superuser", "superuser@buzios.com", "123", "", "Super User", AuthenticationMode.Credentials, JsonSerializer.Deserialize<Dictionary<string, string>>("""{ "phone": "11111111", "management": "MQT/ES/EG" }"""));
+        superuserBuzios.Confirm();
+
         var johnDoeBuzios = new User(buzios.Alias, "john.doe", "john.doe@buzios.com", "123", "", "John Doe", AuthenticationMode.Credentials, JsonSerializer.Deserialize<Dictionary<string, string>>("""{ "phone": "11111111", "management": "MQT/ES/EG" }"""));
         johnDoeBuzios.Confirm();
         var janeDoeBuzios = new User(buzios.Alias, "jane.doe", "jane.doe@buzios.com", "123", "", "Jane Doe", AuthenticationMode.Credentials, JsonSerializer.Deserialize<Dictionary<string, string>>("""{ "phone": "22222222", "management": "MQT/BZ/EP" }"""));
@@ -71,6 +74,7 @@ public class DatabaseSeed: DatabaseSeedManager<DatabaseContext>, IDatabaseSeeder
         starkUnBs.Confirm();
 
 
+        context.Add(superuserBuzios);
         context.Add(adminBuzios);
         context.Add(adminUnEs);
         context.Add(johnDoeBuzios);

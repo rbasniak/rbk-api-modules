@@ -348,6 +348,45 @@ public class LocalUserLoginTests : SequentialTest, IClassFixture<ServerFixture>
         roles.FirstOrDefault(x => x.Value == "CAN_APPROVE_REPORTS").ShouldNotBeNull();
     }
 
+    [FriendlyNamedFact("IT-124C"), Priority(70)]
+    public async Task Local_User_With_Same_Name_of_Superuser_Can_Login()
+    {
+        // Prepare
+        var request = new UserLogin.Request
+        {
+            Username = "superuser",
+            Password = "123",
+            Tenant = "BUZIOS"
+        };
+
+        // Act
+        var response = await _serverFixture.PostAsync<JwtResponse>("api/authentication/login", request, credentials: null);
+
+        // Assert
+        response.ShouldBeSuccess();
+
+        response.Data.ShouldNotBeNull();
+        response.Data.AccessToken.ShouldNotBeNull();
+        response.Data.RefreshToken.ShouldNotBeNull();
+
+        var handler = new JwtSecurityTokenHandler();
+        var tokenData = handler.ReadJwtToken(response.Data.AccessToken);
+
+        var tenant = tokenData.Claims.First(claim => claim.Type == JwtClaimIdentifiers.Tenant).Value;
+        var username1 = tokenData.Claims.First(claim => claim.Type == JwtRegisteredClaimNames.Sub).Value;
+        var username2 = tokenData.Claims.First(claim => claim.Type == System.Security.Claims.ClaimTypes.Name).Value;
+        var displayName = tokenData.Claims.First(claim => claim.Type == JwtClaimIdentifiers.DisplayName).Value;
+        var avatar = tokenData.Claims.First(claim => claim.Type == JwtClaimIdentifiers.Avatar).Value;
+        var roles = tokenData.Claims.Where(claim => claim.Type == JwtClaimIdentifiers.Roles).ToList();
+
+        tenant.ShouldBe("BUZIOS");
+        username1.ShouldBe("superuser");
+        username2.ShouldBe("superuser");
+        displayName.ShouldBe("Super User");
+        avatar.ShouldStartWith("data:image/svg+xml;base64,");
+        roles.Count.ShouldBe(0); 
+    }
+
     /// <summary>
     /// User cannot refresh token with empty data
     /// </summary>
