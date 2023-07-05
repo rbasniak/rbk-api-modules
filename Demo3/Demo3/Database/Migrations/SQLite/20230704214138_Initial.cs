@@ -39,6 +39,20 @@ namespace Demo3.Database.Migrations.SQLite
                 });
 
             migrationBuilder.CreateTable(
+                name: "Projects",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", maxLength: 32, nullable: false),
+                    Code = table.Column<string>(type: "TEXT", maxLength: 16, nullable: false),
+                    Mdb = table.Column<string>(type: "TEXT", maxLength: 24, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Projects", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Tenants",
                 columns: table => new
                 {
@@ -79,7 +93,7 @@ namespace Demo3.Database.Migrations.SQLite
                     Password = table.Column<string>(type: "TEXT", maxLength: 4096, nullable: true),
                     RefreshToken = table.Column<string>(type: "TEXT", maxLength: 128, nullable: true),
                     AuthenticationMode = table.Column<int>(type: "INTEGER", nullable: false),
-                    DisplayName = table.Column<string>(type: "TEXT", maxLength: 32, nullable: true),
+                    DisplayName = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
                     Avatar = table.Column<string>(type: "TEXT", maxLength: 1024, nullable: true),
                     IsConfirmed = table.Column<bool>(type: "INTEGER", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "TEXT", nullable: false),
@@ -206,6 +220,9 @@ namespace Demo3.Database.Migrations.SQLite
         {
             migrationBuilder.DropTable(
                 name: "__SeedHistory");
+
+            migrationBuilder.DropTable(
+                name: "Projects");
 
             migrationBuilder.DropTable(
                 name: "RolesToClaims");
