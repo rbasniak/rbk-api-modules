@@ -363,3 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 /@TestResults/html
 /Demo1/Demo1.Api/wwwroot/_code-generator
+/Demo3/Demo3/integration_test.db
+/.sonarqube/conf

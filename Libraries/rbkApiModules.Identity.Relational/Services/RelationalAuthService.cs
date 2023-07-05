@@ -330,7 +330,7 @@ public class RelationalAuthService: IAuthService
 
     public async Task<string[]> GetAllowedTenantsAsync(string username, CancellationToken cancellation)
     {
-        return await _context.Set<User>().Where(x => x.Username.ToLower() == username.ToLower()).Select(x => x.TenantId).Distinct().ToArrayAsync(cancellation);
+        return await _context.Set<User>().Where(x => x.Username.ToLower() == username.ToLower() && x.TenantId != null).Select(x => x.TenantId).Distinct().ToArrayAsync(cancellation);
     }
 
     public async Task ActivateUserAsync(string tenant, string username, CancellationToken cancellation)
