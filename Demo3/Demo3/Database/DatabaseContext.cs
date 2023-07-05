@@ -3,6 +3,7 @@ using rbkApiModules.Authentication;
 using rbkApiModules.Identity.Core;
 using rbkApiModules.Commons.Relational;
 using rbkApiModules.Identity;
+using Demo3.Models;
 
 namespace Demo3;
 
@@ -20,6 +21,7 @@ public class DatabaseContext : DbContext
     public DbSet<Role> Roles { get; set; }
     public DbSet<Claim> Claims { get; set; }
     public DbSet<Tenant> Tenants { get; set; }
+    public DbSet<Project> Projects { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
