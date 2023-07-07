@@ -3,3 +3,8 @@ dotnet restore
 dotnet build --configuration Release --no-restore
 dotnet pack -c Release -P:IncludeSymbols=true -p:SymbolPackageFormat=snupkg
 dotnet nuget push **/*.nupkg   --api-key oy2emn2o63byscnbdu4qf5  o2xxbszkdexddcqdjqchn6xy --source https://api.nuget.org/v3/index.json 
+
+
+
+add-migration Initial -context DatabaseContext -output Migrations/SQLite -args '--provider sqlite'
+add-migration Initial -context DatabaseContext -output Migrations/Postgres -args '--provider postgres'

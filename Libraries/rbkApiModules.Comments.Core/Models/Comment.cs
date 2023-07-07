@@ -25,6 +25,12 @@ public class Comment : TenantEntity
         Date = DateTime.UtcNow;
     }
 
+    public Comment(Guid id, string tenant, Guid entityId, string username, string message, Guid? parentId):
+        this(tenant, entityId, username, message, parentId)
+    {
+        Id = id;
+    }
+
     public virtual string Username { get; private set; }
 
     public virtual Guid EntityId { get; private set; }

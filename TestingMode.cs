@@ -10,6 +10,7 @@ public static class TestingMode
 			case "Demo2": return DatabaseType.SQLite;
 			case "Demo3": return DatabaseType.SQLite;
 			case "Demo4": return DatabaseType.SQLite;
+			case "Demo5": return DatabaseType.SQLite;
 			default:
 				throw new NotSupportedException();
 		}

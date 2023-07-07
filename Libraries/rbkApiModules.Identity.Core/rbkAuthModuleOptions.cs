@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using Microsoft.AspNetCore.Authentication;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace rbkApiModules.Identity.Core;
@@ -21,6 +22,8 @@ public class RbkAuthenticationOptions
     internal bool _useMockedWindowsAuthentication = false;
     internal bool _allowUserCreationOnFirstAccess = false;
     internal string _defaultRoleName = null;
+    internal List<Action<AuthenticationBuilder>> _extraAuthenticationSchemes = new List<Action<AuthenticationBuilder>>();
+    internal bool _appendAuthenticationSchemes = true;
 
     public RbkAuthenticationOptions AllowUserCreationOnFirstAccess(string roleName)
     {
@@ -38,6 +41,22 @@ public class RbkAuthenticationOptions
     public RbkAuthenticationOptions UseCustomAvatarStorage<T>() where T : IAvatarStorage
     {
         _customAvatarStorageType = typeof(T);
+
+        return this;
+    }
+
+    public RbkAuthenticationOptions AppendAuthenticationSchemes(Action<AuthenticationBuilder>[] authenticationSchemes)
+    {
+        _appendAuthenticationSchemes = true;
+        _extraAuthenticationSchemes = authenticationSchemes.ToList();
+
+        return this;
+    }
+
+    public RbkAuthenticationOptions OverrideAuthenticationSchemes(Action<AuthenticationBuilder>[] authenticationSchemes)
+    {
+        _appendAuthenticationSchemes = false;
+        _extraAuthenticationSchemes = authenticationSchemes.ToList();
 
         return this;
     }

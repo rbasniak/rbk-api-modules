@@ -18,7 +18,12 @@ public sealed class FriendlyNamedFactAttribute : FactAttribute
             }
         }
 
-        DisplayName = $"{code}: " + String.Join(' ', parts);
+        DisplayName = String.Join(' ', parts);
+
+        if (!String.IsNullOrEmpty(code))
+        {
+            DisplayName = $"{code}: {DisplayName}";
+        }
     }
 }
 
@@ -37,6 +42,11 @@ public sealed class FriendlyNamedTheoryAttribute : TheoryAttribute
             }
         }
 
-        DisplayName = $"{code}: " + String.Join(' ', parts);
+        DisplayName = String.Join(' ', parts);
+
+        if (!String.IsNullOrEmpty(code))
+        {
+            DisplayName = $"{code}: {DisplayName}";
+        }
     }
 }
