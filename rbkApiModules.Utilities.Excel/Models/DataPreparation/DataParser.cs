@@ -19,6 +19,30 @@ internal class DataParser
         _sharedString = new ExcelSharedString();
     }
 
+    internal void SanitizeData(ExcelWorkbookModel workbookModel)
+    {
+        foreach (var table in workbookModel.Tables)
+        {
+            for (var headerIndex = 0; headerIndex < table.Header.Data.Length; headerIndex++)
+            {
+                if (!string.IsNullOrEmpty(table.Header.Data[headerIndex]))
+                {
+                    table.Header.Data[headerIndex] = StringSanitizer.RemoveSpecialCharacters(table.Header.Data[headerIndex]);
+                }
+            }
+            foreach (var column in table.Columns)
+            {
+                for (var columnIndex = 0; columnIndex < column.Data.Length; columnIndex++)
+                {
+                    if (!string.IsNullOrEmpty(column.Data[columnIndex]))
+                    {
+                        column.Data[columnIndex] = StringSanitizer.RemoveSpecialCharacters(column.Data[columnIndex]);
+                    }
+                }
+            }
+        }
+    }
+
     internal SharedStringCount GetSharedStringCount()
     {
         return _sharedString.GetSharedStringCount();

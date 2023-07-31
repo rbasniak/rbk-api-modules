@@ -27,7 +27,7 @@ public class ExcelWorkbookModelJSonValidator : AbstractValidator<IExcelWorkbookM
             .Must(ForTableTypeHaveAtLeastOneHeaderAndOneColumn).WithMessage("The workbook model have at least one column with one header")
             .Must(ForTableTypeNotHaveRepeatedHeaderName).WithMessage("Headers inside the same spreadsheet must have unique names")
             .Must(ForTableTypeHaveNumHeadersMustEqualNumColumns).WithMessage("The number of headers must match the number of columns for each individual table")
-            .Must(ForTableTypeHaveCorrectDataTypes).WithMessage("DataTypes must be between 0 and 6");
+            .Must(ForTableTypeHaveCorrectDataTypes).WithMessage("DataTypes must be between 0 and 4");
             // Future Plot Type Validations
     }
 

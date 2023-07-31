@@ -31,6 +31,9 @@ public class SaxLib
                 throw new SafeException("Error creating workbook part");
             }
 
+            // Clean all strings of non encoded caracters
+            parser.SanitizeData(workbookModel);
+
             // Generate all Shared Strings that will be used in all the sheets
             parser.PrepareData(workbookModel);
 
