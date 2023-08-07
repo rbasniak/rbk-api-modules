@@ -3,6 +3,7 @@ using MediatR;
 using rbkApiModules.Commons.Core.Localization;
 using rbkApiModules.Commons.Core;
 using Demo3.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Demo3.Commands
 {
@@ -38,8 +39,8 @@ namespace Demo3.Commands
 
         public class Handler : IRequestHandler<Request, CommandResponse>
         {
-            private readonly DatabaseContext _context;
-            public Handler(DatabaseContext context)
+            private readonly DbContext _context;
+            public Handler(DbContext context)
             {
                 _context = context;
             }
