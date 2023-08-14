@@ -18,7 +18,7 @@ public static class CommonsRelationalBuilder
         {
             Log.Logger.Debug($"TransactionBehavior is being used, so DatabaseTransactionHandler will be enabled and this requires a valid DbContext in the project");
 
-            services.AddTransient<IDatabaseTransactionHandler, DatabaseTransactionHandler>();
+            services.AddScoped<IDatabaseTransactionHandler, DatabaseTransactionHandler>();
         }
 
 

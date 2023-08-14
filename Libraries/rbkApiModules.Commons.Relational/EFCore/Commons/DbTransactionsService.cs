@@ -8,10 +8,12 @@ public class DatabaseTransactionHandler : IDatabaseTransactionHandler
 {
     private readonly DbContext _context;
     private IDbContextTransaction _transaction;
+    public Guid Id;
 
     public DatabaseTransactionHandler(DbContext context)
     {
         _context = context;
+        Id = Guid.NewGuid();
     }
 
     public async Task BeginTransactionAsync()

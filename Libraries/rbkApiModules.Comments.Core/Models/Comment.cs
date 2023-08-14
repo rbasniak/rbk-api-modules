@@ -12,7 +12,7 @@ public class Comment : TenantEntity
 
     }
 
-    public Comment(string tenant, Guid entityId, string username, string message, Guid? parentId)
+    public Comment(string tenant, Guid entityId, string username, string message, Guid? parentId, string metadata = null)
     {
         _children = new HashSet<Comment>();
 
@@ -23,6 +23,11 @@ public class Comment : TenantEntity
         Message = message;
 
         Date = DateTime.UtcNow;
+    }
+    public Comment(string tenant, Guid id, Guid entityId, string username, string message, Guid? parentId, string metadata = null)
+        :this(tenant, entityId, username, message, parentId, metadata)
+    {
+        Id = id;
     }
 
     public Comment(Guid id, string tenant, Guid entityId, string username, string message, Guid? parentId):
@@ -42,6 +47,8 @@ public class Comment : TenantEntity
 
     public virtual DateTime Date { get; private set; }
 
+    public virtual string Metadata{ get; private set; }
+
     public virtual BasicCommentInfo Userdata => _userdata;
 
     public virtual IEnumerable<Comment> Children => _children?.OrderBy(x => x.Date).ToList();
@@ -49,6 +56,11 @@ public class Comment : TenantEntity
     public virtual void SetUserdata(BasicCommentInfo value)
     {
         _userdata = value;
+    }
+
+    public virtual void ForceDate(DateTime date)
+    {
+        Date = date;
     }
 }
 

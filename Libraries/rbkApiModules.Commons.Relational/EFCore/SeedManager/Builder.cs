@@ -24,7 +24,15 @@ public static class SeedBuilder
             if (options._resetOnStartup || TestingEnvironmentChecker.IsTestingEnvironment)
             {
                 context.Database.EnsureDeleted();
-                context.Database.Migrate();
+
+                if (!TestingEnvironmentChecker.IsTestingEnvironment)
+                {
+                    context.Database.Migrate();
+                }
+                else
+                {
+                    context.Database.EnsureCreated();
+                }
             }
 
             if (options._migrateOnStartup)

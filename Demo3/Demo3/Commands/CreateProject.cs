@@ -3,7 +3,6 @@ using MediatR;
 using rbkApiModules.Commons.Core.Localization;
 using rbkApiModules.Commons.Core;
 using Demo3.Models;
-using System.Data.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace Demo3.Commands
