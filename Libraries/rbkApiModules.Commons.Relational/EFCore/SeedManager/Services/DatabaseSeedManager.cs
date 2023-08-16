@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using rbkApiModules.Commons.Core.Utilities;
 
 namespace rbkApiModules.Commons.Relational;
 
@@ -38,7 +39,9 @@ public class DatabaseSeedManager<T> : IDatabaseSeeder where T : DbContext
             {
                 foreach (var kvp in _seed)
                 {
-                    if (kvp.Value.UseInProduction || (!kvp.Value.UseInProduction && !webHostEnvironment.IsProduction()))
+                    if  ((kvp.Value.UseInProduction && webHostEnvironment.IsProduction()) || 
+                        (!kvp.Value.UseInProduction && !webHostEnvironment.IsProduction()) || 
+                        (!kvp.Value.UseInProduction && TestingEnvironmentChecker.IsTestingEnvironment))
                     {
                         if (!context.Set<SeedHistory>().Any(x => x.Id == kvp.Key))
                         {

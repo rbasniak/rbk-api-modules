@@ -37,7 +37,10 @@ public static class SeedBuilder
 
             if (options._migrateOnStartup)
             {
-                context.Database.Migrate();
+                if (!TestingEnvironmentChecker.IsTestingEnvironment)
+                {
+                    context.Database.Migrate();
+                }
             }
 
 
