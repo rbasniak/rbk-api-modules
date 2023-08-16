@@ -787,7 +787,7 @@ public static class CommonsCoreBuilder
 
         #region Swagger
 
-        var xmlPath = Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml");
+        var xmlPath = Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetEntryAssembly().GetName().Name}.xml");
 
         if (options._useDefaultSwaggerOptions)
         {
