@@ -5,7 +5,7 @@
 namespace Demo1.Database.Domain.Migrations
 {
     /// <inheritdoc />
-    public partial class Test : Migration
+    public partial class UserUpdates : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

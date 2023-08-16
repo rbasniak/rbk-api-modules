@@ -15,6 +15,13 @@ using System.IO;
 using Serilog.Formatting.Json;
 using System.Diagnostics;
 using Serilog.Exceptions;
+using Serilog.Sinks.AwsCloudWatch;
+using Amazon.CloudWatchLogs;
+using Amazon.Runtime;
+using Amazon;
+using Amazon.Runtime.CredentialManagement;
+using Serilog.Formatting.Display;
+using System.Reflection;
 
 namespace Demo1.Api;
 
@@ -55,7 +62,7 @@ public class Program
 
                     var analyticsColumnOptions = new Dictionary<string, ColumnWriterBase>
                     {
-                        { "Timestamp", new TimestampColumnWriter(NpgsqlDbType.TimestampTz) },    
+                        { "Timestamp", new TimestampColumnWriter(NpgsqlDbType.TimestampTz) },
                         { "Version", new SinglePropertyColumnWriter("Version", PropertyWriteMethod.ToString, NpgsqlDbType.Text, "l") },
                         { "Identity", new SinglePropertyColumnWriter("Identity", PropertyWriteMethod.ToString, NpgsqlDbType.Text, "l") },
                         { "Username", new SinglePropertyColumnWriter("Username", PropertyWriteMethod.ToString, NpgsqlDbType.Text, "l") },
@@ -81,6 +88,53 @@ public class Program
                         { "Template", new MessageTemplateColumnWriter(NpgsqlDbType.Text) },
                         { "Exception", new ExceptionColumnWriter(NpgsqlDbType.Text) }
                     };
+
+                    var cwTextOptions = new CloudWatchSinkOptions
+                    {
+                        // the name of the CloudWatch Log group for logging
+                        LogGroupName = "cloudwatch-lens-demo-text",
+
+                        // the main formatter of the log event
+                        TextFormatter = new MessageTemplateTextFormatter("[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}"),
+
+                        // other defaults defaults
+                        MinimumLogEventLevel = LogEventLevel.Debug,
+                        BatchSizeLimit = 10,
+                        QueueSizeLimit = 10000,
+                        Period = TimeSpan.FromSeconds(1),
+                        CreateLogGroup = true,
+                        LogStreamNameProvider = new DefaultLogStreamProvider(),
+                        RetryAttempts = 5
+                    };
+
+                    var cwJsonOptions = new CloudWatchSinkOptions
+                    {
+                        // the name of the CloudWatch Log group for logging
+                        LogGroupName = "cloudwatch-lens-demo-structured",
+
+                        // the main formatter of the log event
+                        TextFormatter = new JsonFormatter(renderMessage: true),
+
+                        // other defaults defaults
+                        MinimumLogEventLevel = LogEventLevel.Debug,
+                        BatchSizeLimit = 10,
+                        QueueSizeLimit = 10000,
+                        Period = TimeSpan.FromSeconds(1),
+                        CreateLogGroup = true,
+                        LogStreamNameProvider = new DefaultLogStreamProvider(),
+                        RetryAttempts = 5
+                    };
+
+                    var profile = new CredentialProfile("basic_profile", new CredentialProfileOptions { AccessKey = "access_key", SecretKey = "secret_key" });
+                    profile.Region = RegionEndpoint.EUWest1;
+                    var netSDKFile = new NetSDKCredentialsFile();
+                    netSDKFile.RegisterProfile(profile);
+
+                    AWSCredentials awsCredentials;
+                    new CredentialProfileStoreChain().TryGetAWSCredentials("personal", out awsCredentials);
+
+                    // setup AWS CloudWatch client
+                    var awsClient = new AmazonCloudWatchLogsClient(awsCredentials);
 
                     configuration
                     // .ReadFrom.Configuration(context.Configuration)
@@ -154,8 +208,10 @@ public class Program
                             storeTimestampInUtc: true,
                             batchSize: 1)
 
-                        .WriteTo.Seq("http://localhost:5341/")
-                        ;
+                        // .WriteTo.Seq("http://localhost:5341/")
+
+                        .WriteTo.AmazonCloudWatch(cwTextOptions, awsClient)
+                        .WriteTo.AmazonCloudWatch(cwJsonOptions, awsClient);
 
                     //configuration
                     //    .MinimumLevel.Verbose()
@@ -191,7 +247,10 @@ public class Program
         }
         catch (Exception ex)
         {
-            Log.Fatal(ex, "Host terminated unexpectedly");
+            if (Assembly.GetEntryAssembly().GetName().Name.ToLower() != "ef")
+            {
+                Log.Fatal(ex, "Host terminated unexpectedly");
+            }
 
             return 1;
         }

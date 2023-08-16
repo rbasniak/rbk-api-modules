@@ -787,11 +787,11 @@ public static class CommonsCoreBuilder
 
         #region Swagger
 
-        var xmlPath = Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetEntryAssembly().GetName().Name}.xml");
+        var xmlPath = Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetEntryAssembly().GetName().Name.ToLower()}.xml");
 
         if (options._useDefaultSwaggerOptions)
         {
-            if (!File.Exists(xmlPath))
+            if (!File.Exists(xmlPath) && !xmlPath.EndsWith("ef.xml"))
             {
                 Log.Logger.Fatal("Missing API Documentation file for Swagger: " + xmlPath);
             }

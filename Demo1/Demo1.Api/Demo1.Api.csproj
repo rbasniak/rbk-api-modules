@@ -6,6 +6,7 @@
     <UserSecretsId>b8010c2e-2f86-4416-a3ec-3ef834339c21</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
 	<IsPackable>false</IsPackable>
+	<GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,6 +15,8 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="AWSSDK.CloudWatchLogs" Version="3.7.200.18" />
+	<PackageReference Include="AWSSDK.SecurityToken" Version="3.7.201.13" />
     <PackageReference Include="FluentValidation" Version="11.7.1" />
     <PackageReference Include="LiteDB" Version="5.0.17" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.10" />
@@ -26,6 +29,7 @@
     <PackageReference Include="Serilog" Version="3.0.1" />
     <PackageReference Include="Serilog.AspNetCore" Version="7.0.0" />
     <PackageReference Include="Serilog.Extensions.Logging.File" Version="3.0.0" />
+    <PackageReference Include="Serilog.Sinks.AwsCloudWatch" Version="4.0.178" />
     <PackageReference Include="Serilog.Sinks.Debug" Version="2.0.0" />
     <PackageReference Include="Serilog.Sinks.LiteDB" Version="1.0.29" />
     <PackageReference Include="Serilog.Sinks.Postgresql.Alternative" Version="3.5.0" />
