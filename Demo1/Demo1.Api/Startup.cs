@@ -31,6 +31,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using rbkApiModules.Commons.Core.Utilities;
 using System;
+using System.Diagnostics;
 
 namespace Demo1.Api;
 
@@ -171,10 +172,11 @@ public class Startup
                         var logger = scope.ServiceProvider.GetService<Serilog.ILogger>();
 
                         logger.Fatal(errorHandler.Error, "Exception caught by the global exception handler");
+                        Debug.WriteLine(errorHandler.Error.ToBetterString());
                     }
 
                     await context.Response.WriteAsync(
-                        JsonSerializer.Serialize(new { Errors = new string[] { "Server internal error." } }))
+                        JsonSerializer.Serialize(new string[] { "Server internal error." } ))
                             .ConfigureAwait(false);
                 }
             });

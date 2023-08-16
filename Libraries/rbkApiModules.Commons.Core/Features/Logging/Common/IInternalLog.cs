@@ -7,7 +7,7 @@ public interface IAnalyticsLogger
     ILogger Logger { get; }
 }
 
-public class AnalyticsLogger : IAnalyticsLogger
+public class AnalyticsLogger :   IAnalyticsLogger
 {
     private readonly ILogger _logger;
     public AnalyticsLogger(ILogger logger)

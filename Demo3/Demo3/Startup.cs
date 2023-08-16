@@ -136,7 +136,7 @@ namespace Demo3
                         }
 
                         await context.Response.WriteAsync(
-                            JsonSerializer.Serialize(new { Errors = new string[] { "Server internal error." } }))
+                            JsonSerializer.Serialize(new string[] { "Server internal error." } ))
                                 .ConfigureAwait(false);
                     }
                 });

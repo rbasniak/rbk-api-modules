@@ -148,17 +148,25 @@ public static class CoreAuthenticationBuilder
             ClockSkew = TimeSpan.Zero
         };
 
-        services.AddAuthentication(options =>
+        if (authenticationOptions._appendAuthenticationSchemes)
         {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 
-        }).AddJwtBearer(configureOptions =>
+            }).AddJwtBearer(configureOptions =>
+            {
+                configureOptions.ClaimsIssuer = authOptions[nameof(JwtIssuerOptions.Issuer)];
+                configureOptions.TokenValidationParameters = tokenValidationParameters;
+                configureOptions.SaveToken = true;
+            });
+        }
+
+        foreach (var authenticationScheme in authenticationOptions._extraAuthenticationSchemes)
         {
-            configureOptions.ClaimsIssuer = authOptions[nameof(JwtIssuerOptions.Issuer)];
-            configureOptions.TokenValidationParameters = tokenValidationParameters;
-            configureOptions.SaveToken = true;
-        });
+            authenticationScheme(services.AddAuthentication());
+        }
 
         if (TestingEnvironmentChecker.IsTestingEnvironment && authenticationOptions._loginMode == LoginMode.WindowsAuthentication ||
                 authenticationOptions._useMockedWindowsAuthentication && authenticationOptions._loginMode == LoginMode.WindowsAuthentication)

@@ -793,7 +793,7 @@ public static class CommonsCoreBuilder
         {
             if (!File.Exists(xmlPath))
             {
-                Log.Logger.Fatal("Missing API Documentation file for Swagger");
+                Log.Logger.Fatal("Missing API Documentation file for Swagger: " + xmlPath);
             }
 
             services.AddSwaggerGen(config =>
