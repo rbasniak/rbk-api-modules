@@ -239,16 +239,11 @@ public class RbkApiCoreOptions
     #endregion
 
     #region Swagger
-    public enum HttpProtocol
-    {
-        Http = 0,
-        Https = 1
-    }
 
     internal bool _useDefaultSwaggerOptions = false;
     internal Action<SwaggerGenOptions> _userSwaggerOptions = null;
     internal string _applicationName = "Default";
-    internal HttpProtocol? _forceHttpProtocol = null;
+    internal string _forceSwaggerBaseUrl = null;
 
     public RbkApiCoreOptions UseDefaultSwagger(string applicationName)
     {
@@ -257,9 +252,9 @@ public class RbkApiCoreOptions
         return this;
     }
 
-    public RbkApiCoreOptions UseDefaultSwagger(string applicationName, HttpProtocol forceHttpProtocol)
+    public RbkApiCoreOptions UseDefaultSwagger(string applicationName, string forceSwaggerBaseUrl)
     {
-        _forceHttpProtocol = forceHttpProtocol;
+        _forceSwaggerBaseUrl = forceSwaggerBaseUrl;
         return UseDefaultSwagger(applicationName);
     }
 
@@ -1063,16 +1058,24 @@ public static class CommonsCoreBuilder
 
                 if (options._useDefaultSwaggerOptions || options._userSwaggerOptions != null)
                 {
-                    if (options._pathBase != null)
+                    if (options._forceSwaggerBaseUrl != null)
                     {
-                        var basePath = options._pathBase;
-
                         app.UseSwagger(x =>
                         {
                             x.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
                             {
-                                var httpScheme = options._forceHttpProtocol == null ? httpReq.Scheme : options._forceHttpProtocol.Value.ToString().ToLower();
-                                swaggerDoc.Servers = new List<OpenApiServer> { new OpenApiServer { Url = $"{httpScheme}://{httpReq.Host.Value}{basePath}" } };
+                                swaggerDoc.Servers = new List<OpenApiServer> { new OpenApiServer { Url = options._forceSwaggerBaseUrl } };
+                            });
+                        });
+                    }
+                    else if (options._pathBase != null)
+                    {
+                        var basePath = options._pathBase;
+                        app.UseSwagger(x =>
+                        {
+                            x.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
+                            {
+                                swaggerDoc.Servers = new List<OpenApiServer> { new OpenApiServer { Url = $"{httpReq.Scheme}://{httpReq.Host.Value}{basePath}" } };
                             });
                         });
                     }
