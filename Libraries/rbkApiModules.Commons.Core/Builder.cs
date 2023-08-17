@@ -462,6 +462,20 @@ public class RbkApiCoreOptions
     }
 
     #endregion
+
+    #region PathBase
+
+    internal string _pathBase = null;
+
+    public RbkApiCoreOptions UsePathBase(string pathBase)
+    {
+        if (pathBase == null) throw new ArgumentNullException(nameof(pathBase));
+
+        _pathBase = "/" + pathBase.Trim('/');
+        return this;
+    }
+
+    #endregion
 }
 
 public static class CommonsCoreBuilder
@@ -1035,7 +1049,24 @@ public static class CommonsCoreBuilder
             {
                 Log.Logger.Debug($"Enabling Swagger");
 
-                app.UseSwagger();
+                if (options._useDefaultSwaggerOptions || options._userSwaggerOptions != null)
+                {
+                    if (options._pathBase != null)
+                    {
+                        var basePath = options._pathBase;
+                        app.UseSwagger(x =>
+                        {
+                            x.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
+                            {
+                                swaggerDoc.Servers = new List<OpenApiServer> { new OpenApiServer { Url = $"{httpReq.Scheme}://{httpReq.Host.Value}{basePath}" } };
+                            });
+                        });
+                    }
+                    else
+                    {
+                        app.UseSwagger();
+                    }
+                }
 
                 app.UseSwaggerUI(c =>
                 {
