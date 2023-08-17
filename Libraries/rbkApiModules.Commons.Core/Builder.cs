@@ -1222,6 +1222,15 @@ public static class CommonsCoreBuilder
             }
 
             #endregion
+
+            #region PathBase
+
+            if (options._pathBase != null)
+            {
+                app.UsePathBase(options._pathBase);
+            }
+
+            #endregion
         }
         return app;
     }
