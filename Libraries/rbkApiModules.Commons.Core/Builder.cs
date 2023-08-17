@@ -239,16 +239,28 @@ public class RbkApiCoreOptions
     #endregion
 
     #region Swagger
+    public enum HttpProtocol
+    {
+        Http = 0,
+        Https = 1
+    }
 
     internal bool _useDefaultSwaggerOptions = false;
     internal Action<SwaggerGenOptions> _userSwaggerOptions = null;
     internal string _applicationName = "Default";
+    internal HttpProtocol? _forceHttpProtocol = null;
 
     public RbkApiCoreOptions UseDefaultSwagger(string applicationName)
     {
         _useDefaultSwaggerOptions = true;
         _applicationName = applicationName;
         return this;
+    }
+
+    public RbkApiCoreOptions UseDefaultSwagger(string applicationName, HttpProtocol forceHttpProtocol)
+    {
+        _forceHttpProtocol = forceHttpProtocol;
+        return UseDefaultSwagger(applicationName);
     }
 
     public RbkApiCoreOptions UseCustomSwagger(Action<SwaggerGenOptions> options)
@@ -1054,11 +1066,13 @@ public static class CommonsCoreBuilder
                     if (options._pathBase != null)
                     {
                         var basePath = options._pathBase;
+
                         app.UseSwagger(x =>
                         {
                             x.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
                             {
-                                swaggerDoc.Servers = new List<OpenApiServer> { new OpenApiServer { Url = $"{httpReq.Scheme}://{httpReq.Host.Value}{basePath}" } };
+                                var httpScheme = options._forceHttpProtocol == null ? httpReq.Scheme : options._forceHttpProtocol.Value.ToString().ToLower();
+                                swaggerDoc.Servers = new List<OpenApiServer> { new OpenApiServer { Url = $"{httpScheme}://{httpReq.Host.Value}{basePath}" } };
                             });
                         });
                     }
