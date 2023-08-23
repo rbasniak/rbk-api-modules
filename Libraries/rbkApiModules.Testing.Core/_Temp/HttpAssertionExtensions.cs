@@ -39,11 +39,22 @@ public static class HttpAssertionExtensions
         response.Messages[0].ShouldBe(url);
     }
 
-    public static void ShouldBeSuccess<T>(this HttpResponse<T> response) where T : class
+    public static T ShouldBeSuccess<T>(this HttpResponse<T> response) where T : class
     {
         response.Code.ShouldBe(HttpStatusCode.OK, String.Join(", ", response.Messages));
         response.Data.ShouldNotBeNull($"Expected response of type {typeof(T).Name}, but the response was empty");
         response.Data.ShouldBeOfType<T>($"Expected response of type {typeof(T).Name}, but the response was of type {response.Data.GetType().Name}");
+
+        return response.Data;
+    }
+
+    public static void ShouldBeSuccess<T>(this HttpResponse<T> response, out T result) where T : class
+    {
+        response.Code.ShouldBe(HttpStatusCode.OK, String.Join(", ", response.Messages));
+        response.Data.ShouldNotBeNull($"Expected response of type {typeof(T).Name}, but the response was empty");
+        response.Data.ShouldBeOfType<T>($"Expected response of type {typeof(T).Name}, but the response was of type {response.Data.GetType().Name}");
+
+        result = response.Data;
     }
 
     public static void ShouldBeSuccess(this HttpResponse response)
