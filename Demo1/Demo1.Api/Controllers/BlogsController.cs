@@ -44,7 +44,7 @@ public class BlogsController : BaseController
     {
         var response = await Mediator.Send(data);
 
-        return HttpResponse<PostDetails>(response);
+        return HttpResponse(response);
     }
 
     [HttpPut("posts")]

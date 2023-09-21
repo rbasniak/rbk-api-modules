@@ -23,6 +23,14 @@ using rbkApiModules.Commons.Core.Pipelines;
 using System.Runtime.CompilerServices;
 using rbkApiModules.Commons.Core.Localization;
 using rbkApiModules.Commons.Core.Logging;
+using Microsoft.AspNetCore.Diagnostics;
+using System.Net;
+using System.Text.Json;
+using System.ComponentModel;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
+using rbkApiModules.Commons.Core.CodeGeneration;
+using rbkApiModules.Commons.Core.Utilities.Localization;
 
 [assembly: InternalsVisibleTo("rbkApiModules.Commons.Relational")]
 
@@ -479,6 +487,18 @@ public class RbkApiCoreOptions
         if (pathBase == null) throw new ArgumentNullException(nameof(pathBase));
 
         _pathBase = "/" + pathBase.Trim('/');
+        return this;
+    }
+
+    #endregion
+
+    #region Global error handler
+
+    internal bool _useGlobalErrorHandler = false;
+
+    public RbkApiCoreOptions UseDefaultGlobalErrorHandler()
+    {
+        _useGlobalErrorHandler = true;
         return this;
     }
 
@@ -1023,6 +1043,50 @@ public static class CommonsCoreBuilder
         {
             var options = scope.ServiceProvider.GetService<RbkApiCoreOptions>();
 
+            #region Global error handler
+
+            if (!options._useGlobalErrorHandler)
+            {
+                app.UseExceptionHandler(builder =>
+                {
+                    builder.Run(async context =>
+                    {
+                        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                        context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+
+                        var errorHandler = context.Features.Get<IExceptionHandlerFeature>();
+                        
+                        if (errorHandler != null)
+                        {
+                            var scopeFactory = app.ApplicationServices.GetService<IServiceScopeFactory>();
+
+                            // Must create a new scope because if we have any errors while saving the diagnostics data, the
+                            // invalid data will be kept in the context and EF will tries to save it again
+                            using (var scope = scopeFactory.CreateScope())
+                            {
+                                var logger = scope.ServiceProvider.GetService<Serilog.ILogger>();
+
+                                logger.Fatal(errorHandler.Error, "Exception caught by the global exception handler");
+                            }
+
+                            var environment = scope.ServiceProvider.GetService<IWebHostEnvironment>();
+
+                            var exceptionDetails = environment.IsDevelopment() ? errorHandler.Error.ToBetterString() : null;
+
+                            var localization = scope.ServiceProvider.GetService<ILocalizationService>();
+
+                            var errorMessage = localization != null ? localization.LocalizeString(SharedValidationMessages.Errors.InternalServerError) : "Unexpected internal server error";
+
+                            await context.Response.WriteAsync(
+                                JsonSerializer.Serialize(new ErrorResult {  Errors = new[] { errorMessage }, Exception = exceptionDetails }))
+                                    .ConfigureAwait(false);
+                        }
+                    });
+                });
+            }
+
+            #endregion
+
             #region Response compression
 
             if (options._useDefaultCompression || options._userCompressionOptions != null)
@@ -1279,3 +1343,4 @@ public static class CommonsCoreBuilder
     //    return app;
     //}
 }
+

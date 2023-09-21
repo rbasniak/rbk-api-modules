@@ -1,17 +1,19 @@
-﻿using rbkApiModules.Commons.Core.Auditing;
+﻿using rbkApiModules.Commons.Core;
+using rbkApiModules.Commons.Core.Auditing;
 using System.ComponentModel.DataAnnotations;
 
 namespace Demo1.Models.Domain.Demo;
 
-public class Post : AuditableEntity<Guid>
+public class Post : TenantEntity
 {
     protected Post()
     {
 
     }
 
-    public Post(Blog blog, Author author, string title, string body, DateTime? publishDate = null)
+    public Post(string tenant, Blog blog, Author author, string title, string body, DateTime? publishDate = null)
     {
+        TenantId = tenant;
         Title = title;
         Body = body;
         Author = author;
@@ -20,7 +22,7 @@ public class Post : AuditableEntity<Guid>
     }
 
     [Required]
-    [MinLength(2), MaxLength(128)]
+    [MinLength(2), MaxLength(16)]
     public string Title { get; private set; }
 
     [MinLength(32), MaxLength(4096)]
@@ -29,7 +31,7 @@ public class Post : AuditableEntity<Guid>
     public DateTime? PublishingDate { get; private set; }
 
     [Required]
-    public Guid AuthorId { get; private set; }
+    public Guid? AuthorId { get; private set; }
     public Author Author { get; private set; }
 
     [Required]

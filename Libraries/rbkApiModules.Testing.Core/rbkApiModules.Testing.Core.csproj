@@ -16,6 +16,18 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Attributes\**" />
+	  <Compile Remove="Authentication\**" />
+	  <Compile Remove="Contracts\**" />
+	  <EmbeddedResource Remove="Attributes\**" />
+	  <EmbeddedResource Remove="Authentication\**" />
+	  <EmbeddedResource Remove="Contracts\**" />
+	  <None Remove="Attributes\**" />
+	  <None Remove="Authentication\**" />
+	  <None Remove="Contracts\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<None Include="..\logo.png">
 			<Pack>True</Pack>
 			<PackagePath>\</PackagePath>
@@ -37,12 +49,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\rbkApiModules.Commons.Relational\rbkApiModules.Commons.Relational.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Attributes\" />
-	  <Folder Include="Authentication\" />
-	  <Folder Include="Contracts\" />
 	</ItemGroup>
 
 </Project>

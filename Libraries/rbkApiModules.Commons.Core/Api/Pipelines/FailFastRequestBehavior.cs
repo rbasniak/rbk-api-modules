@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using System.Diagnostics;
 
 namespace rbkApiModules.Commons.Core.Pipelines;
 
@@ -14,6 +15,9 @@ public class FailFastRequestBehavior<TRequest, TResponse> : IPipelineBehavior<TR
     private readonly ILogger<TRequest> _logger;
     private readonly IEnumerable<IValidator> _validators;
     private readonly IHttpContextAccessor _httpContextAccessor;
+
+    private static Type _domainValidatorType;
+    private static bool _isDomainValidatorInitialized;
 
     public FailFastRequestBehavior(IEnumerable<IValidator<TRequest>> validators, IHttpContextAccessor httpContextAccessor, ILogger<TRequest> logger)
     {
@@ -30,11 +34,11 @@ public class FailFastRequestBehavior<TRequest, TResponse> : IPipelineBehavior<TR
         var context = new ValidationContext<object>(request);
 
         // Then serarch for the other validators using the interfaces implemented by the command
-        var interfaces = request.GetType().GetInterfaces().Where(x => !x.FullName.Contains("MediatR"));
+        var requestInterfaces = request.GetType().GetInterfaces().Where(x => !x.FullName.Contains("MediatR"));
 
         var composedValidators = _validators.ToList();
 
-        foreach (var @interface in interfaces)
+        foreach (var @interface in requestInterfaces)
         {
             var ivalidator = typeof(IValidator<>);
             var generic = ivalidator.MakeGenericType(@interface);
@@ -46,10 +50,45 @@ public class FailFastRequestBehavior<TRequest, TResponse> : IPipelineBehavior<TR
             }
         }
 
+
+        if (!_isDomainValidatorInitialized)
+        {
+            _domainValidatorType = AppDomain.CurrentDomain.GetAssemblies()
+               .Where(a => !a.IsDynamic)
+               .SelectMany(a => a.GetTypes())
+               .FirstOrDefault(t => t.FullName.Contains("RelationalDomainEntityValidator"));
+
+            _isDomainValidatorInitialized = true;
+        }
+
+        var validatorsToAdd = new List<IValidator>();
+
+        if (_domainValidatorType != null)
+        {
+            foreach (var validator in composedValidators)
+            {
+
+                var domainValidatorMarker = validator.GetType().GetInterfaces().Where(x => x.FullName.Contains(typeof(IDomainEntityValidator<>).Name)).FirstOrDefault();
+
+                if (domainValidatorMarker == null) continue;
+
+                var domainValidator = Activator.CreateInstance(_domainValidatorType, new object[] { validator });
+
+                _logger.LogCritical("Could not instantiate the RelationalDomainValidator using reflection");
+
+                if (domainValidator != null)
+                {
+                    validatorsToAdd.Add((IValidator)domainValidator);
+                }
+            }
+        }
+
+        composedValidators.InsertRange(0, validatorsToAdd);
+
         composedValidators = composedValidators.DistinctBy(x => x.GetType()).ToList();
 
         var failures = new List<ValidationFailure>();
-            
+
         foreach (var composedValidator in composedValidators)
         {
             Log.Logger.Information("Running validator {validator}", composedValidator.GetType().FullName);
@@ -78,7 +117,7 @@ public class FailFastRequestBehavior<TRequest, TResponse> : IPipelineBehavior<TR
             Log.Logger.Information("Validation pipeline finished for {request}", request.GetType().FullName.Split('.').Last());
 
             return await next();
-        } 
+        }
     }
 
     private static Task<TResponse> Errors(IEnumerable<ValidationFailure> failures)

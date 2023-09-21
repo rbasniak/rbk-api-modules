@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using rbkApiModules.Commons.Core.Localization;
 using Serilog;
+using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 
@@ -77,25 +78,40 @@ public class AngularCodeGenerator
         var index = 0;
 
         // Select the 1st level models (inputs for endpoints)
-        foreach (var model in controllers.SelectMany(x => x.Endpoints).Where(x => x.ReturnType != null).Select(x => x.ReturnType))
-        {
-            if (!models.Any(x => x.Name == model.Name) && !CodeGenerationUtilities.IsNative(new TypeInfo(model.Type).Type))
-            {
-                Log.Information("Adding model to the list of models that will have a .ts file (from return types): {model}", model.Name);
-                models.Add(model);
-            }
-            index++;
-        }
 
-        // Select the 1st level models (return from endpoints)
-        foreach (var model in controllers.SelectMany(x => x.Endpoints).Where(x => x.InputType != null).Select(x => x.InputType))
+        foreach (var controller in controllers)
         {
-            if (!models.Any(x => x.Name == model.Name) && !CodeGenerationUtilities.IsNative(new TypeInfo(model.Type).Type))
+            foreach (var endpoint in controller.Endpoints)
             {
-                Log.Information("Adding model to the list of models that will have a .ts file (from input types): {model}", model.Name);
-                models.Add(model);
+                if (endpoint.ReturnType != null)
+                {
+                    var model = endpoint.ReturnType;
+
+                    if (!models.Any(x => x.Name == model.Name) && !CodeGenerationUtilities.IsNative(new TypeInfo(model.Type).Type))
+                    {
+                        Log.Information("Adding model to the list of models that will have a .ts file (from return types): {model}", model.Name);
+                        models.Add(model);
+
+                        if (model.Name == "BaseResponse") Debugger.Break();
+                    }
+                    index++;
+                }
+
+                if (endpoint.InputType != null)
+                {
+                    var model = endpoint.InputType;
+
+                    if (!models.Any(x => x.Name == model.Name) && !CodeGenerationUtilities.IsNative(new TypeInfo(model.Type).Type))
+                    {
+                        Log.Information("Adding model to the list of models that will have a .ts file (from return types): {model}", model.Name);
+                        models.Add(model);
+
+                        if (model.Name == "BaseResponse") Debugger.Break();
+                    }
+                    index++;
+                }
             }
-        }
+        }  
 
         // Recursively include other used models for ts code generation
         Log.Information("Recursivelly finding all other associated models");
@@ -123,6 +139,8 @@ public class AngularCodeGenerator
 
                             foundNewModel = true;
                             models.Add(propertyTypeInfo);
+
+                            if (propertyTypeInfo.Name == "BaseResponse") Debugger.Break();
                         }
                     }
                 }
@@ -163,6 +181,8 @@ public class AngularCodeGenerator
                 if (include)
                 {
                     models.Add(new TypeInfo(modelType));
+
+                    if (modelType.Name == "BaseResponse") Debugger.Break();
                 }
             }
         }

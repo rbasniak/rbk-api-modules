@@ -26,3 +26,15 @@ TO IMPLEMENT
 
 - new log/diagnostics/analytics with the option for sql/postgres/sqlite/json text file
 - localization
+
+------------
+CHANGES
+------------
+
+v7.1.00
+  - Remover error handler customizado no `Startup` e usar a nova opção `UseDefaultGlobalErrorHandler()`
+  - No `Startup.Configure()` o `app.UseRbkCoreSetup()` precisa ser o primeiro a ser chamado 
+  - Erros agora retornam detalhes da exceção quando em debug
+  - Foi adicionado novo behavior de validação para classes que implementa `IDomanEntityValidator<T>`
+  - Agora os erros retornam um objeto com `Errors` ao invés de diretamente um array com as mensagens de erro (precisa das lib do front na versão X.X.X)
+  - Nos metodos de leitura de resposta nos testes, agora o parametro de saida virou `out`

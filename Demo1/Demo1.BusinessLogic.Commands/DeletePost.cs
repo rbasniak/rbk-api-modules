@@ -12,7 +12,7 @@ namespace Demo1.BusinessLogic.Commands;
 
 public class DeletePost
 {
-    public class Request : CreatePost.Request, IHasReadingModel<Models.Read.Post>
+    public class Request: IRequest<CommandResponse>, IHasReadingModel<Models.Read.Post>
     {
         public new OperationType Mode => OperationType.Remove;
 
@@ -27,7 +27,7 @@ public class DeletePost
         }
     }
 
-    public class Handler : IRequestHandler<Request, AuditableCommandResponse>
+    public class Handler : IRequestHandler<Request, CommandResponse>
     {
         private readonly DatabaseContext _context;
 
@@ -36,7 +36,7 @@ public class DeletePost
             _context = context;
         }
 
-        public async Task<AuditableCommandResponse> Handle(Request request, CancellationToken cancellation)
+        public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)
         {
             var post = await _context.Posts
                 .FirstAsync(x => x.Id == request.Id);
@@ -45,7 +45,7 @@ public class DeletePost
 
             await _context.SaveChangesAsync();
 
-            return AuditableCommandResponse.Success(post, post.Id, post.BlogId);
+            return CommandResponse.Success();
         }
     }
 }

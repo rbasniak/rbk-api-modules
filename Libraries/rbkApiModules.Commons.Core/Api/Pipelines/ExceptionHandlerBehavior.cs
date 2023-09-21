@@ -46,7 +46,7 @@ public class ExceptionHandlerBehavior<TRequest, TResponse> : IPipelineBehavior<T
 
             var response = (TResponse)Activator.CreateInstance(typeof(TResponse), new object[0]);
 
-            response.AddHandledError(ex.Message);
+            response.AddHandledError(ex, ex.Message);
 
             return response;
         }
@@ -56,7 +56,7 @@ public class ExceptionHandlerBehavior<TRequest, TResponse> : IPipelineBehavior<T
 
             var response = (TResponse)Activator.CreateInstance(typeof(TResponse), new object[0]);
 
-            response.AddUnhandledError(_localization.LocalizeString(SharedValidationMessages.Errors.InternalServerError));
+            response.AddUnhandledError(ex, _localization.LocalizeString(SharedValidationMessages.Errors.InternalServerError));
 
             return response;
         }

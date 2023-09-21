@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Demo1.Models.Domain.Demo;
 
-public class Blog : BaseEntity
+public class Blog : TenantEntity
 {
     private HashSet<Post> _posts;
 
@@ -12,10 +12,11 @@ public class Blog : BaseEntity
 
     }
 
-    public Blog(string title)
+    public Blog(string tenant, string title)
     {
         _posts = new HashSet<Post>();
 
+        TenantId = tenant;
         Title = title;
         Description = string.Empty;
     }

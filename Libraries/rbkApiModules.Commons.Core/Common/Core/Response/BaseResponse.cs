@@ -21,11 +21,11 @@ public class BaseResponse
 
     public CommandStatus Status { get; set; }
 
-    public void AddUnhandledError(string message)
+    public void AddUnhandledError(Exception exception, string message)
     {
         Status = CommandStatus.HasUnhandledError;
 
-        AddError(ValidationErrorCodes.UNHANDLED, message);
+        AddError(exception, ValidationErrorCodes.UNHANDLED, message);
     }
 
     public void AddUnhandledError(Exception exception)
@@ -33,7 +33,7 @@ public class BaseResponse
         Status = CommandStatus.HasUnhandledError;
 
         // TODO: depending on the scenario, might not be interesting to expose this to the client
-        AddError(ValidationErrorCodes.UNHANDLED, exception.ToBetterString());
+        AddError(exception, ValidationErrorCodes.UNHANDLED, exception.ToBetterString());
     }
 
     public void AddHandledError(string code, string message)
@@ -43,21 +43,21 @@ public class BaseResponse
             Status = CommandStatus.HasHandledError;
         }
 
-        AddError(code, message);
+        AddError(exception: null, code, message);
     }
 
-    public void AddHandledError(string message)
+    public void AddHandledError(Exception exception, string message)
     {
         if (Status != CommandStatus.HasUnhandledError)
         {
             Status = CommandStatus.HasHandledError;
         }
 
-        AddError(ValidationErrorCodes.BAD_REQUEST, message);
+        AddError(exception, ValidationErrorCodes.BAD_REQUEST, message);
     }
 
-    private void AddError(string code, string message)
+    private void AddError(Exception exception, string code, string message)
     {
-        _messages.Add(new ErrorMessage(code, message));
+        _messages.Add(new ErrorMessage(exception, code, message));
     }
 }

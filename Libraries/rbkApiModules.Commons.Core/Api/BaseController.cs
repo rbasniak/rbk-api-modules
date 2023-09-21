@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Hosting;
 using rbkApiModules.Commons.Core.Localization;
 using rbkApiModules.Commons.Core.Utilities.Localization;
 using Serilog;
@@ -14,16 +16,18 @@ namespace rbkApiModules.Commons.Core;
 public class BaseController : ControllerBase
 {
     private IMapper _mapper;
-    private IMemoryCache _cache;
-    private IMediator _mediator;
     private ILogger _logger;
+    private IMediator _mediator;
+    private IMemoryCache _cache;
+    private IWebHostEnvironment _environment;
     private ILocalizationService _localization;
 
-    protected IMediator Mediator => _mediator ??= HttpContext.RequestServices.GetService(typeof(IMediator)) as IMediator;
+    protected ILogger Logger => _logger;
+    protected IWebHostEnvironment Environment => _environment ??= HttpContext.RequestServices.GetService(typeof(IWebHostEnvironment)) as IWebHostEnvironment;
     protected IMapper Mapper => _mapper ??= HttpContext.RequestServices.GetService(typeof(IMapper)) as IMapper;
+    protected IMediator Mediator => _mediator ??= HttpContext.RequestServices.GetService(typeof(IMediator)) as IMediator;
     protected IMemoryCache Cache => _cache ??= HttpContext.RequestServices.GetService(typeof(IMemoryCache)) as IMemoryCache;
     protected ILocalizationService Localization => _localization ??= HttpContext.RequestServices.GetService(typeof(ILocalizationService)) as ILocalizationService;
-    protected ILogger Logger => _logger;
 
     public BaseController()
     {
@@ -53,7 +57,7 @@ public class BaseController : ControllerBase
                 {
                     if (ex.InnerException is SafeException safeException1)
                     {
-                        response.AddHandledError(ex.InnerException.Message);
+                        response.AddHandledError(ex.InnerException, ex.InnerException.Message);
 
                         if (safeException1.ShouldBeLogged)
                         {
@@ -68,7 +72,7 @@ public class BaseController : ControllerBase
                         {
                             if (ex.InnerException.InnerException is SafeException safeException2)
                             {
-                                response.AddHandledError(ex.InnerException.InnerException.Message);
+                                response.AddHandledError(ex.InnerException.InnerException, ex.InnerException.InnerException.Message);
 
                                 if (safeException2.ShouldBeLogged)
                                 {
@@ -81,7 +85,7 @@ public class BaseController : ControllerBase
                     }
                 }
 
-                response.AddUnhandledError(_localization.LocalizeString(SharedValidationMessages.Errors.InternalServerError));
+                response.AddUnhandledError(ex, Localization.LocalizeString(SharedValidationMessages.Errors.InternalServerError));
 
                 _logger.Fatal(ex, "AutoMapper exception was thrown while mapping results in an endpoint");
 
@@ -91,7 +95,7 @@ public class BaseController : ControllerBase
             {
                 _logger.Fatal(ex, "Exception was thrown while mapping results in an endpoint");
 
-                response.AddUnhandledError(_localization.LocalizeString(SharedValidationMessages.Errors.InternalServerError));
+                response.AddUnhandledError(ex, Localization.LocalizeString(SharedValidationMessages.Errors.InternalServerError));
 
                 return HttpErrorResponse(response);
             }
@@ -135,6 +139,17 @@ public class BaseController : ControllerBase
     private ActionResult HttpErrorResponse(BaseResponse response)
     {
         var messages = response.Errors.Select(x => x.Message).ToArray();
+        var exceptions = response.Errors
+            .Where(x => x.Exception != null)
+            .Select(x => x.Message + ": \r\n\r\n" +  x.Exception.ToBetterString());
+
+        var exceptionDetails = String.Join("\r\n ------------------------------------------------------------------------------------------------------------------ \r\n", exceptions);
+
+        var errorResult = new ErrorResult
+        {
+            Errors = messages,
+            Exception = Environment.IsDevelopment() ? exceptionDetails : null,
+        };
 
         switch (response.Status)
         {
@@ -143,26 +158,26 @@ public class BaseController : ControllerBase
                 {
                     return new ContentResult()
                     {
-                        Content = JsonSerializer.Serialize(messages),
+                        Content = JsonSerializer.Serialize(errorResult),
                         StatusCode = (int)HttpStatusCode.Forbidden
                     };
                 }
                 else if (response.Errors.Any(x => x.Code == ValidationErrorCodes.UNAUTHORIZED))
                 {
-                    return NotFound(messages);
+                    return NotFound(errorResult);
                 }
                 else
                 {
-                    return BadRequest(messages);
+                    return BadRequest(errorResult);
                 }
             case CommandStatus.HasUnhandledError:
                 if (HttpContext.Request.Method.ToUpper() == "GET")
                 {
-                    return StatusCode(500, messages);
+                    return StatusCode(500, errorResult);
                 }
                 else
                 {
-                    return BadRequest(messages);
+                    return BadRequest(errorResult);
                 }
             default:
                 throw new ArgumentException("Unknow error status code.");

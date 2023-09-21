@@ -2,6 +2,7 @@
 using System.Net;
 using System.Text;
 using System.Text.Json;
+using rbkApiModules.Commons.Core;
 
 namespace rbkApiModules.Testing.Core;
 
@@ -59,7 +60,16 @@ public static class HttpCallsExtensions
             {
                 if (!String.IsNullOrEmpty(responseBodyData))
                 {
-                    result.Messages = JsonSerializer.Deserialize<string[]>(responseBodyData);
+                    var errorResult = JsonSerializer.Deserialize<ErrorResult>(responseBodyData, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    if (errorResult != null)
+                    {
+                        result.Messages = errorResult.Errors;
+                    }
+                    else
+                    {
+                        result.Messages = new string[] { responseBodyData };
+                    }
                 }
             }
 
@@ -99,7 +109,16 @@ public static class HttpCallsExtensions
             {
                 if (!String.IsNullOrEmpty(responseBodyData))
                 {
-                    result.Messages = JsonSerializer.Deserialize<string[]>(responseBodyData);
+                    var errorResult = JsonSerializer.Deserialize<ErrorResult>(responseBodyData, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    if (errorResult != null)
+                    {
+                        result.Messages = errorResult.Errors;
+                    }
+                    else
+                    {
+                        result.Messages = new string[] { responseBodyData };
+                    }
                 }
             }
 
@@ -141,7 +160,57 @@ public static class HttpCallsExtensions
             {
                 if (!String.IsNullOrEmpty(responseBodyData))
                 {
-                    result.Messages = JsonSerializer.Deserialize<string[]>(responseBodyData);
+                    var errorResult = JsonSerializer.Deserialize<ErrorResult>(responseBodyData, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    if (errorResult != null)
+                    {
+                        result.Messages = errorResult.Errors;
+                    }
+                    else
+                    {
+                        result.Messages = new string[] { responseBodyData };
+                    }
+                }
+            }
+
+            return result;
+        }
+    }
+
+    public async static Task<HttpResponse> PutAsync(this BaseServerFixture fixture, string url, object body, string credentials)
+    {
+        var result = new HttpResponse();
+
+        using (var httpClient = fixture.Server.CreateClient())
+        {
+            if (credentials != null)
+            {
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", credentials);
+            }
+
+            var response = await httpClient.PutAsync(url, new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json"));
+
+            result.Code = response.StatusCode;
+
+            var responseBodyData = await response.Content.ReadAsStringAsync();
+
+            if (response.IsSuccessStatusCode)
+            {
+            }
+            else
+            {
+                if (!String.IsNullOrEmpty(responseBodyData))
+                {
+                    var errorResult = JsonSerializer.Deserialize<ErrorResult>(responseBodyData, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    if (errorResult != null)
+                    {
+                        result.Messages = errorResult.Errors;
+                    }
+                    else
+                    {
+                        result.Messages = new string[] { responseBodyData };
+                    }
                 }
             }
 
@@ -187,7 +256,16 @@ public static class HttpCallsExtensions
             {
                 if (!String.IsNullOrEmpty(responseBodyData))
                 {
-                    result.Messages = JsonSerializer.Deserialize<string[]>(responseBodyData);
+                    var errorResult = JsonSerializer.Deserialize<ErrorResult>(responseBodyData, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    if (errorResult != null)
+                    {
+                        result.Messages = errorResult.Errors;
+                    }
+                    else
+                    {
+                        result.Messages = new string[] { responseBodyData };
+                    }
                 }
             }
 
@@ -220,7 +298,16 @@ public static class HttpCallsExtensions
             {
                 if (!String.IsNullOrEmpty(responseBodyData))
                 {
-                    result.Messages = JsonSerializer.Deserialize<string[]>(responseBodyData);
+                    var errorResult = JsonSerializer.Deserialize<ErrorResult>(responseBodyData, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    if (errorResult != null)
+                    {
+                        result.Messages = errorResult.Errors;
+                    }
+                    else
+                    {
+                        result.Messages = new string[] { responseBodyData };
+                    }
                 }
             }
 
@@ -257,7 +344,16 @@ public static class HttpCallsExtensions
             {
                 if (!String.IsNullOrEmpty(responseBodyData))
                 {
-                    result.Messages = JsonSerializer.Deserialize<string[]>(responseBodyData);
+                    var errorResult = JsonSerializer.Deserialize<ErrorResult>(responseBodyData, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    if (errorResult != null)
+                    {
+                        result.Messages = errorResult.Errors;
+                    }
+                    else
+                    {
+                        result.Messages = new string[] { responseBodyData };
+                    }
                 }
             }
 

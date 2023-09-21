@@ -22,6 +22,7 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\Demo1.Database.Domain\Demo1.Database.Domain.csproj" />
 	  <ProjectReference Include="..\Demo1.Database.Read\Demo1.Database.Read.csproj" />
+	  <ProjectReference Include="..\Demo1.DataTransfer\Demo1.DataTransfer.csproj" />
 	  <ProjectReference Include="..\Demo1.Models.Domain\Demo1.Models.Domain.csproj" />
 	  <ProjectReference Include="..\Demo1.Models.Read\Demo1.Models.Read.csproj" />
 	</ItemGroup>

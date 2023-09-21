@@ -1,7 +1,7 @@
 ﻿
 namespace rbkApiModules.Commons.Core;
 
-public sealed record ErrorMessage(string Code, string Message): IEquatable<ErrorMessage>
+public sealed record ErrorMessage(Exception Exception, string Code, string Message): IEquatable<ErrorMessage>
 {
     public bool Equals(ErrorMessage other) =>
         Code != null && other.Code != null 

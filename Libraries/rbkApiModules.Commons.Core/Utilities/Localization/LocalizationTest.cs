@@ -142,6 +142,9 @@ public class SharedValidationMessages: ILocalizedResource
         [Description("E-mail is invalid")] InvalidEmailFormat,
         [Description("Id is invalid")] InvalidIdFormat,
         [Description("'{PropertyName}' not found in database")] EntityNotFoundInDatabase,
+        [Description("Request expected to require authentication")] RequestExpectedToRequireAuthentication,
+        [Description("Request expected to be authenticated")] RequestExpectedToBeAuthenticated,
+        [Description("Possible unauthorized access")] PossibleUnauthorizedAccess,
     }
 
     public enum Errors
