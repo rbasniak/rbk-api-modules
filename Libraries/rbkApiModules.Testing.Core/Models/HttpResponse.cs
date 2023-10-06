@@ -11,6 +11,7 @@ public class HttpResponse
 
     public HttpStatusCode Code { get; set; }
     public string[] Messages { get; set; }
+    public bool IsSuccess => Code == HttpStatusCode.OK || Code == HttpStatusCode.NoContent;
 
     public override string ToString()
     {

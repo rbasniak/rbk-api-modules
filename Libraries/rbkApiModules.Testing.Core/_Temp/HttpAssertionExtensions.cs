@@ -41,7 +41,7 @@ public static class HttpAssertionExtensions
 
     public static void ShouldBeSuccess<T>(this HttpResponse<T> response, out T result) where T : class
     {
-        response.Code.ShouldBe(HttpStatusCode.OK, String.Join(", ", response.Messages));
+        response.IsSuccess.ShouldBe(true, String.Join(", ", response.Messages));
         response.Data.ShouldNotBeNull($"Expected response of type {typeof(T).Name}, but the response was empty");
         response.Data.ShouldBeOfType<T>($"Expected response of type {typeof(T).Name}, but the response was of type {response.Data.GetType().Name}");
 
@@ -50,7 +50,7 @@ public static class HttpAssertionExtensions
 
     public static void ShouldBeSuccess(this HttpResponse response)
     {
-        response.Code.ShouldBe(HttpStatusCode.OK);
+        response.IsSuccess.ShouldBeTrue();
     }
 
     public static void ShouldBeForbidden(this HttpResponse response)
