@@ -7,10 +7,10 @@ public static class TestingMode
 		switch (project)
 		{
 			case "Demo1": return DatabaseType.Native;
-			case "Demo2": return DatabaseType.SQLite;
-			case "Demo3": return DatabaseType.SQLite;
-			case "Demo4": return DatabaseType.SQLite;
-			case "Demo5": return DatabaseType.SQLite;
+			case "Demo2": return DatabaseType.Native;
+			case "Demo3": return DatabaseType.Native;
+			case "Demo4": return DatabaseType.Native;
+			case "Demo5": return DatabaseType.Native;
 			default:
 				throw new NotSupportedException();
 		}

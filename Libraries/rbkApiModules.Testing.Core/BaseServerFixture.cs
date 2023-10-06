@@ -82,6 +82,8 @@ public class BaseServerFixture : IDisposable
 
     public string AuthenticationMode { get; private set; }
 
+    public virtual bool CleanUpTestDatabases => true;
+
     public virtual string MockedWindowsAuthenticationHeaderName => "UserId";
     public virtual string MockedWindowsAuthenticationSchemeName => "TestScheme";
 
@@ -187,6 +189,11 @@ public class BaseServerFixture : IDisposable
 
     public void Dispose()
     {
+        if (CleanUpTestDatabases == true)
+        {
+            Context.Database.EnsureDeleted();
+        }
+
         Server.Dispose();
     }
 
