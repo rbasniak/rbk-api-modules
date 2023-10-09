@@ -136,6 +136,7 @@ public class SharedValidationMessages: ILocalizedResource
     public enum Common
     {
         [Description("The field '{PropertyName}' cannot be empty")] FieldCannotBeEmpty,
+        [Description("The field '{PropertyName}' already exists in the database")] FieldValueAlreadyUsedInDatabase,
         [Description("The field '{PropertyName}' cannot be null")] FieldCannotBeNull,
         [Description("The field '{PropertyName}' must have between {0} and {1} characters")] FieldMustHaveLengthBetweenMinAndMax,
         [Description("The field '{PropertyName}' must have {0} characters")] FieldMustHaveFixedLength,

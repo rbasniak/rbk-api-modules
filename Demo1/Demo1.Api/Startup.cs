@@ -113,6 +113,7 @@ public class Startup
             .UseHttpContextAccessor()
             .UseStaticFiles()
             .SuppressPipeline(typeof(CqrsReplicaBehavior<,>))
+            .UseDefaultGlobalErrorHandler()
             //.UseSimpleCqrs(options => options
             //    .ForType<Models.Read.Post, CqrsRelationalStore>()
             //    .ForType<Models.Read.Blog, CqrsInMemoryStore>((services) => {
@@ -151,47 +152,19 @@ public class Startup
 
     public void Configure(IApplicationBuilder app)
     {
+        app.UseRbkApiCoreSetup();
+
         app.UseSerilogRequestLogging();
-
-        app.UseExceptionHandler(builder =>
-        {
-            builder.Run(async context =>
-            {
-                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
-
-                var errorHandler = context.Features.Get<IExceptionHandlerFeature>();
-                if (errorHandler != null)
-                {
-                    var scopeFactory = app.ApplicationServices.GetService<IServiceScopeFactory>();
-
-                    // Must create a new scope because if we have any errors while saving the diagnostics data, the
-                    // invalid data will be kept in the context and EF will tries to save it again
-                    using (var scope = scopeFactory.CreateScope())
-                    {
-                        var logger = scope.ServiceProvider.GetService<Serilog.ILogger>();
-
-                        logger.Fatal(errorHandler.Error, "Exception caught by the global exception handler");
-                        Debug.WriteLine(errorHandler.Error.ToBetterString());
-                    }
-
-                    await context.Response.WriteAsync(
-                        JsonSerializer.Serialize(new string[] { "Server internal error." } ))
-                            .ConfigureAwait(false);
-                }
-            });
-        });
 
         app.UseMiddleware<RequestContextLoggerMiddleware>();
 
-        app.UseRbkApiCoreSetup();
 
         app.SetupDatabase<DatabaseContext>(options => options
             .MigrateOnStartup()
         );
 
         app.SetupDatabase<ReadDatabaseContext>(options => options
-            .MigrateOnStartup() 
+            .MigrateOnStartup()
         );
 
         app.SetupRbkAuthenticationClaims(options => options

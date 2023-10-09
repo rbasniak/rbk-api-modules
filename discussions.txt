@@ -1,23 +1,3 @@
----------------
-DECISIONS MADE
----------------
-
-- tenant to take place of domain
-- library will support 1 db with multiple tenants or single db per tenant in a mixed scenario (configuration based) *** to be implemented
-- claims are application wide in general, but there's also the possibility to create tenant specific claims
-- roles can be either tenant wide or application wide
-    * tenant roles will override application wide roles, and there will be a flag indicating it
-    * global admin can manage application wide roles and local admins can manage tenant wide roles
-- users are tenant wide and if needed, are duplicated in other tenants
-- log/analytics/diagnostics will not be stored into separated databases, we'll use structured json logs instead
-- user and session data will not be get from IHttpContextAccessor anymore, this information will be injected in a BaseCommand
-- localization should be dynamic, allowing it to be setup at initialization and override for each request
-- validations will be able to return an error code together with the message, enabling better handling by the BaseController
-
------------
-TO DISCUSS
------------
-
 -------------
 TO IMPLEMENT
 -------------
@@ -32,13 +12,24 @@ CHANGES
 ------------
 
 v7.1.0
-  - Remover error handler customizado no `Startup` e usar a nova opção `UseDefaultGlobalErrorHandler()`
-  - No `Startup.Configure()` o `app.UseRbkCoreSetup()` precisa ser o primeiro a ser chamado 
-  - Erros agora retornam detalhes da exceção quando em debug
-  - Foi adicionado novo behavior de validação para classes que implementa `IDomanEntityValidator<T>`
-  - Agora os erros retornam um objeto com `Errors` ao invés de diretamente um array com as mensagens de erro (precisa das lib do front na versão X.X.X)
-  - Nos metodos de leitura de resposta nos testes, agora o parametro de saida virou `out`
+  NOVIDADES
+	- Erros agora retornam detalhes da exceção quando em debug
+	- Foi adicionado novo behavior de validação para classes que implementa `IDomanEntityValidator<T>` para validações 
+	  automáticas baseada nos data annotations dos modelos de domínio
+  BREAKING CHANGES
+	- Remover error handler customizado no `Startup` e usar a nova opção `UseDefaultGlobalErrorHandler()`
+	- No `Startup.Configure()` o `app.UseRbkCoreSetup()` precisa ser o primeiro a ser chamado 
+	- Preicsa da lib de front na versão 16.3.0 ou superior
+	- No metodo de leitura de resposta nos testes `.ShouldBeSuccess`, agora o parametro de saida virou `out`
 
 v7.1.1
-  - .NET atualizado para 7.0.11  
-  - É necessário incluir um guid nos bancos de teste no startup de cada projeto.
+  NOVIDADES
+    - .NET atualizado para 7.0.11  
+  BREAKING CHANGES
+    - É necessário incluir um guid no nome dos bancos de teste no startup de cada projeto (ver Proteus).
+
+v.7.1.2
+  NOVIDADES
+    - Bug fix on Code Generation
+  BREKING CHANGES
+    - Nenhuma :)

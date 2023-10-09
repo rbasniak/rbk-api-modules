@@ -167,6 +167,8 @@ public class AngularCodeGenerator
 
         foreach (var assembly in loadedAssemblies)
         {
+            if (assembly.GetName().Name == "Microsoft.IdentityModel.Protocols.OpenIdConnect") continue;
+
             var modelTypes = (assembly.GetTypes()
                 .Where(myType => ((myType.IsClass && !myType.IsAbstract) || myType.IsEnum)
                         && myType.HasAttribute<ForceTypescriptModelGenerationAttribute>()))
