@@ -20,6 +20,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\Libraries\rbkApiModules.Commons.Relational\rbkApiModules.Commons.Relational.csproj" />
 	  <ProjectReference Include="..\Demo1.Database.Domain\Demo1.Database.Domain.csproj" />
 	  <ProjectReference Include="..\Demo1.Database.Read\Demo1.Database.Read.csproj" />
 	  <ProjectReference Include="..\Demo1.DataTransfer\Demo1.DataTransfer.csproj" />

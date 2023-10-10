@@ -45,7 +45,7 @@ public class UpdatePost
                 .Include(x => x.Author)
                 .FirstAsync(x => x.Id == request.Id);
 
-            post.Update(request.Title, request.Body);
+            post.Update(request.Title, request.Body, request.UniqueInApplication, request.UniqueInTenant);
 
             await _context.SaveChangesAsync();
 

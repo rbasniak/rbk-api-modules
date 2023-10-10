@@ -4,7 +4,7 @@ using Demo1.DataTransfer;
 using Demo1.Models.Domain.Demo;
 using rbkApiModules.Faqs.Core;
 
-namespace rbkApiModules.Demo1.Tests.Integration.Faqs;
+namespace rbkApiModules.Demo1.Tests.Integration.DomainValidations;
 
 [TestCaseOrderer(PriorityOrderer.Name, PriorityOrderer.Assembly)]
 public class IDomainEntityValidator_Tests : SequentialTest, IClassFixture<ServerFixture>
@@ -57,6 +57,8 @@ public class IDomainEntityValidator_Tests : SequentialTest, IClassFixture<Server
         {
             Title = "",
             Body = "asdfgasdfgasdfgasdfgasdfgasdfgasdfgasdfg",
+            UniqueInTenant = "TenantValue1",
+            UniqueInApplication = "ApplicationValue1",
             AuthorId = _author,
             BlogId = _blogFromTenant1,
         };
@@ -65,7 +67,7 @@ public class IDomainEntityValidator_Tests : SequentialTest, IClassFixture<Server
         var response = await _serverFixture.PostAsync("api/blogs/posts", request, credentials: _userFromTenant1);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'Title' is required");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'Título' is required");
     }
 
     [FriendlyNamedFact("IT-P020"), Priority(20)]
@@ -76,6 +78,8 @@ public class IDomainEntityValidator_Tests : SequentialTest, IClassFixture<Server
         {
             Title = "a",
             Body = "a",
+            UniqueInTenant = "TenantValue1",
+            UniqueInApplication = "ApplicationValue1",
             AuthorId = _author,
             BlogId = _blogFromTenant1,
         };
@@ -84,7 +88,7 @@ public class IDomainEntityValidator_Tests : SequentialTest, IClassFixture<Server
         var response = await _serverFixture.PostAsync("api/blogs/posts", request, credentials: _userFromTenant1);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'Title' must have between 2 and 16 characters", "The field 'Body' must have between 32 and 4096 characters");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'Título' must have between 2 and 16 characters", "The field 'Texto' must have between 32 and 4096 characters");
     }
 
 
@@ -96,6 +100,8 @@ public class IDomainEntityValidator_Tests : SequentialTest, IClassFixture<Server
         {
             Title = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             Body = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            UniqueInTenant = "TenantValue1",
+            UniqueInApplication = "ApplicationValue1",
             AuthorId = null,
             BlogId = _blogFromTenant1,
         };
@@ -104,7 +110,7 @@ public class IDomainEntityValidator_Tests : SequentialTest, IClassFixture<Server
         var response = await _serverFixture.PostAsync("api/blogs/posts", request, credentials: _userFromTenant1);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'Title' must have between 2 and 16 characters");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'Título' must have between 2 and 16 characters");
     }
 
     [FriendlyNamedFact("IT-P040"), Priority(40)]
@@ -115,6 +121,8 @@ public class IDomainEntityValidator_Tests : SequentialTest, IClassFixture<Server
         {
             Title = "aaaaaaaaa",
             Body = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            UniqueInTenant = "TenantValue1",
+            UniqueInApplication = "ApplicationValue1",
             AuthorId = Guid.Empty,
             BlogId = Guid.Empty,
         };
@@ -134,6 +142,8 @@ public class IDomainEntityValidator_Tests : SequentialTest, IClassFixture<Server
         {
             Title = "aaaaaaaaaa",
             Body = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            UniqueInTenant = "TenantValue1",
+            UniqueInApplication = "ApplicationValue1",
             AuthorId = _author,
             BlogId = _blogFromTenant2,
         };
@@ -154,6 +164,8 @@ public class IDomainEntityValidator_Tests : SequentialTest, IClassFixture<Server
         {
             Title = "aaaaaaaaaaa",
             Body = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            UniqueInTenant = "TenantValue1",
+            UniqueInApplication = "ApplicationValue1",
             AuthorId = _author,
             BlogId = _blogFromTenant1,
         };
@@ -178,6 +190,8 @@ public class IDomainEntityValidator_Tests : SequentialTest, IClassFixture<Server
             Id = post.Id,
             Title = "bbbbbbbbb",
             Body = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            UniqueInTenant = "TenantValue1",
+            UniqueInApplication = "ApplicationValue1",
             AuthorId = _author,
             BlogId = _blogFromTenant1,
         };
@@ -201,6 +215,8 @@ public class IDomainEntityValidator_Tests : SequentialTest, IClassFixture<Server
             Id = post.Id,
             Title = "bbbbbbbbb",
             Body = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            UniqueInTenant = "TenantValue1",
+            UniqueInApplication = "ApplicationValue1",
             AuthorId = _author,
             BlogId = _blogFromTenant1,
         };
@@ -211,4 +227,94 @@ public class IDomainEntityValidator_Tests : SequentialTest, IClassFixture<Server
         // Assert the response
         response.ShouldBeSuccess();
     }
+
+    [FriendlyNamedFact("IT-P090"), Priority(90)]
+    public async Task User_cannot_create_entity_if_a_property_with_UniqueInApplication_is_using_a_duplicated_value()
+    {
+        // Prepare
+        var request = new CreatePost.Request
+        {
+            Title = "aaaaaaaaaaa",
+            Body = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            UniqueInTenant = "TenantValue2",
+            UniqueInApplication = "ApplicationValue1",
+            AuthorId = _author,
+            BlogId = _blogFromTenant1,
+        };
+
+        // Act
+        var response = await _serverFixture.PostAsync("api/blogs/posts", request, credentials: _userFromTenant1);
+
+        // Assert the response
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'Valor único no sistema' already exists in the database");
+    }
+
+    [FriendlyNamedFact("IT-P100"), Priority(100)]
+    public async Task User_cannot_create_entity_if_a_property_with_UniqueInTenant_is_using_a_duplicated_value()
+    {
+        // Prepare
+        var request = new CreatePost.Request
+        {
+            Title = "aaaaaaaaaaa",
+            Body = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            UniqueInTenant = "TenantValue1",
+            UniqueInApplication = "ApplicationValue2",
+            AuthorId = _author,
+            BlogId = _blogFromTenant1,
+        };
+
+        // Act
+        var response = await _serverFixture.PostAsync("api/blogs/posts", request, credentials: _userFromTenant1);
+
+        // Assert the response
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'Valor único no tenant' already exists in the database");
+    }
+
+    [FriendlyNamedFact("IT-P110"), Priority(110)]
+    public async Task User_can_create_entity_if_properties_with_UniqueInApplication_and_UniqyeInTenant_are_using_new_values()
+    {
+        // Prepare
+        var request = new CreatePost.Request
+        {
+            Title = "aaaaaaaaaaa",
+            Body = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            UniqueInTenant = "TenantValue1 (new value)",
+            UniqueInApplication = "ApplicationValue (new value)",
+            AuthorId = _author,
+            BlogId = _blogFromTenant1,
+        };
+
+        // Act
+        var response = await _serverFixture.PostAsync("api/blogs/posts", request, credentials: _userFromTenant1);
+
+        // Assert the response
+        response.ShouldBeSuccess();
+    }
+
+    [FriendlyNamedFact("IT-P120"), Priority(120)]
+    public async Task User_can_create_entity_if_a_property_with_UniqueInTenant_is_using_a_value_already_used_in_another_tenant()
+    {
+        var temp = _serverFixture.Context.Set<Post>().ToList();
+
+        var post = _serverFixture.Context.Set<Post>().Where(x => x.UniqueInTenant == "TenantValue1 (new value)").ToList();
+        post.Count.ShouldBe(1);
+        post[0].TenantId.ShouldBe("TENANT1");
+
+        // Prepare
+        var request = new CreatePost.Request
+        {
+            Title = "aaaaaaaaaaa",
+            Body = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            UniqueInTenant = "TenantValue1 (new value)",
+            UniqueInApplication = "ApplicationValue (new value 2)",
+            AuthorId = _author,
+            BlogId = _blogFromTenant2,
+        };
+
+        // Act
+        var response = await _serverFixture.PostAsync("api/blogs/posts", request, credentials: _userFromTenant2);
+
+        // Assert the response
+        response.ShouldBeSuccess();
+    } 
 }

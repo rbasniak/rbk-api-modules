@@ -10,7 +10,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "!Solution Items", "!Solution Items", "{24A80F2D-E586-4703-9DB6-FB25259FC236}"
 	ProjectSection(SolutionItems) = preProject
 		Directory.Build.props = Directory.Build.props
-		discussions.txt = discussions.txt
+		change_log.txt = change_log.txt
 		LICENSE = LICENSE
 	EndProjectSection
 EndProject
@@ -170,11 +170,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Demo4.Tests.I
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.CodeAnalysers", "Libraries\rbkApiModules.CodeAnalysers\rbkApiModules.CodeAnalysers.csproj", "{9192D83F-3A5B-483B-A309-E8EA34E73AF6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo5", "Demo5\Demo5.csproj", "{645E9A12-CD62-4933-8339-9A6672DDB873}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo5", "Demo5\Demo5.csproj", "{645E9A12-CD62-4933-8339-9A6672DDB873}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demo5", "Demo5", "{84F6C8A8-3DA0-42B6-8A74-92E09F289110}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.Demo5.Tests.Integration", "Tests\rbkApiModules.Demo5.Tests.Integration\rbkApiModules.Demo5.Tests.Integration.csproj", "{7D7FD334-BA03-46B6-878D-8FC68DAD3E9B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Demo5.Tests.Integration", "Tests\rbkApiModules.Demo5.Tests.Integration\rbkApiModules.Demo5.Tests.Integration.csproj", "{7D7FD334-BA03-46B6-878D-8FC68DAD3E9B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

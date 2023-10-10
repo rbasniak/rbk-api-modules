@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Hosting;
 using rbkApiModules.Commons.Core.Localization;
+using rbkApiModules.Commons.Core.Utilities;
 using rbkApiModules.Commons.Core.Utilities.Localization;
 using Serilog;
 using System.Net;
@@ -148,7 +149,7 @@ public class BaseController : ControllerBase
         var errorResult = new ErrorResult
         {
             Errors = messages,
-            Exception = Environment.IsDevelopment() ? exceptionDetails : null,
+            Exception = Environment.IsDevelopment() || TestingEnvironmentChecker.IsTestingEnvironment ? exceptionDetails : null,
         };
 
         switch (response.Status)

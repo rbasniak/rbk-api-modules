@@ -30,6 +30,12 @@ v7.1.1
 
 v.7.1.2
   NOVIDADES
-    - Bug fix on Code Generation
+    - Corrigido bug no Code Generation
+  BREKING CHANGES
+    - Nenhuma :)
+
+v.7.1.3
+  NOVIDADES
+    - Corrigidos vários bugs nas validações automáticas de domínio
   BREKING CHANGES
     - Nenhuma :)

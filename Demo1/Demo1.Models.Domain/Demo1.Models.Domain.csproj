@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Libraries\rbkApiModules.Commons.Core\rbkApiModules.Commons.Core.csproj" />
+    <ProjectReference Include="..\..\Libraries\rbkApiModules.Commons.Relational\rbkApiModules.Commons.Relational.csproj" />
   </ItemGroup>
 
 </Project>

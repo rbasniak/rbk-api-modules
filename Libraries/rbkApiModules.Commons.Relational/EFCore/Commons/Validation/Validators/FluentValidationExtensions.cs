@@ -3,6 +3,7 @@ using FluentValidation.Results;
 using FluentValidation.Validators;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.Hosting;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.Localization;
 using rbkApiModules.Commons.Core.UiDefinitions;
@@ -119,9 +120,7 @@ public static class FluentValidationsDomainExtensions
 
         foreach (var requestProperty in request.GetType().GetProperties().Where(x => x.GetAttribute<JsonIgnoreAttribute>() == null))
         {
-            var requestPropertyName = requestProperty.Name;
-
-            if (requestProperty.PropertyType == typeof(Guid) && requestPropertyName == "Id")
+            if (requestProperty.PropertyType == typeof(Guid) && requestProperty.Name == "Id")
             {
                 var entityId = (Guid)requestProperty.GetValue(request);
 
@@ -131,8 +130,8 @@ public static class FluentValidationsDomainExtensions
 
                 if (entity == null)
                 {
-                    results.Add(new ValidationFailure(requestPropertyName, localization.LocalizeString(SharedValidationMessages.Common.EntityNotFoundInDatabase)
-                        .Replace("{PropertyName}", domainEntityType.Name)
+                    results.Add(new ValidationFailure(requestProperty.Name, localization.LocalizeString(SharedValidationMessages.Common.EntityNotFoundInDatabase)
+                        .Replace("{PropertyName}", requestProperty.Name)
                     ));
                 }
                 else
@@ -143,19 +142,19 @@ public static class FluentValidationsDomainExtensions
 
                         if (authenticatedRequest == null)
                         {
-                            results.Add(new ValidationFailure(requestPropertyName, localization.LocalizeString(SharedValidationMessages.Common.RequestExpectedToRequireAuthentication)));
+                            results.Add(new ValidationFailure(requestProperty.Name, localization.LocalizeString(SharedValidationMessages.Common.RequestExpectedToRequireAuthentication)));
                         }
                         else
                         {
                             if (!authenticatedRequest.IsAuthenticated)
                             {
-                                results.Add(new ValidationFailure(requestPropertyName, localization.LocalizeString(SharedValidationMessages.Common.RequestExpectedToBeAuthenticated)));
+                                results.Add(new ValidationFailure(requestProperty.Name, localization.LocalizeString(SharedValidationMessages.Common.RequestExpectedToBeAuthenticated)));
                             }
                             else
                             {
                                 if (tenantEntity.TenantId != null && tenantEntity.TenantId != authenticatedRequest.Identity.Tenant)
                                 {
-                                    results.Add(new ValidationFailure(requestPropertyName, localization.LocalizeString(SharedValidationMessages.Common.PossibleUnauthorizedAccess)));
+                                    results.Add(new ValidationFailure(requestProperty.Name, localization.LocalizeString(SharedValidationMessages.Common.PossibleUnauthorizedAccess)));
                                 }
                             }
                         }
@@ -185,7 +184,7 @@ public static class FluentValidationsDomainExtensions
                     }
                 }
 
-                var entityProperty = entityType.GetProperty(requestPropertyName.Substring(0, requestPropertyName.Length - 2));
+                var entityProperty = entityType.GetProperty(requestProperty.Name.Substring(0, requestProperty.Name.Length - 2));
 
                 if (entityProperty == null)
                 {
@@ -198,7 +197,7 @@ public static class FluentValidationsDomainExtensions
 
                 if (entity == null)
                 {
-                    results.Add(new ValidationFailure(requestPropertyName, localization.LocalizeString(SharedValidationMessages.Common.EntityNotFoundInDatabase)
+                    results.Add(new ValidationFailure(requestProperty.Name, localization.LocalizeString(SharedValidationMessages.Common.EntityNotFoundInDatabase)
                         .Replace("{PropertyName}", entityProperty.Name)
                     ));
                 }
@@ -210,19 +209,19 @@ public static class FluentValidationsDomainExtensions
 
                         if (authenticatedRequest == null)
                         {
-                            results.Add(new ValidationFailure(requestPropertyName, localization.LocalizeString(SharedValidationMessages.Common.RequestExpectedToRequireAuthentication)));
+                            results.Add(new ValidationFailure(requestProperty.Name, localization.LocalizeString(SharedValidationMessages.Common.RequestExpectedToRequireAuthentication)));
                         }
                         else
                         {
                             if (!authenticatedRequest.IsAuthenticated)
                             {
-                                results.Add(new ValidationFailure(requestPropertyName, localization.LocalizeString(SharedValidationMessages.Common.RequestExpectedToBeAuthenticated)));
+                                results.Add(new ValidationFailure(requestProperty.Name, localization.LocalizeString(SharedValidationMessages.Common.RequestExpectedToBeAuthenticated)));
                             }
                             else
                             {
                                 if (tenantEntity.TenantId != null && tenantEntity.TenantId != authenticatedRequest.Identity.Tenant)
                                 {
-                                    results.Add(new ValidationFailure(requestPropertyName, localization.LocalizeString(SharedValidationMessages.Common.PossibleUnauthorizedAccess)));
+                                    results.Add(new ValidationFailure(requestProperty.Name, localization.LocalizeString(SharedValidationMessages.Common.PossibleUnauthorizedAccess)));
                                 }
                             }
                         }
@@ -231,7 +230,7 @@ public static class FluentValidationsDomainExtensions
             }
             else if (requestProperty.PropertyType == typeof(String))
             {
-                var entityProperty = entityType.GetProperty(requestPropertyName);
+                var entityProperty = entityType.GetProperty(requestProperty.Name);
 
                 if (entityProperty == null)
                 {
@@ -252,19 +251,20 @@ public static class FluentValidationsDomainExtensions
                 var isUniqueInTenant = uniqueInTenantAttribute != null;
                 var isUniqueInApplication = uniqueInApplicationAttribute != null;
 
+                var friendlyPropertyName = requestProperty.Name;
                 if (dialogData != null)
                 {
-                    requestPropertyName = dialogData.Name;
+                    friendlyPropertyName = dialogData.Name;
                 }
 
                 if (isUniqueInTenant && isUniqueInApplication)
                 {
-                    throw new SafeException($"{domainEntityType.GetType().Name}.{requestPropertyName} uses both IsUniqueInTenant and IsUniqueInApplication. Choose one or another");
+                    throw new SafeException($"{domainEntityType.GetType().Name}.{requestProperty.Name} uses both IsUniqueInTenant and IsUniqueInApplication. Choose one or another");
                 }
 
                 if (!hasMinLengthRequirement || !hasMaxLengthRequirement)
                 {
-                    throw new SafeException($"{domainEntityType.GetType().Name}.{requestPropertyName} is of type String and must have minimum and maximum lenghts specified");
+                    throw new SafeException($"{domainEntityType.GetType().Name}.{requestProperty.Name} is of type String and must have minimum and maximum lenghts specified");
                 }
 
                 var minLength = minLengthAttribute.Length;
@@ -276,7 +276,7 @@ public static class FluentValidationsDomainExtensions
                 {
                     // IsRequired failed, pass a validator that always fail
 
-                    results.Add(new ValidationFailure(requestPropertyName, $"The field '{requestPropertyName}' is required"));
+                    results.Add(new ValidationFailure(requestProperty.Name, $"The field '{friendlyPropertyName}' is required"));
 
                     continue;
                 }
@@ -285,8 +285,8 @@ public static class FluentValidationsDomainExtensions
                 {
                     if (propertyValue.ToString().Length < minLength || propertyValue.ToString().Length > maxLength)
                     {
-                        results.Add(new ValidationFailure(requestPropertyName, localization.LocalizeString(SharedValidationMessages.Common.FieldMustHaveLengthBetweenMinAndMax)
-                            .Replace("{PropertyName}", requestPropertyName)
+                        results.Add(new ValidationFailure(requestProperty.Name, localization.LocalizeString(SharedValidationMessages.Common.FieldMustHaveLengthBetweenMinAndMax)
+                            .Replace("{PropertyName}", friendlyPropertyName)
                             .Replace("{0}", minLength.ToString())
                             .Replace("{1}", maxLength.ToString())
                         ));
@@ -296,7 +296,7 @@ public static class FluentValidationsDomainExtensions
                 {
                     if (propertyValue.ToString().Length != minLength)
                     {
-                        results.Add(new ValidationFailure(requestPropertyName, localization.LocalizeString(SharedValidationMessages.Common.FieldMustHaveFixedLength)
+                        results.Add(new ValidationFailure(requestProperty.Name, localization.LocalizeString(SharedValidationMessages.Common.FieldMustHaveFixedLength)
                             .Replace("{0}", minLength.ToString())
                         ));
                     }
@@ -313,12 +313,12 @@ public static class FluentValidationsDomainExtensions
 
                     if (isCreation)
                     {
-                        var isValueAlreayUsed = await IsValueUsedInApplicationAsync(requestPropertyName, (string)propertyValue, domainEntityType, context, cancellationToken);
+                        var isValueAlreayUsed = await IsValueUsedInApplicationAsync(requestProperty.Name, (string)propertyValue, domainEntityType, context, cancellationToken);
 
                         if (isValueAlreayUsed)
                         {
-                            results.Add(new ValidationFailure(requestPropertyName,
-                                localization.LocalizeString(SharedValidationMessages.Common.FieldValueAlreadyUsedInDatabase).Replace("{PropertyName}", requestProperty.Name)));
+                            results.Add(new ValidationFailure(requestProperty.Name,
+                                localization.LocalizeString(SharedValidationMessages.Common.FieldValueAlreadyUsedInDatabase).Replace("{PropertyName}", friendlyPropertyName)));
                         }
                     }
 
@@ -326,12 +326,12 @@ public static class FluentValidationsDomainExtensions
                     {
                         var entityId = (Guid)idProperty.GetValue(request);
 
-                        var exists = await IsValueUsedInApplicationAsync(entityId, requestPropertyName, (string)propertyValue, domainEntityType, context, cancellationToken);
+                        var exists = await IsValueUsedInApplicationAsync(entityId, requestProperty.Name, (string)propertyValue, domainEntityType, context, cancellationToken);
 
                         if (exists)
                         {
-                            results.Add(new ValidationFailure(requestPropertyName,
-                                localization.LocalizeString(SharedValidationMessages.Common.FieldValueAlreadyUsedInDatabase).Replace("{PropertyName}", requestProperty.Name)));
+                            results.Add(new ValidationFailure(requestProperty.Name,
+                                localization.LocalizeString(SharedValidationMessages.Common.FieldValueAlreadyUsedInDatabase).Replace("{PropertyName}", friendlyPropertyName)));
                         }
                     }
                 }
@@ -342,14 +342,14 @@ public static class FluentValidationsDomainExtensions
 
                     if (!domainEntityType.IsAssignableTo(typeof(TenantEntity)))
                     {
-                        throw new SafeException($"The property {domainEntityType.Name}.{requestPropertyName} must me unique in the tenant, but the entity does not inherit from TenantEntity");
+                        throw new SafeException($"The property {domainEntityType.Name}.{requestProperty.Name} must me unique in the tenant, but the entity does not inherit from TenantEntity");
                     }
 
                     var authenticatedRequest = request as AuthenticatedRequest;
 
                     if (authenticatedRequest == null)
                     {
-                        throw new SafeException($"The request is expected to require authentication (because the property {domainEntityType.Name}.{requestPropertyName} must me unique in the tenant) and it does not inherit from AuthenticatedRequest");
+                        throw new SafeException($"The request is expected to require authentication (because the property {domainEntityType.Name}.{requestProperty.Name} must me unique in the tenant) and it does not inherit from AuthenticatedRequest");
                     }
 
                     bool isCreation = idProperty == null;
@@ -359,12 +359,12 @@ public static class FluentValidationsDomainExtensions
 
                     if (isCreation)
                     {
-                        var isValueAlreayUsed = await IsValueUsedInTenantAsync(authenticatedRequest.Identity.Tenant, requestPropertyName, (string)propertyValue, domainEntityType, context, cancellationToken);
+                        var isValueAlreayUsed = await IsValueUsedInTenantAsync(authenticatedRequest.Identity.Tenant, requestProperty.Name, (string)propertyValue, domainEntityType, context, cancellationToken);
 
                         if (isValueAlreayUsed)
                         {
-                            results.Add(new ValidationFailure(requestPropertyName,
-                                localization.LocalizeString(SharedValidationMessages.Common.FieldValueAlreadyUsedInDatabase).Replace("{PropertyName}", requestProperty.Name)));
+                            results.Add(new ValidationFailure(requestProperty.Name,
+                                localization.LocalizeString(SharedValidationMessages.Common.FieldValueAlreadyUsedInDatabase).Replace("{PropertyName}", friendlyPropertyName)));
                         }
                     }
 
@@ -372,11 +372,11 @@ public static class FluentValidationsDomainExtensions
                     {
                         var entityId = (Guid)idProperty.GetValue(request);
 
-                        var isValueAlreayUsed = await IsValueUsedInTenantAsync(entityId, authenticatedRequest.Identity.Tenant, requestPropertyName, (string)propertyValue, domainEntityType, context, cancellationToken);
+                        var isValueAlreayUsed = await IsValueUsedInTenantAsync(entityId, authenticatedRequest.Identity.Tenant, requestProperty.Name, (string)propertyValue, domainEntityType, context, cancellationToken);
 
                         if (isValueAlreayUsed)
                         {
-                            results.Add(new ValidationFailure(requestPropertyName,
+                            results.Add(new ValidationFailure(requestProperty.Name,
                                 localization.LocalizeString(SharedValidationMessages.Common.FieldValueAlreadyUsedInDatabase).Replace("{PropertyName}", requestProperty.Name)));
                         }
                     }
@@ -429,7 +429,7 @@ public static class FluentValidationsDomainExtensions
         var desiredPropertyExpressionConstant = Expression.Constant(propertyValue);
         var desiredPropertyEqualExpression = Expression.Equal(property, desiredPropertyExpressionConstant);
 
-        var lambda = Expression.Lambda(desiredPropertyEqualExpression);
+        var lambda = Expression.Lambda(desiredPropertyEqualExpression, parameter);
 
         var anyAsyncMethod = typeof(EntityFrameworkQueryableExtensions).GetMethods().Single(x => x.Name == "AnyAsync" && x.GetParameters().Count() == 3);
         var anyAsyncGenericMethod = anyAsyncMethod.MakeGenericMethod(entityType);

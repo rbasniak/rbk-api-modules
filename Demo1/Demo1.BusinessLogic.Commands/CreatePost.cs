@@ -23,6 +23,8 @@ public class CreatePost
         public string Body { get; set; }
         public Guid BlogId { get; set; }
         public Guid? AuthorId { get; set; }
+        public string UniqueInApplication { get; set; }
+        public string UniqueInTenant { get; set; }
     }
 
     public class Validator: AbstractValidator<Request>, IDomainEntityValidator<Post>
@@ -54,7 +56,7 @@ public class CreatePost
             
             var author = request.AuthorId != null ? await _context.Authors.FindAsync(request.AuthorId) : null;
 
-            var post = new Post(request.Identity.Tenant, blog, author, request.Title, request.Body);
+            var post = new Post(request.Identity.Tenant, blog, author, request.Title, request.Body, request.UniqueInTenant, request.UniqueInApplication);
 
             _context.Add(post);
 
