@@ -91,7 +91,6 @@ public class IDomainEntityValidator_Tests : SequentialTest, IClassFixture<Server
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'Título' must have between 2 and 16 characters", "The field 'Texto' must have between 32 and 4096 characters");
     }
 
-
     [FriendlyNamedFact("IT-P030"), Priority(30)]
     public async Task Domain_database_maxlength_restraint_should_be_validate_when_IDomainEntityValidator_is_implemented()
     {
@@ -176,7 +175,6 @@ public class IDomainEntityValidator_Tests : SequentialTest, IClassFixture<Server
         // Assert the response
         response.ShouldBeSuccess();
     }
-
 
     [FriendlyNamedFact("IT-P070"), Priority(70)]
     public async Task Main_domain_entity_exists_in_database_and_belongs_to_tenant_restraint_should_be_validate_when_IDomainEntityValidator_is_implemented_in_update()
@@ -294,8 +292,6 @@ public class IDomainEntityValidator_Tests : SequentialTest, IClassFixture<Server
     [FriendlyNamedFact("IT-P120"), Priority(120)]
     public async Task User_can_create_entity_if_a_property_with_UniqueInTenant_is_using_a_value_already_used_in_another_tenant()
     {
-        var temp = _serverFixture.Context.Set<Post>().ToList();
-
         var post = _serverFixture.Context.Set<Post>().Where(x => x.UniqueInTenant == "TenantValue1 (new value)").ToList();
         post.Count.ShouldBe(1);
         post[0].TenantId.ShouldBe("TENANT1");
@@ -316,5 +312,29 @@ public class IDomainEntityValidator_Tests : SequentialTest, IClassFixture<Server
 
         // Assert the response
         response.ShouldBeSuccess();
-    } 
+    }
+
+    [FriendlyNamedFact("IT-P130"), Priority(130)]
+    public async Task User_from_one_tenant_cannot_edit_entities_from_another_tenant()
+    {
+        var post = _serverFixture.Context.Set<Post>().First(x => x.TenantId == "TENANT1");
+
+        // Prepare
+        var request = new UpdatePost.Request
+        {
+            Id = post.Id,
+            Title = "aaaaaaaaaaa",
+            Body = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            UniqueInTenant = "xxxxxxxxxxxx",
+            UniqueInApplication = "yyyyyyyyyyyyyy",
+            AuthorId = _author,
+            BlogId = _blogFromTenant1,
+        };
+
+        // Act
+        var response = await _serverFixture.PutAsync("api/blogs/posts", request, credentials: _userFromTenant2);
+
+        // Assert the response
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Possible unauthorized access");
+    }
 }
