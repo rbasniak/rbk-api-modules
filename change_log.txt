@@ -39,3 +39,9 @@ v.7.1.3
     - Corrigidos vários bugs nas validações automáticas de domínio
   BREKING CHANGES
     - Nenhuma :)
+
+v.7.1.5
+  NOVIDADES
+    - Adicionadas extensões para asserts de listas e entidades de forma automática
+  BREKING CHANGES
+    - Nenhuma :)

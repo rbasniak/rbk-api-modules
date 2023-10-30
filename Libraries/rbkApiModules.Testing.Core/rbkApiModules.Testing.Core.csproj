@@ -16,13 +16,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="Attributes\**" />
 	  <Compile Remove="Authentication\**" />
 	  <Compile Remove="Contracts\**" />
-	  <EmbeddedResource Remove="Attributes\**" />
 	  <EmbeddedResource Remove="Authentication\**" />
 	  <EmbeddedResource Remove="Contracts\**" />
-	  <None Remove="Attributes\**" />
 	  <None Remove="Authentication\**" />
 	  <None Remove="Contracts\**" />
 	</ItemGroup>
