@@ -31,17 +31,17 @@ v7.1.1
 v.7.1.2
   NOVIDADES
     - Corrigido bug no Code Generation
-  BREKING CHANGES
+  BREAKING CHANGES
     - Nenhuma :)
 
 v.7.1.3
   NOVIDADES
     - Corrigidos vários bugs nas validações automáticas de domínio
-  BREKING CHANGES
+  BREAKING CHANGES
     - Nenhuma :)
 
 v.7.1.5
   NOVIDADES
     - Adicionadas extensões para asserts de listas e entidades de forma automática
-  BREKING CHANGES
+  BREAKING CHANGES
     - Nenhuma :)
