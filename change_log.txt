@@ -57,3 +57,9 @@ v.7.1.6
     - Corrigido bug nas validações automáticas de domínio
   BREKING CHANGES
     - Nenhuma :)
+
+v.7.1.7 (unpublished)
+  NOVIDADES
+    - .NET atualizado para 7.1.13
+  BREKING CHANGES
+    - Nenhuma :)
