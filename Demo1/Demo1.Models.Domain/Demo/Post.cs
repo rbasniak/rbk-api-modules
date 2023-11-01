@@ -37,9 +37,11 @@ public class Post : TenantEntity
     [DialogData(OperationType.Create, "Data de Publicação")]
     public DateTime? PublishingDate { get; private set; }
 
+    [DialogData(OperationType.CreateAndUpdate, "Autor")]
     public Guid AuthorId { get; private set; }
     public Author Author { get; private set; }
 
+    [DialogData(OperationType.CreateAndUpdate, "Blogui")]
     public Guid BlogId { get; private set; }
     public Blog Blog { get; private set; }
 

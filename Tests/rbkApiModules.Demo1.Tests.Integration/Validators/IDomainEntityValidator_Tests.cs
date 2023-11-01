@@ -67,7 +67,7 @@ public class IDomainEntityValidator_Tests : SequentialTest, IClassFixture<Server
         var response = await _serverFixture.PostAsync("api/blogs/posts", request, credentials: _userFromTenant1);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'Título' is required");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "The field 'Título' cannot be empty");
     }
 
     [FriendlyNamedFact("IT-P020"), Priority(20)]
@@ -130,7 +130,7 @@ public class IDomainEntityValidator_Tests : SequentialTest, IClassFixture<Server
         var response = await _serverFixture.PostAsync("api/blogs/posts", request, credentials: _userFromTenant1);
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "'Blog' not found in database", "'Author' not found in database");
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "'Blogui' not found in database", "'Autor' not found in database");
     }
 
     [FriendlyNamedFact("IT-P050"), Priority(50)]

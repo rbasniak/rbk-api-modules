@@ -191,6 +191,29 @@ public static class FluentValidationsDomainExtensions
                     continue;
                 }
 
+                var dialogData = entityProperty.GetAttribute<DialogDataAttribute>();
+
+                var friendlyPropertyName = requestProperty.Name;
+                if (dialogData != null)
+                {
+                    friendlyPropertyName = dialogData.Name;
+                }
+
+                if (dialogData == null && requestProperty.Name.EndsWith("Id"))
+                {
+                    var domainPropertyName = entityType.GetProperty(requestProperty.Name);
+
+                    if (domainPropertyName != null)
+                    {
+                        dialogData = domainPropertyName.GetAttribute<DialogDataAttribute>();
+
+                        if (dialogData != null)
+                        {
+                            friendlyPropertyName = dialogData.Name;
+                        }
+                    }
+                }
+
                 var context = GetDbContextFromValidator(parentValidator);
 
                 var entity = await context.FindAsync(entityProperty.PropertyType, entityId, cancellationToken);
@@ -198,7 +221,7 @@ public static class FluentValidationsDomainExtensions
                 if (entity == null)
                 {
                     results.Add(new ValidationFailure(requestProperty.Name, localization.LocalizeString(SharedValidationMessages.Common.EntityNotFoundInDatabase)
-                        .Replace("{PropertyName}", entityProperty.Name)
+                        .Replace("{PropertyName}", friendlyPropertyName)
                     ));
                 }
                 else
@@ -276,7 +299,7 @@ public static class FluentValidationsDomainExtensions
                 {
                     // IsRequired failed, pass a validator that always fail
 
-                    results.Add(new ValidationFailure(requestProperty.Name, $"The field '{friendlyPropertyName}' is required"));
+                    results.Add(new ValidationFailure(requestProperty.Name, localization.LocalizeString(SharedValidationMessages.Common.FieldCannotBeEmpty).Replace("{PropertyName}", friendlyPropertyName)));
 
                     continue;
                 }
@@ -377,7 +400,7 @@ public static class FluentValidationsDomainExtensions
                         if (isValueAlreayUsed)
                         {
                             results.Add(new ValidationFailure(requestProperty.Name,
-                                localization.LocalizeString(SharedValidationMessages.Common.FieldValueAlreadyUsedInDatabase).Replace("{PropertyName}", requestProperty.Name)));
+                                localization.LocalizeString(SharedValidationMessages.Common.FieldValueAlreadyUsedInDatabase).Replace("{PropertyName}", friendlyPropertyName)));
                         }
                     }
                 }
