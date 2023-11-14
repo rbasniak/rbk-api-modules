@@ -6,7 +6,7 @@ public class DatabaseSeed : DatabaseSeedManager<EventSourcingContext>, IDatabase
 {
     public DatabaseSeed()
     {
-        AddSeed("2023-02-07: Initial seed", new SeedInfo<EventSourcingContext>((context, serviceProvider) => InitialSeed(context, serviceProvider), useInProduction: true));
+        AddSeed("2023-02-07: Initial seed", new SeedInfo<EventSourcingContext>((context, serviceProvider) => InitialSeed(context, serviceProvider), EnvironmentUsage.Development));
     }
 
     public static void InitialSeed(EventSourcingContext context, IServiceProvider serviceProvider)

@@ -39,15 +39,17 @@ public class DatabaseSeedManager<T> : IDatabaseSeeder where T : DbContext
             {
                 foreach (var kvp in _seed)
                 {
-                    var useMigrationInProduction = kvp.Value.UseInProduction;
-                    var useMigrationInDevelopment = !kvp.Value.UseInProduction;
+                    var useMigrationInProduction = (kvp.Value.EnvironmentUsage & EnvironmentUsage.Production) != 0;
+                    var useMigrationInDevelopment = (kvp.Value.EnvironmentUsage & EnvironmentUsage.Development) != 0;
+                    var useMigrationInTest = (kvp.Value.EnvironmentUsage & EnvironmentUsage.Testing) != 0;
 
                     var isProductionEnvironment = webHostEnvironment.IsProduction();
-                    var isDevelopmentEnvironment = !webHostEnvironment.IsProduction();
+                    var isDevelopmentEnvironment = !webHostEnvironment.IsProduction() && !TestingEnvironmentChecker.IsTestingEnvironment;
+                    var isTestingEnvironment = TestingEnvironmentChecker.IsTestingEnvironment;
 
-                    if  (useMigrationInProduction ||
-                        (useMigrationInDevelopment && isDevelopmentEnvironment) || 
-                        TestingEnvironmentChecker.IsTestingEnvironment)
+                    if  (useMigrationInDevelopment && isDevelopmentEnvironment ||
+                         useMigrationInProduction && isProductionEnvironment ||
+                         useMigrationInTest && isTestingEnvironment)
                     {
                         if (!context.Set<SeedHistory>().Any(x => x.Id == kvp.Key))
                         {

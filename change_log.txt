@@ -58,8 +58,8 @@ v.7.1.6
   BREKING CHANGES
     - Nenhuma :)
 
-v.7.1.7 (unpublished)
+v.7.1.7
   NOVIDADES
-    - .NET atualizado para 7.1.13
+    - .NET atualizado para 7.1.14
   BREKING CHANGES
-    - Nenhuma :)
+    - O método `AddSeed` agora recebe uma flag ao invés de um booleano. A flag indica em qual ambiente o seed deve ser utilizado e ela pode ser composta usando o operador bitwise

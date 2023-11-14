@@ -5,13 +5,21 @@ namespace rbkApiModules.Commons.Relational;
 
 public class SeedInfo<T> where T : DbContext
 {
-    public SeedInfo(Action<T, IServiceProvider> function, bool useInProduction)
+    public SeedInfo(Action<T, IServiceProvider> function, EnvironmentUsage environmentUsage)
     {
         Function = function;
-        UseInProduction = useInProduction;
+        EnvironmentUsage = environmentUsage;
     }
 
     public Action<T, IServiceProvider> Function { get; }
     
-    public bool UseInProduction { get; }
+    public EnvironmentUsage EnvironmentUsage { get; }
+}
+
+[Flags]
+public enum EnvironmentUsage
+{
+    Production,
+    Development,
+    Testing
 }
