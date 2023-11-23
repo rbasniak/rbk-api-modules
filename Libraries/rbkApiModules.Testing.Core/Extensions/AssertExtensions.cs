@@ -70,7 +70,7 @@ public static class AssertExtensions
 
     public static void ShouldBeEquivalentToObject<T>(this T actual, object expected, Action<EntityAssertionOptions<T>> configuration)
     {
-        actual.ShouldBeEquivalentToObject(expected, configuration);
+        actual.ShouldBeEquivalentToObject(expected, configuration, null);
     }
 
     public static void ShouldBeEquivalentToObject<T>(this T actual, object expected, Action<EntityAssertionOptions<T>> configuration, string customMessage)

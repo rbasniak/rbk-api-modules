@@ -19,7 +19,7 @@ public class SeedInfo<T> where T : DbContext
 [Flags]
 public enum EnvironmentUsage
 {
-    Production,
-    Development,
-    Testing
+    Production = 1,
+    Development = 2,
+    Testing = 4
 }
