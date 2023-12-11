@@ -14,7 +14,7 @@ public class ProjectsController : BaseController
 
     [HttpPost]
     [AllowAnonymous]
-    public async Task<ActionResult<ProjectDto.Details>> CreateAsync(CreateProject.Request data, CancellationToken cancellationToken)
+    public async Task<ActionResult<ProjectDto.Details>> CreateAsync(CreateProject.Request data, CancellationToken cancellationToken) 
     {
         var result = await Mediator.Send(data, cancellationToken);
 
