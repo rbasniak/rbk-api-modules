@@ -17,7 +17,26 @@ public class BaseServerFixture : IDisposable
     private readonly Dictionary<Credentials, string> _accessTokens = new();
     private readonly string _contentFolder;
 
-    public BaseServerFixture(Type startupClassType, string authenticationMode)
+    public BaseServerFixture(Type startupClassType, string authenticationMode) 
+        : this(startupClassType, authenticationMode, new Dictionary<string, string>(), services => { })
+    {
+
+    }
+
+    public BaseServerFixture(Type startupClassType, string authenticationMode, Dictionary<string, string> inMemoryCollectionConfig) 
+        : this(startupClassType, authenticationMode, inMemoryCollectionConfig, services => { })
+    {
+
+    }
+
+    public BaseServerFixture(Type startupClassType, string authenticationMode, Action<IServiceCollection> servicesConfiguration) 
+        : this(startupClassType, authenticationMode, new Dictionary<string, string>(), servicesConfiguration)
+    {
+
+    }
+
+    public BaseServerFixture(Type startupClassType, string authenticationMode, 
+        Dictionary<string, string> inMemoryCollectionConfig, Action<IServiceCollection> servicesConfiguration)
     {
         if (authenticationMode == null) throw new ArgumentNullException(nameof(authenticationMode));
 
@@ -50,9 +69,11 @@ public class BaseServerFixture : IDisposable
                 .UseConfiguration(new ConfigurationBuilder()
                     .SetBasePath(projectDir)
                     .AddJsonFile("appsettings.Testing.json")
+                    .AddInMemoryCollection(inMemoryCollectionConfig)
                     .Build()
                 )
                 .UseStartup(startupClassType)
+                .ConfigureTestServices(servicesConfiguration)
                 .UseSerilog(Log.Logger));
 #pragma warning restore CS0618 // Type or member is obsolete
         }
@@ -65,12 +86,11 @@ public class BaseServerFixture : IDisposable
                 .UseConfiguration(new ConfigurationBuilder()
                     .SetBasePath(projectDir)
                     .AddJsonFile("appsettings.Testing.json")
+                    .AddInMemoryCollection(inMemoryCollectionConfig)
                     .Build()
                 )
                 .UseStartup(startupClassType)
-                .ConfigureTestServices(services =>
-                {
-                })
+                .ConfigureTestServices(servicesConfiguration)
                 .UseSerilog(Log.Logger));
 #pragma warning restore CS0618 // Type or member is obsolete
         }

@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Demo2.Samples.Eventsourcing.EventOrientedChanges.Infrastructure.Models.DomainEvent">
+    <Position X="64" Y="20.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>IACAAAAgAAAAAAIAACAAAAAAAAAAAAAAAAAAAAAAAAE=</HashCode>
+      <FileName>Samples\Eventsourcing\EventOrientedChanges\Infrastructure\Models\DomainEvent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Demo2.Samples.Eventsourcing.EventOrientedChanges.Infrastructure.Models.EventSummary">
+    <Position X="64" Y="23.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Samples\Eventsourcing\EventOrientedChanges\Infrastructure\Models\DomainEvent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Demo2.Samples.Eventsourcing.EventOrientedChanges.Infrastructure.Models.AggregateRoot&lt;TSelf&gt;" BaseTypeListCollapsed="true">
+    <Position X="66.25" Y="22.5" Width="2.25" />
+    <Members>
+      <Field Name="_uncommittedEvents" Hidden="true" />
+    </Members>
+    <InheritanceLine Type="Demo2.Samples.Eventsourcing.EventOrientedChanges.Infrastructure.Models.Entity" FixedToPoint="true">
+      <Path>
+        <Point X="67.375" Y="21.853" />
+        <Point X="67.375" Y="22.5" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>IAACAAAAABAAAAQAAAAAAAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Samples\Eventsourcing\EventOrientedChanges\Infrastructure\Models\AggregateRoot.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Demo2.Samples.Eventsourcing.EventOrientedChanges.Infrastructure.Models.Entity">
+    <Position X="66.25" Y="20.75" Width="2.25" />
+    <Members>
+      <Method Name="Equals" Hidden="true" />
+      <Method Name="GetHashCode" Hidden="true" />
+      <Method Name="operator !=" Hidden="true" />
+      <Method Name="operator ==" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAgAAAAAAAAAAAAIAAAAAAAAAAAiA=</HashCode>
+      <FileName>Samples\Eventsourcing\EventOrientedChanges\Infrastructure\Models\Entity.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Orientation="Right" Position="0.362" />
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

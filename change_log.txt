@@ -75,3 +75,9 @@ v.7.1.7
     - Correção de bug no seed por environment
   BREKING CHANGES
     - Nenhuma :)
+
+    v.7.1.10
+  NOVIDADES
+    - Possibilidade de passar configuracão de in-memory collection e override de test services no BaseServerFixture
+  BREKING CHANGES
+    - Nenhuma :)

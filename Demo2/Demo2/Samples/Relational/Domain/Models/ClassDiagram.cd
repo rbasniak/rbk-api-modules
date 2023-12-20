@@ -1,0 +1,240 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Demo2.Samples.Relational.Domain.Models.Attachment">
+    <Position X="76.25" Y="18.5" Width="1.75" />
+    <Members>
+      <Method Name="Attachment" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAAAwAIAAABAAAQAAAAAAAAgAQAAAAAAAAA=</HashCode>
+      <FileName>Samples\Relational\Domain\Models\Attachment.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Type" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Demo2.Samples.Relational.Domain.Models.ChangeRequest">
+    <Position X="84.25" Y="17.75" Width="2" />
+    <Members>
+      <Field Name="_attachments" Hidden="true" />
+      <Field Name="_disciplines" Hidden="true" />
+      <Field Name="_documents" Hidden="true" />
+      <Field Name="_events" Hidden="true" />
+      <Field Name="_evidenceAttachments" Hidden="true" />
+      <Field Name="_fics" Hidden="true" />
+      <Method Name="AddAttchment" Hidden="true" />
+      <Method Name="AddDiscipline" Hidden="true" />
+      <Method Name="AddDocument" Hidden="true" />
+      <Method Name="AddEvidenceAttchment" Hidden="true" />
+      <Method Name="AddFic" Hidden="true" />
+      <Method Name="ChangeRequest" Hidden="true" />
+      <Method Name="SetComments" Hidden="true" />
+      <Method Name="SetComplexity" Hidden="true" />
+      <Method Name="SetPrioritization" Hidden="true" />
+      <Method Name="SetSgmStatus" Hidden="true" />
+    </Members>
+    <AssociationLine Name="Documents" Type="Demo2.Samples.Relational.Domain.Models.Document" FixedToPoint="true">
+      <Path>
+        <Point X="86.25" Y="21.188" />
+        <Point X="92.25" Y="21.188" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>RECgAgAAcgAgAIEEQQAAAAJGAkAAVAQiCQiEBAHQJEk=</HashCode>
+      <FileName>Samples\Relational\Domain\Models\ChangeRequest.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Platform" />
+      <Property Name="Prioritization" />
+      <Property Name="Priority" />
+      <Property Name="Source" />
+      <Property Name="State" />
+      <Property Name="Type" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="Attachments" />
+      <Property Name="Disciplines" />
+      <Property Name="Documents" />
+      <Property Name="Events" />
+      <Property Name="EvidenceAttachments" />
+      <Property Name="Fics" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Demo2.Samples.Relational.Domain.Models.ChangeRequestPriority">
+    <Position X="81" Y="22" Width="2.25" />
+    <Members>
+      <Method Name="ChangeRequestPriority" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>Samples\Relational\Domain\Models\ChangeRequestPriority.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Demo2.Samples.Relational.Domain.Models.AttachmentType">
+    <Position X="78.5" Y="23.5" Width="1.5" />
+    <Members>
+      <Method Name="AttachmentType" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAQAAAAAAAAAAAAA=</HashCode>
+      <FileName>Samples\Relational\Domain\Models\AttachmentType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Demo2.Samples.Relational.Domain.Models.ChangeRequestSource">
+    <Position X="81" Y="17.75" Width="1.75" />
+    <Members>
+      <Method Name="ChangeRequestSource" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Samples\Relational\Domain\Models\ChangeRequestSource.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Demo2.Samples.Relational.Domain.Models.ChangeRequestToDiscipline">
+    <Position X="81" Y="20" Width="2.25" />
+    <Members>
+      <Method Name="ChangeRequestToDiscipline" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAIAAAAAAABAAAAAAAAAAAAAEAAAAAAAAAA=</HashCode>
+      <FileName>Samples\Relational\Domain\Models\ChangeRequestToDiscipline.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Discipline" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Demo2.Samples.Relational.Domain.Models.ChangeRequestType">
+    <Position X="87.75" Y="17" Width="1.75" />
+    <Members>
+      <Method Name="ChangeRequestType" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Samples\Relational\Domain\Models\ChangeRequestType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Demo2.Samples.Relational.Domain.Models.Discipline">
+    <Position X="78.5" Y="20" Width="1.5" />
+    <Members>
+      <Method Name="Discipline" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Samples\Relational\Domain\Models\Discipline.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Demo2.Samples.Relational.Domain.Models.Document">
+    <Position X="92.25" Y="20.5" Width="1.5" />
+    <Members>
+      <Method Name="Document" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAAAAgAAAABAAAQAAIAAAAAAAAAAAAAACAA=</HashCode>
+      <FileName>Samples\Relational\Domain\Models\Document.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Category" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Demo2.Samples.Relational.Domain.Models.DocumentCategory">
+    <Position X="94.75" Y="20.5" Width="1.75" />
+    <Members>
+      <Method Name="DocumentCategory" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Samples\Relational\Domain\Models\DocumentCategory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Demo2.Samples.Relational.Domain.Models.EvidenceAttachment">
+    <Position X="88" Y="22.25" Width="1.75" />
+    <Members>
+      <Method Name="EvidenceAttachment" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AEAAAAAACAAAwAIAABBAAAQAAAAAAAAgAQAAAAAAAAA=</HashCode>
+      <FileName>Samples\Relational\Domain\Models\EvidenceAttachment.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Type" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Demo2.Samples.Relational.Domain.Models.Fic">
+    <Position X="87.75" Y="19" Width="1.75" />
+    <Members>
+      <Method Name="Fic" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAAAAgAAAABAAAQAAAAAAAAAAAAAAAAACAA=</HashCode>
+      <FileName>Samples\Relational\Domain\Models\Fic.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Category" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Demo2.Samples.Relational.Domain.Models.FicCategory">
+    <Position X="90.25" Y="19" Width="1.5" />
+    <Members>
+      <Method Name="FicCategory" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Samples\Relational\Domain\Models\FicCategory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Demo2.Samples.Relational.Domain.Models.GutMatrix">
+    <Position X="90.25" Y="21.5" Width="1.5" />
+    <Members>
+      <Method Name="GutMatrix" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAEAAAAAAAAAAAAAAAAAAAAQAACAAA=</HashCode>
+      <FileName>Samples\Relational\Domain\Models\GutMatrix.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Demo2.Samples.Relational.Domain.Models.Platform">
+    <Position X="83.75" Y="15.5" Width="1.5" />
+    <Members>
+      <Method Name="Platform" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAACAAAAAAAAQAAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>Samples\Relational\Domain\Models\Platform.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Un" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Demo2.Samples.Relational.Domain.Models.State">
+    <Position X="90.25" Y="17.5" Width="1.5" />
+    <Members>
+      <Field Name="_items" Hidden="true" />
+      <Method Name="State" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAABAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Samples\Relational\Domain\Models\State.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Demo2.Samples.Relational.Domain.Models.StateChangeEvent">
+    <Position X="87.75" Y="13.75" Width="1.75" />
+    <Members>
+      <Method Name="StateChangeEvent" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAhAAAICAAAAAAAAABCAAQAAAAAAAABQAAAAAAAAAA=</HashCode>
+      <FileName>Samples\Relational\Domain\Models\StateChangeEvent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Demo2.Samples.Relational.Domain.Models.Un">
+    <Position X="81" Y="15.5" Width="1.75" />
+    <Members>
+      <Method Name="Un" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAgAAAAAAAAAAQAAgAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Samples\Relational\Domain\Models\Un.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

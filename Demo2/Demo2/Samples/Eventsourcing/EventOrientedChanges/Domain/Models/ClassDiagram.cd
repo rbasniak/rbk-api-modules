@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Demo2.Samples.Eventsourcing.EventOrientedChanges.Domain.Models.Attachment">
+    <Position X="7.5" Y="2.5" Width="1.75" />
+    <Members>
+      <Method Name="Attachment" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAwAIAAAAAAAQAAAAAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Samples\Eventsourcing\EventOrientedChanges\Domain\Models\Attachment.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Demo2.Samples.Eventsourcing.EventOrientedChanges.Domain.Models.ChangeRequest">
+    <Position X="4" Y="2.25" Width="1.75" />
+    <Members>
+      <Field Name="_attachments" Hidden="true" />
+      <Field Name="_disciplines" Hidden="true" />
+      <Field Name="_documents" Hidden="true" />
+      <Field Name="_evidenceAttachments" Hidden="true" />
+      <Field Name="_fics" Hidden="true" />
+      <Method Name="AddAttachment" Hidden="true" />
+      <Method Name="AddDiscipline" Hidden="true" />
+      <Method Name="AddDocument" Hidden="true" />
+      <Method Name="AddEvidenceAttachment" Hidden="true" />
+      <Method Name="AddFic" Hidden="true" />
+      <Method Name="ChangeRequest" Hidden="true" />
+      <Method Name="RemoveAttachment" Hidden="true" />
+      <Method Name="RemoveDiscipline" Hidden="true" />
+      <Method Name="RemoveDocument" Hidden="true" />
+      <Method Name="RemoveEvidenceAttachment" Hidden="true" />
+      <Method Name="RemoveFic" Hidden="true" />
+      <Method Name="UpdateDocumentCategory" Hidden="true" />
+      <Method Name="UpdateDocumentName" Hidden="true" />
+      <Method Name="UpdateFicCategory" Hidden="true" />
+      <Method Name="UpdateFicName" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>RAKiAgCAcgAgAAEAwSAAEALGAEAAUAQigAiEAACQLEk=</HashCode>
+      <FileName>Samples\Eventsourcing\EventOrientedChanges\Domain\Models\ChangeRequest.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Prioritization" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="EvidenceAttachments" />
+      <Property Name="Attachments" />
+      <Property Name="Fics" />
+      <Property Name="Documents" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Demo2.Samples.Eventsourcing.EventOrientedChanges.Domain.Models.Document">
+    <Position X="1" Y="4.25" Width="1.5" />
+    <Members>
+      <Method Name="Document" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAgAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Samples\Eventsourcing\EventOrientedChanges\Domain\Models\Document.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Demo2.Samples.Eventsourcing.EventOrientedChanges.Domain.Models.EvidenceAttachment">
+    <Position X="7.5" Y="4.75" Width="1.75" />
+    <Members>
+      <Method Name="EvidenceAttachment" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAwAIAABAAAAQAAAAAAAAgAQAAAAAAAAA=</HashCode>
+      <FileName>Samples\Eventsourcing\EventOrientedChanges\Domain\Models\EvidenceAttachment.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Demo2.Samples.Eventsourcing.EventOrientedChanges.Domain.Models.Fic">
+    <Position X="1" Y="2.25" Width="1.5" />
+    <Members>
+      <Method Name="Fic" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAgAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Samples\Eventsourcing\EventOrientedChanges\Domain\Models\Fic.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Demo2.Samples.Eventsourcing.EventOrientedChanges.Domain.Models.GutMatrix">
+    <Position X="1" Y="6.5" Width="1.5" />
+    <Members>
+      <Method Name="GutMatrix" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAEAAAAAAAAAAAAAAAAAAAAQAACAAA=</HashCode>
+      <FileName>Samples\Eventsourcing\EventOrientedChanges\Domain\Models\GutMatrix.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
