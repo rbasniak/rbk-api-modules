@@ -28,7 +28,11 @@ public class TransactionBehavior<TRequest, TResponse> : IPipelineBehavior<TReque
 
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellation)
     {
-        // TODO: Pensar num jeito de não abrir a transação se for um comando que não faz acesso a banco ou é somente leitura
+        if (typeof(ISkipTransaction).IsAssignableFrom(typeof(TRequest)))
+        {
+            return await next();
+        }
+
         if (typeof(IRequest<CommandResponse>).IsAssignableFrom(typeof(TRequest)) ||
             typeof(IRequest<AuditableCommandResponse>).IsAssignableFrom(typeof(TRequest)))
         {
@@ -60,4 +64,8 @@ public class TransactionBehavior<TRequest, TResponse> : IPipelineBehavior<TReque
             return await next();
         }
     }
+}
+
+public interface ISkipTransaction
+{
 }
