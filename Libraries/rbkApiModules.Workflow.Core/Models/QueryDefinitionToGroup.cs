@@ -7,7 +7,7 @@ public class QueryDefinitionToGroup
 
     }
 
-    protected QueryDefinitionToGroup(QueryDefinition query, QueryDefinitionGroup group)
+    public QueryDefinitionToGroup(QueryDefinition query, QueryDefinitionGroup group)
     {
         Group = group;
         Query = query;

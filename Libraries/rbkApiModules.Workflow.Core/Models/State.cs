@@ -16,13 +16,13 @@ public class State: BaseEntity
     /// <summary>
     /// Método só deve ser utilizado para testes unitários.
     /// </summary>
-    protected State(Guid id, StateGroup group, string name, string systemId, string color, bool isActive): 
+    public State(Guid id, StateGroup group, string name, string systemId, string color, bool isActive): 
         this(group, name, systemId, color, isActive)
     {
         Id = id;
     }
 
-    private State(string name, string systemId, string color, bool isActive)
+    public State(string name, string systemId, string color, bool isActive)
     {
         _items = new HashSet<BaseStateEntity>();
         _transitions = new HashSet<Transition>();

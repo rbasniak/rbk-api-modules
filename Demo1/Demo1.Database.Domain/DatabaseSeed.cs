@@ -13,7 +13,7 @@ public class DatabaseSeed: DatabaseSeedManager<DatabaseContext>, IDatabaseSeeder
 
     public DatabaseSeed()
     {
-        AddSeed("2022-10-28: Platforms seed", new SeedInfo<DatabaseContext>((context, serviceProvider) => PlatformsSeed(context, serviceProvider), EnvironmentUsage.Development));
+        AddSeed("2022-10-28: Platforms seed", new SeedInfo<DatabaseContext>((context, serviceProvider) => PlatformsSeed(context, serviceProvider), EnvironmentUsage.Development | EnvironmentUsage.Testing));
         // AddSeed("2023-01-26: Folders seed", new SeedInfo<DatabaseContext>(context => FoldersSeed(context), useInProduction: true));
     }
 

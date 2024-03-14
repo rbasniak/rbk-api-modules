@@ -11,7 +11,7 @@ public class StateGroup : BaseEntity
 
     }
 
-    protected StateGroup(string name)
+    public StateGroup(string name)
     {
         Name = name;
 

@@ -11,7 +11,7 @@ public class QueryDefinitionGroup : BaseEntity
 
     }
 
-    protected QueryDefinitionGroup(string name, string description)
+    public QueryDefinitionGroup(string name, string description)
     {
         Name = name;
         Description = description;

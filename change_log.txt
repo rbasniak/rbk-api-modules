@@ -81,3 +81,15 @@ v.7.1.7
     - Possibilidade de passar configuracão de in-memory collection e override de test services no BaseServerFixture
   BREKING CHANGES
     - Nenhuma :)
+
+    v.7.1.11
+  NOVIDADES
+    - Interface para evitar transações automáticas em commands (ISkipTransaction)
+  BREKING CHANGES
+    - Nenhuma :)
+
+    v.8.0.0
+  NOVIDADES
+    - Atualizado para .NET 8
+  BREKING CHANGES
+    - Nenhuma :)

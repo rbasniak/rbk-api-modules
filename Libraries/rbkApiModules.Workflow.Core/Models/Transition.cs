@@ -9,7 +9,7 @@ public class Transition: BaseEntity
 
     }
 
-    protected Transition(Guid fromStateId, Guid eventId, Guid toStateId, string history, bool isProtected, bool isActive)
+    public Transition(Guid fromStateId, Guid eventId, Guid toStateId, string history, bool isProtected, bool isActive)
     {
         FromStateId = fromStateId;
         ToStateId = toStateId;
@@ -19,7 +19,7 @@ public class Transition: BaseEntity
         IsActive = isActive;
     }
 
-    protected Transition(State fromState, Event @event, State toState, string history, bool isProtected, bool isActive)
+    public Transition(State fromState, Event @event, State toState, string history, bool isProtected, bool isActive)
     {
         FromState = fromState;
         ToState = toState;

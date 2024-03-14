@@ -9,7 +9,7 @@ public class StateChangeEvent : BaseEntity
 
     }
 
-    protected StateChangeEvent(BaseStateEntity entity, string username, string statusName, string historyText, string notes)
+    public StateChangeEvent(BaseStateEntity entity, string username, string statusName, string historyText, string notes)
     {
         Entity = entity;
         Username = username;

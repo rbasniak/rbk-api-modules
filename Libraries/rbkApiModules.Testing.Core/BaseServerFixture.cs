@@ -5,10 +5,11 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
-using rbkApiModules.Commons.Relational;
-using Serilog;
+using rbkApiModules.Commons.Relational; 
 using System.Net.Http.Headers;
 using System.Net;
+using Microsoft.Extensions.Hosting;
+using Serilog;
 
 namespace rbkApiModules.Testing.Core;
 
@@ -60,40 +61,24 @@ public class BaseServerFixture : IDisposable
 
         AuthenticationMode = authenticationMode;
 
-        if (authenticationMode == CredentialsAuthenticationModeName)
-        {
-#pragma warning disable CS0618 // Type or member is obsolete
-            Server = new TestServer(new WebHostBuilder()
-                .UseWebRoot(Path.Combine(_contentFolder))
-                .UseEnvironment("Testing")
-                .UseConfiguration(new ConfigurationBuilder()
-                    .SetBasePath(projectDir)
-                    .AddJsonFile("appsettings.Testing.json")
-                    .AddInMemoryCollection(inMemoryCollectionConfig)
-                    .Build()
-                )
-                .UseStartup(startupClassType)
-                .ConfigureTestServices(servicesConfiguration)
-                .UseSerilog(Log.Logger));
-#pragma warning restore CS0618 // Type or member is obsolete
-        }
-        else
-        {
-#pragma warning disable CS0618 // Type or member is obsolete
-            Server = new TestServer(new WebHostBuilder()
-                .UseWebRoot(Path.Combine(_contentFolder))
-                .UseEnvironment("Testing")
-                .UseConfiguration(new ConfigurationBuilder()
-                    .SetBasePath(projectDir)
-                    .AddJsonFile("appsettings.Testing.json")
-                    .AddInMemoryCollection(inMemoryCollectionConfig)
-                    .Build()
-                )
-                .UseStartup(startupClassType)
-                .ConfigureTestServices(servicesConfiguration)
-                .UseSerilog(Log.Logger));
-#pragma warning restore CS0618 // Type or member is obsolete
-        }
+        var host = new HostBuilder()
+            .ConfigureWebHost(webBuilder =>
+            {
+                webBuilder.UseTestServer()
+                    .UseWebRoot(Path.Combine(_contentFolder))
+                    .UseEnvironment("Testing")
+                    .UseConfiguration(new ConfigurationBuilder()
+                        .SetBasePath(projectDir)
+                        .AddJsonFile("appsettings.Testing.json")
+                        .AddInMemoryCollection(inMemoryCollectionConfig)
+                        .Build()
+                    )
+                    .UseStartup(startupClassType)
+                    .ConfigureTestServices(servicesConfiguration);
+            })
+            .UseSerilog(Log.Logger)
+            .Start();
+        Server = host.GetTestServer(); 
 
         Server.BaseAddress = new Uri("https://localhost/");
     }

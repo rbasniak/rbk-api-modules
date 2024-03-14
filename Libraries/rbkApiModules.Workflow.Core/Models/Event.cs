@@ -12,7 +12,7 @@ public class Event : BaseEntity
         Claims = new string[0];
     }
 
-    protected Event([NotNull] string name, string systemId, string[] claims, bool isActive)
+    public Event([NotNull] string name, string systemId, string[] claims, bool isActive)
     {
         Claims = claims;
 

@@ -7,7 +7,7 @@ public class DatabaseSeed : DatabaseSeedManager<DatabaseContext>, IDatabaseSeede
 {
     public DatabaseSeed()
     {
-        AddSeed("2023-03-24: Users seed", new SeedInfo<DatabaseContext>((context, serviceProvider) => UsersSeed(context, serviceProvider), EnvironmentUsage.Development));
+        AddSeed("2023-03-24: Users seed", new SeedInfo<DatabaseContext>((context, serviceProvider) => UsersSeed(context, serviceProvider), EnvironmentUsage.Development | EnvironmentUsage.Testing));
     }
 
     public static void UsersSeed(DatabaseContext context, IServiceProvider serviceProvider)
