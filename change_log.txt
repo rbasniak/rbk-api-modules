@@ -93,3 +93,9 @@ v.7.1.7
     - Atualizado para .NET 8
   BREKING CHANGES
     - Nenhuma :)
+
+    v.8.0.4
+  NOVIDADES
+    - Bug fixes
+  BREKING CHANGES
+    - Nenhuma :) 

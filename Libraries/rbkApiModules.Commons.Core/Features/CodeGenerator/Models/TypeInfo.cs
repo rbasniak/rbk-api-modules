@@ -34,7 +34,7 @@ public class TypeInfo
         }
         if (Type.Name == typeof(SimpleNamedEntity<>).Name && Type.GenericTypeArguments.First() != typeof(Int32))
         {
-            Name = "{ id: string, name: string }";
+            Name = nameof(SimpleNamedEntity);
         }
         else if (Type != typeof(Object) && (Type.IsAssignableFrom(typeof(TreeNode))
             || Type.BaseType == typeof(TreeNode)

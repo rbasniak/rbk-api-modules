@@ -165,7 +165,7 @@ public class AngularCodeGenerator
 
         var models = new List<TypeInfo>();
 
-        foreach (var assembly in loadedAssemblies)
+        foreach (var assembly in loadedAssemblies.Where(x => !x.FullName.Contains("Microsoft.Data.SqlClient")))
         {
             if (assembly.GetName().Name == "Microsoft.IdentityModel.Protocols.OpenIdConnect") continue;
 
@@ -226,7 +226,7 @@ public class AngularCodeGenerator
             assemblies = GetRevelantAssemblies();
         }
 
-        foreach (var assembly in assemblies)
+        foreach (var assembly in assemblies.Where(x => !x.FullName.Contains("Microsoft.Data.SqlClient")))
         {
             var assemblyControllers = (assembly.GetTypes()
                 .Where(myType => myType.IsClass
