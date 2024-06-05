@@ -13,6 +13,9 @@ using rbkApiModules.Commons.Core.Pipelines;
 using rbkApiModules.Identity.Core.DataTransfer.Tenants;
 using rbkApiModules.Commons.Core.Utilities;
 using rbkApiModules.Commons.Charts.ChartJs;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Cryptography;
 
 namespace Demo4;
 
@@ -85,10 +88,14 @@ public class Startup
         services.AddRbkRelationalAuthentication(options => options
             .UseSymetricEncryptationKey()
             .UseLoginWithWindowsAuthentication()
+            .UseMockedWindowsAuthentication()
             .AllowAnonymousAccessToTenants()
             .AllowUserCreationOnFirstAccess("Readonly user")
             .AllowUserCreationByAdmins()
-            .AllowTenantSwitching()
+            .AllowTenantSwitching() 
+            .AppendAuthenticationScheme(builder => 
+                builder.AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>(RbkAuthenticationSchemes.API_KEY, configureOptions: null))
+        
         );
 
         services.AddRbkUIDefinitions(AssembliesForUiDefinitions);

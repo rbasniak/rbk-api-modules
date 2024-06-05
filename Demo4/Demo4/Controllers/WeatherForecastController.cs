@@ -1,17 +1,32 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using rbkApiModules.Identity.Core;
 
 namespace Demo4.Controllers
 {
-    [Authorize]
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class WeatherForecastController : ControllerBase
     {
-        [HttpGet(Name = "GetWeatherForecast")]
-        public string Get()
+        [HttpGet("jwt-auth")]
+        [Authorize]
+        public string Jwt()
         {
-            return "Done";
+            return "Succesfully authenticated with JWT token";
+        }
+
+        [HttpGet("key-auth")]
+        [Authorize(AuthenticationSchemes = RbkAuthenticationSchemes.API_KEY)]
+        public string ApiKey()
+        {
+            return "Succesfully authenticated with API key";
+        }
+
+        [HttpGet("anonymous")]
+        [AllowAnonymous]
+        public string Anonymous()
+        {
+            return "Anonymous user was able to access the data";
         }
     }
 }

@@ -54,6 +54,7 @@ public class FailFastRequestBehavior<TRequest, TResponse> : IPipelineBehavior<TR
         if (!_isDomainValidatorInitialized)
         {
             _domainValidatorType = AppDomain.CurrentDomain.GetAssemblies()
+               .Where(x => !x.FullName.Contains("Microsoft.Data.SqlClient"))
                .Where(a => !a.IsDynamic)
                .SelectMany(a => a.GetTypes())
                .FirstOrDefault(t => t.FullName.Contains("RelationalDomainEntityValidator"));

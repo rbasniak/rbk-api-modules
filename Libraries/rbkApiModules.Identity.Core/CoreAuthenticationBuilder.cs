@@ -49,7 +49,7 @@ public static class CoreAuthenticationBuilder
                 actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthorizationController), nameof(AuthorizationController.GetAllTenantsAnonymous)));
             }
 
-            if (authenticationOptions._loginMode == LoginMode.WindowsAuthentication)
+            if (authenticationOptions._loginMode == LoginMode.WindowsAuthentication || authenticationOptions._loginMode == LoginMode.Custom)
             {
                 actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.LoginWithCredentials)));
                 actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.ChangePassword)));
@@ -61,13 +61,10 @@ public static class CoreAuthenticationBuilder
 
                 o.Filters.Add(new WindowsAuthenticationFilter());
             }
-            else if (authenticationOptions._loginMode == LoginMode.Credentials)
+            
+            if (authenticationOptions._loginMode == LoginMode.Credentials || authenticationOptions._loginMode == LoginMode.Custom)
             {
                 actionsToRemove.Add(new Tuple<Type, string>(typeof(AuthenticationController), nameof(AuthenticationController.LoginWithNegotiate)));
-            }
-            else
-            {
-                throw new NotImplementedException();
             }
 
             if (!authenticationOptions._allowTenantSwitching)
@@ -81,7 +78,7 @@ public static class CoreAuthenticationBuilder
             }
             else
             {
-                if (authenticationOptions._loginMode == LoginMode.WindowsAuthentication)
+                if (authenticationOptions._loginMode == LoginMode.WindowsAuthentication || authenticationOptions._loginMode == LoginMode.Custom)
                 {
                     throw new NotSupportedException("User self registration is not allowed with Windows authentication");
                 }
@@ -101,11 +98,11 @@ public static class CoreAuthenticationBuilder
 
         var authOptions = configuration.GetSection(nameof(JwtIssuerOptions));
 
-        var issuer = authOptions[nameof(JwtIssuerOptions.Issuer)];
-        var audience = authOptions[nameof(JwtIssuerOptions.Audience)];
-        var signingKeyCode = authOptions[nameof(JwtIssuerOptions.SecretKey)];
-        var accessTokenLifeStr = authOptions[nameof(JwtIssuerOptions.AccessTokenLife)];
-        var refreshTokenLifeStr = authOptions[nameof(JwtIssuerOptions.RefreshTokenLife)];
+        var issuer = authOptions[nameof(JwtIssuerOptions.Issuer)] ?? "Unknown";
+        var audience = authOptions[nameof(JwtIssuerOptions.Audience)] ?? "Unknown";
+        var signingKeyCode = authOptions[nameof(JwtIssuerOptions.SecretKey)] ?? "Unknown";
+        var accessTokenLifeStr = authOptions[nameof(JwtIssuerOptions.AccessTokenLife)] ?? "0";
+        var refreshTokenLifeStr = authOptions[nameof(JwtIssuerOptions.RefreshTokenLife)] ?? "0";
 
         if (String.IsNullOrEmpty(issuer)) throw new ArgumentNullException(nameof(JwtIssuerOptions.Issuer));
         if (String.IsNullOrEmpty(audience)) throw new ArgumentNullException(nameof(JwtIssuerOptions.Audience));
@@ -204,43 +201,43 @@ public static class CoreAuthenticationBuilder
 
         var emailOptions = configuration.GetSection(nameof(AuthEmailOptions));
 
-        var smtpHost = emailOptions[nameof(AuthEmailOptions.Server) + ":" + nameof(ServerOptions.SmtpHost)];
-        var portStr = emailOptions[nameof(AuthEmailOptions.Server) + ":" + nameof(ServerOptions.Port)];
-        var useSslStr = emailOptions[nameof(AuthEmailOptions.Server) + ":" + nameof(ServerOptions.SSL)];
+        var smtpHost = emailOptions[nameof(AuthEmailOptions.Server) + ":" + nameof(ServerOptions.SmtpHost)] ?? "";
+        var portStr = emailOptions[nameof(AuthEmailOptions.Server) + ":" + nameof(ServerOptions.Port)] ?? "-1";
+        var useSslStr = emailOptions[nameof(AuthEmailOptions.Server) + ":" + nameof(ServerOptions.SSL)] ?? "false";
 
-        var senderName = emailOptions[nameof(AuthEmailOptions.Sender) + ":" + nameof(SenderOptions.Name)];
-        var senderEmail = emailOptions[nameof(AuthEmailOptions.Sender) + ":" + nameof(SenderOptions.Email)];
-        var senderPassword = emailOptions[nameof(AuthEmailOptions.Sender) + ":" + nameof(SenderOptions.Password)];
+        var senderName = emailOptions[nameof(AuthEmailOptions.Sender) + ":" + nameof(SenderOptions.Name)] ?? "";
+        var senderEmail = emailOptions[nameof(AuthEmailOptions.Sender) + ":" + nameof(SenderOptions.Email)] ?? "";
+        var senderPassword = emailOptions[nameof(AuthEmailOptions.Sender) + ":" + nameof(SenderOptions.Password)] ?? "";
 
-        var mainColor = emailOptions[nameof(AuthEmailOptions.EmailData) + ":" + nameof(EmailContentOptions.MainColor)];
-        var fontColor = emailOptions[nameof(AuthEmailOptions.EmailData) + ":" + nameof(EmailContentOptions.FontColor)];
-        var logo = emailOptions[nameof(AuthEmailOptions.EmailData) + ":" + nameof(EmailContentOptions.Logo)];
-        var supportEmail = emailOptions[nameof(AuthEmailOptions.EmailData) + ":" + nameof(EmailContentOptions.SuportEmail)];
-        var accountDetailsUrl = emailOptions[nameof(AuthEmailOptions.EmailData) + ":" + nameof(EmailContentOptions.AccountDetailsUrl)];
-        var passwordResetUrl = emailOptions[nameof(AuthEmailOptions.EmailData) + ":" + nameof(EmailContentOptions.PasswordResetUrl)];
-        var confirmationSuccessUrl = emailOptions[nameof(AuthEmailOptions.EmailData) + ":" + nameof(EmailContentOptions.ConfirmationSuccessUrl)];
-        var confirmationFailedUrl = emailOptions[nameof(AuthEmailOptions.EmailData) + ":" + nameof(EmailContentOptions.ConfirmationFailedUrl)];
+        var mainColor = emailOptions[nameof(AuthEmailOptions.EmailData) + ":" + nameof(EmailContentOptions.MainColor)] ?? "";
+        var fontColor = emailOptions[nameof(AuthEmailOptions.EmailData) + ":" + nameof(EmailContentOptions.FontColor)] ?? "";
+        var logo = emailOptions[nameof(AuthEmailOptions.EmailData) + ":" + nameof(EmailContentOptions.Logo)] ?? "";
+        var supportEmail = emailOptions[nameof(AuthEmailOptions.EmailData) + ":" + nameof(EmailContentOptions.SuportEmail)] ?? "";
+        var accountDetailsUrl = emailOptions[nameof(AuthEmailOptions.EmailData) + ":" + nameof(EmailContentOptions.AccountDetailsUrl)] ?? "";
+        var passwordResetUrl = emailOptions[nameof(AuthEmailOptions.EmailData) + ":" + nameof(EmailContentOptions.PasswordResetUrl)] ?? "";
+        var confirmationSuccessUrl = emailOptions[nameof(AuthEmailOptions.EmailData) + ":" + nameof(EmailContentOptions.ConfirmationSuccessUrl)] ?? "";
+        var confirmationFailedUrl = emailOptions[nameof(AuthEmailOptions.EmailData) + ":" + nameof(EmailContentOptions.ConfirmationFailedUrl)] ?? "";
 
-        var testEnabledStr = emailOptions[nameof(AuthEmailOptions.TestMode) + ":" + nameof(TestOptions.Enabled)];
+        var testEnabledStr = emailOptions[nameof(AuthEmailOptions.TestMode) + ":" + nameof(TestOptions.Enabled)] ?? "false";
 
-        if (String.IsNullOrEmpty(smtpHost)) throw new ArgumentNullException(nameof(AuthEmailOptions.Server) + ":" + nameof(ServerOptions.SmtpHost));
-        if (String.IsNullOrEmpty(portStr)) throw new ArgumentNullException(nameof(AuthEmailOptions.Server) + ":" + nameof(ServerOptions.Port));
-        if (String.IsNullOrEmpty(useSslStr)) throw new ArgumentNullException(nameof(AuthEmailOptions.Server) + ":" + nameof(ServerOptions.SSL));
+        //if (String.IsNullOrEmpty(smtpHost)) throw new ArgumentNullException(nameof(AuthEmailOptions.Server) + ":" + nameof(ServerOptions.SmtpHost));
+        //if (String.IsNullOrEmpty(portStr)) throw new ArgumentNullException(nameof(AuthEmailOptions.Server) + ":" + nameof(ServerOptions.Port));
+        //if (String.IsNullOrEmpty(useSslStr)) throw new ArgumentNullException(nameof(AuthEmailOptions.Server) + ":" + nameof(ServerOptions.SSL));
 
-        if (String.IsNullOrEmpty(senderName)) throw new ArgumentNullException(nameof(AuthEmailOptions.Sender) + ":" + nameof(SenderOptions.Name));
-        if (String.IsNullOrEmpty(senderEmail)) throw new ArgumentNullException(nameof(AuthEmailOptions.Sender) + ":" + nameof(SenderOptions.Email));
-        if (String.IsNullOrEmpty(senderPassword)) throw new ArgumentNullException(nameof(AuthEmailOptions.Sender) + ":" + nameof(SenderOptions.Password));
+        //if (String.IsNullOrEmpty(senderName)) throw new ArgumentNullException(nameof(AuthEmailOptions.Sender) + ":" + nameof(SenderOptions.Name));
+        //if (String.IsNullOrEmpty(senderEmail)) throw new ArgumentNullException(nameof(AuthEmailOptions.Sender) + ":" + nameof(SenderOptions.Email));
+        //if (String.IsNullOrEmpty(senderPassword)) throw new ArgumentNullException(nameof(AuthEmailOptions.Sender) + ":" + nameof(SenderOptions.Password));
 
-        if (String.IsNullOrEmpty(mainColor)) throw new ArgumentNullException(nameof(AuthEmailOptions.EmailData) + ":" + nameof(EmailContentOptions.MainColor));
-        if (String.IsNullOrEmpty(fontColor)) throw new ArgumentNullException(nameof(AuthEmailOptions.EmailData) + ":" + nameof(EmailContentOptions.FontColor));
-        if (String.IsNullOrEmpty(logo)) throw new ArgumentNullException(nameof(AuthEmailOptions.EmailData) + ":" + nameof(EmailContentOptions.Logo));
-        if (String.IsNullOrEmpty(supportEmail)) throw new ArgumentNullException(nameof(AuthEmailOptions.EmailData) + ":" + nameof(EmailContentOptions.SuportEmail));
-        if (String.IsNullOrEmpty(accountDetailsUrl)) throw new ArgumentNullException(nameof(AuthEmailOptions.EmailData) + ":" + nameof(EmailContentOptions.AccountDetailsUrl));
-        if (String.IsNullOrEmpty(passwordResetUrl)) throw new ArgumentNullException(nameof(AuthEmailOptions.EmailData) + ":" + nameof(EmailContentOptions.PasswordResetUrl));
-        if (String.IsNullOrEmpty(confirmationSuccessUrl)) throw new ArgumentNullException(nameof(AuthEmailOptions.EmailData) + ":" + nameof(EmailContentOptions.ConfirmationSuccessUrl));
-        if (String.IsNullOrEmpty(confirmationFailedUrl)) throw new ArgumentNullException(nameof(AuthEmailOptions.EmailData) + ":" + nameof(EmailContentOptions.ConfirmationFailedUrl));
+        //if (String.IsNullOrEmpty(mainColor)) throw new ArgumentNullException(nameof(AuthEmailOptions.EmailData) + ":" + nameof(EmailContentOptions.MainColor));
+        //if (String.IsNullOrEmpty(fontColor)) throw new ArgumentNullException(nameof(AuthEmailOptions.EmailData) + ":" + nameof(EmailContentOptions.FontColor));
+        //if (String.IsNullOrEmpty(logo)) throw new ArgumentNullException(nameof(AuthEmailOptions.EmailData) + ":" + nameof(EmailContentOptions.Logo));
+        //if (String.IsNullOrEmpty(supportEmail)) throw new ArgumentNullException(nameof(AuthEmailOptions.EmailData) + ":" + nameof(EmailContentOptions.SuportEmail));
+        //if (String.IsNullOrEmpty(accountDetailsUrl)) throw new ArgumentNullException(nameof(AuthEmailOptions.EmailData) + ":" + nameof(EmailContentOptions.AccountDetailsUrl));
+        //if (String.IsNullOrEmpty(passwordResetUrl)) throw new ArgumentNullException(nameof(AuthEmailOptions.EmailData) + ":" + nameof(EmailContentOptions.PasswordResetUrl));
+        //if (String.IsNullOrEmpty(confirmationSuccessUrl)) throw new ArgumentNullException(nameof(AuthEmailOptions.EmailData) + ":" + nameof(EmailContentOptions.ConfirmationSuccessUrl));
+        //if (String.IsNullOrEmpty(confirmationFailedUrl)) throw new ArgumentNullException(nameof(AuthEmailOptions.EmailData) + ":" + nameof(EmailContentOptions.ConfirmationFailedUrl));
 
-        if (String.IsNullOrEmpty(testEnabledStr)) throw new ArgumentNullException(nameof(AuthEmailOptions.TestMode) + ":" + nameof(TestOptions.Enabled));
+        //if (String.IsNullOrEmpty(testEnabledStr)) throw new ArgumentNullException(nameof(AuthEmailOptions.TestMode) + ":" + nameof(TestOptions.Enabled));
 
         if (!Int32.TryParse(portStr, out var port)) throw new InvalidCastException(nameof(AuthEmailOptions.Server) + ":" + nameof(ServerOptions.Port));
         if (!Boolean.TryParse(useSslStr, out var useSsl)) throw new InvalidCastException(nameof(AuthEmailOptions.Server) + ":" + nameof(ServerOptions.SSL));
@@ -371,7 +368,7 @@ public static class CoreAuthenticationBuilder
     {
         var currentDomain = AppDomain.CurrentDomain;
 
-        var loadedAssemblies = currentDomain.GetAssemblies();
+        var loadedAssemblies = currentDomain.GetAssemblies().Where(x => !x.FullName.Contains("Microsoft.Data.SqlClient"));
 
         List<Type> result = new List<Type>();
 
@@ -391,6 +388,7 @@ public static class CoreAuthenticationBuilder
 
 public enum LoginMode
 {
-    Credentials,
-    WindowsAuthentication
+    Credentials = 0,
+    WindowsAuthentication = 1,
+    Custom = 2
 }

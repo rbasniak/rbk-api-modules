@@ -61,7 +61,8 @@ public class JwtFactory : IJwtFactory
 
         if (_authenticationOptions._allowTenantSwitching && !String.IsNullOrEmpty(currentTenant))
         {
-            if (_authenticationOptions._allowUserCreationOnFirstAccess && _authenticationOptions._loginMode == LoginMode.WindowsAuthentication)
+            if (_authenticationOptions._allowUserCreationOnFirstAccess && _authenticationOptions._loginMode == LoginMode.WindowsAuthentication ||
+                _authenticationOptions._allowUserCreationOnFirstAccess && _authenticationOptions._loginMode == LoginMode.Custom)
             {
                 var tenants = await _tenantsService.GetAllAsync();
 

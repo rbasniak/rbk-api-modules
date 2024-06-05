@@ -99,3 +99,9 @@ v.7.1.7
     - Bug fixes
   BREKING CHANGES
     - Nenhuma :) 
+
+    v.8.0.13
+  NOVIDADES
+    - Custom login
+  BREKING CHANGES
+    - Nenhuma (eu acho, esqueci de rastrear)

@@ -41,7 +41,11 @@ public class RenameRole
 
         private async Task<bool> NotBeTheDefaultUserRole(Request request, string name, CancellationToken cancellation)
         {
-            if (!_authOptions._allowUserCreationOnFirstAccess && _authOptions._loginMode != LoginMode.WindowsAuthentication) return true;
+            if (!_authOptions._allowUserCreationOnFirstAccess && _authOptions._loginMode == LoginMode.Credentials ||
+                !_authOptions._allowUserCreationOnFirstAccess && _authOptions._loginMode != LoginMode.Custom)
+            {
+                return true;
+            }
 
             var role = await _rolesService.FindAsync(request.Id);
             

@@ -27,9 +27,9 @@ public class RbkAuthenticationOptions
 
     public RbkAuthenticationOptions AllowUserCreationOnFirstAccess(string roleName)
     {
-        if (_loginMode != LoginMode.WindowsAuthentication)
+        if (_loginMode == LoginMode.Credentials)
         {
-            throw new NotSupportedException($"Automatic user creation is supported with Windows Authentication only. Call '{nameof(UseLoginWithWindowsAuthentication)}' before calling '{nameof(AllowUserCreationOnFirstAccess)}'");
+            throw new NotSupportedException($"Automatic user creation is supported with Windows Authentication or Custom Authentication only. Call '{nameof(UseLoginWithWindowsAuthentication)}' or {nameof(UseCustomLogin)} before calling '{nameof(AllowUserCreationOnFirstAccess)}'");
         }
 
         _allowUserCreationOnFirstAccess = true;
@@ -45,6 +45,7 @@ public class RbkAuthenticationOptions
         return this;
     }
 
+    [Obsolete($"Use {nameof(AppendAuthenticationScheme)} instead for each authentication scheme")]
     public RbkAuthenticationOptions AppendAuthenticationSchemes(Action<AuthenticationBuilder>[] authenticationSchemes)
     {
         _appendAuthenticationSchemes = true;
@@ -92,6 +93,13 @@ public class RbkAuthenticationOptions
     public RbkAuthenticationOptions UseLoginWithWindowsAuthentication()
     {
         _loginMode = LoginMode.WindowsAuthentication;
+
+        return this;
+    }
+
+    public RbkAuthenticationOptions UseCustomLogin()
+    {
+        _loginMode = LoginMode.Custom;
 
         return this;
     }
@@ -150,7 +158,21 @@ public class RbkAuthenticationOptions
         _useMockedWindowsAuthentication = true;
 
         return this;
-    } 
+    }
+
+    public RbkAuthenticationOptions AppendAuthenticationScheme(Action<AuthenticationBuilder> action)
+    {
+        _appendAuthenticationSchemes = true;
+
+        if (_extraAuthenticationSchemes == null)
+        {
+            _extraAuthenticationSchemes = new List<Action<AuthenticationBuilder>>();
+        }
+
+        _extraAuthenticationSchemes.Add(action);
+
+        return this;
+    }
 }
 
 public class rbkDefaultClaimOptions
@@ -261,3 +283,8 @@ public class SeedClaimDescriptions
     public string ManageUsers { get; set; }
 }
 
+
+public static class RbkAuthenticationSchemes
+{
+    public const string API_KEY = "Api-Key";
+}
