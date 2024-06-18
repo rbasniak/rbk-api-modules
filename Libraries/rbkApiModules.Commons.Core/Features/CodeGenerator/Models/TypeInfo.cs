@@ -48,7 +48,7 @@ public class TypeInfo
         }
         else
         {
-            Name = Type.FullName.Split('.').Last().Replace("[]", "").Replace("+Request", "").Replace("+", "");
+            Name = GetTypeName(Type);
         }
     }
 
@@ -57,6 +57,36 @@ public class TypeInfo
     public bool Nullable { get; set; }
     public string Name { get; set; }
     public List<PropertyInfo> Properties { get; set; }
+
+    private string GetTypeName(Type type)
+    {
+        bool isNested = type.IsNested;
+
+        if (isNested)
+        {
+            var parentType = type.DeclaringType;
+            var parentHasAttribute = parentType.HasAttribute<CodeGeneratorNameOverrideAttribute>();
+
+            if (type.HasAttribute<CodeGeneratorNameOverrideAttribute>())
+            {
+                return type.GetAttribute<CodeGeneratorNameOverrideAttribute>().Name;
+            }
+            else if (parentHasAttribute)
+            {
+                var parentName = parentType.GetAttribute<CodeGeneratorNameOverrideAttribute>().Name;
+                return $"{parentName}{type.Name}";
+            }
+        }
+        else
+        {
+            if (type.HasAttribute<CodeGeneratorNameOverrideAttribute>())
+            {
+                return type.GetAttribute<CodeGeneratorNameOverrideAttribute>().Name;
+            }
+        }
+
+        return type.FullName.Split('.').Last().Replace("[]", "").Replace("+Request", "").Replace("+", "");
+    }
 
     public override string ToString()
     {

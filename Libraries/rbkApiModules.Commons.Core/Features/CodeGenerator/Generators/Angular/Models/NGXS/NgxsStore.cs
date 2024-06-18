@@ -104,7 +104,11 @@ public class NgxsStore
         code.AppendLine($"import {{ Observable }} from 'rxjs';");
         code.AppendLine($"import {{ tap }} from 'rxjs/operators';");
         code.AppendLine($"import {{ Injectable }} from '@angular/core';");
-        code.AppendLine($"import {{ ToastActions }} from 'ngx-smz-ui';");
+
+        if (Actions.Items.Any(x => x.Type == ActionType.Create || x.Type == ActionType.Update || x.Type == ActionType.Delete))
+        {
+            code.AppendLine($"import {{ ToastActions }} from 'ngx-smz-ui';");
+        }
         code.AppendLine($"import {{ {Name}Actions }} from './{CodeGenerationUtilities.ToTypeScriptFileCase(Name)}.actions';");
         code.AppendLine($"import {{ {Name}Service }} from '@services/api/{CodeGenerationUtilities.ToTypeScriptFileCase(Name)}.service';");
 
@@ -155,7 +159,7 @@ public class NgxsStore
 
         code.AppendLine($"@Injectable()");
         code.AppendLine($"export class {Name}State {{");
-        code.AppendLine($"  constructor(private apiService: {Name}Service) {{ }}");
+        code.AppendLine($"  constructor(private readonly apiService: {Name}Service) {{ }}");
 
         code.AppendLine($"");
         code.Append(GenerateHandlerCode(listAction));
@@ -255,9 +259,13 @@ public class NgxsStore
 
         var actionPayloadName = action.Type == ActionType.Delete ? "id" : "data";
 
+        var finalReturnType = action.Endpoint != null ? $"Observable<{returnType}>" : returnType;
+        var methodName = CodeGenerationUtilities.ToCamelCase(action.Type.ToString());
+        var finalMethodName = action.Endpoint != null ? $"{methodName}$" : methodName;
+
         code.AppendLine($"");
         code.AppendLine($"  @Action({Name}Actions.{action.Type.ToString()})");
-        code.AppendLine($"  public {CodeGenerationUtilities.ToCamelCase(action.Type.ToString())}$(ctx: StateContext<{Name}StateModel>{(action.Type != ActionType.LoadAll ? $", action: {Name}Actions.{action.Type.ToString()}" : "")}): {(action.Endpoint != null ? $"Observable<{returnType}>" : returnType)} {{");
+        code.AppendLine($"  public {finalMethodName}(ctx: StateContext<{Name}StateModel>{(action.Type != ActionType.LoadAll ? $", action: {Name}Actions.{action.Type.ToString()}" : "")}): {finalReturnType} {{");
         code.AppendLine($"    return this.apiService.{CodeGenerationUtilities.ToCamelCase(action.Endpoint.Name)}({(action.Type != ActionType.LoadAll ? $"action.{actionPayloadName}" : "")}).pipe(");
         code.AppendLine($"      tap({(action.Endpoint != null && action.Endpoint.ReturnType != null ? $"(result: {returnType})" : "()")} => {{");
 
@@ -347,7 +355,7 @@ public class NgxsStore
 
         code.AppendLine($"");
         code.AppendLine($"  @Action({Name}Actions.{action.Type.ToString()})");
-        code.AppendLine($"  public {CodeGenerationUtilities.ToCamelCase(action.Type.ToString())}$(ctx: StateContext<{Name}StateModel>): void {{");
+        code.AppendLine($"  public {CodeGenerationUtilities.ToCamelCase(action.Type.ToString())}(ctx: StateContext<{Name}StateModel>): void {{");
         code.AppendLine($"    ctx.patchState({{");
         code.AppendLine($"      items: [],");
         code.AppendLine($"      lastUpdated: null");
