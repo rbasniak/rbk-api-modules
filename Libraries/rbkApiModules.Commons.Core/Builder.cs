@@ -518,7 +518,7 @@ public static class CommonsCoreBuilder
 
         #region Logging basic setup
 
-        services.AddSingleton<HttpContextEnricher>(); 
+        services.AddSingleton<HttpContextEnricher>();
 
         #endregion
 
@@ -951,7 +951,7 @@ public static class CommonsCoreBuilder
         {
             Log.Logger.Debug($"Registering validators in '{assembly.FullName}'");
 
-            services.RegisterFluentValidators(assembly); 
+            services.RegisterFluentValidators(assembly);
         }
 
         foreach (var type in options._pipelines)
@@ -965,7 +965,11 @@ public static class CommonsCoreBuilder
 
         if (options._assembliesForMediatR.Count > 0)
         {
-            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(options._assembliesForMediatR.ToArray()));
+            services.AddMediatR(cfg =>
+            {
+                cfg.TypeEvaluator = x => !x.ContainsGenericParameters;
+                cfg.RegisterServicesFromAssemblies(options._assembliesForMediatR.ToArray());
+            });
         }
 
         #endregion
@@ -1055,7 +1059,7 @@ public static class CommonsCoreBuilder
                         context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
 
                         var errorHandler = context.Features.Get<IExceptionHandlerFeature>();
-                        
+
                         if (errorHandler != null)
                         {
                             var scopeFactory = app.ApplicationServices.GetService<IServiceScopeFactory>();
@@ -1078,7 +1082,7 @@ public static class CommonsCoreBuilder
                             var errorMessage = localization != null ? localization.LocalizeString(SharedValidationMessages.Errors.InternalServerError) : "Unexpected internal server error";
 
                             await context.Response.WriteAsync(
-                                JsonSerializer.Serialize(new ErrorResult {  Errors = new[] { errorMessage }, Exception = exceptionDetails }))
+                                JsonSerializer.Serialize(new ErrorResult { Errors = new[] { errorMessage }, Exception = exceptionDetails }))
                                     .ConfigureAwait(false);
                         }
                     });

@@ -114,9 +114,22 @@ v.7.1.7
 
     v.8.0.17
   NOVIDADES
+    - Atualização de pacotes em geral
     - Mudanças no funcionamento do atributo CodeGeneratorNameOverride
         - Se a classe for nested sem o atributo, compõe o nome com o atributo da classe pai (se existir), mais o nome da própria classe
         - Se a classe for nested com o atributo, o nome é o valor do atributo e ignora a classe pai
         - Se a classe não for nested, pega o nome do atributo se existir, senao o nome da própria classe
+  BREKING CHANGES
+    - Nenhuma 
+
+    v.8.0.18
+  NOVIDADES
+    - Workaround para versão mais recente do MediatR (no registro automático de handlers genéricos)
+  BREKING CHANGES
+    - Nenhuma 
+
+    v.8.0.19
+  NOVIDADES
+    - Atualização geral de pacotes
   BREKING CHANGES
     - Nenhuma 
