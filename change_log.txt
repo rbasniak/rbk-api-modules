@@ -133,3 +133,9 @@ v.7.1.7
     - Atualização geral de pacotes
   BREKING CHANGES
     - Nenhuma 
+
+    v.8.0.20
+  NOVIDADES
+    - Utilitário para checagem de encoding em testes
+  BREKING CHANGES
+    - Nenhuma 
