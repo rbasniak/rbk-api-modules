@@ -9,8 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo1.BusinessLogic.Command
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "!Solution Items", "!Solution Items", "{24A80F2D-E586-4703-9DB6-FB25259FC236}"
 	ProjectSection(SolutionItems) = preProject
-		Directory.Build.props = Directory.Build.props
 		change_log.txt = change_log.txt
+		Directory.Build.props = Directory.Build.props
 		LICENSE = LICENSE
 	EndProjectSection
 EndProject
@@ -175,6 +175,14 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demo5", "Demo5", "{84F6C8A8-3DA0-42B6-8A74-92E09F289110}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rbkApiModules.Demo5.Tests.Integration", "Tests\rbkApiModules.Demo5.Tests.Integration\rbkApiModules.Demo5.Tests.Integration.csproj", "{7D7FD334-BA03-46B6-878D-8FC68DAD3E9B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demo6", "Demo6", "{178939F2-C4E1-4A87-BA77-56442C744286}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo6.Proxy", "Demo6.Proxy\Demo6.Proxy.csproj", "{4AC32FD6-21F3-4CCF-8A44-B219BE17836D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo6.Processing", "Demo6.Processing\Demo6.Processing.csproj", "{E14B5564-BCB2-4677-85AA-A33BA5EF5483}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.Demo6.Tests.Integration", "rbkApiModules.Demo6.Tests.Integration\rbkApiModules.Demo6.Tests.Integration.csproj", "{FDCECB44-2703-4F68-9BE4-FA20E2ED1E3B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -366,6 +374,18 @@ Global
 		{7D7FD334-BA03-46B6-878D-8FC68DAD3E9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D7FD334-BA03-46B6-878D-8FC68DAD3E9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D7FD334-BA03-46B6-878D-8FC68DAD3E9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4AC32FD6-21F3-4CCF-8A44-B219BE17836D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4AC32FD6-21F3-4CCF-8A44-B219BE17836D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4AC32FD6-21F3-4CCF-8A44-B219BE17836D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4AC32FD6-21F3-4CCF-8A44-B219BE17836D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E14B5564-BCB2-4677-85AA-A33BA5EF5483}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E14B5564-BCB2-4677-85AA-A33BA5EF5483}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E14B5564-BCB2-4677-85AA-A33BA5EF5483}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E14B5564-BCB2-4677-85AA-A33BA5EF5483}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDCECB44-2703-4F68-9BE4-FA20E2ED1E3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDCECB44-2703-4F68-9BE4-FA20E2ED1E3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDCECB44-2703-4F68-9BE4-FA20E2ED1E3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDCECB44-2703-4F68-9BE4-FA20E2ED1E3B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -438,6 +458,10 @@ Global
 		{645E9A12-CD62-4933-8339-9A6672DDB873} = {84F6C8A8-3DA0-42B6-8A74-92E09F289110}
 		{84F6C8A8-3DA0-42B6-8A74-92E09F289110} = {54EA380B-014B-475D-AD85-204BA261E614}
 		{7D7FD334-BA03-46B6-878D-8FC68DAD3E9B} = {17637C69-C691-4368-8C26-DF6B58677214}
+		{178939F2-C4E1-4A87-BA77-56442C744286} = {54EA380B-014B-475D-AD85-204BA261E614}
+		{4AC32FD6-21F3-4CCF-8A44-B219BE17836D} = {178939F2-C4E1-4A87-BA77-56442C744286}
+		{E14B5564-BCB2-4677-85AA-A33BA5EF5483} = {178939F2-C4E1-4A87-BA77-56442C744286}
+		{FDCECB44-2703-4F68-9BE4-FA20E2ED1E3B} = {17637C69-C691-4368-8C26-DF6B58677214}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5ABCFC25-B782-4553-8645-2A49D30D429E}

@@ -1,6 +1,10 @@
-﻿namespace rbkApiModules.Commons.Core;
+﻿using System.Reflection;
+using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
-public class SafeException : ApplicationException
+namespace rbkApiModules.Commons.Core;
+
+public class SafeException : ApplicationException, ISerializable
 {
     private SafeException() : base()
     {
@@ -16,5 +20,5 @@ public class SafeException : ApplicationException
         ShouldBeLogged = shouldBeLogged;
     }
 
-    public bool ShouldBeLogged { get; set; }
+    public bool ShouldBeLogged { get; set; } 
 }

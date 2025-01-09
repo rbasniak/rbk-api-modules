@@ -368,7 +368,7 @@ public static class CoreAuthenticationBuilder
     {
         var currentDomain = AppDomain.CurrentDomain;
 
-        var loadedAssemblies = currentDomain.GetAssemblies().Where(x => !x.FullName.Contains("Microsoft.Data.SqlClient"));
+        var loadedAssemblies = currentDomain.GetAssemblies().Where(x => !x.FullName.StartsWith("Microsoft") && !x.FullName.StartsWith("System"));
 
         List<Type> result = new List<Type>();
 

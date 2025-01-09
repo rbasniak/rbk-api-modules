@@ -178,12 +178,19 @@ public class RbkApiCoreOptions
     #region API controllers
 
     internal bool _useDefaultApiControllers = false;
+    internal bool _ignoreNullPropertiesInControllerResponse = false;
     internal Action<MvcOptions> _userApiControllersOptions = null;
     internal List<IActionFilter> _mvcFilters = new List<IActionFilter>();
 
     public RbkApiCoreOptions UseDefaultApiControllers()
     {
         _useDefaultApiControllers = true;
+        return this;
+    }
+
+    public RbkApiCoreOptions IgnoreNullPropertiesInControllerResponse()
+    {
+        _ignoreNullPropertiesInControllerResponse = true;
         return this;
     }
 
@@ -712,11 +719,13 @@ public static class CommonsCoreBuilder
 
         #region API controllers
 
+        IMvcBuilder mvcBuilder = null;
+
         if (options._useDefaultApiControllers)
         {
             Log.Logger.Debug($"Using default API controller settings");
 
-            services.AddControllers(mvcOptions =>
+            mvcBuilder = services.AddControllers(mvcOptions =>
             {
                 foreach (var filter in options._mvcFilters)
                 {
@@ -741,7 +750,15 @@ public static class CommonsCoreBuilder
                 throw new InvalidOperationException($"{nameof(RbkApiCoreOptions.UseCustomMvcFilters)} cannot be used with {nameof(RbkApiCoreOptions.UseCustomApiControllers)}, choose either one or another");
             }
 
-            services.AddControllers(options._userApiControllersOptions);
+            mvcBuilder = services.AddControllers(options._userApiControllersOptions);
+        }
+
+        if (mvcBuilder != null && options._ignoreNullPropertiesInControllerResponse)
+        {
+            mvcBuilder.AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+            });
         }
 
         #endregion

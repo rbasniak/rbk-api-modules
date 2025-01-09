@@ -142,7 +142,7 @@ public class BaseController : ControllerBase
         var messages = response.Errors.Select(x => x.Message).ToArray();
         var exceptions = response.Errors
             .Where(x => x.Exception != null)
-            .Select(x => x.Message + ": \r\n\r\n" +  x.Exception.ToBetterString());
+            .Select(x => x.Message + ": \r\n\r\n" +  x.Exception);
 
         var exceptionDetails = String.Join("\r\n ------------------------------------------------------------------------------------------------------------------ \r\n", exceptions);
 

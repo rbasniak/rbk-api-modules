@@ -91,9 +91,11 @@ public class LocalizationCache
 
         DefaultValues = new SortedDictionary<string, string>();
 
-        var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(x => !x.FullName.Contains("Microsoft.Data.SqlClient"));
+        var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(x => !x.FullName.StartsWith("Microsoft") && !x.FullName.StartsWith("System"));
 
         var localizableEnums = assemblies
+            .Where(x => !x.FullName.StartsWith("Microsoft"))
+            .Where(x => !x.FullName.StartsWith("System"))
             .SelectMany(assembly => assembly.GetTypes().Where(type => typeof(ILocalizedResource).IsAssignableFrom(type) && !type.IsInterface)
                 .SelectMany(typeImplementingInterface => typeImplementingInterface.GetNestedTypes().Where(x => x.IsEnum)))
                     .ToList();
