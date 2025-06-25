@@ -15,8 +15,8 @@ namespace Demo1.Database.Domain.Migrations
                 name: "__SeedHistory",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "text", nullable: false),
-                    DateApplied = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    DateApplied = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -27,8 +27,8 @@ namespace Demo1.Database.Domain.Migrations
                 name: "Authors",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -39,11 +39,11 @@ namespace Demo1.Database.Domain.Migrations
                 name: "Claims",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Identification = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
-                    Description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    Hidden = table.Column<bool>(type: "boolean", nullable: false),
-                    IsProtected = table.Column<bool>(type: "boolean", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Identification = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Hidden = table.Column<bool>(type: "bit", nullable: false),
+                    IsProtected = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -54,10 +54,10 @@ namespace Demo1.Database.Domain.Migrations
                 name: "Folder",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: true),
-                    Description = table.Column<string>(type: "text", nullable: true),
-                    ParentId = table.Column<Guid>(type: "uuid", nullable: true)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ParentId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -74,16 +74,16 @@ namespace Demo1.Database.Domain.Migrations
                 name: "Notifications",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Category = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    Title = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    Body = table.Column<string>(type: "character varying(1024)", maxLength: 1024, nullable: true),
-                    Route = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    Link = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    Status = table.Column<int>(type: "integer", nullable: false),
-                    Type = table.Column<int>(type: "integer", nullable: false),
-                    User = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: true)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Category = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    Title = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    Body = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: true),
+                    Route = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    Link = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    User = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -94,9 +94,9 @@ namespace Demo1.Database.Domain.Migrations
                 name: "Tenants",
                 columns: table => new
                 {
-                    Alias = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
-                    Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    Metadata = table.Column<string>(type: "text", nullable: true)
+                    Alias = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Metadata = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -107,14 +107,14 @@ namespace Demo1.Database.Domain.Migrations
                 name: "TraceLog",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CommandId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CommandName = table.Column<string>(type: "text", nullable: true),
-                    Payload = table.Column<string>(type: "text", nullable: true),
-                    Username = table.Column<string>(type: "text", nullable: true),
-                    AggregateId = table.Column<Guid>(type: "uuid", nullable: false),
-                    EntityId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Timestamp = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CommandId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CommandName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Payload = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AggregateId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    EntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -125,12 +125,12 @@ namespace Demo1.Database.Domain.Migrations
                 name: "File",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Size = table.Column<int>(type: "integer", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: true),
-                    Description = table.Column<string>(type: "text", nullable: true),
-                    Extension = table.Column<string>(type: "text", nullable: true),
-                    FolderId = table.Column<Guid>(type: "uuid", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Size = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Extension = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FolderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -147,10 +147,10 @@ namespace Demo1.Database.Domain.Migrations
                 name: "Blogs",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Title = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
-                    Description = table.Column<string>(type: "character varying(1024)", maxLength: 1024, nullable: true),
-                    TenantId = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: true),
+                    TenantId = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -166,14 +166,14 @@ namespace Demo1.Database.Domain.Migrations
                 name: "Comments",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Username = table.Column<string>(type: "text", nullable: true),
-                    EntityId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ParentId = table.Column<Guid>(type: "uuid", nullable: true),
-                    Message = table.Column<string>(type: "text", nullable: true),
-                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Metadata = table.Column<string>(type: "text", nullable: true),
-                    TenantId = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ParentId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Message = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Metadata = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TenantId = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -195,11 +195,11 @@ namespace Demo1.Database.Domain.Migrations
                 name: "Faqs",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Tag = table.Column<string>(type: "text", nullable: true),
-                    Question = table.Column<string>(type: "text", nullable: true),
-                    Answer = table.Column<string>(type: "text", nullable: true),
-                    TenantId = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Tag = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Question = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Answer = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TenantId = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -215,10 +215,10 @@ namespace Demo1.Database.Domain.Migrations
                 name: "Plant",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: true),
-                    Desciption = table.Column<string>(type: "text", nullable: true),
-                    TenantId = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Desciption = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TenantId = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -234,9 +234,9 @@ namespace Demo1.Database.Domain.Migrations
                 name: "Roles",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
-                    TenantId = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    TenantId = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -252,24 +252,24 @@ namespace Demo1.Database.Domain.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Username = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    Email = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    Password = table.Column<string>(type: "character varying(4096)", maxLength: 4096, nullable: true),
-                    RefreshToken = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: true),
-                    AuthenticationMode = table.Column<int>(type: "integer", nullable: false),
-                    DisplayName = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    Avatar = table.Column<string>(type: "character varying(1024)", maxLength: 1024, nullable: true),
-                    IsConfirmed = table.Column<bool>(type: "boolean", nullable: false),
-                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    ActivationCode = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    PasswordRedefineCode_CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    PasswordRedefineCode_Hash = table.Column<string>(type: "character varying(1024)", maxLength: 1024, nullable: true),
-                    RefreshTokenValidity = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    LastLogin = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    Metadata = table.Column<string>(type: "text", nullable: true),
-                    TenantId = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Username = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", maxLength: 4096, nullable: true),
+                    RefreshToken = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: true),
+                    AuthenticationMode = table.Column<int>(type: "int", nullable: false),
+                    DisplayName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    Avatar = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: true),
+                    IsConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ActivationCode = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    PasswordRedefineCode_CreationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    PasswordRedefineCode_Hash = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: true),
+                    RefreshTokenValidity = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastLogin = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    Metadata = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TenantId = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -285,15 +285,15 @@ namespace Demo1.Database.Domain.Migrations
                 name: "Posts",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Title = table.Column<string>(type: "character varying(16)", maxLength: 16, nullable: false),
-                    Body = table.Column<string>(type: "character varying(4096)", maxLength: 4096, nullable: true),
-                    PublishingDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    AuthorId = table.Column<Guid>(type: "uuid", nullable: false),
-                    BlogId = table.Column<Guid>(type: "uuid", nullable: false),
-                    UniqueInApplication = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
-                    UniqueInTenant = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
-                    TenantId = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(16)", maxLength: 16, nullable: false),
+                    Body = table.Column<string>(type: "nvarchar(max)", maxLength: 4096, nullable: true),
+                    PublishingDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    AuthorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    BlogId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UniqueInApplication = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false),
+                    UniqueInTenant = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false),
+                    TenantId = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -321,8 +321,8 @@ namespace Demo1.Database.Domain.Migrations
                 name: "RolesToClaims",
                 columns: table => new
                 {
-                    RoleId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ClaimId = table.Column<Guid>(type: "uuid", nullable: false)
+                    RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ClaimId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -345,9 +345,9 @@ namespace Demo1.Database.Domain.Migrations
                 name: "UsersToClaims",
                 columns: table => new
                 {
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ClaimId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Access = table.Column<int>(type: "integer", nullable: false)
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ClaimId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Access = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -370,8 +370,8 @@ namespace Demo1.Database.Domain.Migrations
                 name: "UsersToRoles",
                 columns: table => new
                 {
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    RoleId = table.Column<Guid>(type: "uuid", nullable: false)
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {

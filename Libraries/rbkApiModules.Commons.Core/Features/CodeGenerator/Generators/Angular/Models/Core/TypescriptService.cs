@@ -32,7 +32,15 @@ public class TypescriptService
         code.AppendLine("import { environment } from '@environments/environment';");
         code.AppendLine("import { HttpClient } from '@angular/common/http';");
         code.AppendLine("import { Observable } from 'rxjs/internal/Observable';");
-        code.AppendLine("import { BaseApiService } from 'ngx-smz-ui';");
+        if (CodeGenerationOptions.IsSmzLegacy)
+        {
+            code.AppendLine("import { BaseApiService } from 'ngx-smz-ui';");
+        }
+        else
+        {
+            code.AppendLine("import { BaseApiService } from '@ngx-smz/core';");
+        }
+
         code.AppendLine("{{EXTERNAL_REFERENCES}}");
         code.AppendLine("@Injectable({ providedIn: 'root' })");
         code.AppendLine("export class " + Name + " extends BaseApiService {");
@@ -77,7 +85,14 @@ public class TypescriptService
 
             if (method.ReturnType != null && method.ReturnType.HasDateProperty)
             {
-                externalReferences.Add("import { fixDates } from 'ngx-smz-ui';");
+                if (CodeGenerationOptions.IsSmzLegacy)
+                {
+                    externalReferences.Add("import { fixDates } from 'ngx-smz-ui';");
+                }
+                else
+                {
+                    externalReferences.Add("import { fixDates } from '@ngx-smz/core';");
+                }
                 terminator = ".pipe(";
             }
 

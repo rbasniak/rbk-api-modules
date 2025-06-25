@@ -59,7 +59,7 @@ public class Startup
         else
         {
             services.AddDbContext<ReadDatabaseContext>((scope, options) => options
-                .UseNpgsql(
+                .UseSqlServer(
                     _configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Read"))
                 //.AddInterceptors(scope.GetRequiredService<DatabaseAnalyticsInterceptor>())
                 //.AddInterceptors(scope.GetRequiredService<DatabaseDiagnosticsInterceptor>())
@@ -68,7 +68,7 @@ public class Startup
             );
 
             services.AddDbContext<DatabaseContext>((scope, options) => options
-                .UseNpgsql(
+                .UseSqlServer(
                     _configuration.GetConnectionString("DefaultConnection").Replace("**CONTEXT**", "Write"))
                 //.AddInterceptors(scope.GetRequiredService<DatabaseAnalyticsInterceptor>())
                 //.AddInterceptors(scope.GetRequiredService<DatabaseDiagnosticsInterceptor>())

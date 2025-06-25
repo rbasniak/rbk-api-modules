@@ -1,5 +1,6 @@
 ﻿using rbkApiModules.Commons.Core.Localization;
 using Serilog;
+using System.Reflection;
 using System.Text;
 
 namespace rbkApiModules.Commons.Core.CodeGeneration;
@@ -44,12 +45,19 @@ public class FrontendModel
     {
         foreach (var model in Models.Where(x => x.Filepath != null))
         {
-            Log.Information("Generating TypeScript model: {model}", model.Name);
+            try
+            {
+                Log.Information("Generating TypeScript model: {model}", model.Name);
 
-            var filename = Path.Combine(_basePath, model.Filepath);
-            Directory.CreateDirectory(Path.GetDirectoryName(filename));
+                var filename = Path.Combine(_basePath, model.Filepath);
+                Directory.CreateDirectory(Path.GetDirectoryName(filename));
 
-            File.WriteAllText(filename, model.GenerateCode(Models));
+                File.WriteAllText(filename, model.GenerateCode(Models));
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error generating model file '{Path.GetFileName(model.Name)}.ts'", ex);
+            }
         }
     }
 
@@ -57,12 +65,20 @@ public class FrontendModel
     {
         foreach (var service in Services)
         {
-            Log.Information("Generating TypeScript service: {model}", service.Name);
+            try
+            {
+                Log.Information("Generating TypeScript service: {model}", service.Name);
 
-            var filename = Path.Combine(_basePath, service.Filepath);
-            Directory.CreateDirectory(Path.GetDirectoryName(filename));
+                var filename = Path.Combine(_basePath, service.Filepath);
+                Directory.CreateDirectory(Path.GetDirectoryName(filename));
 
-            File.WriteAllText(filename, service.GenerateCode(Models));
+                File.WriteAllText(filename, service.GenerateCode(Models));
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error generating service file '{Path.GetFileName(service.Name)}.service.ts'", ex);
+            }
+
         }
     }
 
@@ -70,26 +86,33 @@ public class FrontendModel
     {
         foreach (var store in Stores)
         {
-            Log.Information("Generating NGXS store: {store}", store.Name);
+            try
+            {
+                Log.Information("Generating NGXS store: {store}", store.Name);
 
-            if (!store.Actions.Items.Any(x => x.Type == ActionType.LoadAll)) continue;
+                if (!store.Actions.Items.Any(x => x.Type == ActionType.LoadAll)) continue;
 
-            var actionFilename = Path.Combine(_basePath, "state", "database", CodeGenerationUtilities.ToTypeScriptFileCase(store.Name), store.ActionsFilepath) + ".ts";
-            var selectorFilename = Path.Combine(_basePath, "state", "database", CodeGenerationUtilities.ToTypeScriptFileCase(store.Name), store.SelectorFilepath) + ".ts";
-            var stateFilename = Path.Combine(_basePath, "state", "database", CodeGenerationUtilities.ToTypeScriptFileCase(store.Name), store.StateFilepath) + ".ts";
+                var actionFilename = Path.Combine(_basePath, "state", "database", CodeGenerationUtilities.ToTypeScriptFileCase(store.Name), store.ActionsFilepath) + ".ts";
+                var selectorFilename = Path.Combine(_basePath, "state", "database", CodeGenerationUtilities.ToTypeScriptFileCase(store.Name), store.SelectorFilepath) + ".ts";
+                var stateFilename = Path.Combine(_basePath, "state", "database", CodeGenerationUtilities.ToTypeScriptFileCase(store.Name), store.StateFilepath) + ".ts";
 
-            var actionData = store.GenerateActionFile();
-            var selectorData = store.GenerateSelectorFile();
-            var stateData = store.GenerateStateFile();
+                var actionData = store.GenerateActionFile();
+                var selectorData = store.GenerateSelectorFile();
+                var stateData = store.GenerateStateFile();
 
-            Directory.CreateDirectory(Path.GetDirectoryName(actionFilename));
-            File.WriteAllText(actionFilename, actionData);
+                Directory.CreateDirectory(Path.GetDirectoryName(actionFilename));
+                File.WriteAllText(actionFilename, actionData);
 
-            Directory.CreateDirectory(Path.GetDirectoryName(selectorFilename));
-            File.WriteAllText(selectorFilename, selectorData);
+                Directory.CreateDirectory(Path.GetDirectoryName(selectorFilename));
+                File.WriteAllText(selectorFilename, selectorData);
 
-            Directory.CreateDirectory(Path.GetDirectoryName(stateFilename));
-            File.WriteAllText(stateFilename, stateData);
+                Directory.CreateDirectory(Path.GetDirectoryName(stateFilename));
+                File.WriteAllText(stateFilename, stateData);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error generating the store '{store.Name}'", ex);
+            }
         }
 
         GenerateStoreSetupFile();

@@ -36,40 +36,54 @@ public class AngularCodeGenerator
 
         foreach ( var controller in controllers)
         {
-            Log.Information("CONTROLLER: {controller} ROUTE: {route}", controller.Name, controller.Route);
-
-            foreach (var action in controller.Endpoints)
+            try
             {
-                Log.Information("  ENDPOINT: {endpoint} ROUTE: {route} GENERATE STATE: {generateState} IGNORE MODE: {ignoreMode} STATE BEHAVIOR: {stateBehavior}",
-                    action.Name, action.Route, action.IncludeInStatesGenertation, action.IgnoreMode, action.StoreBehavior);
+                Log.Information("CONTROLLER: {controller} ROUTE: {route}", controller.Name, controller.Route);
 
-                if (action.InputType != null)
+                foreach (var action in controller.Endpoints)
                 {
-                    Log.Information("    INPUT: {inputName} ({inputType})", action.InputType.Name, action.InputType.Type.FullName);
-                }
-                else
-                {
-                    Log.Information("    INPUT: none");
-                }
+                    try
+                    {
+                        Log.Information("  ENDPOINT: {endpoint} ROUTE: {route} GENERATE STATE: {generateState} IGNORE MODE: {ignoreMode} STATE BEHAVIOR: {stateBehavior}",
+                                                action.Name, action.Route, action.IncludeInStatesGenertation, action.IgnoreMode, action.StoreBehavior);
 
-                if (action.ReturnType != null)
-                {
-                    Log.Information("    OUTPUT: {outputName} ({outputType})", action.ReturnType.Name, action.ReturnType.Type.FullName);
-                }
-                else
-                {
-                    Log.Information("    OUTPUT: none");
-                }
+                        if (action.InputType != null)
+                        {
+                            Log.Information("    INPUT: {inputName} ({inputType})", action.InputType.Name, action.InputType.Type.FullName);
+                        }
+                        else
+                        {
+                            Log.Information("    INPUT: none");
+                        }
 
-                if (action.UrlParameters != null)
-                {
-                    Log.Information("    PARAMETERS: ");
-                }
+                        if (action.ReturnType != null)
+                        {
+                            Log.Information("    OUTPUT: {outputName} ({outputType})", action.ReturnType.Name, action.ReturnType.Type.FullName);
+                        }
+                        else
+                        {
+                            Log.Information("    OUTPUT: none");
+                        }
 
-                foreach (var parameter in action.UrlParameters)
-                {
-                    Log.Information("      NAME: {paramName} TYPE: {paramType} ({paramFullType})", parameter.Name, parameter.Type.Name, parameter.Type.Type.FullName);
+                        if (action.UrlParameters != null)
+                        {
+                            Log.Information("    PARAMETERS: ");
+                        }
+
+                        foreach (var parameter in action.UrlParameters)
+                        {
+                            Log.Information("      NAME: {paramName} TYPE: {paramType} ({paramFullType})", parameter.Name, parameter.Type.Name, parameter.Type.Type.FullName);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new InvalidOperationException($"Error processing action {action.Name}", ex);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error processing controller {controller.Name}", ex);
             }
         }
 
@@ -81,35 +95,49 @@ public class AngularCodeGenerator
 
         foreach (var controller in controllers)
         {
-            foreach (var endpoint in controller.Endpoints)
+            try
             {
-                if (endpoint.ReturnType != null)
+                foreach (var endpoint in controller.Endpoints)
                 {
-                    var model = endpoint.ReturnType;
-
-                    if (!models.Any(x => x.Name == model.Name) && !CodeGenerationUtilities.IsNative(new TypeInfo(model.Type).Type))
+                    try
                     {
-                        Log.Information("Adding model to the list of models that will have a .ts file (from return types): {model}", model.Name);
-                        models.Add(model);
+                        if (endpoint.ReturnType != null)
+                        {
+                            var model = endpoint.ReturnType;
 
-                        if (model.Name == "BaseResponse") Debugger.Break();
+                            if (!models.Any(x => x.Name == model.Name) && !CodeGenerationUtilities.IsNative(new TypeInfo(model.Type).Type))
+                            {
+                                Log.Information("Adding model to the list of models that will have a .ts file (from return types): {model}", model.Name);
+                                models.Add(model);
+
+                                if (model.Name == "BaseResponse") Debugger.Break();
+                            }
+                            index++;
+                        }
+
+                        if (endpoint.InputType != null)
+                        {
+                            var model = endpoint.InputType;
+
+                            if (!models.Any(x => x.Name == model.Name) && !CodeGenerationUtilities.IsNative(new TypeInfo(model.Type).Type))
+                            {
+                                Log.Information("Adding model to the list of models that will have a .ts file (from return types): {model}", model.Name);
+                                models.Add(model);
+
+                                if (model.Name == "BaseResponse") Debugger.Break();
+                            }
+                            index++;
+                        }
                     }
-                    index++;
-                }
-
-                if (endpoint.InputType != null)
-                {
-                    var model = endpoint.InputType;
-
-                    if (!models.Any(x => x.Name == model.Name) && !CodeGenerationUtilities.IsNative(new TypeInfo(model.Type).Type))
+                    catch (Exception ex)
                     {
-                        Log.Information("Adding model to the list of models that will have a .ts file (from return types): {model}", model.Name);
-                        models.Add(model);
-
-                        if (model.Name == "BaseResponse") Debugger.Break();
+                        throw new InvalidOperationException($"Error generating code for endpoint {endpoint}", ex);
                     }
-                    index++;
                 }
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error generating code for controller {controller.Name}", ex);
             }
         }  
 
@@ -123,26 +151,33 @@ public class AngularCodeGenerator
             {
                 var model = models[i];
 
-                Log.Information("  Analysing model: {model}", model.Name);
-
-                foreach (var property in model.Type.GetProperties())
+                try
                 {
-                    var propertyTypeInfo = new TypeInfo(property.PropertyType);
+                    Log.Information("  Analysing model: {model}", model.Name);
 
-                    var isNative = CodeGenerationUtilities.IsNative(propertyTypeInfo.Type);
-
-                    if (!isNative)
+                    foreach (var property in model.Type.GetProperties())
                     {
-                        if (!models.Any(x => x.Name == propertyTypeInfo.Name))
+                        var propertyTypeInfo = new TypeInfo(property.PropertyType);
+
+                        var isNative = CodeGenerationUtilities.IsNative(propertyTypeInfo.Type);
+
+                        if (!isNative)
                         {
-                            Log.Information("Adding model to the list of models that will have a .ts file (associated from {parent}): {model}", model.Name, propertyTypeInfo.Name);
+                            if (!models.Any(x => x.Name == propertyTypeInfo.Name))
+                            {
+                                Log.Information("Adding model to the list of models that will have a .ts file (associated from {parent}): {model}", model.Name, propertyTypeInfo.Name);
 
-                            foundNewModel = true;
-                            models.Add(propertyTypeInfo);
+                                foundNewModel = true;
+                                models.Add(propertyTypeInfo);
 
-                            if (propertyTypeInfo.Name == "BaseResponse") Debugger.Break();
+                                if (propertyTypeInfo.Name == "BaseResponse") Debugger.Break();
+                            }
                         }
                     }
+                }
+                catch (Exception ex)
+                {
+                    throw new InvalidOperationException($"Error generating code for model '{model.Name}'", ex);
                 }
             }
 
@@ -167,25 +202,32 @@ public class AngularCodeGenerator
 
         foreach (var assembly in loadedAssemblies.Where(x => !x.FullName.StartsWith("Microsoft") && !x.FullName.StartsWith("System")))
         {
-            if (assembly.GetName().Name == "Microsoft.IdentityModel.Protocols.OpenIdConnect") continue;
-
-            var modelTypes = (assembly.GetTypes()
-                .Where(myType => ((myType.IsClass && !myType.IsAbstract) || myType.IsEnum)
-                        && myType.HasAttribute<ForceTypescriptModelGenerationAttribute>()))
-                .ToArray();
-
-            foreach (var modelType in modelTypes)
+            try
             {
-                var attribute = modelType.GetAttribute<ForceTypescriptModelGenerationAttribute>();
+                if (assembly.GetName().Name == "Microsoft.IdentityModel.Protocols.OpenIdConnect") continue;
 
-                var include = attribute.Scopes.Length == 0 || attribute.Scopes.Any(x => x == projectId);
+                var modelTypes = (assembly.GetTypes()
+                    .Where(myType => ((myType.IsClass && !myType.IsAbstract) || myType.IsEnum)
+                            && myType.HasAttribute<ForceTypescriptModelGenerationAttribute>()))
+                    .ToArray();
 
-                if (include)
+                foreach (var modelType in modelTypes)
                 {
-                    models.Add(new TypeInfo(modelType));
+                    var attribute = modelType.GetAttribute<ForceTypescriptModelGenerationAttribute>();
 
-                    if (modelType.Name == "BaseResponse") Debugger.Break();
+                    var include = attribute.Scopes.Length == 0 || attribute.Scopes.Any(x => x == projectId);
+
+                    if (include)
+                    {
+                        models.Add(new TypeInfo(modelType));
+
+                        if (modelType.Name == "BaseResponse") Debugger.Break();
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error loading models from assembly {assembly.GetName()}", ex);
             }
         }
 
@@ -228,85 +270,106 @@ public class AngularCodeGenerator
 
         foreach (var assembly in assemblies.Where(x => !x.FullName.StartsWith("Microsoft") && !x.FullName.StartsWith("System")))
         {
-            var assemblyControllers = (assembly.GetTypes()
+            try
+            {
+                var assemblyControllers = (assembly.GetTypes()
                 .Where(myType => myType.IsClass
                         && !myType.IsAbstract
                         && !myType.Name.StartsWith("Base")
                         && myType.IsSubclassOf(typeof(ControllerBase)))
                 .Select(x => new ControllerInfo(x, projectId)));
 
-            foreach (var controller in assemblyControllers)
-            {
-                if (controller.Type.GetCodeGenerationIgnoreMode() == IgnoreMode.All)
+                foreach (var controller in assemblyControllers)
                 {
-                    continue;
-                }
-
-                if (!String.IsNullOrEmpty(_projectId))
-                {
-                    if (controller.Scopes.Length > 0)
+                    try
                     {
-                        var include = controller.Scopes.Any(x => x == projectId);
-
-                        if (!include)
+                        if (controller.Type.GetCodeGenerationIgnoreMode() == IgnoreMode.All)
                         {
                             continue;
                         }
-                    }
-                }
 
-                var actionsToIgnore = new List<EndpointInfo>();
-
-                var test1 = !String.IsNullOrEmpty(projectId);
-                var test2 = CodeGenerationModuleOptions.Instance.IgnoreOptions.ContainsKey("*");
-
-                if (!String.IsNullOrEmpty(projectId) || CodeGenerationModuleOptions.Instance.IgnoreOptions.ContainsKey("*"))
-                {
-                    foreach (var action in controller.Endpoints)
-                    {
-                        var patterns = new List<string>();
-
-                        if (!String.IsNullOrEmpty(projectId))
+                        if (!String.IsNullOrEmpty(_projectId))
                         {
-                            CodeGenerationModuleOptions.Instance.IgnoreOptions.TryGetValue(projectId, out patterns);
-                        }
-
-                        if (patterns == null)
-                        {
-                            patterns = new List<string>();
-                        }
-
-                        CodeGenerationModuleOptions.Instance.IgnoreOptions.TryGetValue("*", out var patterns2);
-
-                        if (patterns2 != null)
-                        {
-                            patterns.AddRange(patterns2);
-                        }
-
-                        foreach (var pattern in patterns)
-                        {
-                            var actionRoute = String.IsNullOrEmpty(action.Route) ? "" : ("/" + action.Route);
-                            var completeRoute1 = $"{action.Method.ToString().ToUpper()} {controller.Route}{action.Route}";
-                            var completeRoute2 = $"* {controller.Route}{action.Route}";
-
-                            if (completeRoute1.ToLower().StartsWith(pattern.ToLower()) ||
-                                completeRoute2.ToLower().StartsWith(pattern.ToLower()))
+                            if (controller.Scopes.Length > 0)
                             {
-                                actionsToIgnore.Add(action);
+                                var include = controller.Scopes.Any(x => x == projectId);
+
+                                if (!include)
+                                {
+                                    continue;
+                                }
                             }
                         }
+
+                        var actionsToIgnore = new List<EndpointInfo>();
+
+                        var test1 = !String.IsNullOrEmpty(projectId);
+                        var test2 = CodeGenerationModuleOptions.Instance.IgnoreOptions.ContainsKey("*");
+
+                        if (!String.IsNullOrEmpty(projectId) || CodeGenerationModuleOptions.Instance.IgnoreOptions.ContainsKey("*"))
+                        {
+                            foreach (var action in controller.Endpoints)
+                            {
+                                try
+                                {
+                                    var patterns = new List<string>();
+
+                                    if (!String.IsNullOrEmpty(projectId))
+                                    {
+                                        CodeGenerationModuleOptions.Instance.IgnoreOptions.TryGetValue(projectId, out patterns);
+                                    }
+
+                                    if (patterns == null)
+                                    {
+                                        patterns = new List<string>();
+                                    }
+
+                                    CodeGenerationModuleOptions.Instance.IgnoreOptions.TryGetValue("*", out var patterns2);
+
+                                    if (patterns2 != null)
+                                    {
+                                        patterns.AddRange(patterns2);
+                                    }
+
+                                    foreach (var pattern in patterns)
+                                    {
+                                        var actionRoute = String.IsNullOrEmpty(action.Route) ? "" : ("/" + action.Route);
+                                        var completeRoute1 = $"{action.Method.ToString().ToUpper()} {controller.Route}{action.Route}";
+                                        var completeRoute2 = $"* {controller.Route}{action.Route}";
+
+                                        if (completeRoute1.ToLower().StartsWith(pattern.ToLower()) ||
+                                            completeRoute2.ToLower().StartsWith(pattern.ToLower()))
+                                        {
+                                            actionsToIgnore.Add(action);
+                                        }
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    throw new InvalidOperationException($"Error while processing action {action.Name}", ex);
+                                }
+                            }
+                        }
+
+                        foreach (var action in actionsToIgnore)
+                        {
+                            controller.Endpoints.Remove(action);
+                        }
+
+                        if (controller.Endpoints.Count > 0)
+                        {
+                            controllers.Add(controller);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new InvalidOperationException($"Error while processing controller {controller.Name}", ex);
                     }
                 }
-
-                foreach (var action in actionsToIgnore)
-                {
-                    controller.Endpoints.Remove(action);
-                }
-
-                if (controller.Endpoints.Count > 0)
-                {
-                    controllers.Add(controller);
-                }
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error while processing assembly {assembly.GetName()}", ex);
             }
         }
 

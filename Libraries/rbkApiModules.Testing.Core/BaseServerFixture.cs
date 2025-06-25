@@ -17,11 +17,11 @@ public class BaseServerFixture : IDisposable
 {
     private readonly Dictionary<Credentials, string> _accessTokens = new();
     private readonly string _contentFolder;
+    protected readonly Dictionary<string, string> _inMemoryCollection;
 
     public BaseServerFixture(Type startupClassType, string authenticationMode) 
         : this(startupClassType, authenticationMode, new Dictionary<string, string>(), services => { })
     {
-
     }
 
     public BaseServerFixture(Type startupClassType, string authenticationMode, Dictionary<string, string> inMemoryCollectionConfig) 
@@ -40,6 +40,8 @@ public class BaseServerFixture : IDisposable
         Dictionary<string, string> inMemoryCollectionConfig, Action<IServiceCollection> servicesConfiguration)
     {
         if (authenticationMode == null) throw new ArgumentNullException(nameof(authenticationMode));
+
+        _inMemoryCollection = inMemoryCollectionConfig;
 
         authenticationMode = authenticationMode.ToLower();
 
@@ -115,6 +117,10 @@ public class BaseServerFixture : IDisposable
     }
 
     public string ContentFolder => _contentFolder;
+
+    public static void ConfigureTestServices(IServiceCollection services)
+    {
+    }
 
     public async Task<string> GetAccessTokenAsync(string username, string password, string tenant)
     {

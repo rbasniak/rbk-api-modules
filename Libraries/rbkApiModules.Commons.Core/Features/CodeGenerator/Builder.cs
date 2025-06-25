@@ -14,11 +14,11 @@ public static class Builder
 
 public class CodeGenerationModuleOptions
 {
-    internal Dictionary<string, List<string>> IgnoreOptions = new Dictionary<string, List<string>>();
+    public Dictionary<string, List<string>> IgnoreOptions = new Dictionary<string, List<string>>();
     private static CodeGenerationModuleOptions _instance;
     private string _currentScope;
 
-    internal static CodeGenerationModuleOptions Instance
+    public static CodeGenerationModuleOptions Instance
     {
         get
         {

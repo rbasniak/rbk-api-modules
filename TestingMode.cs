@@ -6,7 +6,7 @@ public static class TestingMode
 	{
 		switch (project)
 		{
-			case "Demo1": return DatabaseType.Native;
+			case "Demo1": return DatabaseType.SQLite;
 			case "Demo2": return DatabaseType.Native;
 			case "Demo3": return DatabaseType.Native;
 			case "Demo4": return DatabaseType.Native;

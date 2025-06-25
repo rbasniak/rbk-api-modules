@@ -15,8 +15,6 @@ using System.IO;
 using Serilog.Formatting.Json;
 using System.Diagnostics;
 using Serilog.Exceptions;
-using Serilog.Sinks.AwsCloudWatch;
-using Amazon.CloudWatchLogs;
 using Amazon.Runtime;
 using Amazon;
 using Amazon.Runtime.CredentialManagement;
@@ -89,41 +87,41 @@ public class Program
                         { "Exception", new ExceptionColumnWriter(NpgsqlDbType.Text) }
                     };
 
-                    var cwTextOptions = new CloudWatchSinkOptions
-                    {
-                        // the name of the CloudWatch Log group for logging
-                        LogGroupName = "cloudwatch-lens-demo-text",
+                    //var cwTextOptions = new CloudWatchSinkOptions
+                    //{
+                    //    // the name of the CloudWatch Log group for logging
+                    //    LogGroupName = "cloudwatch-lens-demo-text",
 
-                        // the main formatter of the log event
-                        TextFormatter = new MessageTemplateTextFormatter("[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}"),
+                    //    // the main formatter of the log event
+                    //    TextFormatter = new MessageTemplateTextFormatter("[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}"),
 
-                        // other defaults defaults
-                        MinimumLogEventLevel = LogEventLevel.Debug,
-                        BatchSizeLimit = 10,
-                        QueueSizeLimit = 10000,
-                        Period = TimeSpan.FromSeconds(1),
-                        CreateLogGroup = true,
-                        LogStreamNameProvider = new DefaultLogStreamProvider(),
-                        RetryAttempts = 5
-                    };
+                    //    // other defaults defaults
+                    //    MinimumLogEventLevel = LogEventLevel.Debug,
+                    //    BatchSizeLimit = 10,
+                    //    QueueSizeLimit = 10000,
+                    //    Period = TimeSpan.FromSeconds(1),
+                    //    CreateLogGroup = true,
+                    //    LogStreamNameProvider = new DefaultLogStreamProvider(),
+                    //    RetryAttempts = 5
+                    //};
 
-                    var cwJsonOptions = new CloudWatchSinkOptions
-                    {
-                        // the name of the CloudWatch Log group for logging
-                        LogGroupName = "cloudwatch-lens-demo-structured",
+                    //var cwJsonOptions = new CloudWatchSinkOptions
+                    //{
+                    //    // the name of the CloudWatch Log group for logging
+                    //    LogGroupName = "cloudwatch-lens-demo-structured",
 
-                        // the main formatter of the log event
-                        TextFormatter = new JsonFormatter(renderMessage: true),
+                    //    // the main formatter of the log event
+                    //    TextFormatter = new JsonFormatter(renderMessage: true),
 
-                        // other defaults defaults
-                        MinimumLogEventLevel = LogEventLevel.Debug,
-                        BatchSizeLimit = 10,
-                        QueueSizeLimit = 10000,
-                        Period = TimeSpan.FromSeconds(1),
-                        CreateLogGroup = true,
-                        LogStreamNameProvider = new DefaultLogStreamProvider(),
-                        RetryAttempts = 5
-                    };
+                    //    // other defaults defaults
+                    //    MinimumLogEventLevel = LogEventLevel.Debug,
+                    //    BatchSizeLimit = 10,
+                    //    QueueSizeLimit = 10000,
+                    //    Period = TimeSpan.FromSeconds(1),
+                    //    CreateLogGroup = true,
+                    //    LogStreamNameProvider = new DefaultLogStreamProvider(),
+                    //    RetryAttempts = 5
+                    //};
 
                     var profile = new CredentialProfile("basic_profile", new CredentialProfileOptions { AccessKey = "access_key", SecretKey = "secret_key" });
                     profile.Region = RegionEndpoint.EUWest1;
@@ -134,7 +132,7 @@ public class Program
                     new CredentialProfileStoreChain().TryGetAWSCredentials("personal", out awsCredentials);
 
                     // setup AWS CloudWatch client
-                    var awsClient = new AmazonCloudWatchLogsClient(awsCredentials);
+                    // var awsClient = new AmazonCloudWatchLogsClient(awsCredentials);
 
                     configuration
                     // .ReadFrom.Configuration(context.Configuration)
@@ -206,12 +204,12 @@ public class Program
                         .WriteTo.SQLite(Path.Combine(Environment.CurrentDirectory, "Logs", "log.db"),
                             restrictedToMinimumLevel: LogEventLevel.Debug,
                             storeTimestampInUtc: true,
-                            batchSize: 1)
+                            batchSize: 1);
 
                         // .WriteTo.Seq("http://localhost:5341/")
 
-                        .WriteTo.AmazonCloudWatch(cwTextOptions, awsClient)
-                        .WriteTo.AmazonCloudWatch(cwJsonOptions, awsClient);
+                        //.WriteTo.AmazonCloudWatch(cwTextOptions, awsClient)
+                        //.WriteTo.AmazonCloudWatch(cwJsonOptions, awsClient);
 
                     //configuration
                     //    .MinimumLevel.Verbose()

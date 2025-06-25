@@ -20,7 +20,14 @@ public class TypescriptModel
         if (type.Name == "SimpleNamedEntity")
         {
             Filepath = null;
-            ImportStatement = $"import {{ {type.Name} }} from 'ngx-smz-ui';";
+            if (CodeGenerationOptions.IsSmzLegacy)
+            {
+                ImportStatement = $"import {{ {type.Name} }} from 'ngx-smz-ui';";
+            }
+            else
+            {
+                ImportStatement = $"import {{ {type.Name} }} from '@ngx-smz/core';";
+            }
         }
         else if (type.Name == "TreeNode")
         {
@@ -96,7 +103,14 @@ public class TypescriptModel
         var codePart2 = new StringBuilder();
         var codePart3 = new StringBuilder();
 
-        codePart1.Append("import { SimpleEntity } from 'ngx-smz-ui';" + Environment.NewLine + Environment.NewLine);
+        if (CodeGenerationOptions.IsSmzLegacy)
+        {
+            codePart1.Append("import { SimpleEntity } from 'ngx-smz-ui';" + Environment.NewLine + Environment.NewLine);
+        }
+        else
+        {
+            codePart1.Append("import { SimpleEntity } from '@ngx-smz/core';" + Environment.NewLine + Environment.NewLine);
+        }
 
         var externalReferences = new HashSet<string>();
         codePart1.Append($"export enum {Name}" + " {" + Environment.NewLine);

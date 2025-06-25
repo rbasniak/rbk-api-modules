@@ -107,7 +107,14 @@ public class NgxsStore
 
         if (Actions.Items.Any(x => x.Type == ActionType.Create || x.Type == ActionType.Update || x.Type == ActionType.Delete))
         {
-            code.AppendLine($"import {{ ToastActions }} from 'ngx-smz-ui';");
+            if (CodeGenerationOptions.IsSmzLegacy)
+            {
+                code.AppendLine($"import {{ ToastActions }} from 'ngx-smz-ui';");
+            }
+            else
+            {
+                code.AppendLine($"import {{ ToastActions }} from '@ngx-smz/core';");
+            }
         }
         code.AppendLine($"import {{ {Name}Actions }} from './{CodeGenerationUtilities.ToTypeScriptFileCase(Name)}.actions';");
         code.AppendLine($"import {{ {Name}Service }} from '@services/api/{CodeGenerationUtilities.ToTypeScriptFileCase(Name)}.service';");
@@ -116,7 +123,14 @@ public class NgxsStore
 
         if (Actions.Items.Any(x => x.Type == ActionType.Update && x.Endpoint.ReturnType.Name != nameof(TreeNode)))
         {
-            code.AppendLine("import { replaceItem } from 'ngx-smz-ui';");
+            if (CodeGenerationOptions.IsSmzLegacy)
+            {
+                code.AppendLine("import { replaceItem } from 'ngx-smz-ui';");
+            }
+            else
+            {
+                code.AppendLine("import { replaceItem } from '@ngx-smz/core';");
+            }
         }
 
         uniqueModels = uniqueModels.DistinctBy(x => x).ToList();
@@ -125,7 +139,7 @@ public class NgxsStore
         {
             if (model == nameof(SimpleNamedEntity))
             {
-                code.AppendLine($"import {{ SimpleNamedEntity }} from 'ngx-smz-ui';");
+                code.AppendLine($"import {{ SimpleNamedEntity }} from '@ngx-smz/core';");
             }
             else if (model == "TreeNode")
             {
@@ -216,7 +230,14 @@ public class NgxsStore
 
         if (listAction.Endpoint.ReturnType.Name == nameof(SimpleNamedEntity))
         {
-            code.AppendLine($"import {{ SimpleNamedEntity }} from 'ngx-smz-ui';");
+            if (CodeGenerationOptions.IsSmzLegacy)
+            {
+                code.AppendLine($"import {{ SimpleNamedEntity }} from 'ngx-smz-ui';");
+            }
+            else
+            {
+                code.AppendLine($"import {{ SimpleNamedEntity }} from '@ngx-smz/core';");
+            }
         }
         else if (listAction.Endpoint.ReturnType.Name == "TreeNode")
         {
