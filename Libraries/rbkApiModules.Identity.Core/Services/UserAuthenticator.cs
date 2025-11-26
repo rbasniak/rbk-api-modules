@@ -1,12 +1,14 @@
 ﻿using Microsoft.Extensions.Options;
 using rbkApiModules.Commons.Core;
 using Serilog;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace rbkApiModules.Identity.Core;
 
 public interface IUserAuthenticator
 {
-    Task<JwtResponse> Authenticate(string username, string tenant, CancellationToken cancellation);
+    Task<JwtResponse> Authenticate(string username, string tenant, JwtOptionsOverride jwtOptionsOverride, CancellationToken cancellation);
 }
 
 public class UserAuthenticator : IUserAuthenticator
@@ -27,7 +29,7 @@ public class UserAuthenticator : IUserAuthenticator
         _automaticUserCreator = automaticUserCreator;
     }
 
-    public async Task<JwtResponse> Authenticate(string username, string tenant, CancellationToken cancellation)
+    public async Task<JwtResponse> Authenticate(string username, string tenant, JwtOptionsOverride jwtOptionsOverride, CancellationToken cancellation)
     {
         var user = await _authService.FindUserAsync(username, tenant, cancellation);
 
@@ -62,10 +64,21 @@ public class UserAuthenticator : IUserAuthenticator
             }
         }
 
-        var jwt = await TokenGenerator.GenerateAsync(_jwtFactory, user, extraClaims);
+        var jwt = await TokenGenerator.GenerateAsync(_jwtFactory, user, extraClaims, jwtOptionsOverride);
 
-        await _authService.RefreshLastLogin(username, tenant, cancellation);
+        await _authService.RefreshLastLogin(username, tenant,  cancellation);
 
         return jwt;
     }
+}
+
+public class JwtOptionsOverride
+{
+    public string Issuer { get; set; }
+    public string Audience { get; set; }
+    public DateTime? NotBefore { get; set; }
+    public DateTime? ExpiresAt { get; set; }
+
+    public TimeSpan TokenLife { get; set; }
+    public TimeSpan RefreshTokenLife { get; set; }
 }

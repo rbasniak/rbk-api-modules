@@ -21,6 +21,31 @@ public class CodeGeneratorController : BaseController
         _environment = environment;
     }
 
+    /// <summary>
+    /// Generates Angular code for a specified project and either updates the target directory directly or provides a downloadable ZIP file.
+    /// </summary>
+    /// <param name="directUpdate">
+    /// If <c>true</c>, the generated code will be written directly to the target directory. 
+    /// If <c>false</c>, the generated code will be packaged as a ZIP file and returned for download.
+    /// </param>
+    /// <param name="projectId">
+    /// (optional) The identifier of the project for which code should be generated. 
+    /// </param>
+    /// <param name="relativePath">
+    /// The relative path to the <c>auto-generated</c> folder within the project. Must include "auto-generated" if <paramref name="projectId"/> is provided and start at the root of the repository
+    /// </param>
+    /// <param name="isLegacySmz">
+    /// Indicates whether to use legacy code generation logic for SMZ projects (prior or up to version ngx-smz-ui@17.3.0 is considered a legacy version).
+    /// </param>
+    /// <returns>
+    /// Returns an <see cref="ActionResult"/>. If <paramref name="directUpdate"/> is <c>true</c>, returns a status message as a string. 
+    /// If <paramref name="directUpdate"/> is <c>false</c>, returns a ZIP file containing the generated code.
+    /// </returns>
+    /// <remarks>
+    /// - If <paramref name="directUpdate"/> is <c>true</c>, the method attempts to clean the target directory before generating new code.
+    /// - If <paramref name="directUpdate"/> is <c>false</c>, the generated code is placed in a temporary directory and returned as a ZIP file.
+    /// - Returns <c>BadRequest</c> if the <paramref name="relativePath"/> does not contain "auto-generated" when <paramref name="projectId"/> is provided.
+    /// </remarks>
     [HttpGet]
     public async Task<ActionResult> Get(bool directUpdate, string projectId, string relativePath, bool isLegacySmz, CancellationToken cancellation)
     {
@@ -29,6 +54,11 @@ public class CodeGeneratorController : BaseController
         if (!String.IsNullOrEmpty(projectId))
         {
             relativePath = relativePath.Replace("/", "\\");
+
+            if (!relativePath.Contains("auto-generated"))
+            {
+                return BadRequest("O caminho relativo deve ser da pasta raiz até a pasta auto-generated");
+            }
         }
 
         String basePath;

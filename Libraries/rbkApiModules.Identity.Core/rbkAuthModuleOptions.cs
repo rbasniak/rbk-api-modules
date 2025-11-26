@@ -287,4 +287,11 @@ public class SeedClaimDescriptions
 public static class RbkAuthenticationSchemes
 {
     public const string API_KEY = "Api-Key";
+    public static readonly List<string> ValidApiKeyHeaders = new List<string>
+    {
+        "X-API-KEY",
+        "X-APIKEY",
+        "API-KEY",
+        "APIKEY",
+    };
 }

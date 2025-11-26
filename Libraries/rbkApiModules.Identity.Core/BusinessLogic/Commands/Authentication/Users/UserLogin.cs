@@ -147,16 +147,16 @@ public class UserLogin
 
     public class Handler : IRequestHandler<Request, CommandResponse>
     {
-        private readonly IUserAuthenticator _tokenCreator;
+        private readonly IUserAuthenticator _userAuthenticator;
 
         public Handler(IUserAuthenticator tokenCreator)
         {
-            _tokenCreator = tokenCreator;
+            _userAuthenticator = tokenCreator;
         }
 
         public async Task<CommandResponse> Handle(Request request, CancellationToken cancellation)
         {
-            var jwt = await _tokenCreator.Authenticate(request.Username, request.Tenant, cancellation);
+            var jwt = await _userAuthenticator.Authenticate(request.Username, request.Tenant, jwtOptionsOverride: null,  cancellation);
 
             return CommandResponse.Success(jwt);
         }

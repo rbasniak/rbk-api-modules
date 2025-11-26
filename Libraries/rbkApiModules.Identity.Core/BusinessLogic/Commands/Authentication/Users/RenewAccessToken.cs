@@ -99,7 +99,7 @@ public class RenewAccessToken
                 }
             }
 
-            var jwt = await TokenGenerator.GenerateAsync(_jwtFactory, user, extraClaims);
+            var jwt = await TokenGenerator.GenerateAsync(_jwtFactory, user, extraClaims, null);
 
             await _usersService.RefreshLastLogin(user.Username, user.TenantId, cancellation);
 

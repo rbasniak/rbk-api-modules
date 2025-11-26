@@ -10,7 +10,8 @@ public class ApiKeyAuthenticationHandler : AuthenticationHandler<AuthenticationS
 {
     private readonly IApiKeyValidator _apiKeyValidator;
 
-    protected string _providedApiKey;
+    protected string[] _providedApiKeys;
+    protected string _matchedApiKey;
 
     public ApiKeyAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, IApiKeyValidator apiKeyValidator)
         : base(options, logger, encoder)
@@ -20,33 +21,54 @@ public class ApiKeyAuthenticationHandler : AuthenticationHandler<AuthenticationS
 
     protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
     {
-        // Get the API key from the request headers
-        if (!Request.Headers.TryGetValue(RbkAuthenticationSchemes.API_KEY, out var apiKeyHeaderValues))
+        var foundApiKeys = new List<string>();
+
+        foreach(var validHeader in RbkAuthenticationSchemes.ValidApiKeyHeaders)
+        {
+            if (Request.Headers.TryGetValue(validHeader, out var apiKeyHeaderValues))
+            {
+                var value = apiKeyHeaderValues.FirstOrDefault();
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    foundApiKeys.Add(value);
+                }
+            }
+        }
+
+        foundApiKeys = foundApiKeys
+            .Where(x => !string.IsNullOrWhiteSpace(x))
+            .Distinct(StringComparer.Ordinal)
+            .ToList();
+
+        _providedApiKeys = foundApiKeys.ToArray();
+
+        if (!foundApiKeys.Any())
         {
             return AuthenticateResult.Fail("API Key is missing");
         }
 
-        _providedApiKey = apiKeyHeaderValues.FirstOrDefault();
-
-        // Validate the API key (you can replace this with your own logic)
-        if (await _apiKeyValidator.ValidateApiKey(_providedApiKey))
+        foreach (var apiKey in foundApiKeys)
         {
-            var identity = GetClaimsIdentity();
+            // Validate the API key (you can replace this with your own logic)
+            if (await _apiKeyValidator.ValidateApiKey(apiKey))
+            {
+                _matchedApiKey = apiKey;
 
-            var principal = new ClaimsPrincipal(identity);
-            var ticket = new AuthenticationTicket(principal, Scheme.Name);
+                var identity = GetClaimsIdentity();
 
-            return AuthenticateResult.Success(ticket);
+                var principal = new ClaimsPrincipal(identity);
+                var ticket = new AuthenticationTicket(principal, Scheme.Name);
+
+                return AuthenticateResult.Success(ticket);
+            }
         }
-        else
-        {
-            return AuthenticateResult.Fail("Invalid API Key");
-        }
+        
+        return AuthenticateResult.Fail("Invalid API Key");
     }
 
     protected virtual ClaimsIdentity GetClaimsIdentity()
     {
-        var claims = new[] { new System.Security.Claims.Claim(RbkAuthenticationSchemes.API_KEY, _providedApiKey) };
+        var claims = new[] { new System.Security.Claims.Claim(RbkAuthenticationSchemes.API_KEY, _matchedApiKey) };
 
         return new ClaimsIdentity(claims, GetIdentityName());
     }

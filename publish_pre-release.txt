@@ -2,4 +2,4 @@ Get-ChildItem * -Include *.*nupkg -Recurse | Remove-Item
 dotnet restore
 dotnet build --configuration Release --no-restore
 dotnet pack -c Release -P:IncludeSymbols=true -p:SymbolPackageFormat=snupkg
-dotnet nuget push **/*.nupkg   --api-key oy2bcjkkgneuknz  2asqq6fjajxya2  7vetod7s27wfar4dy --source https://api.nuget.org/v3/index.json
+dotnet nuget push **/*.nupkg   --api-key oy2g3ms6uwzeyb6khf4qb  hrxl66zh7yenjg5biv7ykvfyq --source https://api.nuget.org/v3/index.json

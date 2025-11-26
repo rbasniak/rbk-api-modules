@@ -8,7 +8,7 @@ namespace rbkApiModules.Identity.Core;
 
 public interface IJwtFactory
 {
-    Task<string> GenerateEncodedTokenAsync(string username, Dictionary<string, string[]> roles);
+    Task<string> GenerateEncodedTokenAsync(string username, Dictionary<string, string[]> roles, JwtOptionsOverride jwtOptionsOverride);
 }
 
 /// <summary>
@@ -40,7 +40,7 @@ public class JwtFactory : IJwtFactory
     /// <param name="username">Nome do usuário</param>
     /// <param name="roles">Permissões do usuário (claims)</param>
     /// <returns>Access token</returns>
-    public async Task<string> GenerateEncodedTokenAsync(string username, Dictionary<string, string[]> roles)
+    public async Task<string> GenerateEncodedTokenAsync(string username, Dictionary<string, string[]> roles, JwtOptionsOverride jwtOptionsOverride)
     {
         var claims = new List<System.Security.Claims.Claim>
             {
@@ -94,11 +94,11 @@ public class JwtFactory : IJwtFactory
         }
 
         var jwt = new JwtSecurityToken(
-            issuer: _jwtOptions.Issuer,
-            audience: _jwtOptions.Audience,
+            issuer: jwtOptionsOverride.Issuer ?? _jwtOptions.Issuer,
+            audience: jwtOptionsOverride.Audience ?? _jwtOptions.Audience,
             claims: claims,
-            notBefore: _jwtOptions.NotBefore,
-            expires: _jwtOptions.IssuedAt.Add(TimeSpan.FromMinutes(_jwtOptions.AccessTokenLife)),
+            notBefore: jwtOptionsOverride.NotBefore ?? _jwtOptions.NotBefore,
+            expires: jwtOptionsOverride.ExpiresAt ?? _jwtOptions.IssuedAt.Add(TimeSpan.FromMinutes(_jwtOptions.AccessTokenLife)),
             signingCredentials: _jwtOptions.SigningCredentials);
 
         var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);

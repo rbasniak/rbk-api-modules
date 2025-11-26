@@ -4,7 +4,7 @@ namespace rbkApiModules.Identity.Core;
 
 public class TokenGenerator
 {
-    public static async Task<JwtResponse> GenerateAsync(IJwtFactory jwtFactory, User user, Dictionary<string, string[]> extraClaims)
+    public static async Task<JwtResponse> GenerateAsync(IJwtFactory jwtFactory, User user, Dictionary<string, string[]> extraClaims, JwtOptionsOverride jwtOptionsOverride)
     {
         var claims = new Dictionary<string, string[]>
         {
@@ -24,7 +24,7 @@ public class TokenGenerator
 
         var response = new JwtResponse
         {
-            AccessToken = await jwtFactory.GenerateEncodedTokenAsync(user.Username, claims),
+            AccessToken = await jwtFactory.GenerateEncodedTokenAsync(user.Username, claims, jwtOptionsOverride),
             RefreshToken = user.RefreshToken,
         };
 
