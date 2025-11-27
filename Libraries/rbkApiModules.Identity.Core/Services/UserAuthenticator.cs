@@ -77,8 +77,5 @@ public class JwtOptionsOverride
     public string Issuer { get; set; }
     public string Audience { get; set; }
     public DateTime? NotBefore { get; set; }
-    public DateTime? ExpiresAt { get; set; }
-
-    public TimeSpan TokenLife { get; set; }
-    public TimeSpan RefreshTokenLife { get; set; }
+    public DateTime? ExpiresAt { get; set; } 
 }
