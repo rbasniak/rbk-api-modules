@@ -1,0 +1,18 @@
+# Publish Libraries (excluding analyzers)
+# This script builds and publishes all library packages except the analyzer package
+
+# Clean up old packages
+Get-ChildItem * -Include *.nupkg -Recurse | Remove-Item
+
+# Restore and build
+dotnet restore
+dotnet build --configuration Release --no-restore
+
+# Pack all projects except the analyzer package
+# The analyzer package will fail with NU5017, so we exclude it here
+dotnet pack rbkApiModules.Commons.Core\rbkApiModules.Commons.Core.csproj -c Release --no-build -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg
+dotnet pack rbkApiModules.Commons.Testing\rbkApiModules.Testing.Core.csproj -c Release --no-build -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg
+dotnet pack rbkApiModules.Identity.Core\rbkApiModules.Identity.Core.csproj -c Release --no-build -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg
+
+# Push packages to NuGet
+dotnet nuget push **/*.nupkg --api-key oy2pysxsqrih xpur4zrqcemkcouij ttunjpe5amcf466ie --source https://api.nuget.org/v3/index.json --skip-duplicate

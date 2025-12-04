@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.3.11222.16 d18.3
+VisualStudioVersion = 18.3.11222.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo1", "Demo1\Demo1.csproj", "{3FA16A51-4F5B-673E-32DD-4522147CA3B4}"
 EndProject
@@ -26,6 +26,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		publish_pre-release.txt = publish_pre-release.txt
 		README.md = README.md
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Analysers", "Analysers", "{567032B4-2B91-4E0E-9E1E-7293F79D7498}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.Analysers", "rbkApiModules.Analysers\rbkApiModules.Analysers\rbkApiModules.Analysers.csproj", "{79D2CAA2-6DE7-0399-7D30-25D3018FC63D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.Analysers.CodeFixes", "rbkApiModules.Analysers\rbkApiModules.Analysers.CodeFixes\rbkApiModules.Analysers.CodeFixes.csproj", "{4DF27EEA-5B4A-A4FB-5AF1-7446E731E898}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.Analysers.Package", "rbkApiModules.Analysers\rbkApiModules.Analysers.Package\rbkApiModules.Analysers.Package.csproj", "{C9B15699-12DD-A7AD-0460-EFD119BF80BC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +65,18 @@ Global
 		{9083C340-9293-CA34-6D0F-247E968E2448}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9083C340-9293-CA34-6D0F-247E968E2448}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9083C340-9293-CA34-6D0F-247E968E2448}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79D2CAA2-6DE7-0399-7D30-25D3018FC63D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79D2CAA2-6DE7-0399-7D30-25D3018FC63D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79D2CAA2-6DE7-0399-7D30-25D3018FC63D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79D2CAA2-6DE7-0399-7D30-25D3018FC63D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DF27EEA-5B4A-A4FB-5AF1-7446E731E898}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DF27EEA-5B4A-A4FB-5AF1-7446E731E898}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DF27EEA-5B4A-A4FB-5AF1-7446E731E898}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DF27EEA-5B4A-A4FB-5AF1-7446E731E898}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9B15699-12DD-A7AD-0460-EFD119BF80BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9B15699-12DD-A7AD-0460-EFD119BF80BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9B15699-12DD-A7AD-0460-EFD119BF80BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9B15699-12DD-A7AD-0460-EFD119BF80BC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -65,6 +85,9 @@ Global
 		{3FA16A51-4F5B-673E-32DD-4522147CA3B4} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{BB96AB92-1049-5B34-4C9F-46B5E8E086B9} = {E853F01F-178D-4B72-B47D-58D158C175F0}
 		{9083C340-9293-CA34-6D0F-247E968E2448} = {E853F01F-178D-4B72-B47D-58D158C175F0}
+		{79D2CAA2-6DE7-0399-7D30-25D3018FC63D} = {567032B4-2B91-4E0E-9E1E-7293F79D7498}
+		{4DF27EEA-5B4A-A4FB-5AF1-7446E731E898} = {567032B4-2B91-4E0E-9E1E-7293F79D7498}
+		{C9B15699-12DD-A7AD-0460-EFD119BF80BC} = {567032B4-2B91-4E0E-9E1E-7293F79D7498}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DF78D2C3-FF71-46BF-A37A-AC9928D7D02C}
