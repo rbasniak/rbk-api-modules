@@ -54,7 +54,7 @@ public sealed class DomainEventDispatcher : BackgroundService
             {
                 Guid[] batch = [];
                 
-                var iterationId = Guid.CreateVersion7();
+                var iterationId = GuidHelpers.CreateVersion7();
 
                 // QUIET "is there anything to do?" check (no logs, no telemetry)
                 using (var scope = _scopeFactory.CreateScope())

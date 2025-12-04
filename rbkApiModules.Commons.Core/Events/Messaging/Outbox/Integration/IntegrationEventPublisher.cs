@@ -50,7 +50,7 @@ public sealed class IntegrationEventPublisher : BackgroundService
             {
                 Guid[] batch = [];
 
-                var iterationId = Guid.CreateVersion7();
+                var iterationId = GuidHelpers.CreateVersion7();
 
                 using (var scope = _scopeFactory.CreateScope())
                 {

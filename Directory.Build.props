@@ -1,7 +1,7 @@
 <Project>
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
@@ -28,7 +28,12 @@
 
   <!-- Analyzer projects have different target framework -->
   <PropertyGroup Condition="$(MSBuildProjectName.Contains('Analysers'))">
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+  </PropertyGroup>
+  
+  <!-- Demo and test projects should only target net10.0 -->
+  <PropertyGroup Condition="$(MSBuildProjectName.Contains('Demo')) OR $(MSBuildProjectName.Contains('Tests'))">
+    <TargetFrameworks>net10.0</TargetFrameworks>
   </PropertyGroup>
 
 </Project>
