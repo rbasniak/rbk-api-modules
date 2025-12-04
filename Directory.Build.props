@@ -1,7 +1,6 @@
 <Project>
 
   <PropertyGroup>
-    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
@@ -11,8 +10,14 @@
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
+  <!-- Default target frameworks for library projects -->
+  <PropertyGroup Condition="!$(MSBuildProjectName.Contains('Demo')) AND !$(MSBuildProjectName.Contains('Tests')) AND !$(MSBuildProjectName.Contains('Analysers'))">
+    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+  </PropertyGroup>
+
   <!-- NuGet packaging properties - exclude demo and test projects -->
   <PropertyGroup Condition="!$(MSBuildProjectName.Contains('Demo')) AND !$(MSBuildProjectName.Contains('Tests'))">
+	<Version>10.0.0</Version>
 	<IsPackable>true</IsPackable>
 	<PackageIcon>logo.png</PackageIcon>
 	<IncludeSymbols>true</IncludeSymbols>
@@ -28,12 +33,12 @@
 
   <!-- Analyzer projects have different target framework -->
   <PropertyGroup Condition="$(MSBuildProjectName.Contains('Analysers'))">
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   
   <!-- Demo and test projects should only target net10.0 -->
   <PropertyGroup Condition="$(MSBuildProjectName.Contains('Demo')) OR $(MSBuildProjectName.Contains('Tests'))">
-    <TargetFrameworks>net10.0</TargetFrameworks>
+    <TargetFramework>net10.0</TargetFramework>
   </PropertyGroup>
 
 </Project>
