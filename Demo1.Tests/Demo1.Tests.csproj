@@ -3,7 +3,7 @@
   <!-- Common properties are now in Directory.Build.props -->
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
   </ItemGroup>
 
   <ItemGroup>
@@ -16,8 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="Microsoft.Testing.Extensions.TrxReport" Version="2.0.2" />
-    <PackageReference Update="TUnit" Version="1.2.11" />
+    <PackageReference Update="Microsoft.Testing.Extensions.TrxReport" />
+    <PackageReference Update="TUnit" />
   </ItemGroup>
 
 </Project>

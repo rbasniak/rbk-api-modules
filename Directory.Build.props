@@ -1,0 +1,34 @@
+<Project>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+	<Authors>rbasniak</Authors>
+	<Product>rbkApiModules</Product>
+	<Copyright>rbasniak</Copyright>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+
+  <!-- NuGet packaging properties - exclude demo and test projects -->
+  <PropertyGroup Condition="!$(MSBuildProjectName.Contains('Demo')) AND !$(MSBuildProjectName.Contains('Tests'))">
+	<IsPackable>true</IsPackable>
+	<PackageIcon>logo.png</PackageIcon>
+	<IncludeSymbols>true</IncludeSymbols>
+	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+<ItemGroup Condition="!$(MSBuildProjectName.Contains('Demo')) AND !$(MSBuildProjectName.Contains('Tests'))">
+	<None Include="..\logo.png">
+		<Pack>True</Pack>
+		<PackagePath>\</PackagePath>
+	</None>
+</ItemGroup>
+
+  <!-- Analyzer projects have different target framework -->
+  <PropertyGroup Condition="$(MSBuildProjectName.Contains('Analysers'))">
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+</Project>
