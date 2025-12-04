@@ -1,0 +1,6 @@
+﻿Olá, {{name}}.
+Bem vindo, seu cadastro foi concluído com sucesso!
+Agora você pode aproveitar ao máximo os nossos serviços.
+Se desejar, acesse o endereço abaixo para conferir os detalhes da sua conta:
+{{profileUrl}}
+Se você não realizou a confirmação, simplesmente ignore este e-mail.

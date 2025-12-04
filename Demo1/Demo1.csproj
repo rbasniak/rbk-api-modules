@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <!-- Common properties are now in Directory.Build.props -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\rbkApiModules.Commons.Core\rbkApiModules.Commons.Core.csproj" />
+    <ProjectReference Include="..\rbkApiModules.Identity.Core\rbkApiModules.Identity.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+</Project>
