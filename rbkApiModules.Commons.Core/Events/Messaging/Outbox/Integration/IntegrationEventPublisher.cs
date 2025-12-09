@@ -124,7 +124,7 @@ public sealed class IntegrationEventPublisher : BackgroundService
 
                     using var processingScope = _scopeFactory.CreateScope();
 
-                    var processingDbContext = _options.ResolveSilentDbContext(processingScope.ServiceProvider);
+                    var processingDbContext = _options.ResolveDbContext(processingScope.ServiceProvider);
 
                     var message = await processingDbContext.IntegrationOutboxMessage
                         .Where(x => x.Id == messageId)
