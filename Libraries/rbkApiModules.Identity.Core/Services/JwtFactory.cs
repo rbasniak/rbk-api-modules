@@ -42,6 +42,11 @@ public class JwtFactory : IJwtFactory
     /// <returns>Access token</returns>
     public async Task<string> GenerateEncodedTokenAsync(string username, Dictionary<string, string[]> roles, JwtOptionsOverride jwtOptionsOverride)
     {
+        if (jwtOptionsOverride == null)
+        {
+            jwtOptionsOverride = new JwtOptionsOverride();
+        }
+
         var claims = new List<System.Security.Claims.Claim>
             {
                  new System.Security.Claims.Claim(JwtRegisteredClaimNames.Sub, username),
