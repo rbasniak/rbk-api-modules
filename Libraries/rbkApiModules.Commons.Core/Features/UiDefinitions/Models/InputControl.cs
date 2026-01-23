@@ -168,6 +168,10 @@ public class InputControl
         {
             return DialogControlTypes.Calendar;
         }
+        else if (_type.FullName == typeof(DateOnly).FullName || _type.FullName == typeof(DateOnly?).FullName)
+        {
+            return DialogControlTypes.Calendar;
+        }
         else if (typeof(BaseEntity).IsAssignableFrom(_type))
         {
             PropertyName = FixDropDownName(PropertyName);

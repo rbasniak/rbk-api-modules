@@ -13,6 +13,12 @@ public class TypescriptType
             Name = "string";
         }
 
+        if (type.Type.FullName == typeof(DateOnly).FullName)
+        {
+            IsNative = true;
+            Name = "Date";
+        }
+
         if (type.Type.FullName == typeof(Guid).FullName)
         {
             IsNative = true;
