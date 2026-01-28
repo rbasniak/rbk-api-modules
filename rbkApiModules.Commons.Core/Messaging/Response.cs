@@ -75,13 +75,26 @@ public sealed class CommandResponse : BaseResponse
         };
     }
 
-    public static CommandResponse Failure(ProblemDetails problem)
+    internal static CommandResponse Failure(ProblemDetails problem)
     {
         return new CommandResponse()
         {
             Error = problem,
             IsValid = false,
             Data = null
+        };
+    }
+
+    public static CommandResponse Failure(string message)
+    {
+        return new CommandResponse()
+        {
+            Error = new ProblemDetails
+            {
+                Title = "Command Failure",
+                Detail = message,
+            },
+            IsValid = false,
         };
     }
 }
@@ -107,13 +120,26 @@ public sealed class CommandResponse<T> : BaseResponse
         };
     }
 
-    public static CommandResponse<T> Failure(ProblemDetails problem)
+    internal static CommandResponse<T> Failure(ProblemDetails problem)
     {
         return new CommandResponse<T>()
         {
             Error = problem,
             IsValid = false,
             Data = default!
+        };
+    }
+
+    public static CommandResponse<T> Failure(string message)
+    {
+        return new CommandResponse<T>()
+        {
+            Error = new ProblemDetails
+            {
+                Title = "Command Failure",
+                Detail = message,
+            },
+            IsValid = false,
         };
     }
 
@@ -163,13 +189,26 @@ public sealed class QueryResponse : BaseResponse
         };
     }
 
-    public static QueryResponse Failure(ProblemDetails problem)
+    internal static QueryResponse Failure(ProblemDetails problem)
     {
         return new QueryResponse()
         {
             Error = problem,
             IsValid = false,
             Data = null
+        };
+    }
+
+    public static QueryResponse Failure(string message)
+    {
+        return new QueryResponse()
+        {
+            Error = new ProblemDetails
+            {
+                Title = "Query Failure",
+                Detail = message,
+            },
+            IsValid = false,
         };
     }
 }
@@ -195,13 +234,26 @@ public sealed class QueryResponse<T> : BaseResponse
         };
     }
 
-    public static QueryResponse<T> Failure(ProblemDetails problem)
+    internal static QueryResponse<T> Failure(ProblemDetails problem)
     {
         return new QueryResponse<T>()
         {
             Error = problem,
             IsValid = false,
             Data = default!
+        };
+    }
+
+    public static QueryResponse<T> Failure(string message)
+    {
+        return new QueryResponse<T>()
+        {
+            Error = new ProblemDetails
+            {
+                Title = "Query Failure",
+                Detail = message,
+            },
+            IsValid = false,
         };
     }
 

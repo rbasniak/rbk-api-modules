@@ -354,3 +354,4 @@ MigrationBackup/
 
 !/@Tools/*.pdb
 /analytics.csv
+/Demo1/Demo1.Api/Logs
