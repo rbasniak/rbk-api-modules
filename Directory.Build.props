@@ -17,7 +17,7 @@
 
   <!-- NuGet packaging properties - exclude demo and test projects -->
   <PropertyGroup Condition="!$(MSBuildProjectName.Contains('Demo')) AND !$(MSBuildProjectName.Contains('Tests'))">
-	<Version>10.0.1</Version>
+	<Version>10.0.7</Version>
 	<IsPackable>true</IsPackable>
 	<PackageIcon>logo.png</PackageIcon>
 	<IncludeSymbols>true</IncludeSymbols>

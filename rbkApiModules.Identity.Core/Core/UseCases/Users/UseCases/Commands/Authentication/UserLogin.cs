@@ -177,7 +177,7 @@ public class UserLogin
     {
         public async Task<CommandResponse> HandleAsync(Request request, CancellationToken cancellationToken)
         {
-            var jwt = await _tokenCreator.Authenticate(request.Username, request.Tenant, cancellationToken);
+            var jwt = await _tokenCreator.Authenticate(request.Username, request.Tenant, jwtOptionsOverride: null, cancellationToken);
 
             return CommandResponse.Success(jwt);
         }

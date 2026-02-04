@@ -2,7 +2,7 @@
 
 public class TokenGenerator
 {
-    public static async Task<JwtResponse> GenerateAsync(IJwtFactory jwtFactory, User user, Dictionary<string, string[]> extraClaims, CancellationToken cancellationToken)
+    public static async Task<JwtResponse> GenerateAsync(IJwtFactory jwtFactory, User user, Dictionary<string, string[]> extraClaims, JwtOptionsOverride jwtOptionsOverride, CancellationToken cancellationToken)
     {
         var claims = new Dictionary<string, string[]>
         {
@@ -22,7 +22,7 @@ public class TokenGenerator
 
         var response = new JwtResponse
         {
-            AccessToken = await jwtFactory.GenerateEncodedTokenAsync(user.Username, claims, cancellationToken),
+            AccessToken = await jwtFactory.GenerateEncodedTokenAsync(user.Username, claims, jwtOptionsOverride, cancellationToken),
             RefreshToken = user.RefreshToken,
         };
 

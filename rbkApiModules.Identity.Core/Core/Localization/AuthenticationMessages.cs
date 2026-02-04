@@ -2,6 +2,25 @@ using System.ComponentModel;
 
 public class AuthenticationMessages : ILocalizedResource
 {
+    public enum Fields
+    {
+        [Description("User")] User,
+        [Description("Role")] Role,
+        [Description("Claim")] Claim,
+        [Description("Name")] Name,
+        [Description("Description")] Description,
+        [Description("Identification")] Identification,
+        [Description("Password")] Password,
+        [Description("Destination domain")] DestinationDomain,
+        [Description("Tenant")] Tenant,
+        [Description("E-mail")] Email,
+        [Description("Refresh token")] RefreshToken,
+        [Description("Password reset code")] PasswordResetCode,
+        [Description("Activation code")] ActivationCode,
+        [Description("Tenant")] TenantAlias,
+        [Description("Display name")] DisplayName,
+    }
+
     public enum Emails
     {
         [Description("Registration confirmation")] RegistrationConfirmed,

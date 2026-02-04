@@ -5,7 +5,7 @@ namespace rbkApiModules.Identity.Core;
 
 public interface IUserAuthenticator
 {
-    Task<JwtResponse> Authenticate(string username, string tenant, CancellationToken cancellationToken);
+    Task<JwtResponse> Authenticate(string username, string tenant, JwtOptionsOverride jwtOptionsOverride, CancellationToken cancellation);
 }
 
 public class UserAuthenticator : IUserAuthenticator
@@ -20,15 +20,15 @@ public class UserAuthenticator : IUserAuthenticator
     public UserAuthenticator(IJwtFactory jwtFactory, IOptions<JwtIssuerOptions> jwtOptions, IAuthService authService,
     IEnumerable<ICustomClaimHandler> claimHandlers, IAutomaticUserCreator automaticUserCreator, ILogger<UserAuthenticator> logger)
     {
+        _logger = logger;
         _jwtFactory = jwtFactory;
         _authService = authService;
         _jwtOptions = jwtOptions.Value;
         _claimHandlers = claimHandlers;
         _automaticUserCreator = automaticUserCreator;
-        _logger = logger;
     }
 
-    public async Task<JwtResponse> Authenticate(string username, string tenant, CancellationToken cancellationToken)
+    public async Task<JwtResponse> Authenticate(string username, string tenant, JwtOptionsOverride jwtOptionsOverride, CancellationToken cancellationToken)
     {
         var user = await _authService.FindUserAsync(username, tenant, cancellationToken);
 
@@ -39,7 +39,7 @@ public class UserAuthenticator : IUserAuthenticator
 
         _logger.LogInformation($"Loging in with user {user.Username}");
 
-        if (user.RefreshTokenValidity == null || user.RefreshTokenValidity < DateTime.UtcNow)
+        if (user.RefreshTokenValidity < DateTime.UtcNow)
         {
             var refreshToken = Guid.NewGuid().ToString().ToLower().Replace("-", "");
 
@@ -63,10 +63,18 @@ public class UserAuthenticator : IUserAuthenticator
             }
         }
 
-        var jwt = await TokenGenerator.GenerateAsync(_jwtFactory, user, extraClaims, cancellationToken);
+        var jwt = await TokenGenerator.GenerateAsync(_jwtFactory, user, extraClaims, jwtOptionsOverride, cancellationToken);
 
         await _authService.RefreshLastLogin(username, tenant, cancellationToken);
 
         return jwt;
     }
+}
+
+public class JwtOptionsOverride
+{
+    public string Issuer { get; set; }
+    public string Audience { get; set; }
+    public DateTime? NotBefore { get; set; }
+    public DateTime? ExpiresAt { get; set; }
 }
