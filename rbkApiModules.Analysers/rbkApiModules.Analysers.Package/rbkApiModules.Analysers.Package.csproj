@@ -4,7 +4,8 @@
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
     <PackageIcon></PackageIcon>
-    <NoWarn>$(NoWarn);NU5017</NoWarn>
+    <!-- No main assembly to create symbols from; skip symbol package to avoid NU5017 -->
+    <IncludeSymbols>false</IncludeSymbols>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -37,10 +38,17 @@
     <None Update="tools\*.ps1" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath="" />
   </ItemGroup>
 
+  <!-- Override command-line IncludeSymbols; this package has no main assembly so snupkg would be empty (NU5017) -->
+  <Target Name="_DisableSymbolsForAnalyzerPackage" BeforeTargets="GenerateNuspec">
+    <PropertyGroup>
+      <IncludeSymbols>false</IncludeSymbols>
+    </PropertyGroup>
+  </Target>
+
   <Target Name="_AddAnalyzersToOutput">
     <ItemGroup>
-      <TfmSpecificPackageFile Include="..\rbkApiModules.Analysers\bin\$(Configuration)\netstandard2.0\rbkApiModules.Analysers.dll" PackagePath="analyzers/dotnet/cs" />
-      <TfmSpecificPackageFile Include="..\rbkApiModules.Analysers.CodeFixes\bin\$(Configuration)\netstandard2.0\rbkApiModules.Analysers.CodeFixes.dll" PackagePath="analyzers/dotnet/cs" />
+      <TfmSpecificPackageFile Include="..\rbkApiModules.Analysers\bin\$(Configuration)\netstandard2.0\rbkApiModules.Analysers.dll" PackagePath="analyzers/dotnet/cs" TargetFramework="netstandard2.0" />
+      <TfmSpecificPackageFile Include="..\rbkApiModules.Analysers.CodeFixes\bin\$(Configuration)\netstandard2.0\rbkApiModules.Analysers.CodeFixes.dll" PackagePath="analyzers/dotnet/cs" TargetFramework="netstandard2.0" />
     </ItemGroup>
   </Target>
 
