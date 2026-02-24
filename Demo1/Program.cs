@@ -99,7 +99,7 @@ namespace Demo1
             UpdatePost.MapEndpoint(app);
             GetSettings.MapEndpoint(app);
 
-            app.MapOpenApi();
+            app.MapOpenApi().AllowAnonymous();
             app.UseSwaggerUI(options =>
             {
                 options.SwaggerEndpoint("/openapi/v1.json", "Demo 1");

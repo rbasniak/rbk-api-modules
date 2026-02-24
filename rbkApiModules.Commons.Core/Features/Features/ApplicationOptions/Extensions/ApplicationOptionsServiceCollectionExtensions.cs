@@ -1,4 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Core.Features.ApplicationOptions;
 

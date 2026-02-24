@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace rbkApiModules.Commons.Core.UiDefinitions;
 
@@ -16,7 +18,7 @@ public class UiDefinitionsEndpoints
             .WithTags("UI Definitions");
     }
 
-    public static ActionResult<object> All([FromServices] UIDefinitionOptions options)
+    public static IResult All([FromServices] UIDefinitionOptions options)
     {
         try
         {
@@ -28,6 +30,7 @@ public class UiDefinitionsEndpoints
 
             foreach (var assembly in assemblies)
             {
+                var temp1 = assembly.GetTypes().ToList();
                 foreach (var type in assembly.GetTypes())
                 {
                     var createInputs = builder.Build(type, OperationType.Create);
@@ -53,21 +56,18 @@ public class UiDefinitionsEndpoints
                         result.Add(Char.ToLower(type.Name[0]) + type.Name.Substring(1), new FormDefinition(createInputs, updateInputs));
                     }
                 }
-            }
+            } 
 
-            var temp = new JsonResult(result, new System.Text.Json.JsonSerializerOptions()
+            return Results.Json(result, new JsonSerializerOptions
             {
-                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
-                PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             });
-
-            return temp;
         } 
         catch (Exception ex) 
         {
-            return null;
-            // return StatusCode(500, new[] { ex.ToBetterString() });
+            return Results.BadRequest(ex.ToBetterString());
         } 
-    }
+    }   
 } 
 

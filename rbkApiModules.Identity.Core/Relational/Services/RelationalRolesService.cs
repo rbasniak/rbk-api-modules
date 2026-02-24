@@ -23,8 +23,10 @@ public class RelationalRolesService : IRolesService
 
     public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
-        var role = await _context.Set<Role>().FindAsync(id, cancellationToken);
+        var role2 = await _context.Set<Role>().FindAsync(id, cancellationToken);
+        var role = await _context.Set<Role>().Include(x => x.Claims).FirstAsync(x => x.Id == id);
 
+        _context.RemoveRange(role.Claims);
         _context.Remove(role);
 
         await _context.SaveChangesAsync(cancellationToken);

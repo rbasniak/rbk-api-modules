@@ -116,7 +116,7 @@ public class DeleteRole : IEndpoint
                     {
                         await _usersService.RemoveRole(user.Username, user.TenantId, tenantRole.Id, cancellationToken);
                         await _usersService.AddRole(user.Username, user.TenantId, applicationRole.Id, cancellationToken);
-                    }
+                    } 
                 }
             }
 

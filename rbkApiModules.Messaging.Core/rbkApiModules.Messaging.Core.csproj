@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 <ItemGroup>
 <FrameworkReference Include="Microsoft.AspNetCore.App" />
@@ -9,14 +9,12 @@
 		<PackageReference Include="FluentValidation" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
-		<PackageReference Include="Microsoft.Extensions.DependencyModel" />
 		<PackageReference Include="OpenTelemetry" />
-		<PackageReference Include="SixLabors.ImageSharp" />
-		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" />
+		<PackageReference Include="RabbitMQ.Client" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Database\Commons\Validators\" />
+		<ProjectReference Include="..\rbkApiModules.Commons.Core\rbkApiModules.Commons.Core.csproj" />
 	</ItemGroup>
 
 </Project>

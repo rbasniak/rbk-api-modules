@@ -55,15 +55,19 @@ public class DatabaseSeedManager<T> : IDatabaseSeeder where T : DbContext
                         {
                             try
                             {
-                                using (var transaction = context.Database.BeginTransaction())
+                                var strategy = context.Database.CreateExecutionStrategy();
+                                strategy.Execute(() =>
                                 {
-                                    kvp.Value.Function(context, scope.ServiceProvider);
+                                    using (var transaction = context.Database.BeginTransaction())
+                                    {
+                                        kvp.Value.Function(context, scope.ServiceProvider);
 
-                                    context.Add(new SeedHistory(kvp.Key, DateTime.UtcNow));
-                                    context.SaveChanges();
+                                        context.Add(new SeedHistory(kvp.Key, DateTime.UtcNow));
+                                        context.SaveChanges();
 
-                                    transaction.Commit();
-                                }
+                                        transaction.Commit();
+                                    }
+                                });
                             }
                             catch (Exception ex)
                             {

@@ -1,14 +1,9 @@
-﻿using FluentValidation;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.ResponseCompression;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using rbkApiModules.Commons.Core;
@@ -35,7 +30,8 @@ public static class CommonsCoreBuilder
 
         services.AddSingleton(options);
 
-        services.AddMessaging();
+        services.AddMessaging()
+            .AddTransactionalPipelineBehavior();
 
         #region Response Compression
 
@@ -415,6 +411,9 @@ public static class CommonsCoreBuilder
 
             #region Swagger
 
+            // When using Swagger/OpenAPI with EnableBasicAuthenticationHandler() or any global auth,
+            // the app must allow anonymous access to the OpenAPI document and Swagger UI (e.g. app.MapOpenApi().AllowAnonymous())
+            // or browsers will receive 401 when loading the spec at /openapi/v1.json.
 
             //if (options._useDefaultSwaggerOptions || options._userSwaggerOptions != null)
             //{

@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using Microsoft.AspNetCore.Components;
 using rbkApiModules.Commons.Core;
 using System.Diagnostics;
 using System.Reflection;
@@ -26,6 +25,12 @@ public static class Builder
         return services;
     }
 
+    public static IServiceCollection AddTransactionalPipelineBehavior(this IServiceCollection services)
+    {
+        services.AddScoped(typeof(IPipelineBehavior<,>), typeof(TransactionalPipelineBehavior<,>));
+        return services;
+    }
+
     private static void RegisterHandlers(IServiceCollection services, Type handlerOpenGenericType, Assembly[] assemblies)
     {
         foreach (var assembly in assemblies)
@@ -42,7 +47,7 @@ public static class Builder
 
                     foreach (var @interface in interfaces)
                     {
-                        // Debug.WriteLine($"***** Registering handler for {type.FullName.Split('.').Last().Split('+').First()}");
+                        Debug.WriteLine($"***** [{assembly.GetName().Name}] Registering handler for {type.FullName.Split('.').Last().Split('+').First()}");
                         services.AddScoped(@interface, type);
                     }
                 }

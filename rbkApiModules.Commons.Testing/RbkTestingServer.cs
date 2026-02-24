@@ -34,6 +34,8 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
     private const string MockedWindowsAuthenticationHeaderName = "UserId";
     private const string MockedWindowsAuthenticationSchemeName = "TestScheme";
 
+    public string LoginUrl { get; set; } = "api/authentication/login";
+
     protected abstract bool UseHttps { get; }
 
     public async Task InitializeAsync()
@@ -552,14 +554,14 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
     /// <summary>
     /// Login using Mocked Windows Authentication
     /// </summary>
-    public async Task CacheCredentials(string username, string tenant)
+    public virtual async Task CacheCredentials(string username, string tenant)
     {
         using (var httpClient = CreateHttpClient())
         {
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(MockedWindowsAuthenticationSchemeName);
             httpClient.DefaultRequestHeaders.Add(MockedWindowsAuthenticationHeaderName, username);
 
-            var result = await PostAsync<JwtResponse>(httpClient, "api/authentication/login", new UserLogin.Request
+            var result = await PostAsync<JwtResponse>(httpClient, LoginUrl, new UserLogin.Request
             {
                 Username = username,
                 Tenant = tenant
@@ -576,14 +578,14 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
         }
     }
 
-    public async Task<HttpResponse<JwtResponse>> LoginAsync(string username, string? tenant)
+    public virtual async Task<HttpResponse<JwtResponse>> LoginAsync(string username, string? tenant)
     {
         using (var httpClient = CreateHttpClient())
         {
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(MockedWindowsAuthenticationSchemeName);
             httpClient.DefaultRequestHeaders.Add(MockedWindowsAuthenticationHeaderName, username);
 
-            var result = await PostAsync<JwtResponse>(httpClient, "api/authentication/login", new UserLogin.Request
+            var result = await PostAsync<JwtResponse>(httpClient, LoginUrl, new UserLogin.Request
             {
                 Username = username,
                 Tenant = tenant
@@ -596,11 +598,11 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
     /// <summary>
     /// Login using normal credentials
     /// </summary>
-    public async Task CacheCredentialsAsync(string username, string password, string? tenant)
+    public virtual async Task CacheCredentialsAsync(string username, string password, string? tenant)
     {
         using (var httpClient = CreateHttpClient())
         {
-            var result = await PostAsync<JwtResponse>(httpClient, "api/authentication/login", new UserLogin.Request
+            var result = await PostAsync<JwtResponse>(httpClient, LoginUrl, new UserLogin.Request
             {
                 Username = username,
                 Password = password,
@@ -618,11 +620,11 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
         }
     }
 
-    public async Task<HttpResponse<JwtResponse>> LoginAsync(string username, string password, string? tenant)
+    public virtual async Task<HttpResponse<JwtResponse>> LoginAsync(string username, string password, string? tenant)
     {
         using (var httpClient = CreateHttpClient())
         {
-            var result = await PostAsync<JwtResponse>(httpClient, "api/authentication/login", new UserLogin.Request
+            var result = await PostAsync<JwtResponse>(httpClient, LoginUrl, new UserLogin.Request
             {
                 Username = username,
                 Password = password,

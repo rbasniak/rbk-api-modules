@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace rbkApiModules.Commons.Core;
 
@@ -81,7 +82,7 @@ public sealed class CommandResponse : BaseResponse
         {
             Error = problem,
             IsValid = false,
-            Data = null
+            Data = null,
         };
     }
 
@@ -93,6 +94,7 @@ public sealed class CommandResponse : BaseResponse
             {
                 Title = "Command Failure",
                 Detail = message,
+                Status = StatusCodes.Status400BadRequest
             },
             IsValid = false,
         };

@@ -17,7 +17,7 @@ public sealed class Tenant
         Metadata = metadata;
     }
 
-    [Key, Required, MaxLength(32)]
+    [Key, Required, MaxLength(255)]
     public string Alias { get; private set; } = string.Empty;
 
     [Required, MinLength(3), MaxLength(255)]

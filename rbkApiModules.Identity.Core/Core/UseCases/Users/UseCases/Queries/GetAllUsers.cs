@@ -15,9 +15,8 @@ public class GetAllUsers : IEndpoint
         })
         .RequireAuthorization(AuthenticationClaims.MANAGE_USERS)
         .WithName("Get All Users")
-        .WithTags("Authorization");
+        .WithTags("Application");
     }
-
     public class Request : AuthenticatedRequest, IQuery
     {
     }

@@ -1,6 +1,6 @@
 namespace rbkApiModules.Commons.Core;
 
-internal static class GuidHelpers
+public static class GuidHelpers
 {
 #if NET8_0
     // GuidV7 implementation for .NET 8 compatibility
