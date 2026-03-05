@@ -12,7 +12,7 @@ public class RemoveClaimOverride : IEndpoint
 
             return ResultsMapper.FromResponse(result);
         })
-        .RequireAuthorization(AuthenticationClaims.MANAGE_USERS)
+        .RequireAuthorizationClaim(AuthenticationClaims.MANAGE_USERS)
         .WithName("Remove Claim Override")
         .WithTags("Authorization");
     }

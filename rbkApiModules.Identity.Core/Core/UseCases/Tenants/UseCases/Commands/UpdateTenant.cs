@@ -10,7 +10,7 @@ public class UpdateTenant : IEndpoint
 
             return ResultsMapper.FromResponse(result);
         })
-        .RequireAuthorization(AuthenticationClaims.MANAGE_TENANTS)
+        .RequireAuthorizationClaim(AuthenticationClaims.MANAGE_TENANTS)
         .WithName("Update Tenant")
         .WithTags("Tenants");
     }

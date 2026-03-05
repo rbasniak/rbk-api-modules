@@ -13,7 +13,7 @@ public class GetAllUsers : IEndpoint
 
             return ResultsMapper.FromResponse(result);
         })
-        .RequireAuthorization(AuthenticationClaims.MANAGE_USERS)
+        .RequireAuthorizationClaim(AuthenticationClaims.MANAGE_USERS)
         .WithName("Get All Users")
         .WithTags("Application");
     }

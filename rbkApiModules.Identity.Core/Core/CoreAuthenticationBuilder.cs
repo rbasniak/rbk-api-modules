@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
@@ -112,11 +112,29 @@ public static class CoreAuthenticationBuilder
 
                     options.DefaultPolicy = defaultAuthorizationPolicyBuilder.Build();
                 }
+
+                if (authenticationOptions._addApiKeyAuthentication)
+                {
+                    options.AddPolicy(RbkAuthenticationSchemes.API_KEY_POLICY, policy =>
+                        policy.AddAuthenticationSchemes(RbkAuthenticationSchemes.API_KEY).RequireAuthenticatedUser());
+                }
             });
         }
         else
         {
-            services.AddAuthorization();
+            services.AddAuthorization(options =>
+            {
+                if (authenticationOptions._addApiKeyAuthentication)
+                {
+                    options.AddPolicy(RbkAuthenticationSchemes.API_KEY_POLICY, policy =>
+                        policy.AddAuthenticationSchemes(RbkAuthenticationSchemes.API_KEY).RequireAuthenticatedUser());
+                }
+            });
+        }
+
+        if (authenticationOptions._addApiKeyAuthentication && authenticationOptions._apiKeyValidatorType != null)
+        {
+            services.AddScoped(typeof(IApiKeyValidator), authenticationOptions._apiKeyValidatorType);
         }
 
         services.RegisterApplicationServices(Assembly.GetAssembly(typeof(IJwtFactory)));

@@ -452,7 +452,7 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
 
     #region Get
 
-    public async Task<HttpResponse> GetAsync<TResponse>(string url, ApiKey credentials) where TResponse : class
+    public async Task<HttpResponse<TResponse>> GetAsync<TResponse>(string url, ApiKey credentials) where TResponse : class
     {
         using (var httpClient = CreateHttpClient())
         {

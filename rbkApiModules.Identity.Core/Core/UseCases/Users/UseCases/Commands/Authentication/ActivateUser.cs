@@ -12,7 +12,7 @@ public class ActivateUser : IEndpoint
 
             return ResultsMapper.FromResponse(result);
         })
-        .RequireAuthorization(AuthenticationClaims.MANAGE_USERS)
+        .RequireAuthorizationClaim(AuthenticationClaims.MANAGE_USERS)
         .WithName("Activate User")
         .WithTags("Authentication");
     }

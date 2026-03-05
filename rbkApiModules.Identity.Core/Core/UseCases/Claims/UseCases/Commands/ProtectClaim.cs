@@ -10,7 +10,7 @@ public class ProtectClaim : IEndpoint
 
             return ResultsMapper.FromResponse(result);
         })
-        .RequireAuthorization(AuthenticationClaims.CHANGE_CLAIM_PROTECTION)
+        .RequireAuthorizationClaim(AuthenticationClaims.CHANGE_CLAIM_PROTECTION)
         .WithName("Protect Claim")
         .WithTags("Claims");
     }

@@ -23,7 +23,7 @@ public class GetAllTenants
 
             return ResultsMapper.FromResponse(result);
         })
-        .RequireAuthorization(AuthenticationClaims.MANAGE_TENANTS)
+        .RequireAuthorizationClaim(AuthenticationClaims.MANAGE_TENANTS)
         .WithName("Get All Tenants")
         .WithTags("Tenants");
     }

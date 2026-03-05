@@ -24,6 +24,8 @@ public class RbkAuthenticationOptions
     internal string _defaultRoleName = null;
     internal List<Action<AuthenticationBuilder>> _extraAuthenticationSchemes = new List<Action<AuthenticationBuilder>>();
     internal bool _appendAuthenticationSchemes = true;
+    internal bool _addApiKeyAuthentication = false;
+    internal Type _apiKeyValidatorType = null;
 
     public RbkAuthenticationOptions AllowUserCreationOnFirstAccess(string roleName)
     {
@@ -173,6 +175,19 @@ public class RbkAuthenticationOptions
 
         return this;
     }
+
+    /// <summary>
+    /// Registers the API key authentication scheme, the authorization policy, and <c>IApiKeyValidator</c> so endpoints can use
+    /// <c>.RequireAuthorization(RbkAuthenticationSchemes.API_KEY_POLICY)</c> for API-key-only access.
+    /// </summary>
+    /// <typeparam name="TValidator">Implementation of <c>IApiKeyValidator</c> to register (scoped).</typeparam>
+    public RbkAuthenticationOptions AddApiKeyAuthentication<TValidator>() where TValidator : class, IApiKeyValidator
+    {
+        _addApiKeyAuthentication = true;
+        _apiKeyValidatorType = typeof(TValidator);
+        return AppendAuthenticationScheme(builder =>
+            builder.AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>(RbkAuthenticationSchemes.API_KEY, configureOptions: null));
+    }
 }
 
 public class rbkDefaultClaimOptions
@@ -286,5 +301,9 @@ public class SeedClaimDescriptions
 
 public static class RbkAuthenticationSchemes
 {
+    /// <summary>Authentication scheme name for API key (also used as the header name).</summary>
     public const string API_KEY = "Api-Key";
+
+    /// <summary>Authorization policy name when using <see cref="RbkAuthenticationOptions.AddApiKeyAuthentication"/>. Use with <c>.RequireAuthorization(RbkAuthenticationSchemes.API_KEY_POLICY)</c>.</summary>
+    public const string API_KEY_POLICY = "ApiKey";
 }

@@ -10,7 +10,7 @@ public class CreateTenant : IEndpoint
 
             return ResultsMapper.FromResponse(result);
         })
-        .RequireAuthorization(AuthenticationClaims.MANAGE_TENANTS)
+        .RequireAuthorizationClaim(AuthenticationClaims.MANAGE_TENANTS)
         .WithName("Create Tenant")
         .WithTags("Tenants");
     }
