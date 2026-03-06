@@ -6,6 +6,4 @@ dotnet build --configuration Release --no-restore
 
 dotnet pack -c Release -P:IncludeSymbols=true -p:SymbolPackageFormat=snupkg
 
-Get-ChildItem * -Include *.Analysers*nupkg -Recurse | Remove-Item
-
-dotnet nuget push **/*.nupkg  --api-key oy2pysxsqr ihxpur4zrqce mkcouijttunjpe5 amcf466ie --source https://api.nuget.org/v3/index.json
+dotnet nuget push **/*.nupkg  --api-key oy2njcf3qfg3tvb e4ydalrzswe 3hrs2ebn qzxvhm6b3soe --source https://api.nuget.org/v3/index.json --skip-duplicate

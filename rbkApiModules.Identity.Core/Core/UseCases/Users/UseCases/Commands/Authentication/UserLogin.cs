@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 namespace rbkApiModules.Identity.Core;
 
@@ -40,6 +40,47 @@ public class UserLogin
         })
         .AllowAnonymous()
         .WithName("Login with Credentials")
+        .WithTags("Authentication");
+    }
+
+    /// <summary>
+    /// Single login endpoint for Testing + Windows mode: credentials when no Windows auth, NTLM when authenticated with TestScheme.
+    /// </summary>
+    public static void MapCombinedLoginEndpoint(IEndpointRouteBuilder endpoints)
+    {
+        endpoints.MapPost("/api/authentication/login", async (Request request, IDispatcher dispatcher,
+            HttpContext httpContext, RbkDefaultAdminOptions adminOptions, CancellationToken cancellationToken) =>
+        {
+            // AllowAnonymous may not run auth middleware; detect TestScheme from header so Windows (mock) login works.
+            var authHeader = httpContext.Request.Headers.Authorization.ToString();
+            var isWindowsAuth = authHeader.StartsWith(MockedWindowsAuthenticationHandler.AuthenticationScheme, StringComparison.OrdinalIgnoreCase)
+                || (httpContext.User.Identity?.IsAuthenticated == true
+                    && string.Equals(httpContext.User.Identity.AuthenticationType, MockedWindowsAuthenticationHandler.AuthenticationScheme, StringComparison.Ordinal));
+
+            if (isWindowsAuth)
+            {
+                var requestHasUsername = string.IsNullOrEmpty(request.Username);
+                var isAdminUser = !string.IsNullOrEmpty(request.Username) && request.Username.ToLower() != adminOptions._username.ToLower();
+                var requestHasTenant = string.IsNullOrEmpty(request.Tenant);
+
+                if (requestHasUsername || isAdminUser || !requestHasTenant)
+                {
+                    var nameFromContext = httpContext.User.Identity?.Name?.Split('\\').Last().ToLower();
+                    var nameFromHeader = httpContext.Request.Headers[MockedWindowsAuthenticationHandler.UserId].FirstOrDefault()?.ToLower();
+                    request.Username = nameFromContext ?? nameFromHeader ?? request.Username;
+                }
+                request.AuthenticationMode = AuthenticationMode.Windows;
+            }
+            else
+            {
+                request.AuthenticationMode = AuthenticationMode.Credentials;
+            }
+
+            var result = await dispatcher.SendAsync(request, cancellationToken);
+            return ResultsMapper.FromResponse(result);
+        })
+        .AllowAnonymous()
+        .WithName("Combined Login (Testing + Windows)")
         .WithTags("Authentication");
     }
 

@@ -554,7 +554,7 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
     /// <summary>
     /// Login using Mocked Windows Authentication
     /// </summary>
-    public virtual async Task CacheCredentials(string username, string tenant)
+    public virtual async Task CacheCredentialsAsync(string username, string tenant)
     {
         using (var httpClient = CreateHttpClient())
         {
