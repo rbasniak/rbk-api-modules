@@ -11,7 +11,7 @@ public class CreateClaim : IEndpoint
 
             return ResultsMapper.FromResponse(result);
         })
-        .RequireAuthorization(AuthenticationClaims.MANAGE_CLAIMS)
+        .RequireAuthorizationClaim(AuthenticationClaims.MANAGE_CLAIMS)
         .WithName("Create Claim")
         .WithTags("Claims");
     }

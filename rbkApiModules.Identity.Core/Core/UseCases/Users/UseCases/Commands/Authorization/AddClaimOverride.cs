@@ -12,7 +12,7 @@ public class AddClaimOverride : IEndpoint
 
             return ResultsMapper.FromResponse(result);
         })
-        .RequireAuthorization(AuthenticationClaims.OVERRIDE_USER_CLAIMS)
+        .RequireAuthorizationClaim(AuthenticationClaims.OVERRIDE_USER_CLAIMS)
         .WithName("Add Claim Override")
         .WithTags("Authorization");
     }

@@ -19,7 +19,8 @@ public class WindowsAuthenticationMiddleware
         var isAnonymous = metadata?.GetMetadata<AllowAnonymousAttribute>() != null;
 
         var authorizeAttr = metadata?.GetMetadata<AuthorizeAttribute>();
-        var requiresApiKey = authorizeAttr?.AuthenticationSchemes == RbkAuthenticationSchemes.API_KEY;
+        var requiresApiKey = authorizeAttr?.AuthenticationSchemes == RbkAuthenticationSchemes.API_KEY
+            || authorizeAttr?.Policy == RbkAuthenticationSchemes.API_KEY_POLICY;
 
         var hasBearerToken = context.Request.Headers.Authorization.ToString().ToLower().StartsWith("bearer ");
 

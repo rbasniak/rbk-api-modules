@@ -10,7 +10,7 @@ public class DeleteUser : IEndpoint
 
             return ResultsMapper.FromResponse(result);
         })
-        .RequireAuthorization(AuthenticationClaims.MANAGE_USERS)
+        .RequireAuthorizationClaim(AuthenticationClaims.MANAGE_USERS)
         .WithName("Delete User")
         .WithTags("Authentication");
     }

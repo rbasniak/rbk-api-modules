@@ -12,7 +12,7 @@ public class DeativateUser : IEndpoint
 
             return ResultsMapper.FromResponse(result);
         })
-        .RequireAuthorization(AuthenticationClaims.MANAGE_USERS)
+        .RequireAuthorizationClaim(AuthenticationClaims.MANAGE_USERS)
         .WithName("Deactivate User")
         .WithTags("Authentication");
     }

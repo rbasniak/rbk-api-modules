@@ -10,7 +10,7 @@ public class DeleteTenant : IEndpoint
 
             return ResultsMapper.FromResponse(result);
         })
-        .RequireAuthorization(AuthenticationClaims.MANAGE_TENANTS)
+        .RequireAuthorizationClaim(AuthenticationClaims.MANAGE_TENANTS)
         .WithName("Delete Tenant")
         .WithTags("Tenants");
     } 

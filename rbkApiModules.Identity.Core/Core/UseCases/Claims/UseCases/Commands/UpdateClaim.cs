@@ -10,7 +10,7 @@ public class UpdateClaim : IEndpoint
 
             return ResultsMapper.FromResponse(result);
         })
-        .RequireAuthorization(AuthenticationClaims.MANAGE_CLAIMS)
+        .RequireAuthorizationClaim(AuthenticationClaims.MANAGE_CLAIMS)
         .WithName("Update Claim")
         .WithTags("Claims");
     }

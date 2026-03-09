@@ -452,7 +452,7 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
 
     #region Get
 
-    public async Task<HttpResponse> GetAsync<TResponse>(string url, ApiKey credentials) where TResponse : class
+    public async Task<HttpResponse<TResponse>> GetAsync<TResponse>(string url, ApiKey credentials) where TResponse : class
     {
         using (var httpClient = CreateHttpClient())
         {
@@ -554,7 +554,7 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
     /// <summary>
     /// Login using Mocked Windows Authentication
     /// </summary>
-    public virtual async Task CacheCredentials(string username, string tenant)
+    public virtual async Task CacheCredentialsAsync(string username, string tenant)
     {
         using (var httpClient = CreateHttpClient())
         {

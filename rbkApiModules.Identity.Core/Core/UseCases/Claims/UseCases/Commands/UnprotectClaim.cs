@@ -10,7 +10,7 @@ public class UnprotectClaim : IEndpoint
 
             return ResultsMapper.FromResponse(result);
         })
-        .RequireAuthorization(AuthenticationClaims.CHANGE_CLAIM_PROTECTION)
+        .RequireAuthorizationClaim(AuthenticationClaims.CHANGE_CLAIM_PROTECTION)
         .WithName("Unprotect Claim")
         .WithTags("Claims");
     }

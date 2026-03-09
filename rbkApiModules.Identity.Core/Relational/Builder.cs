@@ -1,3 +1,4 @@
+using rbkApiModules.Commons.Core.Helpers;
 using rbkApiModules.Commons.Relational;
 using rbkApiModules.Identity.Core;
 using rbkApiModules.Identity.Relational;
@@ -101,12 +102,22 @@ public static class Builder
         if (authenticationOptions._loginMode == LoginMode.WindowsAuthentication || authenticationOptions._loginMode == LoginMode.Custom)
         {
             endpoints.RemoveAll(e =>
-                e.Key is "UserLogin.Credentials"
-                or "ChangePassword"
+                e.Key is "ChangePassword"
                 or "ConfirmUserEmail"
                 or "ResendEmailConfirmation"
                 or "RedefinePassword"
                 or "RequestPasswordReset");
+
+            if (TestingEnvironmentChecker.IsTestingEnvironment)
+            {
+                // Single combined endpoint so superuser can use credentials and Windows users can use NTLM (no route ambiguity).
+                endpoints.RemoveAll(e => e.Key is "UserLogin.Credentials" or "UserLogin.Ntlm");
+                endpoints.Add(("UserLogin.Combined", UserLogin.MapCombinedLoginEndpoint));
+            }
+            else
+            {
+                endpoints.RemoveAll(e => e.Key == "UserLogin.Credentials");
+            }
 
             app.UseMiddleware<WindowsAuthenticationMiddleware>();
         }

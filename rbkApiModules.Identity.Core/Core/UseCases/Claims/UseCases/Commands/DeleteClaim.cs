@@ -10,7 +10,7 @@ public class DeleteClaim : IEndpoint
 
             return ResultsMapper.FromResponse(result);
         })
-        .RequireAuthorization(AuthenticationClaims.MANAGE_CLAIMS)
+        .RequireAuthorizationClaim(AuthenticationClaims.MANAGE_CLAIMS)
         .WithName("Delete Claim")
         .WithTags("Claims");
     }

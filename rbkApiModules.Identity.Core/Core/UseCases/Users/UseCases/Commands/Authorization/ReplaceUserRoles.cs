@@ -12,7 +12,7 @@ public class ReplaceUserRoles : IEndpoint
 
             return ResultsMapper.FromResponse(result);
         })
-        .RequireAuthorization(AuthenticationClaims.MANAGE_USER_ROLES)
+        .RequireAuthorizationClaim(AuthenticationClaims.MANAGE_USER_ROLES)
         .WithName("Replace User Roles")
         .WithTags("Authorization");
     }

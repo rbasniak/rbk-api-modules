@@ -1,10 +1,12 @@
-
 using rbkApiModules.Commons.Core.UiDefinitions;
 using rbkApiModules.Commons.Relational;
+using rbkApiModules.Identity.Core;
 using rbkApiModules.Identity.Relational;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Commons.Core.Helpers;
+using Demo1.Authentication;
+using Demo1.Endpoints;
 using Demo1.UseCases.Commands;
 
 namespace Demo1
@@ -54,6 +56,7 @@ namespace Demo1
                 .UseSymetricEncryptationKey()
                 .AllowUserCreationByAdmins()
                 .AllowUserSelfRegistration()
+                .AddApiKeyAuthentication<DemoApiKeyValidator>()
             );
 
             builder.Services.AddRbkUIDefinitions(Assembly.GetAssembly(typeof(Program)));
@@ -102,6 +105,7 @@ namespace Demo1
             CreatePost.MapEndpoint(app);
             UpdatePost.MapEndpoint(app);
             GetSettings.MapEndpoint(app);
+            DemoEndpoints.MapEndpoint(app);
 
             app.MapOpenApi().AllowAnonymous();
             app.UseSwaggerUI(options =>

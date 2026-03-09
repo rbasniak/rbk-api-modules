@@ -1,12 +1,11 @@
-﻿using rbkApiModules.Commons.Core.Abstractions;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using Shouldly;
 using System.Linq.Expressions;
 using DescriptionAttribute = System.ComponentModel.DescriptionAttribute;
-using rbkApiModules.Commons.Testing;
 using rbkApiModules.Testing.Core;
+using rbkApiModules.Commons.Core.Abstractions;
 
-namespace Giants.Tests.Integration;
+namespace rbkApiModules.Commons.Testing;
 
 public static class AssertExtensions
 {
@@ -131,9 +130,9 @@ public static class AssertExtensions
                 {
                     CompareLists(valueFromActualObject, valueFromExpectedObject, configuration, customMessage);
                 }
-                else if (valueFromActualObject is EntityReference<int> && valueFromExpectedObject is Enum)
+                else if (valueFromActualObject is EnumReference && valueFromExpectedObject is Enum)
                 {
-                    var castValueFromActualObject = (EntityReference<int>)valueFromActualObject;
+                    var castValueFromActualObject = (EnumReference)valueFromActualObject;
                     var castValueFromExpectedObject = (Enum)valueFromExpectedObject;
 
                     var enumType = valueFromExpectedObject.GetType();
@@ -153,7 +152,7 @@ public static class AssertExtensions
                     }
 
                     castValueFromActualObject.Id.ShouldBe((int)valueFromExpectedObject, $"{friendlyPropertyName}: when comparing Enum to SimpleNamedEntity<int>, the Id didn't match");
-                    castValueFromActualObject.Name.ShouldBe(description, $"{friendlyPropertyName}: when comparing Enum to SimpleNamedEntity<int>, the Name didn't match");
+                    castValueFromActualObject.Value.ShouldBe(description, $"{friendlyPropertyName}: when comparing Enum to SimpleNamedEntity<int>, the Name didn't match");
                 }
                 else if (valueFromActualObject is EnumReference && valueFromExpectedObject is Enum)
                 {
