@@ -1,4 +1,4 @@
-﻿using rbkApiModules.Commons.Relational;
+using rbkApiModules.Commons.Relational;
 using rbkApiModules.Identity.Core;
 using rbkApiModules.Identity.Relational;
 using System.Diagnostics;

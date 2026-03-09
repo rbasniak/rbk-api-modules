@@ -355,3 +355,6 @@ MigrationBackup/
 !/@Tools/*.pdb
 /analytics.csv
 /Demo1/Demo1.Api/Logs
+Demo1/demo1.Application.db-wal
+Demo1/demo1.Application.db
+Demo1/demo1.Application.db-shm
