@@ -203,17 +203,33 @@ public class Dispatcher(IServiceProvider serviceProvider, IHttpContextAccessor h
             result = await handle();
             return (TResponse)result;
         }
+        catch (ExpectedInternalException ex)
+        {
+            logger.LogError(ex, "Error executing command (handled by user) {CommandType}", commandTypeName);
+
+            var message = TestingEnvironmentChecker.IsTestingEnvironment ? ex.ToString() : ex.Message;
+
+            result = CommandResponseFactory.CreateFailed(request, new ProblemDetails
+            {
+                Title = "User Forced Failure on Command Execution",
+                Detail = ex.Message,
+                Status = StatusCodes.Status400BadRequest,
+            });
+
+            return (TResponse)result;
+        }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error executing command {CommandType}", commandTypeName);
+            logger.LogError(ex, "Error executing command (unhandled) {CommandType}", commandTypeName);
 
             var message = TestingEnvironmentChecker.IsTestingEnvironment ? ex.ToString() : ex.Message;
             result = CommandResponseFactory.CreateFailed(request, new ProblemDetails
             {
-                Title = "Command Execution Failed",
+                Title = "System Failure on Command Execution",
                 Detail = message,
                 Status = StatusCodes.Status500InternalServerError
             });
+
             return (TResponse)result;
         }
         finally

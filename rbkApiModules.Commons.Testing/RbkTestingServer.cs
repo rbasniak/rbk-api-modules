@@ -727,9 +727,17 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
 
             result.Problem = problem;
 
-            if (problem != null && problem.Errors != null && problem.Errors.Count > 0)
+            if (problem != null && problem.Errors != null && problem.Errors.Count > 0) // The payload was deserialized to ValidationProblemDetails 
             {
                 result.Messages = problem.Errors.SelectMany(x => x.Value).ToArray();
+            }
+            else if (problem != null && problem.Detail != null) // The payload was in fact ProblemDetails
+            {
+                result.Messages = [problem.Detail];
+            }
+            else
+            {
+                result.Messages = [ "Error deserializing HttpResponse to assert the error messages" ]; 
             }
         }
     }
