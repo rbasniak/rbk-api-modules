@@ -484,7 +484,8 @@ public class CommandResponseFactory
             if (queryInterface != null)
             {
                 var responseType = queryInterface.GetGenericArguments()[0];
-                var failureMethod = typeof(QueryResponse<>).MakeGenericType(responseType).GetMethod("Failure");
+                var failureMethod = typeof(QueryResponse<>).MakeGenericType(responseType)
+                    .GetMethod("Failure", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic, null, new[] { typeof(ProblemDetails) }, null);
                 return (BaseResponse)failureMethod!.Invoke(null, new object[] { problemDetails })!;
             }
 
