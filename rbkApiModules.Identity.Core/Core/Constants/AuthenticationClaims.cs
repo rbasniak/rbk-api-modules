@@ -1,4 +1,4 @@
-﻿namespace rbkApiModules.Identity.Core;
+namespace rbkApiModules.Identity.Core;
 
 public class AuthenticationClaims
 {

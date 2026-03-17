@@ -4,11 +4,31 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Demo1.UseCases.Commands;
 
+public interface ICreatePostRequest
+{    
+    string Title { get; set; }
+    string Body { get; set; }
+    Guid AuthorId { get; set; }
+    Guid BlogId { get; set; }
+    string UniqueInApplication { get; set; }
+    string UniqueInTenant { get; set; }
+}
+
+public class CreatePostRequest : ICreatePostRequest, ICommand
+{
+    public string Title { get; set; } = string.Empty;
+    public string Body { get; set; } = string.Empty;
+    public Guid AuthorId { get; set; }
+    public Guid BlogId { get; set; }
+    public string UniqueInApplication { get; set; } = string.Empty;
+    public string UniqueInTenant { get; set; } = string.Empty;
+}
+
 public class CreatePost : IEndpoint
 {
     public static void MapEndpoint(IEndpointRouteBuilder endpoints)
     {
-        endpoints.MapPost("/posts", async (Request request, IDispatcher dispatcher, CancellationToken cancellationToken) =>
+        endpoints.MapPost("/posts", async (CreatePostRequest request, IDispatcher dispatcher, CancellationToken cancellationToken) =>
         {
             var result = await dispatcher.SendAsync(request, cancellationToken);
             return ResultsMapper.FromResponse(result);
@@ -17,7 +37,7 @@ public class CreatePost : IEndpoint
         .WithTags("Posts");
     }
 
-    public class Request : AuthenticatedRequest, ICommand
+    public class Request : AuthenticatedRequest, ICommand, ICreatePostRequest
     {
         public string Title { get; set; } = string.Empty;
         public string Body { get; set; } = string.Empty;

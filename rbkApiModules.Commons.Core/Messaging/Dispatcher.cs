@@ -7,6 +7,7 @@ using rbkApiModules.Commons.Core.Helpers;
 using System.Data;
 using System.Diagnostics;
 using System.Reflection;
+using System.Collections.Concurrent;
 
 namespace rbkApiModules.Commons.Core;
 
@@ -21,6 +22,8 @@ public interface IDispatcher
 public class Dispatcher(IServiceProvider serviceProvider, IHttpContextAccessor httpContextAccessor)
     : IDispatcher
 {
+	private static readonly ConcurrentDictionary<(Type RequestType, Type ResponseType), Type?> HandlerContractCache = new();
+
     public async Task<TResponse> SendAsync<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken)
         where TResponse : BaseResponse
     {
@@ -85,7 +88,14 @@ public class Dispatcher(IServiceProvider serviceProvider, IHttpContextAccessor h
                 resolveAct?.SetTag("request.type", commandTypeName);
                 resolveAct?.SetTag("handler.contract", handlerType.FullName);
 
-                handler = serviceProvider.GetService(handlerType);
+                var cached = TryGetOrResolveHandlerContractType<TResponse>(commandType, resolveAct);
+                if (cached is not null)
+                {
+                    handlerType = cached;
+                    resolveAct?.SetTag("handler.contract", handlerType.FullName);
+                }
+
+                handler = cached is null ? null : serviceProvider.GetService(handlerType);
                 resolveAct?.SetTag("handler.found", handler is not null);
 
                 behaviors = serviceProvider.GetServices(typeof(IPipelineBehavior<,>)
@@ -361,6 +371,110 @@ public class Dispatcher(IServiceProvider serviceProvider, IHttpContextAccessor h
                 authenticatedRequest.SetIdentity(httpContextAccessor.GetTenant(), httpContextAccessor.GetUsername(), claims);
             }
         }
+	}
+
+    private Type? TryResolveHandlerByRequestInterface<TResponse>(Type requestConcreteType, Activity? resolveActivity)
+        where TResponse : BaseResponse
+    {
+        var requestMarkers = GetRequestMarkerInterfaces(requestConcreteType)
+            .Distinct()
+            .ToArray();
+
+        if (requestMarkers.Length == 0)
+        {
+            resolveActivity?.SetTag("handler.fallback.marker", "none");
+            return null;
+        }
+
+        resolveActivity?.SetTag("handler.fallback.marker.count", requestMarkers.Length);
+        resolveActivity?.SetTag("handler.fallback.marker.list", string.Join(",", requestMarkers.Select(m => m.FullName)));
+
+        var openHandler = typeof(IRequestHandler<,>);
+
+        // Scan types from loaded assemblies (DI does not expose registrations)
+        var candidateContracts = AppDomain.CurrentDomain
+            .GetAssemblies()
+            .SelectMany(a =>
+            {
+                try { return a.GetTypes(); }
+                catch (ReflectionTypeLoadException ex) { return ex.Types.Where(t => t is not null)!; }
+            })
+            .Where(t => t is not null)
+            .SelectMany(t => t!.GetInterfaces())
+            .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == openHandler)
+            .Distinct();
+
+        foreach (var contract in candidateContracts)
+        {
+            if (contract.GenericTypeArguments.Length != 2)
+                continue;
+
+            if (contract.GenericTypeArguments[1] != typeof(TResponse))
+                continue;
+
+            var handlerRequestType = contract.GenericTypeArguments[0];
+
+            var handlerMarkers = GetRequestMarkerInterfaces(handlerRequestType)
+                .Distinct()
+                .ToArray();
+
+            if (handlerMarkers.Length == 0)
+                continue;
+
+            var matchedMarker = requestMarkers.FirstOrDefault(rm => handlerMarkers.Contains(rm));
+            if (matchedMarker is not null)
+            {
+                // Ensure it's actually registered
+                if (serviceProvider.GetService(contract) is not null)
+                {
+                    resolveActivity?.AddEvent(new ActivityEvent("handler.fallback.match",
+                        tags: new ActivityTagsCollection
+                        {
+                            { "handler.contract", contract.FullName ?? string.Empty },
+                            { "marker", matchedMarker.FullName ?? string.Empty }
+                        }));
+                    return contract;
+                }
+            }
+        }
+
+        resolveActivity?.SetTag("handler.fallback.match", false);
+        return null;
+    }
+
+	private Type? TryGetOrResolveHandlerContractType<TResponse>(Type requestConcreteType, Activity? resolveActivity)
+		where TResponse : BaseResponse
+	{
+        return HandlerContractCache.GetOrAdd((requestConcreteType, typeof(TResponse)), key =>
+		{
+			var direct = typeof(IRequestHandler<,>).MakeGenericType(key.RequestType, key.ResponseType);
+			if (serviceProvider.GetService(direct) is not null)
+			{
+				resolveActivity?.SetTag("handler.match", "direct");
+				return direct;
+			}
+
+			var fallback = TryResolveHandlerByRequestInterface<TResponse>(key.RequestType, resolveActivity);
+			if (fallback is not null)
+			{
+				resolveActivity?.SetTag("handler.match", "fallback");
+			}
+
+			return fallback;
+		});
+	}
+
+    private static IEnumerable<Type> GetRequestMarkerInterfaces(Type type)
+    {
+        return type
+            .GetInterfaces()
+            .Where(i =>
+                i.IsInterface &&
+                i.Name.EndsWith("Request", StringComparison.Ordinal) &&
+                i != typeof(IQuery) &&
+                i != typeof(ICommand) &&
+                !(i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IQuery<>)) &&
+                !(i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ICommand<>)));
     }
 }
 
@@ -386,7 +500,8 @@ public class CommandResponseFactory
             if (queryInterface != null)
             {
                 var responseType = queryInterface.GetGenericArguments()[0];
-                var failureMethod = typeof(QueryResponse<>).MakeGenericType(responseType).GetMethod("Failure");
+                var failureMethod = typeof(QueryResponse<>).MakeGenericType(responseType)
+                    .GetMethod("Failure", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic, null, new[] { typeof(ProblemDetails) }, null);
                 return (BaseResponse)failureMethod!.Invoke(null, new object[] { problemDetails })!;
             }
 

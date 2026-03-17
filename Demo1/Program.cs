@@ -61,6 +61,10 @@ namespace Demo1
 
             builder.Services.AddRbkUIDefinitions(Assembly.GetAssembly(typeof(Program)));
 
+            // Deferred seed runs after startup; use for steps that depend on events/projections (e.g. projects seed).
+            // Add steps with: AddDeferredSeedRunner(options => options.AddDeferredSeed<DatabaseContext>("id", Method, EnvironmentUsage.Development));
+            builder.Services.AddDeferredSeedRunner();
+
             builder.Services.AddOpenApi();
 
             var app = builder.Build();
