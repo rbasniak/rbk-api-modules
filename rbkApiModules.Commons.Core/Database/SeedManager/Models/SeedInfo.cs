@@ -27,5 +27,6 @@ public enum EnvironmentUsage
     Production = 1,
     Development = 2,
     Staging = 3,
-    Testing = 4
+    Testing = 4,
+    All = Production | Development | Staging | Testing
 }

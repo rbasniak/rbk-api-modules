@@ -11,5 +11,5 @@ public interface IDeferredSeedStep
     string Id { get; }
     EnvironmentUsage EnvironmentUsage { get; }
     Type DbContextType { get; }
-    void Execute(DbContext context, IServiceProvider serviceProvider);
+    Task ExecuteAsync(DbContext context, IServiceProvider serviceProvider);
 }

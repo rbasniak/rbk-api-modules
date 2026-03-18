@@ -7,20 +7,20 @@ namespace rbkApiModules.Commons.Relational;
 /// </summary>
 public class DeferredSeedRunnerOptions
 {
-    private readonly List<IDeferredSeedStep> _steps = new();
+    private readonly SortedList<string, IDeferredSeedStep> _steps = new();
 
     /// <summary>
     /// Steps to run once after the application has started. The consumer is responsible for waiting as needed (e.g. for projection sync).
     /// </summary>
-    public IReadOnlyList<IDeferredSeedStep> Steps => _steps;
+    public IReadOnlyList<IDeferredSeedStep> Steps => _steps.Values.AsReadOnly();
 
     /// <summary>
     /// Registers a deferred seed step that runs after startup. Use for seeds that depend on events/projections (e.g. projects seed that needs materials in projection).
     /// </summary>
-    public DeferredSeedRunnerOptions AddDeferredSeed<T>(string id, Action<T, IServiceProvider> function, EnvironmentUsage environmentUsage)
+    public DeferredSeedRunnerOptions AddDeferredSeed<T>(IDeferredSeedStep seedStep)
         where T : DbContext
     {
-        _steps.Add(new DeferredSeedStep<T>(id, function, environmentUsage));
+        _steps.Add(seedStep.Id, seedStep);
         return this;
     }
 }

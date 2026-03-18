@@ -95,7 +95,7 @@ public sealed class DeferredSeedRunnerHostedService : BackgroundService
                         await using var transaction = await context.Database.BeginTransactionAsync(stoppingToken);
                         try
                         {
-                            step.Execute(context, serviceProvider);
+                            await step.ExecuteAsync(context, serviceProvider);
                             context.Add(new SeedHistory(step.Id, DateTime.UtcNow));
                             await context.SaveChangesAsync(stoppingToken);
                             await transaction.CommitAsync(stoppingToken);
