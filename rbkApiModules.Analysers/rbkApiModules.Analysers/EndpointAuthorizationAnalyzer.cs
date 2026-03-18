@@ -62,7 +62,9 @@ namespace rbkApiModules.Analysers
                     .Where(inv =>
                     {
                         if (inv.Expression is MemberAccessExpressionSyntax macc &&
-                            (macc.Name.Identifier.Text == "AllowAnonymous" || macc.Name.Identifier.Text == "RequireAuthorization"))
+                            (macc.Name.Identifier.Text == "AllowAnonymous" || 
+                             macc.Name.Identifier.Text == "RequireAuthorization" || 
+                             macc.Name.Identifier.Text == "RequireAuthorizationClaim"))
                         {
                             return true;
                         }

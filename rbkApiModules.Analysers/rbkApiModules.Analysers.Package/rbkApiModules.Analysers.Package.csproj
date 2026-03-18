@@ -10,7 +10,7 @@
 
   <PropertyGroup>
     <PackageId>rbkApiModules.Analysers</PackageId>
-    <PackageVersion>1.0.1.0</PackageVersion>
+    <PackageVersion>1.0.2.0</PackageVersion>
     <Authors>rbasniak</Authors>
     <PackageProjectUrl>https://github.com/rbasniak/rbk-api-modules</PackageProjectUrl>
     <RepositoryUrl>https://github.com/rbasniak/rbk-api-modules</RepositoryUrl>
