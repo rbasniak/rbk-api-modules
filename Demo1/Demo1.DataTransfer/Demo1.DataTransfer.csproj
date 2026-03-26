@@ -8,10 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="13.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Demo1.Models.Domain\Demo1.Models.Domain.csproj" />
     <ProjectReference Include="..\Demo1.Models.Read\Demo1.Models.Read.csproj" />
   </ItemGroup>
