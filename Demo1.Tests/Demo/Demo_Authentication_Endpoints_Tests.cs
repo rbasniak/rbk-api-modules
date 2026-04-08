@@ -1,10 +1,10 @@
 using System.Net;
 using System.Text.Json.Serialization;
-using Demo1.Authentication;
+using Demo1;
 using Demo1.Tests;
-using rbkApiModules.Identity.Core;
+using rbkApiModules.Commons.Testing;
 
-namespace Demo1.Tests.Demo;
+namespace rbkApiModules.Identity.Tests.ApiKeyAuthentication;
 
 [NotInParallel(nameof(Demo_Authentication_Endpoints_Tests))]
 public class Demo_Authentication_Endpoints_Tests
@@ -39,7 +39,7 @@ public class Demo_Authentication_Endpoints_Tests
     [Test]
     public async Task ApiKey_Endpoint_Returns_200_When_Valid_Key()
     {
-        var response = await TestingServer.GetAsync<DemoMessageResponse>("demo/apikey", new ApiKey(DemoApiKeyValidator.ValidApiKey));
+        var response = await TestingServer.GetAsync<DemoMessageResponse>("demo/apikey", new ApiKey(DemoIntegrationApiKey.Value));
         response.ShouldBeSuccess<DemoMessageResponse>(out var data);
         data.Message.ShouldBe("API key accepted");
     }

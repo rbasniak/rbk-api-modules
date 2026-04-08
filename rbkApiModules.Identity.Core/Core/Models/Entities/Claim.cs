@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace rbkApiModules.Identity.Core;
 
@@ -33,6 +33,8 @@ public sealed class Claim : BaseEntity
 
     public bool IsProtected { get; private set; }
 
+    public bool AllowApiKeyUsage { get; private set; }
+
     public IEnumerable<UserToClaim> Users => _users?.AsReadOnly()!;
 
     public IEnumerable<RoleToClaim> Roles => _roles?.AsReadOnly()!;
@@ -59,5 +61,15 @@ public sealed class Claim : BaseEntity
     public void Hide()
     {
         Hidden = true;
+    }
+
+    public void AllowUsageOnApiKeys()
+    {
+        AllowApiKeyUsage = true;
+    }
+
+    public void RestrictUsageOnApiKeys()
+    {
+        AllowApiKeyUsage = false;
     }
 }

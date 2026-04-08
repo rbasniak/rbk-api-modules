@@ -1,4 +1,4 @@
-﻿namespace rbkApiModules.Identity.Core;
+namespace rbkApiModules.Identity.Core;
 
 public interface IClaimsService
 {
@@ -12,6 +12,7 @@ public interface IClaimsService
     Task UnprotectAsync(Guid id, CancellationToken cancellationToken);
     Task DeleteAsync(Guid id, CancellationToken cancellationToken);
     Task RenameAsync(Guid id, string description, CancellationToken cancellationToken);
+    Task SetAllowApiKeyUsageAsync(Guid id, bool allowApiKeyUsage, CancellationToken cancellationToken);
     Task AddClaimOverridesAsync(Guid[] claimIds, string username, string tenant, ClaimAccessType mode, CancellationToken cancellationToken);
     Task RemoveClaimOverridesAsync(Guid[] claimIds, string username, string tenant, CancellationToken cancellationToken);
     Task<Claim> FindByDescriptionAsync(string description, CancellationToken cancellationToken);

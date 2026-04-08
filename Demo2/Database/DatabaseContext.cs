@@ -16,6 +16,11 @@ public class DatabaseContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<Role> Roles { get; set; }
     public DbSet<Claim> Claims { get; set; }
+
+    public DbSet<ApiKey> ApiKeys { get; set; }
+
+    public DbSet<ApiKeyUsageByDay> ApiKeyUsageByDay { get; set; }
+
     public DbSet<Tenant> Tenants { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

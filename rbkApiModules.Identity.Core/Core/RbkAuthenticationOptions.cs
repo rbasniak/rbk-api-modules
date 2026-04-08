@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication;
 using System.Linq.Expressions;
 using System.Reflection;
+using rbkApiModules.Identity.Relational;
 
 namespace rbkApiModules.Identity.Core;
 
@@ -26,6 +27,8 @@ public class RbkAuthenticationOptions
     internal bool _appendAuthenticationSchemes = true;
     internal bool _addApiKeyAuthentication = false;
     internal Type _apiKeyValidatorType = null;
+
+    internal RbkBuiltInApiKeyOptions _builtInApiKeyOptions = new();
 
     public RbkAuthenticationOptions AllowUserCreationOnFirstAccess(string roleName)
     {
@@ -177,17 +180,25 @@ public class RbkAuthenticationOptions
     }
 
     /// <summary>
-    /// Registers the API key authentication scheme, the authorization policy, and <c>IApiKeyValidator</c> so endpoints can use
-    /// <c>.RequireAuthorization(RbkAuthenticationSchemes.API_KEY_POLICY)</c> for API-key-only access.
+    /// Registers built-in database-backed API key authentication (scheme <see cref="RbkAuthenticationSchemes.API_KEY"/>), cache, usage tracking, and rate limiting.
     /// </summary>
-    /// <typeparam name="TValidator">Implementation of <c>IApiKeyValidator</c> to register (scoped).</typeparam>
-    public RbkAuthenticationOptions AddApiKeyAuthentication<TValidator>() where TValidator : class, IApiKeyValidator
+    public RbkAuthenticationOptions AddApiKeyAuthentication(Action<RbkBuiltInApiKeyOptions> configure = null)
     {
+        configure?.Invoke(_builtInApiKeyOptions);
         _addApiKeyAuthentication = true;
-        _apiKeyValidatorType = typeof(TValidator);
+        _apiKeyValidatorType = typeof(RbkRelationalApiKeyValidator);
         return AppendAuthenticationScheme(builder =>
             builder.AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>(RbkAuthenticationSchemes.API_KEY, configureOptions: null));
     }
+}
+
+public sealed class RbkBuiltInApiKeyOptions
+{
+    public TimeSpan CacheAbsoluteExpiration { get; set; } = TimeSpan.FromMinutes(10);
+
+    public int RequestsPerMinute { get; set; } = 600;
+
+    public TimeSpan LastUsedUpdateMinInterval { get; set; } = TimeSpan.FromMinutes(2);
 }
 
 public class rbkDefaultClaimOptions
@@ -205,6 +216,7 @@ public class rbkDefaultClaimOptions
         _claimDescriptions.OverrideUserClaims = "[Security] Override user claims individually";
         _claimDescriptions.ChangeClaimProtection = "[Security] Change claim protection";
         _claimDescriptions.ManageUsers = "[Security] Manage users";
+        _claimDescriptions.ManageApiKeys = "[Security] Manage API keys";
     }
 
     public rbkDefaultClaimOptions WithCustomDescription(Expression<Func<SeedClaimDescriptions, string>> memberLamda, string description)
@@ -296,6 +308,8 @@ public class SeedClaimDescriptions
     public string ChangeClaimProtection { get; set; }
     public string ManageTenants { get; set; }
     public string ManageUsers { get; set; }
+
+    public string ManageApiKeys { get; set; }
 }
 
 

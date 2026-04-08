@@ -5,7 +5,6 @@ using rbkApiModules.Identity.Relational;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Commons.Core.Helpers;
-using Demo2.Authentication;
 using Demo2.Endpoints;
 
 namespace Demo2;
@@ -50,7 +49,7 @@ public class Program
             .UseSymetricEncryptationKey()
             .UseLoginWithWindowsAuthentication()
             .UseMockedWindowsAuthentication()
-            .AddApiKeyAuthentication<Demo2ApiKeyValidator>()
+            .AddApiKeyAuthentication()
         );
 
         builder.Services.AddRbkUIDefinitions(Assembly.GetAssembly(typeof(Program)));
@@ -76,6 +75,7 @@ public class Program
             .WithCustomDescription(x => x.ManageUsers, "Manage users")
             .WithCustomDescription(x => x.ManageUserRoles, "Manage user roles")
             .WithCustomDescription(x => x.OverrideUserClaims, "Override user claims")
+            .WithCustomDescription(x => x.ManageApiKeys, "Manage API keys")
         );
 
         app.SetupRbkDefaultAdmin(options => options

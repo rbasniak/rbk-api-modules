@@ -1,13 +1,17 @@
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
+using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.RateLimiting;
 using rbkApiModules.Commons.Core.Helpers;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using rbkApiModules.Commons.Core.Authentication;
 using rbkApiModules.Identity.Core;
+using rbkApiModules.Identity.Relational;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -16,6 +20,7 @@ public static class CoreAuthenticationBuilder
     public static void AddRbkAuthentication(this IServiceCollection services, RbkAuthenticationOptions authenticationOptions)
     {
         services.AddSingleton(authenticationOptions);
+        services.AddSingleton<IOptions<RbkAuthenticationOptions>>(new OptionsWrapper<RbkAuthenticationOptions>(authenticationOptions));
 
         var serviceProvider = services.BuildServiceProvider();
         var configuration = serviceProvider.GetService<IConfiguration>();
@@ -106,6 +111,11 @@ public static class CoreAuthenticationBuilder
                         JwtBearerDefaults.AuthenticationScheme,
                     };
 
+                    if (authenticationOptions._addApiKeyAuthentication)
+                    {
+                        validSchemas.Add(RbkAuthenticationSchemes.API_KEY);
+                    }
+
                     var defaultAuthorizationPolicyBuilder = new AuthorizationPolicyBuilder(validSchemas.ToArray());
 
                     defaultAuthorizationPolicyBuilder = defaultAuthorizationPolicyBuilder.RequireAuthenticatedUser();
@@ -126,15 +136,57 @@ public static class CoreAuthenticationBuilder
             {
                 if (authenticationOptions._addApiKeyAuthentication)
                 {
+                    var defaultAuthorizationPolicyBuilder = new AuthorizationPolicyBuilder(
+                        JwtBearerDefaults.AuthenticationScheme,
+                        RbkAuthenticationSchemes.API_KEY);
+
+                    defaultAuthorizationPolicyBuilder.RequireAuthenticatedUser();
+                    options.DefaultPolicy = defaultAuthorizationPolicyBuilder.Build();
+
                     options.AddPolicy(RbkAuthenticationSchemes.API_KEY_POLICY, policy =>
                         policy.AddAuthenticationSchemes(RbkAuthenticationSchemes.API_KEY).RequireAuthenticatedUser());
                 }
             });
         }
 
-        if (authenticationOptions._addApiKeyAuthentication && authenticationOptions._apiKeyValidatorType != null)
+        if (authenticationOptions._addApiKeyAuthentication)
         {
-            services.AddScoped(typeof(IApiKeyValidator), authenticationOptions._apiKeyValidatorType);
+            services.AddMemoryCache();
+            services.AddScoped<IApiKeyAuthenticationCacheInvalidation, ApiKeyAuthenticationCacheInvalidation>();
+            services.AddScoped<IApiKeyUsageTracker, ApiKeyUsageTracker>();
+            services.AddScoped<IApiKeyLastUsedThrottler, ApiKeyLastUsedThrottler>();
+            services.AddRateLimiter(options =>
+            {
+                options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+                options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+                {
+                    if (!httpContext.Request.Headers.TryGetValue(RbkAuthenticationSchemes.API_KEY, out var values))
+                    {
+                        return RateLimitPartition.GetNoLimiter("no-api-key-header");
+                    }
+
+                    var raw = values.FirstOrDefault();
+                    if (string.IsNullOrWhiteSpace(raw))
+                    {
+                        return RateLimitPartition.GetNoLimiter("empty-api-key-header");
+                    }
+
+                    var hash = ApiKeyMaterial.HashRawKey(raw);
+                    var perMinute = authenticationOptions._builtInApiKeyOptions.RequestsPerMinute;
+                    return RateLimitPartition.GetFixedWindowLimiter(hash, _ => new FixedWindowRateLimiterOptions
+                    {
+                        AutoReplenishment = true,
+                        PermitLimit = perMinute,
+                        QueueLimit = 0,
+                        Window = TimeSpan.FromMinutes(1)
+                    });
+                });
+            });
+
+            if (authenticationOptions._apiKeyValidatorType != null)
+            {
+                services.AddScoped(typeof(IApiKeyValidator), authenticationOptions._apiKeyValidatorType);
+            }
         }
 
         services.RegisterApplicationServices(Assembly.GetAssembly(typeof(IJwtFactory)));

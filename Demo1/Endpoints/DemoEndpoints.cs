@@ -10,7 +10,7 @@ public static class DemoEndpoints
     public static void MapEndpoint(IEndpointRouteBuilder endpoints)
     {
         endpoints.MapGet("/demo/apikey", () => Results.Ok(new { message = "API key accepted" }))
-            .RequireAuthorization(RbkAuthenticationSchemes.API_KEY_POLICY)
+            .RequireAuthenticationApiKey("CAN_APPROVE_REPORTS")
             .WithName("Demo API Key")
             .WithTags("Demo");
 
@@ -23,6 +23,12 @@ public static class DemoEndpoints
             .RequireAuthorization()
             .RequireAuthorizationClaim(AuthenticationClaims.MANAGE_USERS)
             .WithName("Demo Role")
+            .WithTags("Demo");
+
+        endpoints.MapGet("/demo/mixed-claim", () => Results.Ok(new { message = "JWT or API key with CAN_APPROVE_REPORTS" }))
+            .RequireAuthorization()
+            .RequireAuthorizationClaim("CAN_APPROVE_REPORTS")
+            .WithName("Demo Mixed Claim")
             .WithTags("Demo");
 
         endpoints.MapGet("/demo/anonymous", () => Results.Ok(new { message = "Anonymous" }))

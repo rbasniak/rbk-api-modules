@@ -1,5 +1,6 @@
 using rbkApiModules.Commons.Relational;
 using rbkApiModules.Identity.Core;
+using rbkApiModules.Identity.Relational;
 using System.Text.Json;
 
 namespace Demo2;
@@ -32,5 +33,18 @@ public class DatabaseSeed : DatabaseSeedManager<DatabaseContext>, IDatabaseSeede
         context.Add(adminBuzios);
         context.Add(johnDoeBuzios);
         context.SaveChanges();
+
+        var demoApiClaim = new Claim("DEMO2_INTEGRATION", "Demo2 API integration");
+        demoApiClaim.AllowUsageOnApiKeys();
+        context.Add(demoApiClaim);
+        context.SaveChanges();
+
+        ApiKeySeeding.SeedApiKeyAsync(
+            context,
+            "Demo2 integration",
+            new List<Guid> { demoApiClaim.Id },
+            DemoIntegrationApiKey.Value,
+            expirationDate: null,
+            tenantId: null).GetAwaiter().GetResult();
     }
 }

@@ -10,4 +10,6 @@ public class AuthenticationClaims
     public const string CHANGE_CLAIM_PROTECTION = "CHANGE_CLAIM_PROTECTION";
     public const string MANAGE_TENANTS = "MANAGE_TENANTS";
     public const string MANAGE_USERS = "MANAGE_USERS";
+
+    public const string CAN_MANAGE_APIKEYS = "CAN_MANAGE_APIKEYS";
 }

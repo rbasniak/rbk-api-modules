@@ -1,4 +1,4 @@
-﻿namespace rbkApiModules.Identity.Core;
+namespace rbkApiModules.Identity.Core;
 
 public class UpdateClaim : IEndpoint
 {
@@ -19,6 +19,8 @@ public class UpdateClaim : IEndpoint
     {
         public Guid Id { get; set; }
         public string Description { get; set; } = string.Empty;
+
+        public bool AllowApiKeyUsage { get; set; }
     }
 
     public class Validator : AbstractValidator<Request>
@@ -56,6 +58,7 @@ public class UpdateClaim : IEndpoint
         public async Task<CommandResponse> HandleAsync(Request request, CancellationToken cancellationToken)
         {
             await _claimsService.RenameAsync(request.Id, request.Description, cancellationToken);
+            await _claimsService.SetAllowApiKeyUsageAsync(request.Id, request.AllowApiKeyUsage, cancellationToken);
 
             var claim = await _claimsService.FindAsync(request.Id, cancellationToken);
 

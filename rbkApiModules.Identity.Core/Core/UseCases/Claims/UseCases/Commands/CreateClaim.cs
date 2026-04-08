@@ -1,4 +1,4 @@
-﻿namespace rbkApiModules.Identity.Core;
+namespace rbkApiModules.Identity.Core;
 
 
 public class CreateClaim : IEndpoint
@@ -20,6 +20,8 @@ public class CreateClaim : IEndpoint
     {
         public required string Identification { get; set; }
         public required string Description { get; set; }
+
+        public bool AllowApiKeyUsage { get; set; }
     }
 
     public class Validator : AbstractValidator<Request>
@@ -58,6 +60,14 @@ public class CreateClaim : IEndpoint
         public async Task<CommandResponse> HandleAsync(Request request, CancellationToken cancellationToken)
         {
             var claim = new Claim(request.Identification, request.Description);
+            if (request.AllowApiKeyUsage)
+            {
+                claim.AllowUsageOnApiKeys();
+            }
+            else
+            {
+                claim.RestrictUsageOnApiKeys();
+            }
 
             claim = await _claimsService.CreateAsync(claim, cancellationToken);
 

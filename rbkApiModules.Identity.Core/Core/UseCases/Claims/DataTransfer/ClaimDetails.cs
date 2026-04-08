@@ -1,4 +1,4 @@
-﻿using rbkApiModules.Commons.Core.Abstractions;
+using rbkApiModules.Commons.Core.Abstractions;
 
 namespace rbkApiModules.Identity.Core;
 
@@ -9,6 +9,8 @@ public class ClaimDetails
     public required string Identification { get; set; } = string.Empty;
     public required bool IsProtected { get; set; }
 
+    public required bool AllowApiKeyUsage { get; set; }
+
     public static ClaimDetails FromModel(Claim model)
     {
         return new ClaimDetails
@@ -16,7 +18,8 @@ public class ClaimDetails
             Id = model.Id.ToString(),
             Description = model.Description,
             Identification = model.Identification,
-            IsProtected = model.IsProtected
+            IsProtected = model.IsProtected,
+            AllowApiKeyUsage = model.AllowApiKeyUsage
         };
     }
 }
