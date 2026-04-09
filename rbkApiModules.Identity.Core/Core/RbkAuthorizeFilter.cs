@@ -1,3 +1,7 @@
+using Microsoft.AspNetCore.Authentication;
+
+namespace rbkApiModules.Identity.Core;
+
 internal sealed class RbkAuthorizationFilter : IEndpointFilter
 {
     private readonly string _requiredClaim;
@@ -10,6 +14,16 @@ internal sealed class RbkAuthorizationFilter : IEndpointFilter
     public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
     {
         var user = context.HttpContext.User;
+
+        if (user.Identity?.IsAuthenticated != true)
+        {
+            var apiKeyAuth = await context.HttpContext.AuthenticateAsync(RbkAuthenticationSchemes.API_KEY);
+            if (apiKeyAuth.Succeeded)
+            {
+                context.HttpContext.User = apiKeyAuth.Principal;
+                user = apiKeyAuth.Principal;
+            }
+        }
 
         if (!user.Identity?.IsAuthenticated ?? false)
         {

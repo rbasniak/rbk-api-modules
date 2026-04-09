@@ -30,7 +30,7 @@ public class ApiKey_CacheInvalidation_Tests
             ClaimIds = new List<Guid> { claimId }
         };
 
-        var createResponse = await TestingServer.PostAsync<CreateApiKey.Handler.Result>(
+        var createResponse = await TestingServer.PostAsync<CreateApiKey.Result>(
             "api/authorization/api-keys", createRequest, "superuser");
 
         createResponse.ShouldBeSuccess(out var created);
@@ -73,7 +73,7 @@ public class ApiKey_CacheInvalidation_Tests
             ClaimIds = new List<Guid> { claimId }
         };
 
-        var createResponse = await TestingServer.PostAsync<CreateApiKey.Handler.Result>(
+        var createResponse = await TestingServer.PostAsync<CreateApiKey.Result>(
             "api/authorization/api-keys", createRequest, "superuser");
 
         createResponse.ShouldBeSuccess(out var created);

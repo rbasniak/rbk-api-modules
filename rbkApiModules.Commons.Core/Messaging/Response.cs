@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace rbkApiModules.Commons.Core;
@@ -95,6 +95,20 @@ public sealed class CommandResponse : BaseResponse
                 Title = "Command Failure",
                 Detail = message,
                 Status = StatusCodes.Status400BadRequest
+            },
+            IsValid = false,
+        };
+    }
+
+    public static CommandResponse Forbidden(string detail)
+    {
+        return new CommandResponse()
+        {
+            Error = new ProblemDetails
+            {
+                Title = "Forbidden",
+                Detail = detail,
+                Status = StatusCodes.Status403Forbidden
             },
             IsValid = false,
         };

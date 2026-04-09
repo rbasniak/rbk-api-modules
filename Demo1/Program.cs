@@ -86,6 +86,7 @@ namespace Demo1
                 .WithCustomDescription(x => x.ManageUserRoles, "Manage user roles")
                 .WithCustomDescription(x => x.OverrideUserClaims, "Override user claims")
                 .WithCustomDescription(x => x.ManageApiKeys, "Manage API keys")
+                .WithCustomDescription(x => x.CreateCrossTenantApiKeys, "Create and manage cross-tenant API keys")
             );
 
             app.SetupRbkDefaultAdmin(options => options

@@ -17,7 +17,7 @@ public class UpdateApiKey : IEndpoint
         .WithTags("ApiKeys");
     }
 
-    public class Request : ICommand
+    public class Request : AuthenticatedRequest, ICommand
     {
         public Guid Id { get; set; }
 
@@ -43,6 +43,11 @@ public class UpdateApiKey : IEndpoint
 
         public async Task<CommandResponse> HandleAsync(Request request, CancellationToken cancellationToken)
         {
+            if (!request.IsAuthenticated)
+            {
+                return CommandResponse.Forbidden("Authentication is required.");
+            }
+
             if (request.ClaimIds == null || request.ClaimIds.Count == 0)
             {
                 return CommandResponse.Failure("At least one claim is required.");
@@ -61,6 +66,11 @@ public class UpdateApiKey : IEndpoint
             if (entity == null)
             {
                 return CommandResponse.Failure("API key not found.");
+            }
+
+            if (!ApiKeyAuthorization.CanManageExistingKeyInScope(request.Identity, entity.TenantId))
+            {
+                return CommandResponse.Forbidden("You are not allowed to manage this API key.");
             }
 
             var previousHash = entity.KeyHash;

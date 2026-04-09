@@ -16,6 +16,7 @@ public class ApiKey_Update_Tests
     {
         await TestingServer.CacheCredentialsAsync("superuser", "admin", null);
         await TestingServer.CacheCredentialsAsync("admin1", "buzios");
+        await TestingServer.CacheCredentialsAsync("john.doe", "buzios");
 
         var claimId = TestingServer.CreateContext()
             .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
@@ -23,10 +24,11 @@ public class ApiKey_Update_Tests
         var createRequest = new CreateApiKey.Request
         {
             Name = "My Test Key",
+            TenantId = null,
             ClaimIds = new List<Guid> { claimId }
         };
 
-        var response = await TestingServer.PostAsync<CreateApiKey.Handler.Result>(
+        var response = await TestingServer.PostAsync<CreateApiKey.Result>(
             "api/authorization/api-keys", createRequest, "superuser");
 
         response.ShouldBeSuccess();
@@ -113,12 +115,82 @@ public class ApiKey_Update_Tests
         };
 
         var response = await TestingServer.PutAsync<ApiKeyDetails>(
-            $"api/authorization/api-keys", request, "admin1");
+            $"api/authorization/api-keys", request, "john.doe");
 
         response.ShouldBeForbidden();
     }
 
     [Test, NotInParallel(Order = 6)]
+    public async Task Update_Returns_403_When_Tenant_Admin_Targets_Global_Key()
+    {
+        var key = TestingServer.CreateContext()
+            .Set<EntityApiKey>().First(x => x.Name == "Demo2 integration");
+
+        var claimId = TestingServer.CreateContext()
+            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
+
+        var request = new UpdateApiKey.Request
+        {
+            Id = key.Id,
+            Name = "Demo2 integration",
+            IsActive = true,
+            ClaimIds = new List<Guid> { claimId }
+        };
+
+        var response = await TestingServer.PutAsync<ApiKeyDetails>(
+            $"api/authorization/api-keys", request, "admin1");
+
+        response.ShouldBeForbidden();
+    }
+
+    [Test, NotInParallel(Order = 7)]
+    public async Task Update_As_Tenant_Admin_Succeeds_For_Own_Tenant_Key()
+    {
+        var key = TestingServer.CreateContext()
+            .Set<EntityApiKey>().First(x => x.Name == "Demo2 buzios manage");
+
+        var claimId = TestingServer.CreateContext()
+            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
+
+        var request = new UpdateApiKey.Request
+        {
+            Id = key.Id,
+            Name = "Demo2 buzios manage renamed",
+            IsActive = true,
+            ClaimIds = new List<Guid> { claimId }
+        };
+
+        var response = await TestingServer.PutAsync<ApiKeyDetails>(
+            "api/authorization/api-keys", request, "admin1");
+
+        response.ShouldBeSuccess(out var result);
+        result.Name.ShouldBe("Demo2 buzios manage renamed");
+    }
+
+    [Test, NotInParallel(Order = 8)]
+    public async Task Update_Returns_403_When_Tenant_Admin_Targets_Other_Tenant_Key()
+    {
+        var key = TestingServer.CreateContext()
+            .Set<EntityApiKey>().First(x => x.Name == "Demo2 un-bs manage");
+
+        var claimId = TestingServer.CreateContext()
+            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
+
+        var request = new UpdateApiKey.Request
+        {
+            Id = key.Id,
+            Name = "Demo2 un-bs manage",
+            IsActive = true,
+            ClaimIds = new List<Guid> { claimId }
+        };
+
+        var response = await TestingServer.PutAsync<ApiKeyDetails>(
+            "api/authorization/api-keys", request, "admin1");
+
+        response.ShouldBeForbidden();
+    }
+
+    [Test, NotInParallel(Order = 9)]
     public async Task Update_Can_Rename_A_Key()
     {
         var key = TestingServer.CreateContext()
@@ -147,7 +219,7 @@ public class ApiKey_Update_Tests
         dbKey!.Name.ShouldBe("Renamed Key");
     }
 
-    [Test, NotInParallel(Order = 7)]
+    [Test, NotInParallel(Order = 10)]
     public async Task Update_Can_Set_Expiration_Date()
     {
         var key = TestingServer.CreateContext()
@@ -179,7 +251,7 @@ public class ApiKey_Update_Tests
         dbKey!.ExpirationDate.ShouldNotBeNull();
     }
 
-    [Test, NotInParallel(Order = 8)]
+    [Test, NotInParallel(Order = 11)]
     public async Task Update_Can_Deactivate_A_Key()
     {
         var key = TestingServer.CreateContext()
@@ -207,7 +279,7 @@ public class ApiKey_Update_Tests
         dbKey!.IsActive.ShouldBeFalse();
     }
 
-    [Test, NotInParallel(Order = 9)]
+    [Test, NotInParallel(Order = 12)]
     public async Task Update_Can_Reactivate_A_Deactivated_Key()
     {
         var key = TestingServer.CreateContext()

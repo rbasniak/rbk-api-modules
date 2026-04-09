@@ -17,6 +17,7 @@ public class ApiKey_Create_Tests
     {
         await TestingServer.CacheCredentialsAsync("superuser", "admin", null);
         await TestingServer.CacheCredentialsAsync("admin1", "buzios");
+        await TestingServer.CacheCredentialsAsync("john.doe", "buzios");
     }
 
     [Test, NotInParallel(Order = 2)]
@@ -28,7 +29,7 @@ public class ApiKey_Create_Tests
             ClaimIds = new List<Guid>()
         };
 
-        var response = await TestingServer.PostAsync<CreateApiKey.Handler.Result>(
+        var response = await TestingServer.PostAsync<CreateApiKey.Result>(
             "api/authorization/api-keys", request, "superuser");
 
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "At least one claim is required.");
@@ -46,7 +47,7 @@ public class ApiKey_Create_Tests
             ClaimIds = new List<Guid> { claimId, claimId }
         };
 
-        var response = await TestingServer.PostAsync<CreateApiKey.Handler.Result>(
+        var response = await TestingServer.PostAsync<CreateApiKey.Result>(
             "api/authorization/api-keys", request, "superuser");
 
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Duplicate claim identifiers in the request.");
@@ -61,7 +62,7 @@ public class ApiKey_Create_Tests
             ClaimIds = new List<Guid> { Guid.NewGuid() }
         };
 
-        var response = await TestingServer.PostAsync<CreateApiKey.Handler.Result>(
+        var response = await TestingServer.PostAsync<CreateApiKey.Result>(
             "api/authorization/api-keys", request, "superuser");
 
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "One or more claims were not found.");
@@ -79,7 +80,7 @@ public class ApiKey_Create_Tests
             ClaimIds = new List<Guid> { claimId }
         };
 
-        var response = await TestingServer.PostAsync<CreateApiKey.Handler.Result>(
+        var response = await TestingServer.PostAsync<CreateApiKey.Result>(
             "api/authorization/api-keys", request, "superuser");
 
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Claim 'MANAGE_USERS' is not allowed on API keys.");
@@ -97,8 +98,8 @@ public class ApiKey_Create_Tests
             ClaimIds = new List<Guid> { claimId }
         };
 
-        var response = await TestingServer.PostAsync<CreateApiKey.Handler.Result>(
-            "api/authorization/api-keys", request, "admin1");
+        var response = await TestingServer.PostAsync<CreateApiKey.Result>(
+            "api/authorization/api-keys", request, "john.doe");
 
         response.ShouldBeForbidden();
     }
@@ -117,7 +118,7 @@ public class ApiKey_Create_Tests
             ClaimIds = new List<Guid> { claimId }
         };
 
-        var response = await TestingServer.PostAsync<CreateApiKey.Handler.Result>(
+        var response = await TestingServer.PostAsync<CreateApiKey.Result>(
             "api/authorization/api-keys", request, "superuser");
 
         response.ShouldBeSuccess(out var result);
@@ -154,9 +155,165 @@ public class ApiKey_Create_Tests
 
         response.ShouldBeSuccess(out var keys);
 
-        keys.Count.ShouldBe(2);
+        keys.Count.ShouldBe(6);
         keys.ShouldContain(k => k.Name == "Demo2 integration");
         keys.ShouldContain(k => k.Name == "My Test Key");
+    }
+
+    [Test, NotInParallel(Order = 9)]
+    public async Task Create_As_Tenant_Admin_With_TenantId_Succeeds_For_Own_Tenant()
+    {
+        var claimId = TestingServer.CreateContext()
+            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
+
+        var request = new CreateApiKey.Request
+        {
+            Name = "Admin1 tenant key",
+            TenantId = "BUZIOS",
+            ClaimIds = new List<Guid> { claimId }
+        };
+
+        var response = await TestingServer.PostAsync<CreateApiKey.Result>(
+            "api/authorization/api-keys", request, "admin1");
+
+        response.ShouldBeSuccess(out var result);
+        result.TenantId.ShouldBe("BUZIOS");
+    }
+
+    [Test, NotInParallel(Order = 10)]
+    public async Task Create_As_Tenant_Admin_Global_Key_Returns_403_Without_Cross_Tenant_Claim()
+    {
+        var claimId = TestingServer.CreateContext()
+            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
+
+        var request = new CreateApiKey.Request
+        {
+            Name = "Should fail global",
+            TenantId = null,
+            ClaimIds = new List<Guid> { claimId }
+        };
+
+        var response = await TestingServer.PostAsync<CreateApiKey.Result>(
+            "api/authorization/api-keys", request, "admin1");
+
+        response.ShouldBeForbidden();
+    }
+
+    [Test, NotInParallel(Order = 11)]
+    public async Task Create_As_Tenant_Admin_Wrong_Tenant_Returns_403()
+    {
+        var claimId = TestingServer.CreateContext()
+            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
+
+        var request = new CreateApiKey.Request
+        {
+            Name = "Wrong tenant",
+            TenantId = "UN-BS",
+            ClaimIds = new List<Guid> { claimId }
+        };
+
+        var response = await TestingServer.PostAsync<CreateApiKey.Result>(
+            "api/authorization/api-keys", request, "admin1");
+
+        response.ShouldBeForbidden();
+    }
+
+    [Test, NotInParallel(Order = 12)]
+    public async Task Create_With_Global_Manage_Only_Api_Key_And_Null_Tenant_Returns_403()
+    {
+        var claimId = TestingServer.CreateContext()
+            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
+
+        var request = new CreateApiKey.Request
+        {
+            Name = "From manage-only key",
+            TenantId = null,
+            ClaimIds = new List<Guid> { claimId }
+        };
+
+        var response = await TestingServer.PostAsync<CreateApiKey.Result>(
+            "api/authorization/api-keys", request, new ApiKey(Demo2TestApiKeys.GlobalManageOnly));
+
+        response.ShouldBeForbidden();
+    }
+
+    [Test, NotInParallel(Order = 13)]
+    public async Task Create_With_Global_Manage_And_Cross_Api_Key_And_Null_Tenant_Succeeds()
+    {
+        var claimId = TestingServer.CreateContext()
+            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
+
+        var request = new CreateApiKey.Request
+        {
+            Name = "From full global key",
+            TenantId = null,
+            ClaimIds = new List<Guid> { claimId }
+        };
+
+        var response = await TestingServer.PostAsync<CreateApiKey.Result>(
+            "api/authorization/api-keys", request, new ApiKey(Demo2TestApiKeys.GlobalManageAndCrossTenant));
+
+        response.ShouldBeSuccess(out var result);
+        result.TenantId.ShouldBeNull();
+    }
+
+    [Test, NotInParallel(Order = 14)]
+    public async Task Create_With_Buzios_Api_Key_For_Buzios_Succeeds()
+    {
+        var claimId = TestingServer.CreateContext()
+            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
+
+        var request = new CreateApiKey.Request
+        {
+            Name = "From buzios api key",
+            TenantId = "BUZIOS",
+            ClaimIds = new List<Guid> { claimId }
+        };
+
+        var response = await TestingServer.PostAsync<CreateApiKey.Result>(
+            "api/authorization/api-keys", request, new ApiKey(Demo2TestApiKeys.BuziosManage));
+
+        response.ShouldBeSuccess(out var result);
+        result.TenantId.ShouldBe("BUZIOS");
+    }
+
+    [Test, NotInParallel(Order = 15)]
+    public async Task Create_With_Buzios_Api_Key_Global_Tenant_Returns_403()
+    {
+        var claimId = TestingServer.CreateContext()
+            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
+
+        var request = new CreateApiKey.Request
+        {
+            Name = "Buzios key global fail",
+            TenantId = null,
+            ClaimIds = new List<Guid> { claimId }
+        };
+
+        var response = await TestingServer.PostAsync<CreateApiKey.Result>(
+            "api/authorization/api-keys", request, new ApiKey(Demo2TestApiKeys.BuziosManage));
+
+        response.ShouldBeForbidden();
+    }
+
+    [Test, NotInParallel(Order = 16)]
+    public async Task Create_As_Superuser_Can_Create_Tenant_Scoped_Key_For_Another_Tenant()
+    {
+        var claimId = TestingServer.CreateContext()
+            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
+
+        var request = new CreateApiKey.Request
+        {
+            Name = "Superuser created UN-BS key",
+            TenantId = "UN-BS",
+            ClaimIds = new List<Guid> { claimId }
+        };
+
+        var response = await TestingServer.PostAsync<CreateApiKey.Result>(
+            "api/authorization/api-keys", request, "superuser");
+
+        response.ShouldBeSuccess(out var result);
+        result.TenantId.ShouldBe("UN-BS");
     }
 
     [Test, NotInParallel(Order = 99)]

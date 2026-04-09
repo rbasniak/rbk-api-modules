@@ -22,9 +22,11 @@ public class DatabaseSeed : DatabaseSeedManager<DatabaseContext>, IDatabaseSeede
         context.SaveChanges();
 
         var canManageUsers = context.Set<Claim>().First(x => x.Identification == AuthenticationClaims.MANAGE_USERS);
+        var manageApiKeysClaim = context.Set<Claim>().First(x => x.Identification == AuthenticationClaims.CAN_MANAGE_APIKEYS);
 
         var adminBuzios = new User(buzios.Alias, "admin1", "admin1@buzios.com", "", AvatarGenerator.GenerateBase64Avatar("A 1"), "Administrador BUZIOS 1", AuthenticationMode.Windows, null);
         adminBuzios.AddClaim(canManageUsers, ClaimAccessType.Allow);
+        adminBuzios.AddClaim(manageApiKeysClaim, ClaimAccessType.Allow);
         adminBuzios.Confirm();
 
         var johnDoeBuzios = new User(buzios.Alias, "john.doe", "john.doe@buzios.com", "", AvatarGenerator.GenerateBase64Avatar("John Doe"), "John Doe", AuthenticationMode.Windows, null);
@@ -46,5 +48,39 @@ public class DatabaseSeed : DatabaseSeedManager<DatabaseContext>, IDatabaseSeede
             DemoIntegrationApiKey.Value,
             expirationDate: null,
             tenantId: null).GetAwaiter().GetResult();
+
+        var crossTenantApiKeysClaim = context.Set<Claim>().First(x => x.Identification == AuthenticationClaims.CAN_CREATE_CROSS_TENANT_API_KEYS);
+
+        ApiKeySeeding.SeedApiKeyAsync(
+            context,
+            "Demo2 global manage+cross",
+            new List<Guid> { manageApiKeysClaim.Id, crossTenantApiKeysClaim.Id, demoApiClaim.Id },
+            Demo2TestApiKeys.GlobalManageAndCrossTenant,
+            expirationDate: null,
+            tenantId: null).GetAwaiter().GetResult();
+
+        ApiKeySeeding.SeedApiKeyAsync(
+            context,
+            "Demo2 global manage only",
+            new List<Guid> { manageApiKeysClaim.Id, demoApiClaim.Id },
+            Demo2TestApiKeys.GlobalManageOnly,
+            expirationDate: null,
+            tenantId: null).GetAwaiter().GetResult();
+
+        ApiKeySeeding.SeedApiKeyAsync(
+            context,
+            "Demo2 buzios manage",
+            new List<Guid> { manageApiKeysClaim.Id, demoApiClaim.Id },
+            Demo2TestApiKeys.BuziosManage,
+            expirationDate: null,
+            tenantId: buzios.Alias).GetAwaiter().GetResult();
+
+        ApiKeySeeding.SeedApiKeyAsync(
+            context,
+            "Demo2 un-bs manage",
+            new List<Guid> { manageApiKeysClaim.Id, demoApiClaim.Id },
+            Demo2TestApiKeys.UnBsManage,
+            expirationDate: null,
+            tenantId: unBs.Alias).GetAwaiter().GetResult();
     }
 }

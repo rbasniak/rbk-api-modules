@@ -17,7 +17,7 @@ public class RevokeApiKey : IEndpoint
         .WithTags("ApiKeys");
     }
 
-    public class Request : ICommand
+    public class Request : AuthenticatedRequest, ICommand
     {
         public Guid Id { get; set; }
 
@@ -37,6 +37,11 @@ public class RevokeApiKey : IEndpoint
 
         public async Task<CommandResponse> HandleAsync(Request request, CancellationToken cancellationToken)
         {
+            if (!request.IsAuthenticated)
+            {
+                return CommandResponse.Forbidden("Authentication is required.");
+            }
+
             if (string.IsNullOrWhiteSpace(request.Reason))
             {
                 return CommandResponse.Failure("Revoke reason is required.");
@@ -57,6 +62,11 @@ public class RevokeApiKey : IEndpoint
             if (entity == null)
             {
                 return CommandResponse.Failure("API key not found.");
+            }
+
+            if (!ApiKeyAuthorization.CanManageExistingKeyInScope(request.Identity, entity.TenantId))
+            {
+                return CommandResponse.Forbidden("You are not allowed to manage this API key.");
             }
 
             if (!entity.IsActive)

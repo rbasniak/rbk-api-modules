@@ -17,7 +17,7 @@ public class CreateApiKey : IEndpoint
         .WithTags("ApiKeys");
     }
 
-    public class Request : ICommand
+    public class Request : AuthenticatedRequest, ICommand
     {
         public required string Name { get; set; }
 
@@ -39,6 +39,11 @@ public class CreateApiKey : IEndpoint
 
         public async Task<CommandResponse> HandleAsync(Request request, CancellationToken cancellationToken)
         {
+            if (!request.IsAuthenticated)
+            {
+                return CommandResponse.Forbidden("Authentication is required.");
+            }
+
             if (request.ClaimIds == null || request.ClaimIds.Count == 0)
             {
                 return CommandResponse.Failure("At least one claim is required.");
@@ -62,6 +67,37 @@ public class CreateApiKey : IEndpoint
                 if (!claim.AllowApiKeyUsage)
                 {
                     return CommandResponse.Failure($"Claim '{claim.Identification}' is not allowed on API keys.");
+                }
+            }
+
+            var normalizedTenant = string.IsNullOrWhiteSpace(request.TenantId)
+                ? null
+                : request.TenantId.Trim().ToUpperInvariant();
+
+            if (normalizedTenant == null)
+            {
+                if (!request.Identity.HasClaim(AuthenticationClaims.CAN_CREATE_CROSS_TENANT_API_KEYS))
+                {
+                    return CommandResponse.Forbidden("Creating a global API key requires the CAN_CREATE_CROSS_TENANT_API_KEYS claim.");
+                }
+            }
+            else
+            {
+                if (request.Identity.HasClaim(AuthenticationClaims.CAN_CREATE_CROSS_TENANT_API_KEYS))
+                {
+                    // Global admins may create tenant-scoped keys for any tenant without a JWT tenant.
+                }
+                else
+                {
+                    if (string.IsNullOrEmpty(request.Identity.Tenant))
+                    {
+                        return CommandResponse.Forbidden("You cannot create a tenant-scoped API key without an associated tenant.");
+                    }
+
+                    if (!string.Equals(request.Identity.Tenant, normalizedTenant, StringComparison.Ordinal))
+                    {
+                        return CommandResponse.Forbidden("The API key tenant must match your tenant.");
+                    }
                 }
             }
 
@@ -92,22 +128,22 @@ public class CreateApiKey : IEndpoint
 
             return CommandResponse.Success(created);
         }
+    }
 
-        public sealed class Result
-        {
-            public required Guid Id { get; init; }
+    public sealed class Result
+    {
+        public required Guid Id { get; init; }
 
-            public required string RawKey { get; init; }
+        public required string RawKey { get; init; }
 
-            public required string KeyPrefix { get; init; }
+        public required string KeyPrefix { get; init; }
 
-            public required string Name { get; init; }
+        public required string Name { get; init; }
 
-            public DateTime? ExpirationDate { get; init; }
+        public DateTime? ExpirationDate { get; init; }
 
-            public string? TenantId { get; init; }
+        public string? TenantId { get; init; }
 
-            public required IReadOnlyList<ClaimDetails> AssignedClaims { get; init; }
-        }
+        public required IReadOnlyList<ClaimDetails> AssignedClaims { get; init; }
     }
 }

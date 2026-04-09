@@ -17,7 +17,7 @@ public class ListApiKeys : IEndpoint
         .WithTags("ApiKeys");
     }
 
-    public class Request : IQuery
+    public class Request : AuthenticatedRequest, IQuery
     {
     }
 
@@ -32,8 +32,11 @@ public class ListApiKeys : IEndpoint
 
         public async Task<QueryResponse> HandleAsync(Request request, CancellationToken cancellationToken)
         {
-            var keys = await _context.Set<ApiKey>()
-                .AsNoTracking()
+            var query = ApiKeyAuthorization.FilterApiKeysForListByCallerScope(
+                _context.Set<ApiKey>().AsNoTracking(),
+                request.Identity);
+
+            var keys = await query
                 .OrderBy(x => x.Name)
                 .Include(x => x.Claims)
                 .ThenInclude(x => x.Claim)
