@@ -7,10 +7,9 @@ public class UpdateApiKey : IEndpoint
 {
     public static void MapEndpoint(IEndpointRouteBuilder endpoints)
     {
-        endpoints.MapPut("/api/authorization/api-keys/{id:guid}", async (Guid id, Request body, IDispatcher dispatcher, CancellationToken cancellationToken) =>
+        endpoints.MapPut("/api/authorization/api-keys", async (Request request, IDispatcher dispatcher, CancellationToken cancellationToken) =>
         {
-            body.Id = id;
-            var result = await dispatcher.SendAsync(body, cancellationToken);
+            var result = await dispatcher.SendAsync(request, cancellationToken);
             return ResultsMapper.FromResponse(result);
         })
         .RequireAuthorizationClaim(AuthenticationClaims.CAN_MANAGE_APIKEYS)
