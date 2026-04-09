@@ -8,6 +8,8 @@ internal sealed class RbkApiKeyAuthorizationFilter : IEndpointFilter
 
     internal RbkApiKeyAuthorizationFilter(string requiredClaim)
     {
+        ArgumentNullException.ThrowIfNullOrEmpty(requiredClaim);
+
         _requiredClaim = requiredClaim;
     }
 
