@@ -7,7 +7,7 @@ using ApiKey = rbkApiModules.Commons.Testing.ApiKey;
 
 namespace rbkApiModules.Identity.Tests.MixedAuthentication;
 
-[NotInParallel(nameof(Demo_Authentication_Endpoints_Tests))]
+[HumanFriendlyDisplayName]
 public class Demo_Authentication_Endpoints_Tests
 {
     [ClassDataSource<Demo2TestingServer>(Shared = SharedType.PerClass)]
@@ -16,28 +16,28 @@ public class Demo_Authentication_Endpoints_Tests
     /// <summary>
     /// Cache superuser (JWT endpoint) and admin1 (role endpoint - has MANAGE_USERS) using Windows auth (no password).
     /// </summary>
-    [Test]
+    [Test, NotInParallel(Order = 1)]
     public async Task Seed_Credentials()
     {
         await TestingServer.CacheCredentialsAsync("superuser", "admin", null);
         await TestingServer.CacheCredentialsAsync("admin1", "buzios");
     }
 
-    [Test]
+    [Test, NotInParallel(Order = 2)]
     public async Task ApiKey_Endpoint_Returns_401_When_No_Header()
     {
         var response = await TestingServer.GetAsync("demo/apikey");
         response.Code.ShouldBe(HttpStatusCode.Unauthorized);
     }
 
-    [Test]
+    [Test, NotInParallel(Order = 3)]
     public async Task ApiKey_Endpoint_Returns_401_When_Invalid_Key()
     {
         var response = await TestingServer.GetAsync<DemoMessageResponse>("demo/apikey", new ApiKey("wrong-key"));
         response.Code.ShouldBe(HttpStatusCode.Unauthorized);
     }
 
-    [Test]
+    [Test, NotInParallel(Order = 4)]
     public async Task ApiKey_Endpoint_Returns_200_When_Valid_Key()
     {
         var response = await TestingServer.GetAsync<DemoMessageResponse>("demo/apikey", new ApiKey(DemoIntegrationApiKey.Value));
@@ -45,14 +45,14 @@ public class Demo_Authentication_Endpoints_Tests
         data.Message.ShouldBe("API key accepted");
     }
 
-    [Test]
+    [Test, NotInParallel(Order = 5)]
     public async Task Jwt_Endpoint_Returns_401_When_No_Auth()
     {
         var response = await TestingServer.GetAsync("demo/jwt");
         response.Code.ShouldBe(HttpStatusCode.Unauthorized);
     }
 
-    [Test]
+    [Test, NotInParallel(Order = 6)]
     public async Task Jwt_Endpoint_Returns_200_When_Authenticated_With_Superuser()
     {
         var response = await TestingServer.GetAsync<DemoMessageResponse>("demo/jwt", "superuser");
@@ -60,14 +60,14 @@ public class Demo_Authentication_Endpoints_Tests
         data.Message.ShouldBe("JWT accepted");
     }
 
-    [Test]
+    [Test, NotInParallel(Order = 7)]
     public async Task Role_Endpoint_Returns_401_When_No_Auth()
     {
         var response = await TestingServer.GetAsync("demo/role");
         response.Code.ShouldBe(HttpStatusCode.Unauthorized);
     }
 
-    [Test]
+    [Test, NotInParallel(Order = 8)]
     public async Task Role_Endpoint_Returns_200_When_User_Has_ManageUsers_Claim()
     {
         var response = await TestingServer.GetAsync<DemoMessageResponse>("demo/role", "admin1");
@@ -75,7 +75,7 @@ public class Demo_Authentication_Endpoints_Tests
         data.Message.ShouldBe("Role check passed");
     }
 
-    [Test]
+    [Test, NotInParallel(Order = 9)]
     public async Task Role_Endpoint_Returns_403_When_User_Without_ManageUsers_Claim()
     {
         await TestingServer.CacheCredentialsAsync("john.doe", "buzios");
@@ -83,7 +83,7 @@ public class Demo_Authentication_Endpoints_Tests
         response.Code.ShouldBe(HttpStatusCode.Forbidden);
     }
 
-    [Test]
+    [Test, NotInParallel(Order = 10)]
     public async Task Anonymous_Endpoint_Returns_200_Without_Auth()
     {
         var response = await TestingServer.GetAsync<DemoMessageResponse>("demo/anonymous");
