@@ -27,6 +27,7 @@ public class Global_Claim_Management_Tests
         {
             Identification = "CAN_MAnaGE_APPrOVALS",
             Description = "Can approval documents",
+            AllowApiKeyUsage = false,
         };
 
         // Act
@@ -40,6 +41,7 @@ public class Global_Claim_Management_Tests
         result.Identification.ShouldBe("CAN_MANAGE_APPROVALS");
         result.Description.ShouldBe("Can approval documents");
         result.IsProtected.ShouldBe(false);
+        result.AllowApiKeyUsage.ShouldBe(false);
 
         // Assert the database
         var claim = TestingServer.CreateContext().Set<Claim>().FirstOrDefault(x => x.Id == new Guid(response.Data.Id));
@@ -47,6 +49,7 @@ public class Global_Claim_Management_Tests
         claim.Identification.ShouldBe("CAN_MANAGE_APPROVALS");
         claim.Description.ShouldBe("Can approval documents");
         claim.IsProtected.ShouldBe(false);
+        claim.AllowApiKeyUsage.ShouldBe(false);
     }    
 
     /// <summary>
@@ -61,6 +64,7 @@ public class Global_Claim_Management_Tests
         {
             Id = existingClaim.Id,
             Description = "Workflow approval",
+            AllowApiKeyUsage = true,
         };
 
         // Act
@@ -75,6 +79,7 @@ public class Global_Claim_Management_Tests
         response.Data.Identification.ShouldBe("CAN_MANAGE_APPROVALS");
         response.Data.Description.ShouldBe("Workflow approval");
         response.Data.IsProtected.ShouldBe(false);
+        response.Data.AllowApiKeyUsage.ShouldBe(true);
 
         // Assert the database
         var claim = TestingServer.CreateContext().Set<Claim>().FirstOrDefault(x => x.Id == existingClaim.Id);
@@ -82,6 +87,7 @@ public class Global_Claim_Management_Tests
         claim.Identification.ShouldBe("CAN_MANAGE_APPROVALS");
         claim.Description.ShouldBe("Workflow approval");
         claim.IsProtected.ShouldBe(false);
+        claim.AllowApiKeyUsage.ShouldBe(true);
     }
 
     /// <summary>
@@ -95,6 +101,7 @@ public class Global_Claim_Management_Tests
         {
             Identification = "CaN_MANAGE_aPPROVAlS",
             Description = "Workflow approval 2",
+            AllowApiKeyUsage = false,
         };
 
         // Act
@@ -115,6 +122,7 @@ public class Global_Claim_Management_Tests
         {
             Identification = "CaN_MaNaGe_aPPRoOVaLS_2",
             Description = "WORKFLOW APPROVAL",
+            AllowApiKeyUsage = false,
         };
 
         // Act
@@ -138,6 +146,7 @@ public class Global_Claim_Management_Tests
         {
             Id = existingClaim.Id,
             Description = "WORKFLOW APPROVAL",
+            AllowApiKeyUsage = false,
         };
 
         // Act

@@ -7,7 +7,7 @@ using rbkApiModules.Commons.Testing;
 namespace rbkApiModules.Identity.Tests.ApiKeyAuthentication;
 
 [HumanFriendlyDisplayName]
-public class Demo_Authentication_Endpoints_Tests
+public class Authenticated_Endpoints_When_UsernameAndPassword_Is_Enabled_Tests
 {
     [ClassDataSource<Demo1TestingServer>(Shared = SharedType.PerClass)]
     public required Demo1TestingServer TestingServer { get; set; } = default!;
@@ -88,6 +88,12 @@ public class Demo_Authentication_Endpoints_Tests
         var response = await TestingServer.GetAsync<DemoMessageResponse>("demo/anonymous");
         response.ShouldBeSuccess<DemoMessageResponse>(out var data);
         data.Message.ShouldBe("Anonymous");
+    }
+
+    [Test, NotInParallel(Order = 99)]
+    public async Task CleanUp()
+    {
+        await TestingServer.CreateContext().Database.EnsureDeletedAsync();
     }
 
     private class DemoMessageResponse

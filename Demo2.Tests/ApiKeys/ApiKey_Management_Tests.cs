@@ -1,6 +1,5 @@
 using Demo2;
 using Demo2.Tests;
-using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Identity.Core;
 using ApiKey = rbkApiModules.Commons.Testing.ApiKey;
 using EntityApiKey = rbkApiModules.Identity.Core.ApiKey;

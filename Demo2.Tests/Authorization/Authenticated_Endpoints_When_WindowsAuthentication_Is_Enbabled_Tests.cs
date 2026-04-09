@@ -8,7 +8,7 @@ using ApiKey = rbkApiModules.Commons.Testing.ApiKey;
 namespace rbkApiModules.Identity.Tests.MixedAuthentication;
 
 [HumanFriendlyDisplayName]
-public class Demo_Authentication_Endpoints_Tests
+public class Authenticated_Endpoints_When_WindowsAuthentication_Is_Enbabled_Tests
 {
     [ClassDataSource<Demo2TestingServer>(Shared = SharedType.PerClass)]
     public required Demo2TestingServer TestingServer { get; set; } = default!;
@@ -89,6 +89,12 @@ public class Demo_Authentication_Endpoints_Tests
         var response = await TestingServer.GetAsync<DemoMessageResponse>("demo/anonymous");
         response.ShouldBeSuccess<DemoMessageResponse>(out var data);
         data.Message.ShouldBe("Anonymous");
+    }
+
+    [Test, NotInParallel(Order = 99)]
+    public async Task CleanUp()
+    {
+        await TestingServer.CreateContext().Database.EnsureDeletedAsync();
     }
 
     private class DemoMessageResponse
