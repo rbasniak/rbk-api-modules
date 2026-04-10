@@ -1,0 +1,96 @@
+name: Publish Libraries to NuGet
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_bump:
+        description: 'Version segment to bump'
+        required: false
+        default: 'minor'
+        type: choice
+        options:
+          - major
+          - minor
+          - patch
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Bump version in Directory.Build.props
+        id: bump
+        shell: pwsh
+        run: |
+          $file = "Directory.Build.props"
+          $content = Get-Content $file -Raw
+
+          if ($content -match '<Version>(\d+)\.(\d+)\.(\d+)</Version>') {
+            [int]$major = $Matches[1]
+            [int]$minor = $Matches[2]
+            [int]$patch = $Matches[3]
+
+            switch ("${{ inputs.version_bump }}") {
+              'major' { $major++; $minor = 0; $patch = 0 }
+              'minor' { $minor++; $patch = 0 }
+              'patch' { $patch++ }
+            }
+
+            $newVersion = "$major.$minor.$patch"
+            $newContent = $content -replace '<Version>\d+\.\d+\.\d+</Version>', "<Version>$newVersion</Version>"
+            Set-Content $file $newContent -NoNewline
+
+            Write-Host "Version bumped to $newVersion"
+            echo "version=$newVersion" >> $env:GITHUB_OUTPUT
+          } else {
+            Write-Error "Could not find <Version> tag in Directory.Build.props"
+            exit 1
+          }
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Pack
+        run: |
+          dotnet pack rbkApiModules.Commons.Core/rbkApiModules.Commons.Core.csproj --configuration Release --no-build --output ./artifacts
+          dotnet pack rbkApiModules.Identity.Core/rbkApiModules.Identity.Core.csproj --configuration Release --no-build --output ./artifacts
+          dotnet pack rbkApiModules.Commons.Testing/rbkApiModules.Testing.Core.csproj --configuration Release --no-build --output ./artifacts
+          dotnet pack rbkApiModules.Messaging.Core/rbkApiModules.Messaging.Core.csproj --configuration Release --no-build --output ./artifacts
+
+      - name: Push packages to NuGet
+        run: |
+          dotnet nuget push ./artifacts/*.nupkg \
+            --api-key ${{ secrets.NUGET_API_KEY }} \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate
+
+      - name: Push symbol packages to NuGet
+        run: |
+          dotnet nuget push ./artifacts/*.snupkg \
+            --api-key ${{ secrets.NUGET_API_KEY }} \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate
+        continue-on-error: true
+
+      - name: Commit version bump
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Directory.Build.props
+          git commit -m "chore: bump libraries version to ${{ steps.bump.outputs.version }}"
+          git push
