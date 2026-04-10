@@ -217,10 +217,10 @@ public static class Builder
 
                 user.AddClaim(manageApiKeysClaim, ClaimAccessType.Allow);
 
-                var crossTenantApiKeysClaim = context.Set<Claim>().FirstOrDefault(x => x.Identification == AuthenticationClaims.CAN_CREATE_CROSS_TENANT_API_KEYS);
+                var crossTenantApiKeysClaim = context.Set<Claim>().FirstOrDefault(x => x.Identification == AuthenticationClaims.CAN_MANAGE_CROSS_TENANT_API_KEYS);
                 if (crossTenantApiKeysClaim == null)
                 {
-                    throw new NullReferenceException($"Could not find the {AuthenticationClaims.CAN_CREATE_CROSS_TENANT_API_KEYS} claim");
+                    throw new NullReferenceException($"Could not find the {AuthenticationClaims.CAN_MANAGE_CROSS_TENANT_API_KEYS} claim");
                 }
 
                 user.AddClaim(crossTenantApiKeysClaim, ClaimAccessType.Allow);
@@ -240,7 +240,7 @@ public static class Builder
                     }
                 }
 
-                var crossTenantApiKeysClaim = context.Set<Claim>().FirstOrDefault(x => x.Identification == AuthenticationClaims.CAN_CREATE_CROSS_TENANT_API_KEYS);
+                var crossTenantApiKeysClaim = context.Set<Claim>().FirstOrDefault(x => x.Identification == AuthenticationClaims.CAN_MANAGE_CROSS_TENANT_API_KEYS);
                 if (crossTenantApiKeysClaim != null)
                 {
                     var hasCrossTenantApiKeys = context.Set<UserToClaim>().Any(x => x.UserId == user.Id && x.ClaimId == crossTenantApiKeysClaim.Id);
@@ -392,13 +392,13 @@ public static class Builder
                 context.Add(newClaim);
             }
 
-            if (!claims.Any(x => x.Identification == AuthenticationClaims.CAN_CREATE_CROSS_TENANT_API_KEYS))
+            if (!claims.Any(x => x.Identification == AuthenticationClaims.CAN_MANAGE_CROSS_TENANT_API_KEYS))
             {
-                var description = options._claimDescriptions != null && !String.IsNullOrEmpty(options._claimDescriptions.CreateCrossTenantApiKeys)
-                    ? options._claimDescriptions.CreateCrossTenantApiKeys
-                    : AuthenticationClaims.CAN_CREATE_CROSS_TENANT_API_KEYS;
+                var description = options._claimDescriptions != null && !String.IsNullOrEmpty(options._claimDescriptions.ManageCrossTenantApiKeys)
+                    ? options._claimDescriptions.ManageCrossTenantApiKeys
+                    : AuthenticationClaims.CAN_MANAGE_CROSS_TENANT_API_KEYS;
 
-                var newClaim = new Claim(AuthenticationClaims.CAN_CREATE_CROSS_TENANT_API_KEYS, description);
+                var newClaim = new Claim(AuthenticationClaims.CAN_MANAGE_CROSS_TENANT_API_KEYS, description);
                 newClaim.Hide();
                 newClaim.Protect();
                 newClaim.AllowUsageOnApiKeys();
@@ -408,7 +408,7 @@ public static class Builder
 
             var claimsForApiKeyUsage = context.Set<Claim>()
                 .Where(x => x.Identification == AuthenticationClaims.CAN_MANAGE_APIKEYS
-                    || x.Identification == AuthenticationClaims.CAN_CREATE_CROSS_TENANT_API_KEYS)
+                    || x.Identification == AuthenticationClaims.CAN_MANAGE_CROSS_TENANT_API_KEYS)
                 .ToList();
 
             foreach (var claimEntity in claimsForApiKeyUsage)

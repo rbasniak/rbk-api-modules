@@ -4,11 +4,11 @@ internal static class ApiKeyAuthorization
 {
     public static bool CallerHasCrossTenantApiKeyClaim(AuthenticatedUser identity)
     {
-        return identity.HasClaim(AuthenticationClaims.CAN_CREATE_CROSS_TENANT_API_KEYS);
+        return identity.HasClaim(AuthenticationClaims.CAN_MANAGE_CROSS_TENANT_API_KEYS);
     }
 
     /// <summary>
-    /// Restricts which API key rows a caller may see when listing, if they lack <see cref="AuthenticationClaims.CAN_CREATE_CROSS_TENANT_API_KEYS"/>.
+    /// Restricts which API key rows a caller may see when listing, if they lack <see cref="AuthenticationClaims.CAN_MANAGE_CROSS_TENANT_API_KEYS"/>.
     /// </summary>
     /// <remarks>
     /// The list endpoint is intended for JWT only: global admins (cross-tenant claim) see all keys;

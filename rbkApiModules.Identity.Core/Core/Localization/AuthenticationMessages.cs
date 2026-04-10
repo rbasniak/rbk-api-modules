@@ -43,6 +43,7 @@ public class AuthenticationMessages : ILocalizedResource
         [Description("Name already used")] NameAlreadyUsed,
         [Description("Role associated with one or more users")] RoleIsBeingUsed,
         [Description("There is already a claim with this description")] ClaimDescriptionAlreadyUsed,
+        [Description("There is already one or more api keys using this claim")] ClaimAlreadyUsedInApiKeys,
         [Description("Cannot remove a claim that is being used by any roles")] CannotRemoveClaimUsedByOtherRoles,
         [Description("Cannot remove a system protected claim")] CannotRemoveSystemProtectedClaims,
         [Description("Cannot remove a claim that is being used in any users")] CannotRemoveClaimAssociatedWithUsers,

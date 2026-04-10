@@ -3,7 +3,7 @@ using rbkApiModules.Identity.Core;
 
 namespace rbkApiModules.Identity.Tests.Claims;
 
-[NotInParallel(nameof(Global_Claim_Management_Tests))]
+[HumanFriendlyDisplayName]
 public class Global_Claim_Management_Tests
 {
     [ClassDataSource<Demo1TestingServer>(Shared = SharedType.PerClass)]
@@ -136,7 +136,7 @@ public class Global_Claim_Management_Tests
     /// The global admin should be able to update an application claim with a description already being used
     /// </summary>
     [Test, NotInParallel(Order = 6)]
-    public async Task Global_Admin_Cannot_Update_Claim_With_Same_Description()
+    public async Task Global_Admin_Can_Update_Claim_With_Same_Description()
     {
         // Prepare
         var existingClaim = TestingServer.CreateContext().Set<Claim>().SingleOrDefault(x => x.Identification == "CAN_MANAGE_APPROVALS");
@@ -153,7 +153,12 @@ public class Global_Claim_Management_Tests
         var response = await TestingServer.PutAsync<ClaimDetails>("api/authorization/claims", request, "superuser");
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "There is already a claim with this description");
+        response.ShouldBeSuccess();
+        response.Data.ShouldNotBeNull();
+        response.Data.Id.ShouldBe(existingClaim.Id.ToString());
+        response.Data.Identification.ShouldBe(existingClaim.Identification);
+        response.Data.Description.ShouldBe("WORKFLOW APPROVAL");
+        response.Data.AllowApiKeyUsage.ShouldBe(false);
     }
 
     /// <summary>

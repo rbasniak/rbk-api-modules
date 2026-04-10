@@ -13,5 +13,5 @@ public class AuthenticationClaims
 
     public const string CAN_MANAGE_APIKEYS = "CAN_MANAGE_APIKEYS";
 
-    public const string CAN_CREATE_CROSS_TENANT_API_KEYS = "CAN_CREATE_CROSS_TENANT_API_KEYS";
+    public const string CAN_MANAGE_CROSS_TENANT_API_KEYS = "CAN_MANAGE_CROSS_TENANT_API_KEYS";
 }

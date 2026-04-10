@@ -36,13 +36,36 @@ public class UpdateClaim : IEndpoint
 
             RuleFor(x => x.Description)
                 .NotEmpty()
+                .MustAsync(ClaimAlreadyUsedInApiKeys)
+                    .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.ClaimAlreadyUsedInApiKeys))
                 .MustAsync(NotExistsInDatabaseWithSameDescription)
                     .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.ClaimDescriptionAlreadyUsed));
         }
 
         private async Task<bool> NotExistsInDatabaseWithSameDescription(Request request, string identification, CancellationToken cancellationToken)
         {
-            return (await _claimsService.FindByDescriptionAsync(identification, cancellationToken)) == null;
+            var existing = await _claimsService.FindByDescriptionAsync(identification, cancellationToken);
+            return existing == null || existing.Id == request.Id;
+        }
+
+        private async Task<bool> ClaimAlreadyUsedInApiKeys(Request request, string identification, CancellationToken cancellationToken)
+        {
+            if (!request.AllowApiKeyUsage)
+            {
+                var currentClaim = await _claimsService.FindAsync(request.Id, cancellationToken);
+                if (currentClaim.AllowApiKeyUsage && await _claimsService.IsUsedByAnyApiKeysAsync(request.Id, cancellationToken))
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                return true;
+            }
         }
     }
 

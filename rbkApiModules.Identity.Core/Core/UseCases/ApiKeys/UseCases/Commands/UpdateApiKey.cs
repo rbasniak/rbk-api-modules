@@ -104,16 +104,6 @@ public class UpdateApiKey : IEndpoint
                 var requestsPerMinute = request.RequestsPerMinute ?? entity.RequestsPerMinute;
                 var burstLimit = request.BurstLimit ?? entity.BurstLimit;
 
-                if (requestsPerMinute < ApiKey.MinRequestsPerMinute || requestsPerMinute > ApiKey.MaxRequestsPerMinute)
-                {
-                    return CommandResponse.Failure($"Requests per minute must be between {ApiKey.MinRequestsPerMinute} and {ApiKey.MaxRequestsPerMinute}.");
-                }
-
-                if (burstLimit < requestsPerMinute)
-                {
-                    return CommandResponse.Failure("Burst limit must be greater than or equal to requests per minute.");
-                }
-
                 entity.SetRateLimits(requestsPerMinute, burstLimit);
             }
 

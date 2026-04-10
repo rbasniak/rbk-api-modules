@@ -53,6 +53,12 @@ public class RelationalClaimsService : IClaimsService
             .AnyAsync(role => role.Claims.Any(x => x.ClaimId == id), cancellationToken);
     }
 
+    public async Task<bool> IsUsedByAnyApiKeysAsync(Guid id, CancellationToken cancellationToken)
+    {
+        return await _context.Set<ApiKeyToClaim>()
+            .AnyAsync(x => x.ClaimId == id, cancellationToken);
+    }
+
     public async Task<bool> IsUsedByAnyUsersAsync(Guid id, CancellationToken cancellationToken)
     {
         var claim = await _context.Set<Claim>().FindAsync(new object[] { id }, cancellationToken);

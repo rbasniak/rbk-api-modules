@@ -220,7 +220,7 @@ public class rbkDefaultClaimOptions
         _claimDescriptions.ChangeClaimProtection = "[Security] Change claim protection";
         _claimDescriptions.ManageUsers = "[Security] Manage users";
         _claimDescriptions.ManageApiKeys = "[Security] Manage API keys";
-        _claimDescriptions.CreateCrossTenantApiKeys = "[Security] Manage cross-tenant API keys";
+        _claimDescriptions.ManageCrossTenantApiKeys = "[Security] Manage cross-tenant API keys";
     }
 
     public rbkDefaultClaimOptions WithCustomDescription(Expression<Func<SeedClaimDescriptions, string>> memberLamda, string description)
@@ -315,7 +315,7 @@ public class SeedClaimDescriptions
 
     public string ManageApiKeys { get; set; }
 
-    public string CreateCrossTenantApiKeys { get; set; }
+    public string ManageCrossTenantApiKeys { get; set; }
 }
 
 

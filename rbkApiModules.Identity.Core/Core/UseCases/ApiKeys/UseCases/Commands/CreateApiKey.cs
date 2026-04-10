@@ -83,14 +83,14 @@ public class CreateApiKey : IEndpoint
 
             if (normalizedTenant == null)
             {
-                if (!request.Identity.HasClaim(AuthenticationClaims.CAN_CREATE_CROSS_TENANT_API_KEYS))
+                if (!request.Identity.HasClaim(AuthenticationClaims.CAN_MANAGE_CROSS_TENANT_API_KEYS))
                 {
-                    return CommandResponse.Forbidden("Creating a global API key requires the CAN_CREATE_CROSS_TENANT_API_KEYS claim.");
+                    return CommandResponse.Forbidden("Creating a global API key requires the CAN_MANAGE_CROSS_TENANT_API_KEYS claim.");
                 }
             }
             else
             {
-                if (request.Identity.HasClaim(AuthenticationClaims.CAN_CREATE_CROSS_TENANT_API_KEYS))
+                if (request.Identity.HasClaim(AuthenticationClaims.CAN_MANAGE_CROSS_TENANT_API_KEYS))
                 {
                     // Global admins may create tenant-scoped keys for any tenant without a JWT tenant.
                 }
@@ -111,16 +111,6 @@ public class CreateApiKey : IEndpoint
             var defaultRpm = _authOptions._builtInApiKeyOptions.RequestsPerMinute;
             var requestsPerMinute = request.RequestsPerMinute ?? defaultRpm;
             var burstLimit = request.BurstLimit ?? requestsPerMinute;
-
-            if (requestsPerMinute < ApiKey.MinRequestsPerMinute || requestsPerMinute > ApiKey.MaxRequestsPerMinute)
-            {
-                return CommandResponse.Failure($"Requests per minute must be between {ApiKey.MinRequestsPerMinute} and {ApiKey.MaxRequestsPerMinute}.");
-            }
-
-            if (burstLimit < requestsPerMinute)
-            {
-                return CommandResponse.Failure("Burst limit must be greater than or equal to requests per minute.");
-            }
 
             var (rawKey, keyPrefix, keyHash) = ApiKeyMaterial.Generate();
 

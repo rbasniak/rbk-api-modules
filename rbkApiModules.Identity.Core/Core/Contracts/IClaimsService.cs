@@ -6,6 +6,7 @@ public interface IClaimsService
     Task<Claim> FindAsync(Guid id, CancellationToken cancellationToken);
     Task<Claim> FindByIdentificationAsync(string identification, CancellationToken cancellationToken);
     Task<Claim> CreateAsync(Claim claim, CancellationToken cancellationToken);
+    Task<bool> IsUsedByAnyApiKeysAsync(Guid id, CancellationToken cancellationToken);
     Task<bool> IsUsedByAnyRolesAsync(Guid id, CancellationToken cancellationToken);
     Task<bool> IsUsedByAnyUsersAsync(Guid id, CancellationToken cancellationToken);
     Task ProtectAsync(Guid id, CancellationToken cancellationToken);

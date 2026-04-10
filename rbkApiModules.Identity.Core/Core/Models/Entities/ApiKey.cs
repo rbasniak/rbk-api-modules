@@ -189,12 +189,12 @@ public sealed class ApiKey : BaseEntity
     {
         if (requestsPerMinute < MinRequestsPerMinute || requestsPerMinute > MaxRequestsPerMinute)
         {
-            throw new ArgumentOutOfRangeException(nameof(requestsPerMinute), requestsPerMinute, $"Must be between {MinRequestsPerMinute} and {MaxRequestsPerMinute}.");
+            throw new ExpectedInternalException($"Requests per minute must be between {MinRequestsPerMinute} and {MaxRequestsPerMinute}.");
         }
 
         if (burstLimit < requestsPerMinute)
         {
-            throw new ArgumentOutOfRangeException(nameof(burstLimit), burstLimit, "Burst limit must be greater than or equal to requests per minute.");
+            throw new ExpectedInternalException("Burst limit must be greater than or equal to requests per minute.");
         }
     }
 }

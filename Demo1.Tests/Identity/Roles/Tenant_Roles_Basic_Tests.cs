@@ -10,7 +10,7 @@ namespace rbkApiModules.Identity.Tests.Roles;
 /// they can also create roles with the same name of application roles and these
 /// will be overwritten for that tenant
 /// </summary>
-[NotInParallel(nameof(Tenant_Roles_Basic_DependentTests))]
+[HumanFriendlyDisplayName]
 public class Tenant_Roles_Basic_DependentTests 
 {
     [ClassDataSource<Demo1TestingServer>(Shared = SharedType.PerClass)]

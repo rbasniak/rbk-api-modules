@@ -49,7 +49,7 @@ public class DatabaseSeed : DatabaseSeedManager<DatabaseContext>, IDatabaseSeede
             expirationDate: null,
             tenantId: null).GetAwaiter().GetResult();
 
-        var crossTenantApiKeysClaim = context.Set<Claim>().First(x => x.Identification == AuthenticationClaims.CAN_CREATE_CROSS_TENANT_API_KEYS);
+        var crossTenantApiKeysClaim = context.Set<Claim>().First(x => x.Identification == AuthenticationClaims.CAN_MANAGE_CROSS_TENANT_API_KEYS);
 
         ApiKeySeeding.SeedApiKeyAsync(
             context,
