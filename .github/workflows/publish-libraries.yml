@@ -37,6 +37,9 @@ jobs:
           $file = "Directory.Build.props"
           $content = Get-Content $file -Raw
 
+          Write-Host "Current version: $($content -match '<Version>(\d+\.\d+\.\d+)</Version>' | Out-Null; $Matches[0])"
+          Write-Host "Bumping version with: ${{ inputs.version_bump }}"
+
           if ($content -match '<Version>(\d+)\.(\d+)\.(\d+)</Version>') {
             [int]$major = $Matches[1]
             [int]$minor = $Matches[2]
