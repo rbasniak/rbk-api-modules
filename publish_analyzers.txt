@@ -1,0 +1,30 @@
+# Publish Analyzers
+# This script builds and publishes the analyzer package
+# Note: NU5017 error will appear but can be ignored - the package is created successfully
+
+# Clean up old analyzer packages
+Get-ChildItem rbkApiModules.Analysers -Include *.nupkg -Recurse | Remove-Item -ErrorAction SilentlyContinue
+
+# Restore and build the analyzer projects
+dotnet restore rbkApiModules.Analysers\rbkApiModules.Analysers\rbkApiModules.Analysers.csproj
+dotnet restore rbkApiModules.Analysers\rbkApiModules.Analysers.CodeFixes\rbkApiModules.Analysers.CodeFixes.csproj
+dotnet restore rbkApiModules.Analysers\rbkApiModules.Analysers.Package\rbkApiModules.Analysers.Package.csproj
+
+dotnet build rbkApiModules.Analysers\rbkApiModules.Analysers\rbkApiModules.Analysers.csproj -c Release --no-restore
+dotnet build rbkApiModules.Analysers\rbkApiModules.Analysers.CodeFixes\rbkApiModules.Analysers.CodeFixes.csproj -c Release --no-restore
+dotnet build rbkApiModules.Analysers\rbkApiModules.Analysers.Package\rbkApiModules.Analysers.Package.csproj -c Release --no-restore
+
+# Pack the analyzer package
+# Note: This will show NU5017 error but the package IS created successfully
+dotnet pack rbkApiModules.Analysers\rbkApiModules.Analysers.Package\rbkApiModules.Analysers.Package.csproj -c Release --no-build
+
+# Verify the package was created
+if (Test-Path "rbkApiModules.Analysers\rbkApiModules.Analysers.Package\bin\Release\rbkApiModules.Analysers.*.nupkg") {
+    Write-Host "Analyzer package created successfully" -ForegroundColor Green
+    
+    # Push the analyzer package to NuGet
+    dotnet nuget push rbkApiModules.Analysers\rbkApiModules.Analysers.Package\bin\Release\rbkApiModules.Analysers.*.nupkg --api-key oy2pysxsqrih xpur4zrqcemkcouij ttunjpe5amcf466ie --source https://api.nuget.org/v3/index.json --skip-duplicate
+} else {
+    Write-Host "Failed to create analyzer package" -ForegroundColor Red
+    exit 1
+}

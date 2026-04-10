@@ -1,0 +1,44 @@
+<Project>
+
+  <PropertyGroup>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+	<Authors>rbasniak</Authors>
+	<Product>rbkApiModules</Product>
+	<Copyright>rbasniak</Copyright>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+
+  <!-- Default target frameworks for library projects -->
+  <PropertyGroup Condition="!$(MSBuildProjectName.Contains('Demo')) AND !$(MSBuildProjectName.Contains('Tests')) AND !$(MSBuildProjectName.Contains('Analysers'))">
+    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+  </PropertyGroup>
+
+  <!-- NuGet packaging properties - exclude demo and test projects -->
+  <PropertyGroup Condition="!$(MSBuildProjectName.Contains('Demo')) AND !$(MSBuildProjectName.Contains('Tests'))">
+	<Version>10.0.16</Version>
+	<IsPackable>true</IsPackable>
+	<PackageIcon>logo.png</PackageIcon>
+	<IncludeSymbols>true</IncludeSymbols>
+	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+<ItemGroup Condition="!$(MSBuildProjectName.Contains('Demo')) AND !$(MSBuildProjectName.Contains('Tests'))">
+	<None Include="..\logo.png">
+		<Pack>True</Pack>
+		<PackagePath>\</PackagePath>
+	</None>
+</ItemGroup>
+
+  <!-- Analyzer projects have different target framework -->
+  <PropertyGroup Condition="$(MSBuildProjectName.Contains('Analysers'))">
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  
+  <!-- Demo and test projects should only target net10.0 -->
+  <PropertyGroup Condition="$(MSBuildProjectName.Contains('Demo')) OR $(MSBuildProjectName.Contains('Tests'))">
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+
+</Project>

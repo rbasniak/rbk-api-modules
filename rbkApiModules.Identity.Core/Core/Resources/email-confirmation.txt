@@ -1,0 +1,7 @@
+﻿Olá, {{name}}.
+Muito obrigado por se registrar.
+É necessário confirmar seu e-mail para continuar tento acesso aos nossos serviços.
+Caso o e-mail não seja confirmado, você poderá ter seu acesso limitado.
+Para confirmar seu e-mail, acesse o endereço abaixo:
+{{activationLink}}
+Se você não realizou o cadastro, simplesmente ignore este e-mail.

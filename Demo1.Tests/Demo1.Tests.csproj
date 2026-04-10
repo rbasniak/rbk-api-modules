@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Common properties are now in Directory.Build.props -->
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Identity\Tenants\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Demo1\Demo1.csproj" />
+    <ProjectReference Include="..\rbkApiModules.Commons.Testing\rbkApiModules.Testing.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="Microsoft.Testing.Extensions.TrxReport" />
+    <PackageReference Update="TUnit" />
+  </ItemGroup>
+
+</Project>

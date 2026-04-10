@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+<ItemGroup>
+<FrameworkReference Include="Microsoft.AspNetCore.App" />
+</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+		<PackageReference Include="FluentValidation" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
+		<PackageReference Include="OpenTelemetry" />
+		<PackageReference Include="RabbitMQ.Client" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\rbkApiModules.Commons.Core\rbkApiModules.Commons.Core.csproj" />
+	</ItemGroup>
+
+</Project>

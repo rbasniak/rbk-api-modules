@@ -1,0 +1,55 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <PackageIcon></PackageIcon>
+    <!-- No main assembly to create symbols from; skip symbol package to avoid NU5017 -->
+    <IncludeSymbols>false</IncludeSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>rbkApiModules.Analysers</PackageId>
+    <PackageVersion>1.0.2.0</PackageVersion>
+    <Authors>rbasniak</Authors>
+    <PackageProjectUrl>https://github.com/rbasniak/rbk-api-modules</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/rbasniak/rbk-api-modules</RepositoryUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Description>rbkApiModules.Analysers</Description>
+    <PackageReleaseNotes>Summary of changes made in this release of the package.</PackageReleaseNotes>
+    <Copyright>Copyright</Copyright>
+    <PackageTags>rbkApiModules.Analysers, analyzers</PackageTags>
+    <DevelopmentDependency>true</DevelopmentDependency>
+    <NoPackageAnalysis>true</NoPackageAnalysis>
+
+    <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);_AddAnalyzersToOutput</TargetsForTfmSpecificContentInPackage>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\rbkApiModules.Analysers.CodeFixes\rbkApiModules.Analysers.CodeFixes.csproj" />
+    <ProjectReference Include="..\rbkApiModules.Analysers\rbkApiModules.Analysers.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="..\logo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="tools\*.ps1" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+  <!-- Override command-line IncludeSymbols; this package has no main assembly so snupkg would be empty (NU5017) -->
+  <Target Name="_DisableSymbolsForAnalyzerPackage" BeforeTargets="GenerateNuspec">
+    <PropertyGroup>
+      <IncludeSymbols>false</IncludeSymbols>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="_AddAnalyzersToOutput">
+    <ItemGroup>
+      <TfmSpecificPackageFile Include="..\rbkApiModules.Analysers\bin\$(Configuration)\netstandard2.0\rbkApiModules.Analysers.dll" PackagePath="analyzers/dotnet/cs" TargetFramework="netstandard2.0" />
+      <TfmSpecificPackageFile Include="..\rbkApiModules.Analysers.CodeFixes\bin\$(Configuration)\netstandard2.0\rbkApiModules.Analysers.CodeFixes.dll" PackagePath="analyzers/dotnet/cs" TargetFramework="netstandard2.0" />
+    </ItemGroup>
+  </Target>
+
+</Project>
