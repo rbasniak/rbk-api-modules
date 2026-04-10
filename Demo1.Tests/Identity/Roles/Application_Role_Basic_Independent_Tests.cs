@@ -6,7 +6,7 @@ using rbkApiModules.Identity.Core.DataTransfer;
 
 namespace rbkApiModules.Identity.Tests.Roles;
 
-[NotInParallel(nameof(Application_Role_Basic_Independent_Tests))]
+[HumanFriendlyDisplayName]
 public class Application_Role_Basic_Independent_Tests
 {
     [ClassDataSource<Demo1TestingServer>(Shared = SharedType.PerClass)]

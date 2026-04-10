@@ -3,7 +3,7 @@ using rbkApiModules.Identity.Core;
 
 namespace rbkApiModules.Identity.Tests.Claims;
 
-[NotInParallel(nameof(Endpoints_Availability_Tests))]
+[HumanFriendlyDisplayName]
 public class Endpoints_Availability_Tests
 {
     [ClassDataSource<Demo1TestingServer>(Shared = SharedType.PerClass)]

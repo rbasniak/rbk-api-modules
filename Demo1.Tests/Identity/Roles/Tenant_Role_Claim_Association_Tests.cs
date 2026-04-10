@@ -10,7 +10,7 @@ namespace rbkApiModules.Identity.Tests.Roles;
 /// for tenant wide roles, only the local admins are able to manage
 /// These tests deal with the update of list of claims for the roles
 /// </summary>
-[NotInParallel(nameof(Tenant_Role_Claim_Association_Tests))]
+[HumanFriendlyDisplayName]
 public class Tenant_Role_Claim_Association_Tests 
 {
     [ClassDataSource<Demo1TestingServer>(Shared = SharedType.PerClass)]

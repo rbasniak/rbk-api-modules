@@ -24,10 +24,14 @@ public class WindowsAuthenticationMiddleware
 
         var hasBearerToken = context.Request.Headers.Authorization.ToString().ToLower().StartsWith("bearer ");
 
+        var hasApiKeyHeader = context.Request.Headers.TryGetValue(RbkAuthenticationSchemes.API_KEY, out var apiKeyValues)
+            && !string.IsNullOrWhiteSpace(apiKeyValues.FirstOrDefault());
+
         if (context.Request.Path != "/api/authentication/login" &&
             !isAnonymous &&
             !hasBearerToken &&
-            !requiresApiKey)
+            !requiresApiKey &&
+            !hasApiKeyHeader)
         {
             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
             return;

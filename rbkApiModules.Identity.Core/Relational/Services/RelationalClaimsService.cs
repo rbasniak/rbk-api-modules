@@ -1,4 +1,4 @@
-﻿using rbkApiModules.Identity.Core;
+using rbkApiModules.Identity.Core;
 using rbkApiModules.Commons.Relational;
 
 namespace rbkApiModules.Identity.Relational;
@@ -53,6 +53,12 @@ public class RelationalClaimsService : IClaimsService
             .AnyAsync(role => role.Claims.Any(x => x.ClaimId == id), cancellationToken);
     }
 
+    public async Task<bool> IsUsedByAnyApiKeysAsync(Guid id, CancellationToken cancellationToken)
+    {
+        return await _context.Set<ApiKeyToClaim>()
+            .AnyAsync(x => x.ClaimId == id, cancellationToken);
+    }
+
     public async Task<bool> IsUsedByAnyUsersAsync(Guid id, CancellationToken cancellationToken)
     {
         var claim = await _context.Set<Claim>().FindAsync(new object[] { id }, cancellationToken);
@@ -95,6 +101,22 @@ public class RelationalClaimsService : IClaimsService
         var claim = await _context.Set<Claim>().FindAsync(new object[] { id }, cancellationToken);
 
         claim.SetDescription(description);
+
+        await _context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task SetAllowApiKeyUsageAsync(Guid id, bool allowApiKeyUsage, CancellationToken cancellationToken)
+    {
+        var claim = await _context.Set<Claim>().FindAsync(new object[] { id }, cancellationToken);
+
+        if (allowApiKeyUsage)
+        {
+            claim.AllowUsageOnApiKeys();
+        }
+        else
+        {
+            claim.RestrictUsageOnApiKeys();
+        }
 
         await _context.SaveChangesAsync(cancellationToken);
     }

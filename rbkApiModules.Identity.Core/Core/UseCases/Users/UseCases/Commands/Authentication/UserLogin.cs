@@ -229,6 +229,7 @@ public enum AuthenticationMode
 {
     Credentials = 0,
     Windows = 1,
-    Custom = 2
+    Custom = 2,
+    ApiKey = 3
 }
 

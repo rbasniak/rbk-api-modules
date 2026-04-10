@@ -6,7 +6,7 @@ using rbkApiModules.Identity.Core.DataTransfer.Users;
 
 namespace rbkApiModules.Identity.Tests.Users;
 
-[NotInParallel(nameof(User_Registration_Tests))]
+[HumanFriendlyDisplayName]
 public class User_Registration_Tests
 {
     [ClassDataSource<Demo1TestingServer>(Shared = SharedType.PerClass)]

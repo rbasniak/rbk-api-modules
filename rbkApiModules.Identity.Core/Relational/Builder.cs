@@ -3,6 +3,7 @@ using rbkApiModules.Commons.Relational;
 using rbkApiModules.Identity.Core;
 using rbkApiModules.Identity.Relational;
 using System.Diagnostics;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -37,6 +38,12 @@ public static class Builder
     public static IApplicationBuilder UseRbkRelationalAuthentication(this WebApplication app)
     {
         var authenticationOptions = app.Services.GetRequiredService<RbkAuthenticationOptions>();
+
+        if (authenticationOptions._addApiKeyAuthentication)
+        {
+            app.UseMiddleware<ApiKeyRateLimitPolicyMiddleware>();
+            app.UseRateLimiter();
+        }
 
         var endpoints = new List<(string Key, Action<IEndpointRouteBuilder> Map)>
         {
@@ -74,6 +81,14 @@ public static class Builder
             ("UnprotectClaim", UnprotectClaim.MapEndpoint),
             ("UpdateClaim", UpdateClaim.MapEndpoint),
         };
+
+        if (authenticationOptions._addApiKeyAuthentication)
+        {
+            endpoints.Add(("CreateApiKey", CreateApiKey.MapEndpoint));
+            endpoints.Add(("ListApiKeys", ListApiKeys.MapEndpoint));
+            endpoints.Add(("UpdateApiKey", UpdateApiKey.MapEndpoint));
+            endpoints.Add(("RevokeApiKey", RevokeApiKey.MapEndpoint));
+        }
 
         if (authenticationOptions._disablePasswordReset)
         {
@@ -193,8 +208,48 @@ public static class Builder
                 user.AddClaim(manageClaimsClaim, ClaimAccessType.Allow);
                 user.AddClaim(manageClaimProtectionClaim, ClaimAccessType.Allow);
                 user.AddClaim(manageApplicationRolesClaim, ClaimAccessType.Allow);
+
+                var manageApiKeysClaim = context.Set<Claim>().FirstOrDefault(x => x.Identification == AuthenticationClaims.CAN_MANAGE_APIKEYS);
+                if (manageApiKeysClaim == null)
+                {
+                    throw new NullReferenceException($"Could not find the {AuthenticationClaims.CAN_MANAGE_APIKEYS} claim");
+                }
+
+                user.AddClaim(manageApiKeysClaim, ClaimAccessType.Allow);
+
+                var crossTenantApiKeysClaim = context.Set<Claim>().FirstOrDefault(x => x.Identification == AuthenticationClaims.CAN_MANAGE_CROSS_TENANT_API_KEYS);
+                if (crossTenantApiKeysClaim == null)
+                {
+                    throw new NullReferenceException($"Could not find the {AuthenticationClaims.CAN_MANAGE_CROSS_TENANT_API_KEYS} claim");
+                }
+
+                user.AddClaim(crossTenantApiKeysClaim, ClaimAccessType.Allow);
                 context.Add(user);
                 context.SaveChanges();
+            }
+            else
+            {
+                var manageApiKeysClaim = context.Set<Claim>().FirstOrDefault(x => x.Identification == AuthenticationClaims.CAN_MANAGE_APIKEYS);
+                if (manageApiKeysClaim != null)
+                {
+                    var hasApiKeyManage = context.Set<UserToClaim>().Any(x => x.UserId == user.Id && x.ClaimId == manageApiKeysClaim.Id);
+                    if (!hasApiKeyManage)
+                    {
+                        user.AddClaim(manageApiKeysClaim, ClaimAccessType.Allow);
+                        context.SaveChanges();
+                    }
+                }
+
+                var crossTenantApiKeysClaim = context.Set<Claim>().FirstOrDefault(x => x.Identification == AuthenticationClaims.CAN_MANAGE_CROSS_TENANT_API_KEYS);
+                if (crossTenantApiKeysClaim != null)
+                {
+                    var hasCrossTenantApiKeys = context.Set<UserToClaim>().Any(x => x.UserId == user.Id && x.ClaimId == crossTenantApiKeysClaim.Id);
+                    if (!hasCrossTenantApiKeys)
+                    {
+                        user.AddClaim(crossTenantApiKeysClaim, ClaimAccessType.Allow);
+                        context.SaveChanges();
+                    }
+                }
             }
         }
 
@@ -321,6 +376,47 @@ public static class Builder
                 newClaim.Protect();
 
                 context.Add(newClaim);
+            }
+
+            if (!claims.Any(x => x.Identification == AuthenticationClaims.CAN_MANAGE_APIKEYS))
+            {
+                var description = options._claimDescriptions != null && !String.IsNullOrEmpty(options._claimDescriptions.ManageApiKeys)
+                    ? options._claimDescriptions.ManageApiKeys
+                    : AuthenticationClaims.CAN_MANAGE_APIKEYS;
+
+                var newClaim = new Claim(AuthenticationClaims.CAN_MANAGE_APIKEYS, description);
+                newClaim.Hide();
+                newClaim.Protect();
+                newClaim.AllowUsageOnApiKeys();
+
+                context.Add(newClaim);
+            }
+
+            if (!claims.Any(x => x.Identification == AuthenticationClaims.CAN_MANAGE_CROSS_TENANT_API_KEYS))
+            {
+                var description = options._claimDescriptions != null && !String.IsNullOrEmpty(options._claimDescriptions.ManageCrossTenantApiKeys)
+                    ? options._claimDescriptions.ManageCrossTenantApiKeys
+                    : AuthenticationClaims.CAN_MANAGE_CROSS_TENANT_API_KEYS;
+
+                var newClaim = new Claim(AuthenticationClaims.CAN_MANAGE_CROSS_TENANT_API_KEYS, description);
+                newClaim.Hide();
+                newClaim.Protect();
+                newClaim.AllowUsageOnApiKeys();
+
+                context.Add(newClaim);
+            }
+
+            var claimsForApiKeyUsage = context.Set<Claim>()
+                .Where(x => x.Identification == AuthenticationClaims.CAN_MANAGE_APIKEYS
+                    || x.Identification == AuthenticationClaims.CAN_MANAGE_CROSS_TENANT_API_KEYS)
+                .ToList();
+
+            foreach (var claimEntity in claimsForApiKeyUsage)
+            {
+                if (!claimEntity.AllowApiKeyUsage)
+                {
+                    claimEntity.AllowUsageOnApiKeys();
+                }
             }
 
             context.SaveChanges();

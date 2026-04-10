@@ -2,7 +2,7 @@
 
 namespace rbkApiModules.Identity.Tests.Claims;
 
-[NotInParallel(nameof(UiDefinition_Smoke_Tests))]
+[HumanFriendlyDisplayName]
 public class UiDefinition_Smoke_Tests
 {
     [ClassDataSource<Demo1TestingServer>(Shared = SharedType.PerClass)]

@@ -4,7 +4,7 @@ using rbkApiModules.Identity.Core;
 
 namespace rbkApiModules.Identity.Tests.Login;
 
-[NotInParallel(nameof(Custom_Login_Policies_Tests))]
+[HumanFriendlyDisplayName]
 public class Custom_Login_Policies_Tests
 {
     [ClassDataSource<Demo1TestingServer>(Shared = SharedType.PerClass)]

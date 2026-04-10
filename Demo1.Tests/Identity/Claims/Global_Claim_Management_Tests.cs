@@ -3,7 +3,7 @@ using rbkApiModules.Identity.Core;
 
 namespace rbkApiModules.Identity.Tests.Claims;
 
-[NotInParallel(nameof(Global_Claim_Management_Tests))]
+[HumanFriendlyDisplayName]
 public class Global_Claim_Management_Tests
 {
     [ClassDataSource<Demo1TestingServer>(Shared = SharedType.PerClass)]
@@ -27,6 +27,7 @@ public class Global_Claim_Management_Tests
         {
             Identification = "CAN_MAnaGE_APPrOVALS",
             Description = "Can approval documents",
+            AllowApiKeyUsage = false,
         };
 
         // Act
@@ -40,6 +41,7 @@ public class Global_Claim_Management_Tests
         result.Identification.ShouldBe("CAN_MANAGE_APPROVALS");
         result.Description.ShouldBe("Can approval documents");
         result.IsProtected.ShouldBe(false);
+        result.AllowApiKeyUsage.ShouldBe(false);
 
         // Assert the database
         var claim = TestingServer.CreateContext().Set<Claim>().FirstOrDefault(x => x.Id == new Guid(response.Data.Id));
@@ -47,6 +49,7 @@ public class Global_Claim_Management_Tests
         claim.Identification.ShouldBe("CAN_MANAGE_APPROVALS");
         claim.Description.ShouldBe("Can approval documents");
         claim.IsProtected.ShouldBe(false);
+        claim.AllowApiKeyUsage.ShouldBe(false);
     }    
 
     /// <summary>
@@ -61,6 +64,7 @@ public class Global_Claim_Management_Tests
         {
             Id = existingClaim.Id,
             Description = "Workflow approval",
+            AllowApiKeyUsage = true,
         };
 
         // Act
@@ -75,6 +79,7 @@ public class Global_Claim_Management_Tests
         response.Data.Identification.ShouldBe("CAN_MANAGE_APPROVALS");
         response.Data.Description.ShouldBe("Workflow approval");
         response.Data.IsProtected.ShouldBe(false);
+        response.Data.AllowApiKeyUsage.ShouldBe(true);
 
         // Assert the database
         var claim = TestingServer.CreateContext().Set<Claim>().FirstOrDefault(x => x.Id == existingClaim.Id);
@@ -82,6 +87,7 @@ public class Global_Claim_Management_Tests
         claim.Identification.ShouldBe("CAN_MANAGE_APPROVALS");
         claim.Description.ShouldBe("Workflow approval");
         claim.IsProtected.ShouldBe(false);
+        claim.AllowApiKeyUsage.ShouldBe(true);
     }
 
     /// <summary>
@@ -95,6 +101,7 @@ public class Global_Claim_Management_Tests
         {
             Identification = "CaN_MANAGE_aPPROVAlS",
             Description = "Workflow approval 2",
+            AllowApiKeyUsage = false,
         };
 
         // Act
@@ -115,6 +122,7 @@ public class Global_Claim_Management_Tests
         {
             Identification = "CaN_MaNaGe_aPPRoOVaLS_2",
             Description = "WORKFLOW APPROVAL",
+            AllowApiKeyUsage = false,
         };
 
         // Act
@@ -128,7 +136,7 @@ public class Global_Claim_Management_Tests
     /// The global admin should be able to update an application claim with a description already being used
     /// </summary>
     [Test, NotInParallel(Order = 6)]
-    public async Task Global_Admin_Cannot_Update_Claim_With_Same_Description()
+    public async Task Global_Admin_Can_Update_Claim_With_Same_Description()
     {
         // Prepare
         var existingClaim = TestingServer.CreateContext().Set<Claim>().SingleOrDefault(x => x.Identification == "CAN_MANAGE_APPROVALS");
@@ -138,13 +146,19 @@ public class Global_Claim_Management_Tests
         {
             Id = existingClaim.Id,
             Description = "WORKFLOW APPROVAL",
+            AllowApiKeyUsage = false,
         };
 
         // Act
         var response = await TestingServer.PutAsync<ClaimDetails>("api/authorization/claims", request, "superuser");
 
         // Assert the response
-        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "There is already a claim with this description");
+        response.ShouldBeSuccess();
+        response.Data.ShouldNotBeNull();
+        response.Data.Id.ShouldBe(existingClaim.Id.ToString());
+        response.Data.Identification.ShouldBe(existingClaim.Identification);
+        response.Data.Description.ShouldBe("WORKFLOW APPROVAL");
+        response.Data.AllowApiKeyUsage.ShouldBe(false);
     }
 
     /// <summary>

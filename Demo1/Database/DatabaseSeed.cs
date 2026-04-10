@@ -1,5 +1,6 @@
-﻿using rbkApiModules.Commons.Relational;
+using rbkApiModules.Commons.Relational;
 using rbkApiModules.Identity.Core;
+using rbkApiModules.Identity.Relational;
 using System.Text.Json;
 
 namespace Demo1;
@@ -83,13 +84,23 @@ public class DatabaseSeed : DatabaseSeedManager<DatabaseContext>, IDatabaseSeede
         context.SaveChanges();
 
         var canAproveReportsClaim = new Claim("CAN_APPROVE_REPORTS", "Can approve reports");
+        canAproveReportsClaim.AllowUsageOnApiKeys();
         var canGenerateReportsClaim = new Claim("CAN_GENERATE_REPORTS", "Can generate reports");
         var canShareReports = new Claim("CAN_SHARE_REPORTS", "Can share reports");
 
         context.Add(canAproveReportsClaim);
         context.Add(canGenerateReportsClaim);
+        context.Add(canShareReports);
 
         context.SaveChanges();
+
+        ApiKeySeeding.SeedApiKeyAsync(
+            context,
+            "Demo integration",
+            new List<Guid> { canAproveReportsClaim.Id },
+            DemoIntegrationApiKey.Value,
+            expirationDate: null,
+            tenantId: null).GetAwaiter().GetResult();
 
         var generalRole = new Role("Employee");
         var generalManagerRole = new Role("Manager");

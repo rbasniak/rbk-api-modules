@@ -3,7 +3,7 @@ using rbkApiModules.Identity.Core;
 
 namespace rbkApiModules.Identity.Tests.Users;
 
-[NotInParallel(nameof(User_Password_Reset_Tests))]
+[HumanFriendlyDisplayName]
 public class User_Password_Reset_Tests
 {
     [ClassDataSource<Demo1TestingServer>(Shared = SharedType.PerClass)]

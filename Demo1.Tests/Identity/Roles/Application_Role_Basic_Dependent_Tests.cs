@@ -10,7 +10,7 @@ namespace rbkApiModules.Identity.Tests.Roles;
 /// In general, the global admin can only manage roles that are application wide,
 /// for tenant wide roles, only the local admins are able to manage
 /// </summary>
-[NotInParallel(nameof(Application_Role_Basic_Dependent_Tests))]
+[HumanFriendlyDisplayName]
 public class Application_Role_Basic_Dependent_Tests  
 {
     [ClassDataSource<Demo1TestingServer>(Shared = SharedType.PerClass)]

@@ -15,7 +15,7 @@ namespace Demo1.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "10.0.2");
+            modelBuilder.HasAnnotation("ProductVersion", "10.0.5");
 
             modelBuilder.Entity("Demo1.Models.Author", b =>
                 {
@@ -179,11 +179,107 @@ namespace Demo1.Migrations
                     b.ToTable("__SeedHistory", (string)null);
                 });
 
+            modelBuilder.Entity("rbkApiModules.Identity.Core.ApiKey", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("BurstLimit")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(600);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("ExpirationDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("KeyHash")
+                        .IsRequired()
+                        .HasMaxLength(512)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("KeyPrefix")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("LastUsedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("RequestsPerMinute")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(600);
+
+                    b.Property<DateTime?>("RevokeDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RevokeReason")
+                        .HasMaxLength(2048)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(255)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("KeyHash")
+                        .IsUnique();
+
+                    b.ToTable("ApiKeys", (string)null);
+                });
+
+            modelBuilder.Entity("rbkApiModules.Identity.Core.ApiKeyToClaim", b =>
+                {
+                    b.Property<Guid>("ClaimId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("ApiKeyId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ClaimId", "ApiKeyId");
+
+                    b.HasIndex("ApiKeyId");
+
+                    b.ToTable("ApiKeysToClaims", (string)null);
+                });
+
+            modelBuilder.Entity("rbkApiModules.Identity.Core.ApiKeyUsageByDay", b =>
+                {
+                    b.Property<Guid>("ApiKeyId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Count")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ApiKeyId", "Date");
+
+                    b.ToTable("ApiKeyUsageByDay", (string)null);
+                });
+
             modelBuilder.Entity("rbkApiModules.Identity.Core.Claim", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
+
+                    b.Property<bool>("AllowApiKeyUsage")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -406,6 +502,36 @@ namespace Demo1.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
+            modelBuilder.Entity("rbkApiModules.Identity.Core.ApiKeyToClaim", b =>
+                {
+                    b.HasOne("rbkApiModules.Identity.Core.ApiKey", "ApiKey")
+                        .WithMany("Claims")
+                        .HasForeignKey("ApiKeyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("rbkApiModules.Identity.Core.Claim", "Claim")
+                        .WithMany()
+                        .HasForeignKey("ClaimId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("ApiKey");
+
+                    b.Navigation("Claim");
+                });
+
+            modelBuilder.Entity("rbkApiModules.Identity.Core.ApiKeyUsageByDay", b =>
+                {
+                    b.HasOne("rbkApiModules.Identity.Core.ApiKey", "ApiKey")
+                        .WithMany()
+                        .HasForeignKey("ApiKeyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApiKey");
+                });
+
             modelBuilder.Entity("rbkApiModules.Identity.Core.Role", b =>
                 {
                     b.HasOne("rbkApiModules.Identity.Core.Tenant", null)
@@ -510,6 +636,11 @@ namespace Demo1.Migrations
             modelBuilder.Entity("Demo1.Models.Blog", b =>
                 {
                     b.Navigation("Posts");
+                });
+
+            modelBuilder.Entity("rbkApiModules.Identity.Core.ApiKey", b =>
+                {
+                    b.Navigation("Claims");
                 });
 
             modelBuilder.Entity("rbkApiModules.Identity.Core.Claim", b =>
