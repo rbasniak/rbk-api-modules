@@ -22,6 +22,10 @@ public sealed class ApiKeyDetails
 
     public string? RevokeReason { get; init; }
 
+    public int RequestsPerMinute { get; init; }
+
+    public int BurstLimit { get; init; }
+
     public required IReadOnlyList<ClaimDetails> AssignedClaims { get; init; }
 
     public static ApiKeyDetails FromModel(ApiKey entity)
@@ -40,6 +44,8 @@ public sealed class ApiKeyDetails
             TenantId = entity.TenantId,
             RevokeDate = entity.RevokeDate,
             RevokeReason = entity.RevokeReason,
+            RequestsPerMinute = entity.RequestsPerMinute,
+            BurstLimit = entity.BurstLimit,
             AssignedClaims = claims
         };
     }

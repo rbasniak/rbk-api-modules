@@ -36,6 +36,8 @@ public class ApiKey_List_Tests
         integration.AssignedClaims.Count.ShouldBe(1);
         integration.AssignedClaims[0].Identification.ShouldBe("DEMO2_INTEGRATION");
         integration.AssignedClaims[0].AllowApiKeyUsage.ShouldBeTrue();
+        integration.RequestsPerMinute.ShouldBe(600);
+        integration.BurstLimit.ShouldBe(600);
     }
 
     [Test, NotInParallel(Order = 3)]

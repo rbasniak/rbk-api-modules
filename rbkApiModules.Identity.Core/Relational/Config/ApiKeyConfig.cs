@@ -15,5 +15,7 @@ public class ApiKeyConfig : IEntityTypeConfiguration<ApiKey>
         entity.Property(x => x.KeyHash).IsRequired();
         entity.Property(x => x.KeyPrefix).IsRequired();
         entity.Property(x => x.RevokeReason).HasMaxLength(2048);
+        entity.Property(x => x.RequestsPerMinute).IsRequired().HasDefaultValue(600);
+        entity.Property(x => x.BurstLimit).IsRequired().HasDefaultValue(600);
     }
 }

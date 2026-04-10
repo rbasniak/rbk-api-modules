@@ -63,7 +63,8 @@ public static class ApiKeySeeding
             hash = ApiKeyMaterial.HashRawKey(raw);
         }
 
-        var apiKey = new ApiKey(name, hash, prefix, tenantId, expirationDate);
+        const int defaultRequestsPerMinute = 600;
+        var apiKey = new ApiKey(name, hash, prefix, tenantId, expirationDate, defaultRequestsPerMinute, defaultRequestsPerMinute);
 
         foreach (var claim in claims)
         {

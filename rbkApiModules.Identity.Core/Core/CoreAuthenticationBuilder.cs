@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using System.Globalization;
@@ -172,13 +173,21 @@ public static class CoreAuthenticationBuilder
                     }
 
                     var hash = ApiKeyMaterial.HashRawKey(raw);
-                    var perMinute = authenticationOptions._builtInApiKeyOptions.RequestsPerMinute;
-                    return RateLimitPartition.GetFixedWindowLimiter(hash, _ => new FixedWindowRateLimiterOptions
+                    var memoryCache = httpContext.RequestServices.GetRequiredService<IMemoryCache>();
+                    var defaultRpm = authenticationOptions._builtInApiKeyOptions.RequestsPerMinute;
+                    if (!memoryCache.TryGetValue(ApiKeyCacheKeys.RateLimitPolicy(hash), out ApiKeyRateLimitPolicy ratePolicy))
                     {
+                        ratePolicy = new ApiKeyRateLimitPolicy(defaultRpm, defaultRpm);
+                    }
+
+                    var partitionKey = $"{hash}\u001f{ratePolicy.RequestsPerMinute}\u001f{ratePolicy.BurstLimit}";
+                    return RateLimitPartition.GetTokenBucketLimiter(partitionKey, _ => new TokenBucketRateLimiterOptions
+                    {
+                        TokenLimit = ratePolicy.BurstLimit,
+                        ReplenishmentPeriod = TimeSpan.FromMinutes(1),
+                        TokensPerPeriod = ratePolicy.RequestsPerMinute,
                         AutoReplenishment = true,
-                        PermitLimit = perMinute,
-                        QueueLimit = 0,
-                        Window = TimeSpan.FromMinutes(1)
+                        QueueLimit = 0
                     });
                 });
             });

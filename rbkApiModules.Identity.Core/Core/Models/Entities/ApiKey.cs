@@ -4,6 +4,10 @@ namespace rbkApiModules.Identity.Core;
 
 public sealed class ApiKey : BaseEntity
 {
+    public const int MinRequestsPerMinute = 1;
+
+    public const int MaxRequestsPerMinute = 100_000;
+
     private HashSet<ApiKeyToClaim> _claims;
 
     private ApiKey()
@@ -11,7 +15,7 @@ public sealed class ApiKey : BaseEntity
         _claims = default!;
     }
 
-    public ApiKey(string name, string keyHash, string keyPrefix, string? tenantId, DateTime? expirationDate)
+    public ApiKey(string name, string keyHash, string keyPrefix, string? tenantId, DateTime? expirationDate, int requestsPerMinute, int burstLimit)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
@@ -28,6 +32,8 @@ public sealed class ApiKey : BaseEntity
             throw new ArgumentNullException(nameof(keyPrefix));
         }
 
+        ValidateRateLimits(requestsPerMinute, burstLimit);
+
         Name = name;
         KeyHash = keyHash;
         KeyPrefix = keyPrefix;
@@ -35,6 +41,8 @@ public sealed class ApiKey : BaseEntity
         ExpirationDate = expirationDate;
         IsActive = true;
         CreatedAt = DateTime.UtcNow;
+        RequestsPerMinute = requestsPerMinute;
+        BurstLimit = burstLimit;
         _claims = new HashSet<ApiKeyToClaim>();
     }
 
@@ -62,6 +70,10 @@ public sealed class ApiKey : BaseEntity
 
     [MaxLength(2048)]
     public string? RevokeReason { get; private set; }
+
+    public int RequestsPerMinute { get; private set; }
+
+    public int BurstLimit { get; private set; }
 
     public IEnumerable<ApiKeyToClaim> Claims => _claims?.AsReadOnly()!;
 
@@ -139,6 +151,13 @@ public sealed class ApiKey : BaseEntity
         IsActive = isActive;
     }
 
+    public void SetRateLimits(int requestsPerMinute, int burstLimit)
+    {
+        ValidateRateLimits(requestsPerMinute, burstLimit);
+        RequestsPerMinute = requestsPerMinute;
+        BurstLimit = burstLimit;
+    }
+
     public void Revoke(string reason)
     {
         if (string.IsNullOrWhiteSpace(reason))
@@ -164,5 +183,18 @@ public sealed class ApiKey : BaseEntity
         }
 
         return tenantId.ToUpperInvariant();
+    }
+
+    private static void ValidateRateLimits(int requestsPerMinute, int burstLimit)
+    {
+        if (requestsPerMinute < MinRequestsPerMinute || requestsPerMinute > MaxRequestsPerMinute)
+        {
+            throw new ArgumentOutOfRangeException(nameof(requestsPerMinute), requestsPerMinute, $"Must be between {MinRequestsPerMinute} and {MaxRequestsPerMinute}.");
+        }
+
+        if (burstLimit < requestsPerMinute)
+        {
+            throw new ArgumentOutOfRangeException(nameof(burstLimit), burstLimit, "Burst limit must be greater than or equal to requests per minute.");
+        }
     }
 }

@@ -6,4 +6,9 @@ public static class ApiKeyCacheKeys
     {
         return $"rbk:apikey:auth:{keyHash}";
     }
+
+    public static string RateLimitPolicy(string keyHash)
+    {
+        return $"rbk:apikey:ratelimit:{keyHash}";
+    }
 }

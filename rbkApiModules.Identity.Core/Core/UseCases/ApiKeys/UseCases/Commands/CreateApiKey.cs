@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using rbkApiModules.Commons.Relational;
 
 namespace rbkApiModules.Identity.Core;
@@ -25,16 +26,22 @@ public class CreateApiKey : IEndpoint
 
         public string? TenantId { get; set; }
 
+        public int? RequestsPerMinute { get; set; }
+
+        public int? BurstLimit { get; set; }
+
         public required IReadOnlyList<Guid> ClaimIds { get; set; }
     }
 
     public class Handler : ICommandHandler<Request>
     {
         private readonly DbContext _context;
+        private readonly RbkAuthenticationOptions _authOptions;
 
-        public Handler(IEnumerable<DbContext> contexts)
+        public Handler(IEnumerable<DbContext> contexts, IOptions<RbkAuthenticationOptions> authOptions)
         {
             _context = contexts.GetDefaultContext();
+            _authOptions = authOptions.Value;
         }
 
         public async Task<CommandResponse> HandleAsync(Request request, CancellationToken cancellationToken)
@@ -101,9 +108,23 @@ public class CreateApiKey : IEndpoint
                 }
             }
 
+            var defaultRpm = _authOptions._builtInApiKeyOptions.RequestsPerMinute;
+            var requestsPerMinute = request.RequestsPerMinute ?? defaultRpm;
+            var burstLimit = request.BurstLimit ?? requestsPerMinute;
+
+            if (requestsPerMinute < ApiKey.MinRequestsPerMinute || requestsPerMinute > ApiKey.MaxRequestsPerMinute)
+            {
+                return CommandResponse.Failure($"Requests per minute must be between {ApiKey.MinRequestsPerMinute} and {ApiKey.MaxRequestsPerMinute}.");
+            }
+
+            if (burstLimit < requestsPerMinute)
+            {
+                return CommandResponse.Failure("Burst limit must be greater than or equal to requests per minute.");
+            }
+
             var (rawKey, keyPrefix, keyHash) = ApiKeyMaterial.Generate();
 
-            var apiKey = new ApiKey(request.Name, keyHash, keyPrefix, request.TenantId, request.ExpirationDate);
+            var apiKey = new ApiKey(request.Name, keyHash, keyPrefix, request.TenantId, request.ExpirationDate, requestsPerMinute, burstLimit);
 
             foreach (var claim in claims)
             {
@@ -123,6 +144,8 @@ public class CreateApiKey : IEndpoint
                 Name = apiKey.Name,
                 ExpirationDate = apiKey.ExpirationDate,
                 TenantId = apiKey.TenantId,
+                RequestsPerMinute = apiKey.RequestsPerMinute,
+                BurstLimit = apiKey.BurstLimit,
                 AssignedClaims = apiKey.GetAccessClaims().Select(ClaimDetails.FromModel).ToList()
             };
 
@@ -143,6 +166,10 @@ public class CreateApiKey : IEndpoint
         public DateTime? ExpirationDate { get; init; }
 
         public string? TenantId { get; init; }
+
+        public int RequestsPerMinute { get; init; }
+
+        public int BurstLimit { get; init; }
 
         public required IReadOnlyList<ClaimDetails> AssignedClaims { get; init; }
     }

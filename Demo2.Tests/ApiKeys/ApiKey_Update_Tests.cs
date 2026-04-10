@@ -1,3 +1,4 @@
+using System.Net;
 using Demo2;
 using Demo2.Tests;
 using rbkApiModules.Identity.Core;
@@ -302,6 +303,91 @@ public class ApiKey_Update_Tests
         response.ShouldBeSuccess(out var result);
 
         result.IsActive.ShouldBeTrue();
+    }
+
+    [Test, NotInParallel(Order = 13)]
+    public async Task Update_With_Explicit_Rate_Limits_Returns_And_Persists_Them()
+    {
+        var key = TestingServer.CreateContext()
+            .Set<EntityApiKey>().First(x => x.Name == "Renamed Key");
+
+        var claimId = TestingServer.CreateContext()
+            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
+
+        var request = new UpdateApiKey.Request
+        {
+            Id = key.Id,
+            Name = "Renamed Key",
+            IsActive = true,
+            ClaimIds = new List<Guid> { claimId },
+            RequestsPerMinute = 55,
+            BurstLimit = 200
+        };
+
+        var response = await TestingServer.PutAsync<ApiKeyDetails>(
+            "api/authorization/api-keys", request, "superuser");
+
+        response.ShouldBeSuccess(out var result);
+
+        result.RequestsPerMinute.ShouldBe(55);
+        result.BurstLimit.ShouldBe(200);
+
+        var dbKey = TestingServer.CreateContext().Set<EntityApiKey>().Find(key.Id);
+        dbKey!.RequestsPerMinute.ShouldBe(55);
+        dbKey.BurstLimit.ShouldBe(200);
+    }
+
+    [Test, NotInParallel(Order = 14)]
+    public async Task Update_Returns_400_When_Burst_Limit_Less_Than_Requests_Per_Minute()
+    {
+        var key = TestingServer.CreateContext()
+            .Set<EntityApiKey>().First(x => x.Name == "Renamed Key");
+
+        var claimId = TestingServer.CreateContext()
+            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
+
+        var request = new UpdateApiKey.Request
+        {
+            Id = key.Id,
+            Name = "Renamed Key",
+            IsActive = true,
+            ClaimIds = new List<Guid> { claimId },
+            RequestsPerMinute = 80,
+            BurstLimit = 40
+        };
+
+        var response = await TestingServer.PutAsync<ApiKeyDetails>(
+            "api/authorization/api-keys", request, "superuser");
+
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Burst limit must be greater than or equal to requests per minute.");
+    }
+
+    [Test, NotInParallel(Order = 15)]
+    public async Task Update_With_Only_Requests_Per_Minute_Keeps_Burst_When_Still_Valid()
+    {
+        var key = TestingServer.CreateContext()
+            .Set<EntityApiKey>().First(x => x.Name == "Renamed Key");
+
+        var claimId = TestingServer.CreateContext()
+            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
+
+        var request = new UpdateApiKey.Request
+        {
+            Id = key.Id,
+            Name = "Renamed Key",
+            IsActive = true,
+            ClaimIds = new List<Guid> { claimId },
+            RequestsPerMinute = 60,
+            BurstLimit = null
+        };
+
+        var response = await TestingServer.PutAsync<ApiKeyDetails>(
+            "api/authorization/api-keys", request, "superuser");
+
+        response.ShouldBeSuccess(out var result);
+
+        result.RequestsPerMinute.ShouldBe(60);
+        result.BurstLimit.ShouldBe(200);
     }
 
     [Test, NotInParallel(Order = 99)]

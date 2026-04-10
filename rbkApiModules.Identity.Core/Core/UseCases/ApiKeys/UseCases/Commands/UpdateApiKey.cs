@@ -27,6 +27,10 @@ public class UpdateApiKey : IEndpoint
 
         public bool IsActive { get; set; }
 
+        public int? RequestsPerMinute { get; set; }
+
+        public int? BurstLimit { get; set; }
+
         public required IReadOnlyList<Guid> ClaimIds { get; set; }
     }
 
@@ -94,6 +98,24 @@ public class UpdateApiKey : IEndpoint
             entity.SetName(request.Name);
             entity.SetExpirationDate(request.ExpirationDate);
             entity.SetIsActive(request.IsActive);
+
+            if (request.RequestsPerMinute.HasValue || request.BurstLimit.HasValue)
+            {
+                var requestsPerMinute = request.RequestsPerMinute ?? entity.RequestsPerMinute;
+                var burstLimit = request.BurstLimit ?? entity.BurstLimit;
+
+                if (requestsPerMinute < ApiKey.MinRequestsPerMinute || requestsPerMinute > ApiKey.MaxRequestsPerMinute)
+                {
+                    return CommandResponse.Failure($"Requests per minute must be between {ApiKey.MinRequestsPerMinute} and {ApiKey.MaxRequestsPerMinute}.");
+                }
+
+                if (burstLimit < requestsPerMinute)
+                {
+                    return CommandResponse.Failure("Burst limit must be greater than or equal to requests per minute.");
+                }
+
+                entity.SetRateLimits(requestsPerMinute, burstLimit);
+            }
 
             entity.ReplaceClaims(claims);
 

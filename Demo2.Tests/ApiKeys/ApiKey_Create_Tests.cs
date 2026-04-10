@@ -1,3 +1,4 @@
+using System.Net;
 using Demo2;
 using Demo2.Tests;
 using rbkApiModules.Identity.Core;
@@ -133,6 +134,8 @@ public class ApiKey_Create_Tests
         result.AssignedClaims.Count.ShouldBe(1);
         result.AssignedClaims[0].Identification.ShouldBe("DEMO2_INTEGRATION");
         result.AssignedClaims[0].AllowApiKeyUsage.ShouldBeTrue();
+        result.RequestsPerMinute.ShouldBe(600);
+        result.BurstLimit.ShouldBe(600);
 
         var dbKey = TestingServer.CreateContext()
             .Set<EntityApiKey>().Find(result.Id);
@@ -145,6 +148,8 @@ public class ApiKey_Create_Tests
         dbKey.LastUsedAt.ShouldBeNull();
         dbKey.RevokeDate.ShouldBeNull();
         dbKey.RevokeReason.ShouldBeNull();
+        dbKey.RequestsPerMinute.ShouldBe(600);
+        dbKey.BurstLimit.ShouldBe(600);
     }
 
     [Test, NotInParallel(Order = 8)]
@@ -314,6 +319,77 @@ public class ApiKey_Create_Tests
 
         response.ShouldBeSuccess(out var result);
         result.TenantId.ShouldBe("UN-BS");
+    }
+
+    [Test, NotInParallel(Order = 17)]
+    public async Task Create_With_Explicit_Rate_Limits_Returns_And_Persists_Them()
+    {
+        var claimId = TestingServer.CreateContext()
+            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
+
+        var request = new CreateApiKey.Request
+        {
+            Name = "Explicit rate limits key",
+            TenantId = null,
+            ClaimIds = new List<Guid> { claimId },
+            RequestsPerMinute = 42,
+            BurstLimit = 120
+        };
+
+        var response = await TestingServer.PostAsync<CreateApiKey.Result>(
+            "api/authorization/api-keys", request, "superuser");
+
+        response.ShouldBeSuccess(out var result);
+
+        result.RequestsPerMinute.ShouldBe(42);
+        result.BurstLimit.ShouldBe(120);
+
+        var dbKey = TestingServer.CreateContext().Set<EntityApiKey>().Find(result.Id);
+        dbKey.ShouldNotBeNull();
+        dbKey!.RequestsPerMinute.ShouldBe(42);
+        dbKey.BurstLimit.ShouldBe(120);
+    }
+
+    [Test, NotInParallel(Order = 18)]
+    public async Task Create_Returns_400_When_Burst_Limit_Less_Than_Requests_Per_Minute()
+    {
+        var claimId = TestingServer.CreateContext()
+            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
+
+        var request = new CreateApiKey.Request
+        {
+            Name = "Invalid burst key",
+            TenantId = null,
+            ClaimIds = new List<Guid> { claimId },
+            RequestsPerMinute = 100,
+            BurstLimit = 50
+        };
+
+        var response = await TestingServer.PostAsync<CreateApiKey.Result>(
+            "api/authorization/api-keys", request, "superuser");
+
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, "Burst limit must be greater than or equal to requests per minute.");
+    }
+
+    [Test, NotInParallel(Order = 19)]
+    public async Task Create_Returns_400_When_Requests_Per_Minute_Out_Of_Range()
+    {
+        var claimId = TestingServer.CreateContext()
+            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
+
+        var request = new CreateApiKey.Request
+        {
+            Name = "Invalid rpm key",
+            TenantId = null,
+            ClaimIds = new List<Guid> { claimId },
+            RequestsPerMinute = 0,
+            BurstLimit = 1
+        };
+
+        var response = await TestingServer.PostAsync<CreateApiKey.Result>(
+            "api/authorization/api-keys", request, "superuser");
+
+        response.ShouldHaveErrors(HttpStatusCode.BadRequest, $"Requests per minute must be between {EntityApiKey.MinRequestsPerMinute} and {EntityApiKey.MaxRequestsPerMinute}.");
     }
 
     [Test, NotInParallel(Order = 99)]

@@ -196,6 +196,9 @@ public sealed class RbkBuiltInApiKeyOptions
 {
     public TimeSpan CacheAbsoluteExpiration { get; set; } = TimeSpan.FromMinutes(10);
 
+    /// <summary>
+    /// Default <see cref="ApiKey.RequestsPerMinute"/> for new keys when the client omits it, and fallback rate for unknown/disabled/expired keys (still partitioned per key hash).
+    /// </summary>
     public int RequestsPerMinute { get; set; } = 600;
 
     public TimeSpan LastUsedUpdateMinInterval { get; set; } = TimeSpan.FromMinutes(2);

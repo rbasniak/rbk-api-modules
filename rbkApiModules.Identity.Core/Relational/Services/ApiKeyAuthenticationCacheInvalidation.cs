@@ -20,5 +20,6 @@ public sealed class ApiKeyAuthenticationCacheInvalidation : IApiKeyAuthenticatio
         }
 
         _memoryCache.Remove(ApiKeyCacheKeys.AuthenticationEntry(keyHash));
+        _memoryCache.Remove(ApiKeyCacheKeys.RateLimitPolicy(keyHash));
     }
 }

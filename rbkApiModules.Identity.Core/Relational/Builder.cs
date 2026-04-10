@@ -41,6 +41,7 @@ public static class Builder
 
         if (authenticationOptions._addApiKeyAuthentication)
         {
+            app.UseMiddleware<ApiKeyRateLimitPolicyMiddleware>();
             app.UseRateLimiter();
         }
 
