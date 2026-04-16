@@ -1,0 +1,90 @@
+name: Publish Analysers to NuGet
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_bump:
+        description: 'Version segment to bump'
+        required: false
+        default: 'minor'
+        type: choice
+        options:
+          - major
+          - minor
+          - patch
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Bump version in Analysers.Package.csproj
+        id: bump
+        shell: pwsh
+        run: |
+          $file = "rbkApiModules.Analysers/rbkApiModules.Analysers.Package/rbkApiModules.Analysers.Package.csproj"
+          $content = Get-Content $file -Raw
+
+          if ($content -match '<PackageVersion>(\d+)\.(\d+)\.(\d+)(\.(\d+))?</PackageVersion>') {
+            [int]$major    = $Matches[1]
+            [int]$minor    = $Matches[2]
+            [int]$patch    = $Matches[3]
+            $revision      = $Matches[5]
+
+            switch ("${{ inputs.version_bump }}") {
+              'major' { $major++; $minor = 0; $patch = 0 }
+              'minor' { $minor++; $patch = 0 }
+              'patch' { $patch++ }
+            }
+
+            $newVersion = if ($revision -ne $null -and $revision -ne '') {
+              "$major.$minor.$patch.$revision"
+            } else {
+              "$major.$minor.$patch"
+            }
+
+            $newContent = $content -replace '<PackageVersion>[\d.]+</PackageVersion>', "<PackageVersion>$newVersion</PackageVersion>"
+            Set-Content $file $newContent -NoNewline
+
+            Write-Host "Version bumped to $newVersion"
+            echo "version=$newVersion" >> $env:GITHUB_OUTPUT
+          } else {
+            Write-Error "Could not find <PackageVersion> tag in Analysers.Package.csproj"
+            exit 1
+          }
+
+      - name: Restore
+        run: dotnet restore rbkApiModules.Analysers/rbkApiModules.Analysers.Package/rbkApiModules.Analysers.Package.csproj
+
+      - name: Build
+        run: dotnet build rbkApiModules.Analysers/rbkApiModules.Analysers.Package/rbkApiModules.Analysers.Package.csproj --configuration Release --no-restore
+
+      - name: Pack
+        run: dotnet pack rbkApiModules.Analysers/rbkApiModules.Analysers.Package/rbkApiModules.Analysers.Package.csproj --configuration Release --no-build --output ./artifacts
+
+      - name: Push package to NuGet
+        run: |
+          dotnet nuget push ./artifacts/*.nupkg \
+            --api-key ${{ secrets.NUGET_API_KEY }} \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate
+
+      - name: Commit version bump
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add rbkApiModules.Analysers/rbkApiModules.Analysers.Package/rbkApiModules.Analysers.Package.csproj
+          git commit -m "chore: bump analysers version to ${{ steps.bump.outputs.version }}"
+          git push
