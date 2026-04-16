@@ -2,6 +2,12 @@
 
 namespace rbkApiModules.Commons.Core;
 
+/// <summary>
+/// Base class for tenant-scoped entities.
+/// TenantId is nullable to support hybrid entities that can be either tenant-specific
+/// or application-wide (global). Examples: Role and ApiKey can belong to a specific tenant
+/// or be shared across all tenants when TenantId is null.
+/// </summary>
 public abstract class TenantEntity : AggregateRoot
 {
     private string? _tenantId;
@@ -11,7 +17,6 @@ public abstract class TenantEntity : AggregateRoot
 
     }
 
-    // TODO: Estava dando problema no SetupTenant quando o tenantId nao era nulavel. Tem que descobrir e corrigir isso
     [MaxLength(255)]
     public string? TenantId
     {

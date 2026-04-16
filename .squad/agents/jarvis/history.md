@@ -50,3 +50,117 @@
 - `required` keyword — Not used, could enforce mandatory properties at compile-time
 - `init`-only setters — Limited use, could improve immutability
 - `ArgumentNullException.ThrowIfNull()` — Only 2 uses, should be everywhere (C# 11+)
+
+---
+
+### Tenant Query Filter Security Investigation (2026-04-16)
+
+**Investigated:** Multi-tenancy isolation implementation in rbkApiModules.Commons.Core
+
+**Key Findings:**
+
+1. **Class Hierarchy:**
+   - `BaseEntity` (Guid Id, no tenant awareness)
+   - `AggregateRoot : BaseEntity` (domain events)
+   - `TenantEntity : AggregateRoot` (nullable TenantId: string?)
+
+2. **Current Tenant System:**
+   - TenantId is **nullable** (`string?`) with TODO comment about non-nullable issues
+   - `SetupTenants()` extension creates FK relationships to Tenant table
+   - **NO global query filters exist** — developers must manually add `.Where(x => x.TenantId == tenant)` to every query
+   - **SECURITY RISK:** One forgotten `.Where()` clause = cross-tenant data leakage
+
+3. **Entity Usage Patterns:**
+   - **TenantEntity descendants:** User, Role (hybrid), Post, Blog, Plant
+   - **BaseEntity only:** ApiKey (has its own TenantId property!), Claim (global)
+   - **No base class:** Tenant (master table)
+
+4. **Why TenantId is Nullable:**
+   - Role is designed to be tenant-scoped OR application-wide (`IsApplicationWide` property)
+   - Application-wide roles have `TenantId = null`
+   - Non-nullable TenantId broke SetupTenants() FK constraints (root cause never fixed)
+
+5. **Architectural Gap:**
+   - No distinction between "must be tenant-scoped" vs "can be global" vs "always global"
+   - All manual filtering in queries (50+ instances of `.Where(x => x.TenantId == tenant)`)
+   - No compile-time enforcement
+   - No automatic query filters
+
+**Proposed Solution (Option 4 + 1):**
+- Create three base classes:
+  - `TenantEntity` (required TenantId) — for User, Post, Blog, Plant
+  - `GlobalEntity` (no TenantId) — for Claim
+  - `ScopedEntity` (optional TenantId) — for Role, ApiKey (hybrid)
+- Add `modelBuilder.ApplyRbkTenantQueryFilters(IHttpContextAccessor)` extension
+- Automatic query filtering based on base class type
+- Deprecation path: v1.x adds new classes, v2.0 migrates entities
+
+**Alternative Options Considered:**
+- Option 1: Query filter extension only (doesn't fix architectural confusion)
+- Option 2: SaveChanges override (only protects writes, not reads)
+- Option 3: Non-nullable TenantId (too breaking, doesn't handle hybrid entities)
+
+**Impact:** HIGH security concern, URGENT priority per decisions.md
+
+**Effort:** 4-5 days for full solution (design + implementation + migration + testing + docs)
+
+**Next Steps:** Awaiting Rodrigo's decision on:
+1. Accept breaking change in v2.0?
+2. Keep hybrid entity pattern (ScopedEntity) or force all tenant-scoped?
+3. Query filter opt-in vs automatic?
+4. Timeline (quick fix vs proper fix)
+
+---
+
+### Tenant Query Filter — Revised Plan (2026-04-16)
+
+**Investigated:** Re-evaluation based on Rodrigo's answers to clarifying questions
+
+**Rodrigo's Constraints:**
+1. ✅ Hybrid entities (Role, ApiKey with nullable TenantId) are INTENTIONAL — not a bug
+2. ✅ Query filter must be opt-in with per-entity configurability (TenantOnly, TenantOrGlobal, Unfiltered)
+3. ✅ Breaking changes in one go — no [Obsolete] markers, no migration guides
+4. ❌ Skeptical about GlobalEntity/ScopedEntity base classes — asked for re-evaluation
+
+**Key Insight:**
+The current `TenantEntity` with nullable `TenantId` is ALREADY CORRECT. The TODO comment is misleading — it's not about a design flaw, it's about an FK constraint issue when TenantId was non-nullable. The root cause: SetupTenants() creates FK to Tenant table without `.IsRequired(false)`, which breaks when Role or ApiKey use null for global entities.
+
+**Revised Solution (No New Base Classes):**
+- ✅ Keep TenantEntity with nullable TenantId (correct as-is)
+- ✅ Make ApiKey inherit TenantEntity (consistency + eliminate duplicate TenantId property)
+- ✅ Add `modelBuilder.ApplyRbkTenantQueryFilters(tenantProvider, config => {...})` extension
+- ✅ Per-entity filter modes: TenantOnly, TenantOrGlobal, Unfiltered
+- ✅ Fix SetupTenants() to add `.IsRequired(false)` on FK relationship
+- ✅ Replace TODO with clear XML documentation
+
+**Why No New Base Classes:**
+- TenantEntity already handles all cases via nullable TenantId
+- Entities enforce tenant-scoped vs hybrid in their constructors (User requires tenant, Role accepts null)
+- Adding GlobalEntity/ScopedEntity would add complexity without solving a real problem
+- The gap is query filtering, not the entity hierarchy
+
+**API Surface:**
+```csharp
+modelBuilder.ApplyRbkTenantQueryFilters(_tenantProvider, config =>
+{
+    config.FilterByTenantOnly<User>();        // WHERE TenantId = @current
+    config.FilterByTenantOrGlobal<Role>();    // WHERE TenantId = @current OR TenantId IS NULL
+    config.FilterByTenantOrGlobal<ApiKey>();  // Same as Role
+    config.NoFilter<Claim>();                 // No filter
+});
+```
+
+**Breaking Changes:**
+- ApiKey inheritance change: `BaseEntity` → `TenantEntity` (removes duplicate TenantId property)
+- Consumers must add ITenantProvider to DbContext constructor if they want query filters
+- Database schema unchanged (ApiKey.TenantId column already exists)
+
+**Effort:** 1 day (implementation + testing)
+
+**Status:** Awaiting Rodrigo's approval of tenant-plan-v2.md
+
+**Open Questions for Rodrigo:**
+1. Should ITenantProvider be auto-registered in AddRbkAuthentication() or manual registration?
+2. Should Demo projects include query filter examples?
+
+**Recommendation:** APPROVE. This is the minimal correct fix. Query filters solve the security issue, ApiKey consistency fix is clean, no unnecessary architectural changes.

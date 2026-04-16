@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace rbkApiModules.Identity.Core;
 
-public sealed class ApiKey : BaseEntity
+public sealed class ApiKey : TenantEntity
 {
     public const int MinRequestsPerMinute = 1;
 
@@ -37,7 +37,7 @@ public sealed class ApiKey : BaseEntity
         Name = name;
         KeyHash = keyHash;
         KeyPrefix = keyPrefix;
-        TenantId = NormalizeTenantId(tenantId);
+        TenantId = tenantId;
         ExpirationDate = expirationDate;
         IsActive = true;
         CreatedAt = DateTime.UtcNow;
@@ -62,9 +62,6 @@ public sealed class ApiKey : BaseEntity
     public DateTime CreatedAt { get; private set; }
 
     public DateTime? LastUsedAt { get; private set; }
-
-    [MaxLength(255)]
-    public string? TenantId { get; private set; }
 
     public DateTime? RevokeDate { get; private set; }
 
@@ -173,16 +170,6 @@ public sealed class ApiKey : BaseEntity
         IsActive = false;
         RevokeDate = DateTime.UtcNow;
         RevokeReason = reason.Trim();
-    }
-
-    private static string? NormalizeTenantId(string? tenantId)
-    {
-        if (string.IsNullOrEmpty(tenantId))
-        {
-            return null;
-        }
-
-        return tenantId.ToUpperInvariant();
     }
 
     private static void ValidateRateLimits(int requestsPerMinute, int burstLimit)

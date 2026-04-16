@@ -8,9 +8,12 @@ namespace Demo2;
 
 public class DatabaseContext : DbContext
 {
-    public DatabaseContext(DbContextOptions<DatabaseContext> options)
+    private readonly ITenantProvider _tenantProvider;
+
+    public DatabaseContext(DbContextOptions<DatabaseContext> options, ITenantProvider tenantProvider)
         : base(options)
     {
+        _tenantProvider = tenantProvider ?? throw new ArgumentNullException(nameof(tenantProvider));
     }
 
     public DbSet<User> Users { get; set; }
@@ -33,6 +36,15 @@ public class DatabaseContext : DbContext
 
         modelBuilder.AddJsonFields();
         modelBuilder.SetupTenants();
+
+        modelBuilder.ApplyRbkTenantQueryFilters(_tenantProvider, config =>
+        {
+            config.FilterByTenantOnly<User>();
+            config.FilterByTenantOrGlobal<Role>();
+            config.FilterByTenantOrGlobal<ApiKey>();
+            config.NoFilter<Claim>();
+            config.NoFilter<Tenant>();
+        });
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)

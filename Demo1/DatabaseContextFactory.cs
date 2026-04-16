@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using rbkApiModules.Identity.Core;
 
 namespace Demo1;
 
@@ -20,6 +21,12 @@ public class DatabaseContextFactory : IDesignTimeDbContextFactory<DatabaseContex
             .EnableDetailedErrors()
             .EnableSensitiveDataLogging();
 
-        return new DatabaseContext(optionsBuilder.Options);
+        // Design-time factory doesn't have HTTP context - use null provider
+        return new DatabaseContext(optionsBuilder.Options, new DesignTimeTenantProvider());
+    }
+
+    private class DesignTimeTenantProvider : ITenantProvider
+    {
+        public string? CurrentTenantId => null;
     }
 }

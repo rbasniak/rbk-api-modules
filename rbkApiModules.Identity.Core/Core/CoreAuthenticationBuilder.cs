@@ -23,6 +23,10 @@ public static class CoreAuthenticationBuilder
         services.AddSingleton(authenticationOptions);
         services.AddSingleton<IOptions<RbkAuthenticationOptions>>(new OptionsWrapper<RbkAuthenticationOptions>(authenticationOptions));
 
+        // Register tenant provider for query filters
+        services.AddHttpContextAccessor();
+        services.AddScoped<ITenantProvider, HttpContextTenantProvider>();
+
         var serviceProvider = services.BuildServiceProvider();
         var configuration = serviceProvider.GetService<IConfiguration>();
 
