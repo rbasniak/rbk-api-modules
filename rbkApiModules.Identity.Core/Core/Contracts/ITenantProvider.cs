@@ -4,7 +4,7 @@ namespace rbkApiModules.Identity.Core;
 /// Provides the current tenant identifier for query filter resolution.
 /// Resolved automatically from HttpContext JWT claims by the library.
 /// </summary>
-internal interface ITenantProvider
+public interface ITenantProvider
 {
     /// <summary>
     /// Gets the current tenant ID. Returns null if no tenant context (unauthenticated or global context).
