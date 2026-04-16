@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
-using rbkApiModules.Identity.Core;
 
 namespace Demo1;
 
@@ -21,12 +21,12 @@ public class DatabaseContextFactory : IDesignTimeDbContextFactory<DatabaseContex
             .EnableDetailedErrors()
             .EnableSensitiveDataLogging();
 
-        // Design-time factory doesn't have HTTP context - use null provider
-        return new DatabaseContext(optionsBuilder.Options, new DesignTimeTenantProvider());
+        // Design-time factory has no HTTP context; tenant filter returns null (all rows visible for migrations)
+        return new DatabaseContext(optionsBuilder.Options, new NullHttpContextAccessor());
     }
 
-    private class DesignTimeTenantProvider : ITenantProvider
+    private class NullHttpContextAccessor : IHttpContextAccessor
     {
-        public string? CurrentTenantId => null;
+        public HttpContext? HttpContext { get; set; } = null;
     }
 }

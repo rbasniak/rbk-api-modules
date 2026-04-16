@@ -15,8 +15,7 @@ using rbkApiModules.Commons.Core.Authentication;
 using rbkApiModules.Identity.Core;
 using rbkApiModules.Identity.Relational;
 
-[assembly: InternalsVisibleTo("Demo1")]
-[assembly: InternalsVisibleTo("Demo2")]
+
 
 namespace Microsoft.Extensions.DependencyInjection;
 

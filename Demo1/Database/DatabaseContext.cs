@@ -1,9 +1,9 @@
 using Demo1.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Authentication;
 using rbkApiModules.Commons.Relational;
 using rbkApiModules.Identity;
-using rbkApiModules.Identity.Core;
 
 namespace Demo1;
 
@@ -11,11 +11,11 @@ public class DatabaseContext : DbContext
 {
     private readonly Func<string?> _tenantIdProvider;
 
-    internal DatabaseContext(DbContextOptions<DatabaseContext> options, ITenantProvider tenantProvider)
+    public DatabaseContext(DbContextOptions<DatabaseContext> options, IHttpContextAccessor httpContextAccessor)
         : base(options)
     {
-        ArgumentNullException.ThrowIfNull(tenantProvider);
-        _tenantIdProvider = () => tenantProvider.CurrentTenantId;
+        ArgumentNullException.ThrowIfNull(httpContextAccessor);
+        _tenantIdProvider = () => httpContextAccessor.HttpContext?.User.FindFirst("tenant")?.Value?.ToUpperInvariant();
     }
 
     public DbSet<User> Users { get; set; }
