@@ -40,7 +40,273 @@ Restructured rbkApiModules documentation from single lengthy README to a hub-and
 
 **Gaps for future documentation:** Messaging.Core, UI Definitions, Application Options, Database seeding, Email handler, File storage, Localization, Complete endpoint API reference, IEndpoint pattern.
 
+---
+
+## Architectural Decisions — Phase 2 Review (2026-04-16)
+**Status:** PENDING FURY APPROVAL  
+**From:** Stark (Architect), Jarvis (Backend Developer)  
+**Review Needed By:** Fury (Tech Lead)
+
+### 1. 🔴 Create rbkApiModules.Commons.Relational Package (BREAKING CHANGE)
+**Severity:** HIGH — Dependency Graph Violation  
+**Decision Needed:** Fury approval for breaking change
+
+**Issue:**
+- `rbkApiModules.Commons.Core` currently contains EF Core dependencies and implementations
+- Violates the Core/Relational separation pattern successfully used in Identity package
+- Namespace `rbkApiModules.Commons.Relational` already exists in codebase but no corresponding package
+- 30+ files in Commons.Core use `namespace rbkApiModules.Commons.Relational`
+- Forces all consumers to take EF Core dependency even if using pure CQRS/messaging
+
+**Proposed Solution:**
+Create new package `rbkApiModules.Commons.Relational` and move:
+- All `Database\**` folders (DbContext extensions, seed manager, converters, interceptors)
+- All files with `namespace rbkApiModules.Commons.Relational`
+- EF Core package references
+
+**Migration Path for Consumers:**
+```
+Added: <PackageReference Include="rbkApiModules.Commons.Relational" />
+```
+
+**Effort:** 3-5 days (Jarvis)  
+**Breaking Change:** YES — requires consumers to add new package reference  
+**Status:** ⏳ AWAITING DECISION
+
+---
+
+### 2. 🔴 Fix Tenant Query Filter Security Bug (URGENT)
+**Severity:** HIGH — Security Concern  
+**Decision Needed:** Investigation priority and approach
+
+**Issue:**
+In `rbkApiModules.Commons.Core\Abstractions\TenantEntity.cs:14`:
+```csharp
+// TODO: Estava dando problema no SetupTenant quando o tenantId nao era nulavel. 
+// Tem que descobrir e corrigir isso
+```
+Translation: "Was having issues with SetupTenant when tenantId was not nullable. Need to find and fix this."
+
+**Impact:**
+- Suggests known bug with multi-tenant isolation
+- Potential tenant data leakage if non-nullable TenantId causes query filter bypass
+- No global query filter helper provided — consumers must manually apply filters (high risk)
+
+**Proposed Solution:**
+1. Investigate the original bug with non-nullable TenantId
+2. Provide `modelBuilder.ApplyTenantQueryFilters()` extension
+3. Document tenant isolation setup in README
+4. Add integration test to verify tenant isolation
+
+**Effort:** 4-8 hours (investigation + fix)  
+**Breaking Change:** NO (additive only)  
+**Status:** ⏳ AWAITING DECISION (RECOMMEND IMMEDIATE)
+
+---
+
+### 3. 🔴 Remove ServiceProvider.Build() Anti-pattern
+**Severity:** HIGH — Correctness Issue  
+**Decision Needed:** Approval for refactor
+
+**Issue:**
+In `CoreAuthenticationBuilder.cs:26`:
+```csharp
+var serviceProvider = services.BuildServiceProvider();
+var configuration = serviceProvider.GetService<IConfiguration>();
+```
+
+This anti-pattern:
+- Creates disposed scope risk
+- Impacts performance
+- Violates ASP.NET Core DI guidelines
+
+**Proposed Solution:**
+Refactor to accept `IConfiguration` via options lambda (internal implementation change only)
+
+**Effort:** 2-4 hours  
+**Breaking Change:** NO (internal implementation)  
+**Status:** ⏳ AWAITING DECISION
+
+---
+
+### 4. 🟠 Dispatcher Architecture Refactoring
+**Severity:** HIGH — Code Quality  
+**Decision Needed:** Refactor approach
+
+**Issue:**
+`rbkApiModules.Commons.Core\Messaging\Dispatcher.cs` is a 438-line god class with a 235-line `SendAsync<TResponse>()` method handling validation, identity propagation, handler resolution, behavior pipeline execution, and telemetry with 5-6 levels of nesting.
+
+**Options:**
+- **A. Extract Separate Services** — Clean separation, testable, extensible (but more classes)
+- **B. Extract Private Methods** — Simpler, keeps logic together (but still large class)
+- **C. Keep As-Is** — No change risk (but maintains technical debt)
+
+**Recommendation:** **Option A** — Extract to separate services for long-term maintainability.
+
+**Decision Required:** Which approach? Timeline for refactor?  
+**Status:** ⏳ AWAITING DECISION
+
+---
+
+### 5. 🟠 CoreAuthenticationBuilder Decomposition
+**Severity:** HIGH — Code Quality  
+**Decision Needed:** Refactor approach
+
+**Issue:**
+`rbkApiModules.Identity.Core\Core\CoreAuthenticationBuilder.cs` has a single 290-line `AddRbkAuthentication()` method with 8 levels of nesting, handling JWT config, email setup, API key auth, rate limiting, and authorization. Mixing Spanish and English comments.
+
+**Options:**
+- **A. Fluent Builder Pattern** — Clean API, composable, easy to test (significant refactor, breaking change)
+- **B. Extract Static Helper Methods** — Simpler refactor, preserves existing API (somewhat monolithic)
+- **C. Separate Extension Methods** — Maximum flexibility, clean separation (breaking change)
+
+**Recommendation:** **Option B** short-term, **Option A** long-term for better API design.
+
+**Decision Required:** Which approach? Is a breaking change acceptable?  
+**Status:** ⏳ AWAITING DECISION
+
+---
+
+### 6. 🟠 ConfigureAwait Usage Policy
+**Severity:** MEDIUM — Standardization  
+**Decision Needed:** Official policy
+
+**Issue:**
+Only 5 instances of `.ConfigureAwait(false)` in entire codebase. Inconsistent usage. Library code typically should use it to avoid deadlocks in synchronous contexts.
+
+**Options:**
+- **A. Add Everywhere in Library Code** — Best practice for libraries (~200+ locations, large change)
+- **B. Don't Use** — Rely on .NET Core behavior (simpler, works in ASP.NET Core)
+- **C. Use Only in Background Services** — Targeted approach (inconsistent policy)
+
+**Recommendation:** **Option B** with documentation — .NET Core's lack of SynchronizationContext makes ConfigureAwait largely unnecessary in modern ASP.NET Core. Document this decision. Add analyzer enforcement if needed.
+
+**Decision Required:** What's the official policy? Analyzer needed?  
+**Status:** ⏳ AWAITING DECISION
+
+---
+
+### 7. 🟠 Multi-Tenancy TenantId Nullability
+**Severity:** MEDIUM — Architecture Clarity  
+**Decision Needed:** Multi-tenancy strategy
+
+**Issue:**
+`TenantEntity.TenantId` is nullable (`string?`) with unresolved TODO. Unclear multi-tenancy strategy. Nullable design allows entities without tenants (intentional?).
+
+**Options:**
+- **A. Make TenantId Required** — Clear enforcement, type safety (breaking change, need separate base for global entities)
+- **B. Create Two Base Classes** — Clear separation for global vs tenant entities (more base classes, refactor needed)
+- **C. Keep Nullable, Document** — Flexible, no breaking change (doesn't solve underlying bug)
+
+**Recommendation:** **Option B** — Clear architecture with separate base classes for global vs tenant entities.
+
+**Decision Required:** Intended multi-tenancy model? Can we make breaking change?  
+**Status:** ⏳ AWAITING DECISION
+
+---
+
+### 8. 🟠 Poison Message Handling Strategy
+**Severity:** MEDIUM — Production Reliability  
+**Decision Needed:** DLQ implementation approach
+
+**Issue:**
+`rbkApiModules.Messaging.Core\Events\Messaging\BaseIntegrationConsumer.cs` has TODO: "Poison message strategy: Record last error and implement a max-attempts policy (e.g., move to DLQ or stop retrying after N attempts)."
+
+**Impact:**
+- No retry limit on failed integration events
+- Failed messages retry indefinitely
+- No dead-letter queue (DLQ) for permanently failed messages
+- Potential for infinite retry loops
+
+**Options:**
+- **A. DLQ with Max Retries** — Industry standard, prevents infinite retries (requires schema changes)
+- **B. Simple Max Retries** — Simpler implementation (no visibility into failed messages)
+- **C. Exponential Backoff Only** — Eventually might succeed (bad messages never cleared)
+
+**Recommendation:** **Option A** — Implement proper DLQ pattern with configurable max retries (default: 5) and exponential backoff. Add dashboard/endpoint to inspect DLQ.
+
+**Decision Required:** Which strategy? Max retry count? Need DLQ visibility tools?  
+**Status:** ⏳ AWAITING DECISION
+
+---
+
+### 9. 🟠 Standardize Public API Naming
+**Severity:** MEDIUM — Consistency  
+**Decision Needed:** Naming convention
+
+**Issue:**
+- Most extensions: `AddRbk*` (e.g., `AddRbkApiCoreSetup`, `AddRbkAuthentication`)
+- Messaging: `AddMessaging` ❌ (inconsistent — missing "Rbk" prefix)
+
+**Proposed Solution:**
+Rename `AddMessaging` → `AddRbkMessaging` for consistency
+
+**Effort:** 1 hour  
+**Breaking Change:** YES (minor — method rename)  
+**Status:** ⏳ AWAITING DECISION
+
+---
+
+### 10. 🟢 Remove or Document IEndpoint Pattern
+**Severity:** LOW — Code Clarity  
+**Decision Needed:** Pattern fate
+
+**Issue:**
+In `rbkApiModules.Commons.Core\Abstractions\IEndpoint.cs:5`:
+```csharp
+// TODO: remove, don't want black magic happening anymore
+public interface IEndpoint
+{
+    static abstract void MapEndpoint(IEndpointRouteBuilder endpoints);
+}
+```
+
+- Marked for removal but still in codebase
+- `EndpointAutoMapper` references it
+- Demos use direct endpoint mapping (don't use the pattern)
+
+**Options:**
+- **A.** Remove interface + EndpointAutoMapper (demos prove it's not needed)
+- **B.** Keep and document as optional pattern (remove TODO)
+
+**Effort:** 30 minutes  
+**Breaking Change:** Only if option A and someone uses it  
+**Status:** ⏳ AWAITING DECISION
+
+---
+
+### 11. 🟢 Additional Easy Wins (No Decision Required)
+**Status:** READY TO IMPLEMENT
+
+- ✅ Delete Old_Dispatcher.cs (227 lines of commented code) — Git preserves it
+- ✅ Translate Spanish comments in CoreAuthenticationBuilder to English
+- ✅ Standardize null checking pattern across codebase (C# 8+ null-coalescing)
+- ✅ Inventory and clean up 28 TODOs with context
+
+---
+
+## Decision Summary Table
+
+| # | Decision | Priority | Breaking? | Blocking? | Effort | Status |
+|---|----------|----------|-----------|-----------|--------|--------|
+| 1 | Commons.Relational package | HIGH | YES | YES | 3-5d | 🔴 URGENT |
+| 2 | Tenant query filter bug | HIGH | NO | YES | 4-8h | 🔴 URGENT |
+| 3 | ServiceProvider.Build() | HIGH | NO | NO | 2-4h | ⏳ Ready |
+| 4 | Dispatcher refactoring | HIGH | NO | NO | TBD | ⏳ Ready |
+| 5 | CoreAuthenticationBuilder | HIGH | YES | NO | TBD | ⏳ Ready |
+| 6 | ConfigureAwait policy | MEDIUM | NO | NO | Var | ⏳ Ready |
+| 7 | TenantId nullability | MEDIUM | YES | NO | TBD | ⏳ Ready |
+| 8 | Poison message handling | MEDIUM | NO | NO | 2-3d | ⏳ Ready |
+| 9 | API naming | MEDIUM | YES | NO | 1h | ⏳ Ready |
+| 10 | IEndpoint pattern | LOW | Maybe | NO | 30m | ⏳ Ready |
+
+---
+
 ## Governance
+
+- All meaningful changes require team consensus
+- Document architectural decisions here
+- Keep history focused on work, decisions focused on direction
 
 - All meaningful changes require team consensus
 - Document architectural decisions here
