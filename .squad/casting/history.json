@@ -1,0 +1,19 @@
+{
+  "assignments": [
+    {
+      "assignment_id": "rbk-api-modules-20260416",
+      "universe": "mcu",
+      "timestamp": "2026-04-16T06:43:57Z",
+      "project": "rbk-api-modules",
+      "snapshot": [
+        { "name": "Fury", "role": "Lead" },
+        { "name": "Stark", "role": "Architect" },
+        { "name": "Jarvis", "role": "Backend Developer" },
+        { "name": "Loki", "role": "Frontend Developer" },
+        { "name": "Hulk", "role": "Tester" },
+        { "name": "Wong", "role": "Documentation Writer" },
+        { "name": "Rocket", "role": "DevOps Engineer" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "universeAllowlist": ["mcu"],
+  "selectedUniverse": "mcu",
+  "maxAgents": 25,
+  "overflowStrategy": "diegetic-expansion"
+}

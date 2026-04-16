@@ -1,0 +1,76 @@
+{
+  "agents": [
+    {
+      "persistent_name": "Fury",
+      "role": "Lead",
+      "universe": "mcu",
+      "created_at": "2026-04-16T06:43:57Z",
+      "legacy_named": false,
+      "status": "active"
+    },
+    {
+      "persistent_name": "Stark",
+      "role": "Architect",
+      "universe": "mcu",
+      "created_at": "2026-04-16T06:43:57Z",
+      "legacy_named": false,
+      "status": "active"
+    },
+    {
+      "persistent_name": "Jarvis",
+      "role": "Backend Developer",
+      "universe": "mcu",
+      "created_at": "2026-04-16T06:43:57Z",
+      "legacy_named": false,
+      "status": "active"
+    },
+    {
+      "persistent_name": "Loki",
+      "role": "Frontend Developer",
+      "universe": "mcu",
+      "created_at": "2026-04-16T06:43:57Z",
+      "legacy_named": false,
+      "status": "active"
+    },
+    {
+      "persistent_name": "Hulk",
+      "role": "Tester",
+      "universe": "mcu",
+      "created_at": "2026-04-16T06:43:57Z",
+      "legacy_named": false,
+      "status": "active"
+    },
+    {
+      "persistent_name": "Wong",
+      "role": "Documentation Writer",
+      "universe": "mcu",
+      "created_at": "2026-04-16T06:43:57Z",
+      "legacy_named": false,
+      "status": "active"
+    },
+    {
+      "persistent_name": "Rocket",
+      "role": "DevOps Engineer",
+      "universe": "mcu",
+      "created_at": "2026-04-16T06:43:57Z",
+      "legacy_named": false,
+      "status": "active"
+    },
+    {
+      "persistent_name": "Scribe",
+      "role": "Session Logger",
+      "universe": "exempt",
+      "created_at": "2026-04-16T06:43:57Z",
+      "legacy_named": false,
+      "status": "active"
+    },
+    {
+      "persistent_name": "Ralph",
+      "role": "Work Monitor",
+      "universe": "exempt",
+      "created_at": "2026-04-16T06:43:57Z",
+      "legacy_named": false,
+      "status": "active"
+    }
+  ]
+}
