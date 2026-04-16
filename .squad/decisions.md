@@ -63,11 +63,12 @@ The namespace strings in some files still reference `.Relational` namespaces (le
 
 ---
 
-### 2. 🔴 Fix Tenant Query Filter Security Bug (URGENT)
+### 2. ✅ Fix Tenant Query Filter Security Bug (URGENT)
 **Severity:** HIGH — Security Concern  
-**Decision Needed:** Investigation priority and approach
+**Status:** ✅ IMPLEMENTED (2026-04-16)  
+**Implemented By:** Jarvis  
 
-**Issue:**
+**Issue (Original):**
 In `rbkApiModules.Commons.Core\Abstractions\TenantEntity.cs:14`:
 ```csharp
 // TODO: Estava dando problema no SetupTenant quando o tenantId nao era nulavel. 
@@ -75,20 +76,54 @@ In `rbkApiModules.Commons.Core\Abstractions\TenantEntity.cs:14`:
 ```
 Translation: "Was having issues with SetupTenant when tenantId was not nullable. Need to find and fix this."
 
-**Impact:**
-- Suggests known bug with multi-tenant isolation
-- Potential tenant data leakage if non-nullable TenantId causes query filter bypass
-- No global query filter helper provided — consumers must manually apply filters (high risk)
+**Root Cause Identified:**
+- `TenantEntity.TenantId` is nullable by design to support "hybrid" entities (Role, ApiKey) that can be either tenant-scoped OR application-wide
+- SetupTenants() created FK constraint without `.IsRequired(false)`, breaking when hybrid entities used null
+- No automatic query filters existed — all tenant filtering relied on manual `.Where()` clauses in queries
 
-**Proposed Solution:**
-1. Investigate the original bug with non-nullable TenantId
-2. Provide `modelBuilder.ApplyTenantQueryFilters()` extension
-3. Document tenant isolation setup in README
-4. Add integration test to verify tenant isolation
+**Solution Implemented:**
 
-**Effort:** 4-8 hours (investigation + fix)  
-**Breaking Change:** NO (additive only)  
-**Status:** ⏳ AWAITING DECISION (RECOMMEND IMMEDIATE)
+1. **OptIn Query Filters** — `modelBuilder.ApplyRbkTenantQueryFilters()` extension
+   - Per-entity filter modes: TenantOnly, TenantOrGlobal, NoFilter
+   - Expression tree pattern for dynamic tenant provider access
+   - Closed tenant isolation gap (automatic filtering vs manual `.Where()` clauses)
+
+2. **Tenant Provider Infrastructure**
+   - `ITenantProvider` public interface (required for public API)
+   - `HttpContextTenantProvider` internal sealed implementation
+   - Auto-registered in `AddRbkAuthentication()` as scoped service
+   - Extracts tenant from JWT "tenant" claim
+
+3. **SetupTenants() Fix**
+   - Added `.IsRequired(false)` to FK relationship
+   - Enables hybrid entities (Role, ApiKey) to use null for global scope
+
+4. **ApiKey Consistency**
+   - Changed base class from `BaseEntity` to `TenantEntity`
+   - Removed duplicate `TenantId` property
+
+5. **Documentation**
+   - Removed misleading TODO comment from TenantEntity
+   - Added XML documentation explaining nullable TenantId design pattern
+   - Reference implementations in Demo1 and Demo2
+
+**Breaking Changes:**
+- ApiKey base class change: `BaseEntity` → `TenantEntity`
+- DbContext constructor requires ITenantProvider parameter if using query filters
+- EF migration design-time factories must provide ITenantProvider stub
+
+**Build Status:** ✅ Succeeded (commit da190b6d)
+
+**Consumer Guidance:**
+- Optional: Call `modelBuilder.ApplyRbkTenantQueryFilters()` in OnModelCreating()
+- Per-entity: Configure filter mode (TenantOnly, TenantOrGlobal, NoFilter)
+- Breaking: Update ApiKey EF config if present (remove duplicate TenantId config)
+
+**Architectural Decisions Captured:**
+- ✅ Hybrid entities (Role, ApiKey with nullable TenantId) are intentional — not a bug
+- ✅ Query filters are opt-in with per-entity configurability
+- ✅ Breaking changes always done in one go (no [Obsolete] markers)
+- ✅ ITenantProvider is library-internal — no consumer replacement
 
 ---
 
@@ -278,15 +313,49 @@ public interface IEndpoint
 | # | Decision | Priority | Breaking? | Blocking? | Effort | Status |
 |---|----------|----------|-----------|-----------|--------|--------|
 | 1 | ~~Commons.Relational package~~ | N/A | N/A | N/A | N/A | ❌ REJECTED |
-| 2 | Tenant query filter bug | HIGH | NO | YES | 4-8h | 🔴 URGENT |
+| 2 | Tenant query filter bug | HIGH | YES | NO | 1d | ✅ IMPLEMENTED |
 | 3 | ServiceProvider.Build() | HIGH | NO | NO | 2-4h | ⏳ Ready |
 | 4 | Dispatcher refactoring | HIGH | NO | NO | TBD | ⏳ Ready |
 | 5 | CoreAuthenticationBuilder | HIGH | YES | NO | TBD | ⏳ Ready |
 | 6 | ConfigureAwait policy | MEDIUM | NO | NO | Var | ⏳ Ready |
-| 7 | TenantId nullability | MEDIUM | YES | NO | TBD | ⏳ Ready |
+| 7 | TenantId nullability | MEDIUM | YES | NO | TBD | ⏳ Ready (superseded by #2) |
 | 8 | Poison message handling | MEDIUM | NO | NO | 2-3d | ⏳ Ready |
 | 9 | API naming | MEDIUM | YES | NO | 1h | ⏳ Ready |
 | 10 | IEndpoint pattern | LOW | Maybe | NO | 30m | ⏳ Ready |
+
+---
+
+## Archived Decisions (From Inbox — 2026-04-16)
+
+### Architecture Directive: No Package Split (CONFIRMED)
+**Date:** 2026-04-16  
+**Source:** Rodrigo Basniak (via Copilot)  
+
+The Commons.Core and Identity.Core packages will NOT be split into separate Core/Relational packages. The previous version of the library had this split, but it has been intentionally merged. All consumers of rbk-api-modules are assumed to use EF Core. The simplified single-package-per-domain architecture is a deliberate design decision, not technical debt.
+
+**Implications:**
+- Stark's architectural finding about "wrong package boundary" (EF Core code inside Commons.Core) is INVALID — this is by design
+- Namespace inconsistencies leftover from the old Core/Relational split are legitimate refactoring artifacts to clean up
+- The bkApiModules.Identity.Relational project referenced in old decisions does NOT exist — correct package is rbkApiModules.Identity.Core
+- Decision #1 (Commons.Relational package) is REJECTED — do not revisit
+
+### Design Pattern: Dual-Purpose Entities (CONFIRMED)
+**Date:** 2026-04-16  
+**Source:** Rodrigo Basniak (via Copilot)  
+
+Roles and ApiKeys being either tenant-scoped OR application-wide (global) is an intentional design decision, not technical debt. ScopedEntity/GlobalEntity split must not force these into one category.
+
+### Implementation Policy: One-Go Breaking Changes (CONFIRMED)
+**Date:** 2026-04-16  
+**Source:** Rodrigo Basniak (via Copilot)  
+
+When a breaking change is needed, always implement it fully in a single release. No phased deprecation paths, no [Obsolete] warnings, no v1.x → v2.0 migration plans. Consumers understand and accept breaking changes.
+
+### Infrastructure Design: ITenantProvider Auto-Registration (CONFIRMED)
+**Date:** 2026-04-16  
+**Source:** Rodrigo Basniak (via Copilot)  
+
+ITenantProvider is automatically registered by AddRbkAuthentication(). Consumers do not register it manually and custom implementations are not allowed. The HttpContextTenantProvider is the one and only implementation.
 
 ---
 

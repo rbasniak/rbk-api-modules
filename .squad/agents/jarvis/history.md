@@ -164,3 +164,84 @@ modelBuilder.ApplyRbkTenantQueryFilters(_tenantProvider, config =>
 2. Should Demo projects include query filter examples?
 
 **Recommendation:** APPROVE. This is the minimal correct fix. Query filters solve the security issue, ApiKey consistency fix is clean, no unnecessary architectural changes.
+
+---
+
+### Tenant Query Filter Implementation (2026-04-16)
+
+**Implemented:** Opt-in tenant query filters based on approved tenant-plan-v2.md
+
+**Files Changed:**
+1. **ITenantProvider interface** — `rbkApiModules.Identity.Core\Core\Contracts\ITenantProvider.cs`
+   - Public interface for tenant resolution (needed for ModelBuilder extension signature)
+   - Returns `string? CurrentTenantId` property
+   - Re-evaluated on every access (never cached)
+
+2. **HttpContextTenantProvider** — `rbkApiModules.Identity.Core\Core\Services\HttpContextTenantProvider.cs`
+   - Internal sealed implementation
+   - Extracts tenant from `HttpContext.User` claims using `JwtClaimIdentifiers.Tenant` ("tenant" claim)
+   - Uppercases tenant ID for consistency with TenantEntity behavior
+   - Returns null if HttpContext or claim not available
+
+3. **RbkTenantFilterBuilder** — `rbkApiModules.Identity.Core\Relational\Utilities\RbkTenantFilterBuilder.cs`
+   - Fluent builder for configuring EF Core query filters
+   - Three filter modes:
+     - `FilterByTenantOnly<T>()` — WHERE TenantId = CurrentTenantId (for User, Post, Blog)
+     - `FilterByTenantOrGlobal<T>()` — WHERE TenantId = CurrentTenantId OR TenantId IS NULL (for Role, ApiKey)
+     - `NoFilter<T>()` — Explicitly no filter (for Claim, Tenant)
+   - Uses Expression trees to capture ITenantProvider reference (not value) for dynamic re-evaluation
+
+4. **ModelBuilderExtensions.ApplyRbkTenantQueryFilters()** — `rbkApiModules.Identity.Core\Relational\Utilities\ModelBuilderExtensions.cs`
+   - Public extension method called in DbContext.OnModelCreating
+   - Takes ITenantProvider instance (from DI via DbContext constructor)
+   - Accepts configuration callback to define per-entity filter modes
+
+5. **ModelBuilderExtensions.SetupTenants()** — Updated
+   - Added `.IsRequired(false)` to FK relationship (fixes nullable TenantId constraint issue)
+   - Now correctly supports hybrid entities (Role, ApiKey) with null TenantId
+
+6. **ApiKey entity** — `rbkApiModules.Identity.Core\Core\Models\Entities\ApiKey.cs`
+   - Changed base class from `BaseEntity` to `TenantEntity`
+   - Removed duplicate `TenantId` property (now inherited)
+   - Removed `NormalizeTenantId()` method (TenantEntity handles uppercasing)
+   - Updated constructor to use TenantId setter from base class
+
+7. **TenantEntity documentation** — `rbkApiModules.Commons.Core\Abstractions\TenantEntity.cs`
+   - Removed Portuguese TODO comment
+   - Added XML documentation explaining nullable TenantId design (hybrid entities pattern)
+
+8. **CoreAuthenticationBuilder registration** — `rbkApiModules.Identity.Core\Core\CoreAuthenticationBuilder.cs`
+   - Auto-registers `ITenantProvider` as scoped service in `AddRbkAuthentication()`
+   - Ensures `AddHttpContextAccessor()` is called
+   - Implementation detail — consumers never manually register ITenantProvider
+
+9. **Demo1 DatabaseContext** — `Demo1\Database\DatabaseContext.cs`
+   - Added `ITenantProvider` constructor parameter
+   - Added `ApplyRbkTenantQueryFilters()` call with filters for User, Role, Post, Blog, ApiKey
+
+10. **Demo2 DatabaseContext** — `Demo2\Database\DatabaseContext.cs`
+    - Added `ITenantProvider` constructor parameter
+    - Added `ApplyRbkTenantQueryFilters()` call with filters for User, Role, ApiKey
+
+11. **Demo1 DatabaseContextFactory** — `Demo1\DatabaseContextFactory.cs`
+    - Added design-time `ITenantProvider` implementation (returns null)
+    - Required for EF Core migrations tooling
+
+**Patterns Used:**
+- Claim name for tenant: `JwtClaimIdentifiers.Tenant` = "tenant"
+- Namespace conventions: `rbkApiModules.Identity.Core` for core abstractions, `rbkApiModules.Identity` for relational utilities
+- ITenantProvider is public (required for public method signature), but implementation is internal sealed
+- Expression tree pattern captures provider reference (not value) for EF Core dynamic evaluation
+
+**Build Status:** ✅ Succeeded (0 errors, 446 warnings)
+
+**Commit:** da190b6d — "feat: add opt-in tenant query filters and fix ApiKey base class"
+
+**Breaking Changes:**
+- ApiKey now inherits TenantEntity — consumers with custom EF config for ApiKey.TenantId must remove it
+- DbContext subclasses requiring query filters must add ITenantProvider to constructor (auto-resolved from DI)
+
+**Security Impact:** Closes tenant isolation gap — filters applied automatically on configured entities, manual `.Where()` clauses no longer required
+
+**Next Steps:** Update consumer projects to add `ApplyRbkTenantQueryFilters()` in their DbContext if they use multi-tenancy
+

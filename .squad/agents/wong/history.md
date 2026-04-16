@@ -120,3 +120,47 @@
 5. Update `docs/Commons.Core.md` - Complete rewrite with all features
 6. Update `docs/README.md` - Update documentation index with new docs
 7. Investigate Messaging.Core - Determine if consumer-relevant, document if so
+
+---
+
+### Tenant Query Filter Consumer Documentation (2026-04-16)
+
+**Engagement:** Consumer-facing documentation for opt-in tenant query filter system
+
+**Task:** Document new ApplyRbkTenantQueryFilters() API and migration guide for existing consumers
+
+**Implementation Details to Document:**
+
+1. **OptIn Query Filters API**
+   - `modelBuilder.ApplyRbkTenantQueryFilters(tenantProvider, config => {...})`
+   - Per-entity filter modes: FilterByTenantOnly<T>(), FilterByTenantOrGlobal<T>(), NoFilter<T>()
+   - Expression tree pattern and runtime evaluation
+
+2. **ITenantProvider Dependency**
+   - Automatically registered by AddRbkAuthentication()
+   - Resolves tenant from JWT "tenant" claim
+   - Add to DbContext constructor parameter
+   - Auto-resolved from DI
+
+3. **Breaking Changes for Consumers**
+   - ApiKey base class now inherits TenantEntity (remove duplicate TenantId EF config)
+   - DbContext constructor requires ITenantProvider parameter
+   - EF migrations design-time factories need ITenantProvider stub
+
+4. **Migration Guide**
+   - How to add query filters to existing DbContext
+   - Configuration examples for multi-tenant scenarios
+   - Handling hybrid entities (Roles with both tenant-specific and global)
+
+5. **Security Best Practices**
+   - Query filters provide automatic isolation (vs manual .Where() clauses)
+   - Per-entity configuration (TenantOnly for strict, TenantOrGlobal for hybrid)
+   - Verification: use query interceptors to confirm filters applied
+
+**Documentation Structure:**
+- Add section to `docs/identity-authentication.md` — Multi-tenancy with query filters
+- Update `README.md` security section — Mention automatic tenant isolation
+- Add code examples showing Demo1/Demo2 implementations
+- Include migration path for users upgrading from v1.x
+
+**Status:** Ready to implement

@@ -70,3 +70,57 @@ Should Be:
 - Many "TODO: DONE, REVIEWED" noise comments
 - Portuguese XML doc comments in multiple files
 - `IEndpoint` marked for removal but still in use
+
+---
+
+### Tenant Query Filter Implementation Validation (2026-04-16)
+
+**Engagement:** Post-implementation architectural validation of tenant query filter system
+
+**Findings:**
+
+✅ **Architecture Validated** — The opt-in tenant query filter implementation closes the identified security gap without introducing unnecessary architectural complexity.
+
+**Key Validations:**
+
+1. **No New Base Classes** — Initial proposal to add GlobalEntity/ScopedEntity was rejected correctly. The existing TenantEntity with nullable TenantId adequately handles all entity patterns:
+   - TenantOnly entities (User, Post, Blog) — all queries filtered to current tenant
+   - Hybrid entities (Role, ApiKey) — queries filtered to current tenant OR global (null)
+   - Global entities (Claim, Tenant) — no filtering
+   - Per-entity configurability provides the control without new hierarchy
+
+2. **SetupTenants() Fix** — FK constraint now correctly marked as `.IsRequired(false)`, enabling hybrid entities to use null for global scope. This was the root cause of the original TODO.
+
+3. **ITenantProvider Design** — Correct decision to auto-register and keep internal:
+   - Public interface (required for public API)
+   - Internal sealed implementation (no consumer extensibility)
+   - Scoped lifetime (re-evaluated per request)
+   - Auto-registration (boilerplate reduction)
+
+4. **Query Filter Expression Tree Pattern** — Well-designed for EF Core:
+   - Captures provider reference (not value) for dynamic re-evaluation
+   - Supports multi-tenancy without query-time tenant parameter passing
+   - Clean separation between entity configuration and tenant resolution
+
+5. **Opt-In Design** — Correct architectural choice:
+   - Consumers explicitly enable filters per entity
+   - Per-entity filter modes provide flexibility (TenantOnly vs TenantOrGlobal)
+   - No automatic filtering surprises
+   - Parallel support for both filtered and unfiltered queries (via NoFilter mode)
+
+**Security Assessment:**
+- ✅ Closes cross-tenant data leakage risk (automatic vs manual `.Where()`)
+- ✅ No bypasses available (once configured, filtering is enforced)
+- ✅ Clear API prevents misuse (explicit configuration required)
+
+**Design Debt Resolution:**
+- ✅ TenantEntity TODO comment replaced with clear documentation
+- ✅ ApiKey base class inconsistency fixed (now inherits TenantEntity)
+- ✅ SetupTenants() constraint issue resolved
+
+**Breaking Changes Assessment:**
+- ✅ Minimal blast radius (ApiKey EF config, DbContext constructor, EF migrations)
+- ✅ One-go approach (no phased migration needed)
+- ✅ Clear migration path in documentation
+
+**Next Phase:** Documentation and consumer migration guide (tasked to Wong)
