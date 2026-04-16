@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using System.Globalization;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authorization;
@@ -13,6 +14,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using rbkApiModules.Commons.Core.Authentication;
 using rbkApiModules.Identity.Core;
 using rbkApiModules.Identity.Relational;
+
+[assembly: InternalsVisibleTo("Demo1")]
+[assembly: InternalsVisibleTo("Demo2")]
 
 namespace Microsoft.Extensions.DependencyInjection;
 

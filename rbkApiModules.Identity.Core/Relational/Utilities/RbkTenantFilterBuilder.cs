@@ -12,13 +12,13 @@ namespace rbkApiModules.Identity;
 public sealed class RbkTenantFilterBuilder
 {
     private readonly ModelBuilder _modelBuilder;
-    private readonly ITenantProvider _tenantProvider;
+    private readonly Func<string?> _tenantIdProvider;
     private readonly List<Action> _filterActions = new();
 
-    internal RbkTenantFilterBuilder(ModelBuilder modelBuilder, ITenantProvider tenantProvider)
+    internal RbkTenantFilterBuilder(ModelBuilder modelBuilder, Func<string?> tenantIdProvider)
     {
         _modelBuilder = modelBuilder ?? throw new ArgumentNullException(nameof(modelBuilder));
-        _tenantProvider = tenantProvider ?? throw new ArgumentNullException(nameof(tenantProvider));
+        _tenantIdProvider = tenantIdProvider ?? throw new ArgumentNullException(nameof(tenantIdProvider));
     }
 
     /// <summary>
@@ -32,9 +32,10 @@ public sealed class RbkTenantFilterBuilder
         {
             var parameter = Expression.Parameter(typeof(TEntity), "e");
             var tenantIdProperty = Expression.Property(parameter, nameof(TenantEntity.TenantId));
-            var providerConstant = Expression.Constant(_tenantProvider);
-            var currentTenantIdProperty = Expression.Property(providerConstant, nameof(ITenantProvider.CurrentTenantId));
-            var equalExpression = Expression.Equal(tenantIdProperty, currentTenantIdProperty);
+            var providerConstant = Expression.Constant(_tenantIdProvider);
+            var invokeMethod = typeof(Func<string?>).GetMethod("Invoke")!;
+            var currentTenantIdCall = Expression.Call(providerConstant, invokeMethod);
+            var equalExpression = Expression.Equal(tenantIdProperty, currentTenantIdCall);
             var lambda = Expression.Lambda<Func<TEntity, bool>>(equalExpression, parameter);
 
             _modelBuilder.Entity<TEntity>().HasQueryFilter(lambda);
@@ -52,11 +53,12 @@ public sealed class RbkTenantFilterBuilder
         {
             var parameter = Expression.Parameter(typeof(TEntity), "e");
             var tenantIdProperty = Expression.Property(parameter, nameof(TenantEntity.TenantId));
-            var providerConstant = Expression.Constant(_tenantProvider);
-            var currentTenantIdProperty = Expression.Property(providerConstant, nameof(ITenantProvider.CurrentTenantId));
+            var providerConstant = Expression.Constant(_tenantIdProvider);
+            var invokeMethod = typeof(Func<string?>).GetMethod("Invoke")!;
+            var currentTenantIdCall = Expression.Call(providerConstant, invokeMethod);
 
             // TenantId == CurrentTenantId OR TenantId == null
-            var tenantMatches = Expression.Equal(tenantIdProperty, currentTenantIdProperty);
+            var tenantMatches = Expression.Equal(tenantIdProperty, currentTenantIdCall);
             var isNull = Expression.Equal(tenantIdProperty, Expression.Constant(null, typeof(string)));
             var orExpression = Expression.OrElse(tenantMatches, isNull);
             var lambda = Expression.Lambda<Func<TEntity, bool>>(orExpression, parameter);

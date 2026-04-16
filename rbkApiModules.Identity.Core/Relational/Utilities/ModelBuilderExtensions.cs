@@ -45,18 +45,18 @@ public static class ModelBuilderExtensions
     /// Call after SetupTenants() in OnModelCreating.
     /// </summary>
     /// <param name="modelBuilder">The EF Core model builder.</param>
-    /// <param name="tenantProvider">The ITenantProvider instance (injected via DbContext constructor).</param>
+    /// <param name="tenantIdProvider">A function that returns the current tenant ID. Typically: () => httpContextAccessor.HttpContext?.User.FindFirst("tenant")?.Value?.ToUpperInvariant()</param>
     /// <param name="configure">Configuration callback to specify which entities get which filter mode.</param>
     public static void ApplyRbkTenantQueryFilters(
         this ModelBuilder modelBuilder,
-        ITenantProvider tenantProvider,
+        Func<string?> tenantIdProvider,
         Action<RbkTenantFilterBuilder> configure)
     {
         ArgumentNullException.ThrowIfNull(modelBuilder);
-        ArgumentNullException.ThrowIfNull(tenantProvider);
+        ArgumentNullException.ThrowIfNull(tenantIdProvider);
         ArgumentNullException.ThrowIfNull(configure);
 
-        var builder = new RbkTenantFilterBuilder(modelBuilder, tenantProvider);
+        var builder = new RbkTenantFilterBuilder(modelBuilder, tenantIdProvider);
         configure(builder);
         builder.Apply();
     }

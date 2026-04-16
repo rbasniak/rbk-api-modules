@@ -8,12 +8,13 @@ namespace Demo2;
 
 public class DatabaseContext : DbContext
 {
-    private readonly ITenantProvider _tenantProvider;
+    private readonly Func<string?> _tenantIdProvider;
 
-    public DatabaseContext(DbContextOptions<DatabaseContext> options, ITenantProvider tenantProvider)
+    internal DatabaseContext(DbContextOptions<DatabaseContext> options, ITenantProvider tenantProvider)
         : base(options)
     {
-        _tenantProvider = tenantProvider ?? throw new ArgumentNullException(nameof(tenantProvider));
+        ArgumentNullException.ThrowIfNull(tenantProvider);
+        _tenantIdProvider = () => tenantProvider.CurrentTenantId;
     }
 
     public DbSet<User> Users { get; set; }
@@ -37,7 +38,7 @@ public class DatabaseContext : DbContext
         modelBuilder.AddJsonFields();
         modelBuilder.SetupTenants();
 
-        modelBuilder.ApplyRbkTenantQueryFilters(_tenantProvider, config =>
+        modelBuilder.ApplyRbkTenantQueryFilters(_tenantIdProvider, config =>
         {
             config.FilterByTenantOnly<User>();
             config.FilterByTenantOrGlobal<Role>();
