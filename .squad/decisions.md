@@ -1,5 +1,25 @@
 # Squad Decisions
 
+---
+
+## 🔴 STANDING RULE — No Auto-Commit (Eternal, Absolute)
+
+**Set by:** Rodrigo Basniak  
+**Date:** 2026-04-16  
+**Scope:** ALL agents, ALL sessions, forever
+
+> **Agents MUST NOT run `git commit` or `git push` without explicit instruction from Rodrigo.**
+
+- Stage changes freely (`git add`) so Rodrigo can inspect the diff.
+- Show a summary of what changed and what files are staged.
+- Then **STOP and wait**. Do not commit. Do not push.
+- This applies to every agent on every task — no exceptions, no shortcuts.
+- When Rodrigo says "commit" or "go ahead and commit", proceed.
+
+**Any agent that auto-commits without being asked has violated this rule.**
+
+---
+
 ## Active Decisions
 
 ### Documentation Structure (2026-01-17)

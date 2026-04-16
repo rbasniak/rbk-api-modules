@@ -90,12 +90,27 @@ jobs:
             --skip-duplicate
         continue-on-error: true
 
+      - name: Update changelog version
+        shell: pwsh
+        run: |
+          $version = "${{ steps.bump.outputs.version }}"
+          $historyFile = "docs/history.md"
+          
+          if (Test-Path $historyFile) {
+            $content = Get-Content $historyFile -Raw
+            $content = $content -replace '## X\.X\.X', "## $version", 1
+            Set-Content $historyFile $content
+            Write-Host "Changelog updated: X.X.X -> $version"
+          } else {
+            Write-Host "Warning: $historyFile not found, skipping changelog update"
+          }
+
       - name: Commit version bump
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-          git add Directory.Build.props
+          git add Directory.Build.props docs/history.md
           git commit -m "chore: bump libraries version to ${{ steps.bump.outputs.version }}"
           git tag -a "v${{ steps.bump.outputs.version }}" -m "Release v${{ steps.bump.outputs.version }}"
           git push origin HEAD:${{ github.ref_name }} --follow-tags
