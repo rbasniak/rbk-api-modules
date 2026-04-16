@@ -4,7 +4,14 @@ The foundation library providing core infrastructure for building ASP.NET Core W
 
 ## Overview
 
-`rbkApiModules.Commons.Core` provides essential building blocks for creating robust, maintainable APIs. It includes base entities, authentication infrastructure, validation framework, messaging system, and common utilities.
+`rbkApiModules.Commons.Core` provides essential building blocks for creating robust, maintainable APIs. It includes:
+- Base entities for domain modeling
+- Smart validation with automatic database constraint checking
+- Messaging/CQRS pattern with dispatcher
+- Authentication infrastructure
+- File storage abstraction
+- UI definition system for dynamic forms
+- Application options for runtime configuration
 
 ## Key Components
 
@@ -240,48 +247,57 @@ public static class EmailHandler
 
 ```csharp
 // Program.cs
-builder.Services.AddRbkApiCore(options =>
-{
-    options.UseDefaultSwagger()
-           .UseDefaultHsts()
-           .EnableBasicAuthenticationHandler()
-           .RegisterAdditionalValidators(typeof(Startup).Assembly)
-           .MapSignalR(hubMappings =>
-           {
-               hubMappings.MapHub<NotificationHub>("/notificationHub");
-           });
-});
+builder.Services.AddRbkApiCoreSetup(options => options
+    .UseDefaultCompression()
+    .UseDefaultCors()
+    .UseDefaultHsts(builder.Environment.IsDevelopment())
+    .UseDefaultHttpsRedirection()
+    .UseDefaultMemoryCache()
+    .UseDefaultHttpClient()
+    .UseHttpContextAccessor()
+    .UseStaticFiles()
+    .RegisterDbContext<ApplicationDbContext>()
+);
 ```
 
 ### Configuration Options
 
-```csharp
-public class RbkApiCoreOptions
-{
-    // Swagger Configuration
-    public RbkApiCoreOptions UseDefaultSwagger();
-    public RbkApiCoreOptions UseCustomSwagger(Action<SwaggerGenOptions> options);
-    
-    // HSTS Configuration
-    public RbkApiCoreOptions UseDefaultHsts();
-    public RbkApiCoreOptions UseCustomHsts(Action<HstsOptions> options, bool isDevelopment);
-    
-    // Authentication
-    public RbkApiCoreOptions EnableBasicAuthenticationHandler();
-    
-    // Validation
-    public RbkApiCoreOptions RegisterAdditionalValidators(params Assembly[] assemblies);
-    
-    // SignalR
-    public RbkApiCoreOptions MapSignalR(Action<IEndpointRouteBuilder> mappings);
-    
-    // Static Files
-    public RbkApiCoreOptions UseStaticFiles();
-    
-    // SPA Routes
-    public RbkApiCoreOptions MapSpas(params string[] routes);
-}
-```
+All options return `RbkApiCoreOptions` for fluent chaining.
+
+**Compression:**
+- `.UseDefaultCompression()` - Gzip compression for HTTPS
+- `.UseCustomCompression(Action<ResponseCompressionOptions>)` - Custom compression settings
+
+**CORS:**
+- `.UseDefaultCors()` - Allow any origin, method, header (dev-friendly)
+- `.UseCustomCors(Action<CorsOptions>)` - Custom CORS policy
+
+**HSTS (HTTP Strict Transport Security):**
+- `.UseDefaultHsts(bool isDevelopment)` - HSTS with 1-year max-age (production only)
+- `.UseCustomHsts(Action<HstsOptions>, bool isDevelopment)` - Custom HSTS settings
+
+**HTTPS Redirection:**
+- `.UseDefaultHttpsRedirection()` - Redirect HTTP to HTTPS (status 308, port 443)
+- `.UseCustomHttpsRedirection(Action<HttpsRedirectionOptions>)` - Custom settings
+
+**Memory Cache:**
+- `.UseDefaultMemoryCache()` - Default memory cache
+- `.UseCustomMemoryCache(Action<MemoryCacheOptions>)` - Custom memory cache
+
+**HTTP Client:**
+- `.UseDefaultHttpClient()` - Register `IHttpClientFactory`
+
+**HTTP Context:**
+- `.UseHttpContextAccessor()` - Register `IHttpContextAccessor`
+
+**Static Files:**
+- `.UseStaticFiles()` - Serve static files from wwwroot
+
+**Database Context:**
+- `.RegisterDbContext<TContext>()` - Register DbContext for DI (required for SmartValidator)
+
+**Basic Authentication:**
+- `.EnableBasicAuthenticationHandler()` - Enable HTTP Basic Auth (useful for Swagger UI)
 
 ## Dependencies
 
