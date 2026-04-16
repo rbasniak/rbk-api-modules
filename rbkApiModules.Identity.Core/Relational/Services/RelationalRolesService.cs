@@ -23,8 +23,8 @@ public class RelationalRolesService : IRolesService
 
     public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
-        var role2 = await _context.Set<Role>().FindAsync(id, cancellationToken);
-        var role = await _context.Set<Role>().Include(x => x.Claims).FirstAsync(x => x.Id == id);
+        var role2 = await _context.Set<Role>().IgnoreQueryFilters().FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+        var role = await _context.Set<Role>().IgnoreQueryFilters().Include(x => x.Claims).FirstAsync(x => x.Id == id);
 
         _context.RemoveRange(role.Claims);
         _context.Remove(role);
@@ -37,6 +37,7 @@ public class RelationalRolesService : IRolesService
         tenant = tenant != null ? tenant.ToUpper() : null;
 
         var roles = await _context.Set<Role>()
+            .IgnoreQueryFilters()
             .Include(x => x.Users)
             .Include(x => x.Claims)
             .Where(x => x.TenantId == tenant).ToListAsync();
@@ -48,17 +49,18 @@ public class RelationalRolesService : IRolesService
 
     public async Task<Role> FindAsync(Guid id, CancellationToken cancellationToken)
     {
-        return await _context.Set<Role>().FindAsync(id, cancellationToken);
+        return await _context.Set<Role>().IgnoreQueryFilters().FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
     public async Task<Role[]> FindByNameAsync(string name, CancellationToken cancellationToken)
     {
-        return await _context.Set<Role>().Where(x => x.Name.ToUpper() == name.ToUpper()).ToArrayAsync(cancellationToken);
+        return await _context.Set<Role>().IgnoreQueryFilters().Where(x => x.Name.ToUpper() == name.ToUpper()).ToArrayAsync(cancellationToken);
     }
 
     public async Task<Role[]> GetAllAsync(CancellationToken cancellationToken)
     {
         var results = await _context.Set<Role>()
+                .IgnoreQueryFilters()
                 .Include(x => x.Claims).ThenInclude(x => x.Claim)
                 .OrderBy(x => x.Name)
                 .ToArrayAsync(cancellationToken);
@@ -69,6 +71,7 @@ public class RelationalRolesService : IRolesService
     public async Task<Role> GetDetailsAsync(Guid id, CancellationToken cancellationToken)
     {
         return await _context.Set<Role>()
+            .IgnoreQueryFilters()
             .Include(x => x.Claims)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
@@ -80,7 +83,7 @@ public class RelationalRolesService : IRolesService
 
     public async Task RenameAsync(Guid id, string name, CancellationToken cancellationToken)
     {
-        var claim = await _context.Set<Role>().FindAsync(id, cancellationToken);
+        var claim = await _context.Set<Role>().IgnoreQueryFilters().FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
         claim.Rename(name);
 
@@ -90,6 +93,7 @@ public class RelationalRolesService : IRolesService
     public async Task UpdateRoleClaims(Guid roleId, Guid[] claimsIds, CancellationToken cancellationToken)
     {
         var role = await _context.Set<Role>()
+           .IgnoreQueryFilters()
            .Include(x => x.Claims)
                .SingleAsync(x => x.Id == roleId, cancellationToken);
 

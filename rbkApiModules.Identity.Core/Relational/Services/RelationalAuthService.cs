@@ -43,6 +43,7 @@ public class RelationalAuthService: IAuthService
         tenant = tenant != null ? tenant.ToUpper() : null;
 
         var user = await _context.Set<User>()
+            .IgnoreQueryFilters()
             .Include(x => x.Roles)
                 .ThenInclude(x => x.Role)
                     .ThenInclude(x => x.Claims)
@@ -72,12 +73,14 @@ public class RelationalAuthService: IAuthService
         tenant = tenant != null ? tenant.ToUpper() : null;
 
         return  await _context.Set<User>()
+            .IgnoreQueryFilters()
             .SingleOrDefaultAsync(x => (x.Username.ToLower() == username.ToLower() || x.Email.ToLower() == username.ToLower()) && x.TenantId == tenant, cancellationToken);
     }
 
     public async Task<User> RedefinePasswordAsync(string resetPasswordCode, string password, CancellationToken cancellationToken)
     {
         var user = await _context.Set<User>()
+            .IgnoreQueryFilters()
             .Include(x => x.PasswordRedefineCode)
             .FirstOrDefaultAsync(x => x.PasswordRedefineCode.Hash == resetPasswordCode, cancellationToken);
 
@@ -93,6 +96,7 @@ public class RelationalAuthService: IAuthService
     public async Task<bool> IsPasswordResetCodeValidAsync(string code, CancellationToken cancelation = default)
     {
         var user = await _context.Set<User>()
+            .IgnoreQueryFilters()
             .Include(x => x.PasswordRedefineCode)
             .SingleOrDefaultAsync(x => x.PasswordRedefineCode.Hash == code, cancellationToken: cancelation);
 
@@ -104,6 +108,7 @@ public class RelationalAuthService: IAuthService
     public async Task<bool> IsRefreshTokenValidAsync(string refreshToken, CancellationToken cancellationToken)
     {
         var user = await _context.Set<User>()
+            .IgnoreQueryFilters()
             .SingleAsync(x => x.RefreshToken == refreshToken, cancellationToken);
 
         return user.RefreshTokenValidity > DateTime.UtcNow;
@@ -111,12 +116,13 @@ public class RelationalAuthService: IAuthService
 
     public async Task<bool> RefreshTokenExistsOnDatabaseAsync(string refreshToken, CancellationToken cancellationToken)
     {
-        return await _context.Set<User>().AnyAsync(x => x.RefreshToken == refreshToken, cancellationToken);
+        return await _context.Set<User>().IgnoreQueryFilters().AnyAsync(x => x.RefreshToken == refreshToken, cancellationToken);
     }
 
     public async Task<User> GetUserFromRefreshtokenAsync(string refreshToken, CancellationToken cancellationToken)
     {
         var user = await _context.Set<User>()
+                .IgnoreQueryFilters()
                 .Include(x => x.Roles)
                     .ThenInclude(x => x.Role)
                         .ThenInclude(x => x.Claims)
@@ -132,14 +138,14 @@ public class RelationalAuthService: IAuthService
     {
         tenant = tenant != null ? tenant.ToUpper() : null;
 
-        return await _context.Set<User>().AnyAsync(x => x.Email == email && x.TenantId == tenant, cancellationToken);
+        return await _context.Set<User>().IgnoreQueryFilters().AnyAsync(x => x.Email == email && x.TenantId == tenant, cancellationToken);
     }
 
     public async Task<bool> IsUserConfirmedAsync(string email, string tenant, CancellationToken cancellationToken)
     {
         tenant = tenant != null ? tenant.ToUpper() : null;
 
-        return await _context.Set<User>().AnyAsync(x => x.Email.ToLower() == email.ToLower() && x.IsConfirmed && x.TenantId == tenant, cancellationToken);
+        return await _context.Set<User>().IgnoreQueryFilters().AnyAsync(x => x.Email.ToLower() == email.ToLower() && x.IsConfirmed && x.TenantId == tenant, cancellationToken);
     }
 
     public async Task RequestPasswordResetAsync(string email, string tenant, CancellationToken cancellationToken)
@@ -172,6 +178,7 @@ public class RelationalAuthService: IAuthService
         var roles = await _context.Set<Role>().Include(x => x.Claims).ThenInclude(x => x.Claim).ToListAsync();
 
         var users = await _context.Set<User>()
+            .IgnoreQueryFilters()
             .Include(x => x.Roles)
                 .ThenInclude(x => x.Role)
             .Include(x => x.Claims)
@@ -189,6 +196,7 @@ public class RelationalAuthService: IAuthService
         if (String.IsNullOrEmpty(roleTenant))
         {
             users = await _context.Set<User>()
+                .IgnoreQueryFilters()
                 .Include(x => x.Roles)
                     .ThenInclude(x => x.Role)
                 .OrderBy(x => x.Username)
@@ -198,6 +206,7 @@ public class RelationalAuthService: IAuthService
         else
         {
             users = await _context.Set<User>()
+                .IgnoreQueryFilters()
                 .Include(x => x.Roles)
                     .ThenInclude(x => x.Role)
                 .OrderBy(x => x.Username)
@@ -220,7 +229,7 @@ public class RelationalAuthService: IAuthService
 
         foreach (var roleId in roleIds)
         {
-            var role = await _context.Set<Role>().Include(x => x.Claims).ThenInclude(x => x.Claim).SingleAsync(x => x.Id == roleId);
+            var role = await _context.Set<Role>().IgnoreQueryFilters().Include(x => x.Claims).ThenInclude(x => x.Claim).SingleAsync(x => x.Id == roleId);
             user.AddRole(role);
         }
 
@@ -235,7 +244,7 @@ public class RelationalAuthService: IAuthService
 
         var user = await LoadUserEntityAsync(username, tenant, cancellationToken);
 
-        var role = await _context.Set<Role>().SingleAsync(x => x.Id == roleId);
+        var role = await _context.Set<Role>().IgnoreQueryFilters().SingleAsync(x => x.Id == roleId);
         user.AddRole(role);
 
         await _context.SaveChangesAsync();
@@ -249,7 +258,7 @@ public class RelationalAuthService: IAuthService
 
         var user = await LoadUserEntityAsync(username, tenant, cancellationToken);
 
-        var role = await _context.Set<Role>().SingleAsync(x => x.Id == roleId);
+        var role = await _context.Set<Role>().IgnoreQueryFilters().SingleAsync(x => x.Id == roleId);
         user.RemoveRole(role);
 
         await _context.SaveChangesAsync();
@@ -286,6 +295,7 @@ public class RelationalAuthService: IAuthService
         if (String.IsNullOrEmpty(tenant)) throw new ArgumentNullException(nameof(tenant));
 
         var users = await _context.Set<User>()
+            .IgnoreQueryFilters()
             .Include(x => x.Roles)
             .Include(x => x.Claims)
             .Where(x => x.TenantId == tenant.ToUpper()).ToListAsync();
@@ -333,7 +343,7 @@ public class RelationalAuthService: IAuthService
 
     public async Task<string[]> GetAllowedTenantsAsync(string username, CancellationToken cancellationToken)
     {
-        return await _context.Set<User>().Where(x => x.Username.ToLower() == username.ToLower() && x.TenantId != null).Select(x => x.TenantId).Distinct().ToArrayAsync(cancellationToken);
+        return await _context.Set<User>().IgnoreQueryFilters().Where(x => x.Username.ToLower() == username.ToLower() && x.TenantId != null).Select(x => x.TenantId).Distinct().ToArrayAsync(cancellationToken);
     }
 
     public async Task ActivateUserAsync(string tenant, string username, CancellationToken cancellationToken)

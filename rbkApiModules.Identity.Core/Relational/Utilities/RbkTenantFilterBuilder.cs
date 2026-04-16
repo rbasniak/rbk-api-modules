@@ -35,8 +35,13 @@ public sealed class RbkTenantFilterBuilder
             var providerConstant = Expression.Constant(_tenantIdProvider);
             var invokeMethod = typeof(Func<string?>).GetMethod("Invoke")!;
             var currentTenantIdCall = Expression.Call(providerConstant, invokeMethod);
-            var equalExpression = Expression.Equal(tenantIdProperty, currentTenantIdCall);
-            var lambda = Expression.Lambda<Func<TEntity, bool>>(equalExpression, parameter);
+
+            // When currentTenant is null (global admin or no HTTP context), show everything.
+            // Otherwise: TenantId == CurrentTenantId
+            var noTenantContext = Expression.Equal(currentTenantIdCall, Expression.Constant(null, typeof(string)));
+            var tenantMatches = Expression.Equal(tenantIdProperty, currentTenantIdCall);
+            var finalFilter = Expression.OrElse(noTenantContext, tenantMatches);
+            var lambda = Expression.Lambda<Func<TEntity, bool>>(finalFilter, parameter);
 
             _modelBuilder.Entity<TEntity>().HasQueryFilter(lambda);
         });
@@ -57,11 +62,14 @@ public sealed class RbkTenantFilterBuilder
             var invokeMethod = typeof(Func<string?>).GetMethod("Invoke")!;
             var currentTenantIdCall = Expression.Call(providerConstant, invokeMethod);
 
-            // TenantId == CurrentTenantId OR TenantId == null
+            // When currentTenant is null (global admin or unauthenticated), show everything.
+            // Otherwise: TenantId == CurrentTenantId OR TenantId IS NULL
+            var noTenantContext = Expression.Equal(currentTenantIdCall, Expression.Constant(null, typeof(string)));
             var tenantMatches = Expression.Equal(tenantIdProperty, currentTenantIdCall);
-            var isNull = Expression.Equal(tenantIdProperty, Expression.Constant(null, typeof(string)));
-            var orExpression = Expression.OrElse(tenantMatches, isNull);
-            var lambda = Expression.Lambda<Func<TEntity, bool>>(orExpression, parameter);
+            var entityIsGlobal = Expression.Equal(tenantIdProperty, Expression.Constant(null, typeof(string)));
+            var tenantOrGlobal = Expression.OrElse(tenantMatches, entityIsGlobal);
+            var finalFilter = Expression.OrElse(noTenantContext, tenantOrGlobal);
+            var lambda = Expression.Lambda<Func<TEntity, bool>>(finalFilter, parameter);
 
             _modelBuilder.Entity<TEntity>().HasQueryFilter(lambda);
         });

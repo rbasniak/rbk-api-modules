@@ -120,6 +120,8 @@ namespace Demo2.Migrations
                     b.HasIndex("KeyHash")
                         .IsUnique();
 
+                    b.HasIndex("TenantId");
+
                     b.ToTable("ApiKeys", (string)null);
                 });
 
@@ -342,6 +344,14 @@ namespace Demo2.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UsersToRoles", (string)null);
+                });
+
+            modelBuilder.Entity("rbkApiModules.Identity.Core.ApiKey", b =>
+                {
+                    b.HasOne("rbkApiModules.Identity.Core.Tenant", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("rbkApiModules.Identity.Core.ApiKeyToClaim", b =>
