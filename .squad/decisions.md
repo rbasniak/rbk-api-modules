@@ -47,31 +47,19 @@ Restructured rbkApiModules documentation from single lengthy README to a hub-and
 **From:** Stark (Architect), Jarvis (Backend Developer)  
 **Review Needed By:** Fury (Tech Lead)
 
-### 1. 🔴 Create rbkApiModules.Commons.Relational Package (BREAKING CHANGE)
-**Severity:** HIGH — Dependency Graph Violation  
-**Decision Needed:** Fury approval for breaking change
+### 1. ~~Create rbkApiModules.Commons.Relational Package~~ — REJECTED
+**Severity:** N/A — Architecture is intentional  
+**Decision:** REJECTED by Rodrigo Basniak (2026-04-16)
 
-**Issue:**
-- `rbkApiModules.Commons.Core` currently contains EF Core dependencies and implementations
-- Violates the Core/Relational separation pattern successfully used in Identity package
-- Namespace `rbkApiModules.Commons.Relational` already exists in codebase but no corresponding package
-- 30+ files in Commons.Core use `namespace rbkApiModules.Commons.Relational`
-- Forces all consumers to take EF Core dependency even if using pure CQRS/messaging
+**Directive:**
+All consumers of rbkApiModules are assumed to use EF Core. The single-package-per-domain architecture (`Commons.Core`, `Identity.Core`) is a deliberate design decision made when the old Core/Relational split was merged. EF Core code inside `Commons.Core` is correct and expected — not a violation.
 
-**Proposed Solution:**
-Create new package `rbkApiModules.Commons.Relational` and move:
-- All `Database\**` folders (DbContext extensions, seed manager, converters, interceptors)
-- All files with `namespace rbkApiModules.Commons.Relational`
-- EF Core package references
+There is no `rbkApiModules.Identity.Relational` package. The correct package is `rbkApiModules.Identity.Core`. The old split is gone.
 
-**Migration Path for Consumers:**
-```
-Added: <PackageReference Include="rbkApiModules.Commons.Relational" />
-```
+**What to do instead:**  
+The namespace strings in some files still reference `.Relational` namespaces (legacy from the old split). These should be corrected to use `.Core` namespaces — but this is a cleanup task, not a package split.
 
-**Effort:** 3-5 days (Jarvis)  
-**Breaking Change:** YES — requires consumers to add new package reference  
-**Status:** ⏳ AWAITING DECISION
+**Status:** ❌ REJECTED — do not revisit
 
 ---
 
@@ -289,7 +277,7 @@ public interface IEndpoint
 
 | # | Decision | Priority | Breaking? | Blocking? | Effort | Status |
 |---|----------|----------|-----------|-----------|--------|--------|
-| 1 | Commons.Relational package | HIGH | YES | YES | 3-5d | 🔴 URGENT |
+| 1 | ~~Commons.Relational package~~ | N/A | N/A | N/A | N/A | ❌ REJECTED |
 | 2 | Tenant query filter bug | HIGH | NO | YES | 4-8h | 🔴 URGENT |
 | 3 | ServiceProvider.Build() | HIGH | NO | NO | 2-4h | ⏳ Ready |
 | 4 | Dispatcher refactoring | HIGH | NO | NO | TBD | ⏳ Ready |
