@@ -41,7 +41,7 @@ builder.Services.AddRbkApiCoreSetup(options => options
 );
 
 // Add authentication
-builder.Services.AddRbkRelationalAuthentication(options => options
+builder.Services.AddRbkRelationalAuthentication(builder.Configuration, options => options
     .UseSymetricEncryptationKey()
 );
 

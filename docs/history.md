@@ -12,6 +12,7 @@ All notable changes to rbkApiModules are documented here. Changes are organized 
 
 #### Breaking Changes
 - ⚠️ **`ApiKey` base class changed** — Now inherits `TenantEntity` instead of `BaseEntity`. Gains a `TenantId` property (nullable `string?`) and participates in tenant isolation. Consumers with custom `ApiKeyConfig` EF configurations that explicitly map `TenantId` property must remove those mappings (now inherited).
+- ⚠️ **`AddRbkAuthentication()` and `AddRbkRelationalAuthentication()` signature changed** — Now require an explicit `IConfiguration configuration` as their first parameter. Pass `builder.Configuration` when registering these services. Previously, these methods attempted to resolve configuration from the service container; this removal of the `ServiceProvider.BuildServiceProvider()` anti-pattern ensures compatibility with test contexts like `WebApplicationFactory`.
 
 #### Bug Fixes
 - Fixed `SetupTenants()` FK constraint: Now `.IsRequired(false)`, allowing nullable `TenantId` for dual-purpose entities (`ApiKey`, `Role`) that can be both tenant-specific and global.

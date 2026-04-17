@@ -38,7 +38,7 @@ API keys provide machine-to-machine authentication without JWT tokens. Each key:
 Call `AddApiKeyAuthentication` inside `AddRbkRelationalAuthentication`:
 
 ```csharp
-builder.Services.AddRbkRelationalAuthentication(options => options
+builder.Services.AddRbkRelationalAuthentication(builder.Configuration, options => options
     .UseSymetricEncryptationKey()
     .UseLoginWithWindowsAuthentication()
     .AddApiKeyAuthentication()

@@ -4,17 +4,34 @@ using rbkApiModules.Identity.Core;
 using rbkApiModules.Identity.Relational;
 using System.Diagnostics;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Configuration;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
 public static class Builder
 {
-    public static IServiceCollection AddRbkRelationalAuthentication(this IServiceCollection services, Action<RbkAuthenticationOptions> configureOptions)
+    /// <summary>
+    /// Adds relational authentication services to the DI container, including identity management with database persistence.
+    /// </summary>
+    /// <remarks>
+    /// This extension method registers authentication services on top of AddRbkAuthentication:
+    /// - Identity management services (users, roles, claims, tenants)
+    /// - Relational persistence through EF Core
+    /// - Built-in identity endpoints for user and role management
+    /// - Optional tenant post-creation actions
+    /// 
+    /// Internally calls AddRbkAuthentication with the provided configuration, so JWT setup is included.
+    /// </remarks>
+    /// <param name="services">The service collection to add services to.</param>
+    /// <param name="configuration">The application configuration, typically builder.Configuration. Passed to AddRbkAuthentication for JWT setup.</param>
+    /// <param name="configureOptions">Lambda to configure RbkAuthenticationOptions (encryption, login modes, feature toggles).</param>
+    /// <returns>The service collection for method chaining.</returns>
+    public static IServiceCollection AddRbkRelationalAuthentication(this IServiceCollection services, IConfiguration configuration, Action<RbkAuthenticationOptions> configureOptions)
     {
         var options = new RbkAuthenticationOptions();
         configureOptions(options);
 
-        services.AddRbkAuthentication(options);
+        services.AddRbkAuthentication(configuration, options);
 
         services.AddScoped<IAuthService, RelationalAuthService>();
         services.AddScoped<IRolesService, RelationalRolesService>();

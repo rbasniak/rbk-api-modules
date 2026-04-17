@@ -56,7 +56,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add rbk identity services
-builder.Services.AddRbkRelationalAuthentication(options => options
+builder.Services.AddRbkRelationalAuthentication(builder.Configuration, options => options
     .UseSymetricEncryptationKey()
 );
 ```
@@ -90,7 +90,7 @@ That's it! You now have JWT authentication with a default admin user.
 ### RbkAuthenticationOptions
 
 ```csharp
-builder.Services.AddRbkRelationalAuthentication(options => options
+builder.Services.AddRbkRelationalAuthentication(builder.Configuration, options => options
     // Encryption
     .UseSymetricEncryptationKey()        // Use HS256 (symmetric)
     .UseAsymmetricEncryptationKey()      // Use RS256 (asymmetric) - requires cert
@@ -129,7 +129,7 @@ Multi-tenancy isolates data by tenant. Each user belongs to a tenant, and entiti
 ### Enable Multi-Tenancy
 
 ```csharp
-builder.Services.AddRbkRelationalAuthentication(options => options
+builder.Services.AddRbkRelationalAuthentication(builder.Configuration, options => options
     .UseSymetricEncryptationKey()
     .AllowTenantSwitching()  // ← Users can switch tenants if they have access
 );
@@ -212,7 +212,7 @@ Windows Authentication integrates with Active Directory (NTLM/Kerberos). When en
 ### Enable Windows Authentication
 
 ```csharp
-builder.Services.AddRbkRelationalAuthentication(options => options
+builder.Services.AddRbkRelationalAuthentication(builder.Configuration, options => options
     .UseSymetricEncryptationKey()
     .UseLoginWithWindowsAuthentication()
 );
@@ -239,7 +239,7 @@ POST /api/authentication/login
 ### Auto-Create Users on First Access
 
 ```csharp
-builder.Services.AddRbkRelationalAuthentication(options => options
+builder.Services.AddRbkRelationalAuthentication(builder.Configuration, options => options
     .UseSymetricEncryptationKey()
     .UseLoginWithWindowsAuthentication()
     .AllowUserCreationByAdmins()  // ← Auto-creates users on first Windows login
@@ -253,7 +253,7 @@ When a Windows user logs in for the first time, a User record is created automat
 Use the mocked handler in test/dev environments:
 
 ```csharp
-builder.Services.AddRbkRelationalAuthentication(options => options
+builder.Services.AddRbkRelationalAuthentication(builder.Configuration, options => options
     .UseSymetricEncryptationKey()
     .UseLoginWithWindowsAuthentication()
     .UseMockedWindowsAuthentication()  // ← Mock for testing
@@ -274,7 +274,7 @@ See **[README-ApiKeys.md](../README-ApiKeys.md)** for comprehensive API key docu
 Quick enable:
 
 ```csharp
-builder.Services.AddRbkRelationalAuthentication(options => options
+builder.Services.AddRbkRelationalAuthentication(builder.Configuration, options => options
     .UseSymetricEncryptationKey()
     .AddApiKeyAuthentication()  // ← Enable API keys
 );
@@ -351,7 +351,7 @@ Response:
 ### Disable Refresh Tokens
 
 ```csharp
-builder.Services.AddRbkRelationalAuthentication(options => options
+builder.Services.AddRbkRelationalAuthentication(builder.Configuration, options => options
     .UseSymetricEncryptationKey()
     .DisableRefreshToken()  // ← Remove refresh endpoint
 );
@@ -364,7 +364,7 @@ builder.Services.AddRbkRelationalAuthentication(options => options
 ### Enable Public Registration
 
 ```csharp
-builder.Services.AddRbkRelationalAuthentication(options => options
+builder.Services.AddRbkRelationalAuthentication(builder.Configuration, options => options
     .UseSymetricEncryptationKey()
     .AllowUserSelfRegistration()  // ← Public registration endpoint
 );
@@ -397,7 +397,7 @@ When enabled, users must confirm their email before logging in.
 Email confirmation is enabled by default. Disable it if you don't want it:
 
 ```csharp
-builder.Services.AddRbkRelationalAuthentication(options => options
+builder.Services.AddRbkRelationalAuthentication(builder.Configuration, options => options
     .UseSymetricEncryptationKey()
     .DisableEmailConfirmation()  // ← Disable
 );
@@ -428,7 +428,7 @@ POST /api/authentication/resend-confirmation
 Enabled by default. Disable if not needed:
 
 ```csharp
-builder.Services.AddRbkRelationalAuthentication(options => options
+builder.Services.AddRbkRelationalAuthentication(builder.Configuration, options => options
     .UseSymetricEncryptationKey()
     .DisablePasswordReset()  // ← Disable
 );
@@ -491,7 +491,7 @@ public class MyTenantPostCreationAction : ITenantPostCreationAction
     }
 }
 
-builder.Services.AddRbkRelationalAuthentication(options => options
+builder.Services.AddRbkRelationalAuthentication(builder.Configuration, options => options
     .UseSymetricEncryptationKey()
     .WithTenantPostCreationAction<MyTenantPostCreationAction>()
 );

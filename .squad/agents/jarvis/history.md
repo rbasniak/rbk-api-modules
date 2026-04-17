@@ -167,6 +167,43 @@ modelBuilder.ApplyRbkTenantQueryFilters(_tenantProvider, config =>
 
 ---
 
+### Decision #3 — Remove BuildServiceProvider() Anti-pattern (2026-04-16, revised 2026-04-17)
+
+**What Changed (Revision 2):**  
+Previous attempt used `ImplementationInstance` descriptor lookup — broke under `WebApplicationFactory<TProgram>` because `DeferredHostBuilder` registers `IConfiguration` as a factory delegate (`ImplementationFactory`), not as a direct instance. Lookup returned null → `InvalidOperationException` thrown for every test.
+
+**Correct Fix:**  
+Added `IConfiguration` as an explicit parameter to both `AddRbkAuthentication` and `AddRbkRelationalAuthentication`. Callers pass `builder.Configuration` at the call site — available immediately from `WebApplicationBuilder`. No descriptor inspection, no container build.
+
+**Signature Changes (breaking):**
+```csharp
+// Before
+AddRbkAuthentication(this IServiceCollection services, RbkAuthenticationOptions options)
+AddRbkRelationalAuthentication(this IServiceCollection services, Action<RbkAuthenticationOptions> configureOptions)
+
+// After  
+AddRbkAuthentication(this IServiceCollection services, IConfiguration configuration, RbkAuthenticationOptions options)
+AddRbkRelationalAuthentication(this IServiceCollection services, IConfiguration configuration, Action<RbkAuthenticationOptions> configureOptions)
+```
+
+**Root Cause of First Attempt Failure:**  
+`WebApplicationFactory` runs `Program.Main()` via `DeferredHostBuilder.Build()`. When `WebApplicationBuilder` registers `IConfiguration`, it uses `.AddSingleton<IConfiguration>(sp => _config)` (factory pattern), not `.AddSingleton<IConfiguration>(instance)` (instance pattern). My descriptor lookup specifically checked `ImplementationInstance`, which is null for factory registrations.
+
+**Test Setup:**  
+Tests use `WebApplicationFactory<TProgram>` (via `RbkTestingServer<T>`) — full app startup, not a bare `ServiceCollection`. The fix needed to work within that startup flow.
+
+**Key Files:**
+- `rbkApiModules.Identity.Core\Core\CoreAuthenticationBuilder.cs`
+- `rbkApiModules.Identity.Core\Relational\Builder.cs`
+- `Demo1\Program.cs`
+- `Demo2\Program.cs`
+
+**Breaking Change:** YES — public signature changed for `AddRbkAuthentication` and `AddRbkRelationalAuthentication`.  
+**Build Status:** ✅ Succeeded (0 errors).  
+**Test Status:** ✅ 350/350 passed.
+
+---
+
 ### Tenant Query Filter Implementation (2026-04-16)
 
 **Implemented:** Opt-in tenant query filters based on approved tenant-plan-v2.md

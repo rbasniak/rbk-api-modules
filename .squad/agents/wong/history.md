@@ -163,4 +163,60 @@
 - Add code examples showing Demo1/Demo2 implementations
 - Include migration path for users upgrading from v1.x
 
-**Status:** Ready to implement
+---
+
+### 2026-04-17: Breaking Change Documentation (Decision #3)
+
+**Engagement:** Documentation updates for signature change to `AddRbkAuthentication` and `AddRbkRelationalAuthentication`.
+
+**What Changed:**
+- `AddRbkAuthentication(options)` → `AddRbkAuthentication(builder.Configuration, options)`
+- `AddRbkRelationalAuthentication(options)` → `AddRbkRelationalAuthentication(builder.Configuration, options)`
+
+**Rationale:** Removed `BuildServiceProvider()` anti-pattern that caused test failures in WebApplicationFactory contexts where IConfiguration is registered via factory delegate.
+
+**Learnings for Next Time:**
+
+1. **Key Documentation Locations:** These two methods appear in:
+   - docs/getting-started.md (multiple examples)
+   - docs/identity-authentication.md (12+ examples across all feature toggles)
+   - README.md (root quick start)
+   - README-ApiKeys.md (setup section)
+   - Demo1/Program.cs and Demo2/Program.cs (not documentation, but examples)
+
+2. **Breaking Change Pattern:** When a public API changes signature:
+   - Update ALL code examples in markdown files
+   - Add comprehensive XML documentation to source methods
+   - Create decision confirmation file in .squad/decisions/inbox/
+   - Document migration pattern clearly in docs
+   - Examples must match actual implementation (grep/view to verify)
+
+3. **XML Documentation Standard:** Public methods should have:
+   - `<summary>` - One sentence describing what the method does
+   - `<remarks>` - Detailed explanation of behavior, internal registration, configuration sections
+   - `<param>` tags for all parameters with descriptions
+   - `<returns>` for non-void methods
+   - `<exception>` for exceptions thrown
+
+4. **Grep Search Pattern:** Use `AddRbkAuthentication\(|AddRbkRelationalAuthentication\(` to find all instances across codebase.
+
+5. **Code Examples Must Compile:** Always verify new examples against actual method signatures before documenting. These methods now require:
+   - First parameter: `IConfiguration configuration` (typically `builder.Configuration`)
+   - Second parameter: `Action<RbkAuthenticationOptions>` (options lambda)
+
+**Files Updated:**
+- docs/getting-started.md (2 instances, 4 feature examples)
+- docs/identity-authentication.md (13 code examples)
+- README.md (1 instance)
+- README-ApiKeys.md (1 instance)
+- CoreAuthenticationBuilder.cs (XML docs added)
+- Builder.cs (XML docs added)
+
+**docs/history.md Standing Rule:**
+When updating `docs/history.md` for breaking changes:
+1. Check for existing `## X.X.X` section (usually already present from previous changes)
+2. If section exists, append to appropriate subsection (e.g., `### Breaking Changes`)
+3. If subsection missing, create it under the package header
+4. Format entries consumer-focused: what changed, what to do to migrate, why (rationale)
+5. One bullet per method/feature or combined bullet if they share identical pattern
+6. Always run `git add docs/history.md` after updating (never commit without explicit instruction)

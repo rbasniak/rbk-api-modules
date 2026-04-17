@@ -45,7 +45,7 @@ public class Program
             .RegisterDbContext<DatabaseContext>()
         );
 
-        builder.Services.AddRbkRelationalAuthentication(options => options
+        builder.Services.AddRbkRelationalAuthentication(builder.Configuration, options => options
             .UseSymetricEncryptationKey()
             .UseLoginWithWindowsAuthentication()
             .UseMockedWindowsAuthentication()

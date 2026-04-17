@@ -51,7 +51,7 @@ namespace Demo1
             builder.Services.AddApplicationOptions<MySettings2>();
             builder.Services.AddApplicationOptionsManager();
 
-            builder.Services.AddRbkRelationalAuthentication(options => options
+            builder.Services.AddRbkRelationalAuthentication(builder.Configuration, options => options
                 .UseSymetricEncryptationKey()
                 .AllowUserCreationByAdmins()
                 .AllowUserSelfRegistration()

@@ -117,7 +117,7 @@ builder.Services.AddRbkApiCoreSetup(options => options
 );
 
 // Add identity services
-builder.Services.AddRbkRelationalAuthentication(options => options
+builder.Services.AddRbkRelationalAuthentication(builder.Configuration, options => options
     .UseSymetricEncryptationKey()
     .AllowUserCreationByAdmins()
 );
@@ -252,7 +252,7 @@ Now that your app is running:
 ### Enable API Key Authentication
 
 ```csharp
-builder.Services.AddRbkRelationalAuthentication(options => options
+builder.Services.AddRbkRelationalAuthentication(builder.Configuration, options => options
     .UseSymetricEncryptationKey()
     .AddApiKeyAuthentication()  // ← Add this
 );
@@ -261,7 +261,7 @@ builder.Services.AddRbkRelationalAuthentication(options => options
 ### Enable Windows Authentication
 
 ```csharp
-builder.Services.AddRbkRelationalAuthentication(options => options
+builder.Services.AddRbkRelationalAuthentication(builder.Configuration, options => options
     .UseSymetricEncryptationKey()
     .UseLoginWithWindowsAuthentication()  // ← Add this
 );
@@ -270,7 +270,7 @@ builder.Services.AddRbkRelationalAuthentication(options => options
 ### Enable User Self-Registration
 
 ```csharp
-builder.Services.AddRbkRelationalAuthentication(options => options
+builder.Services.AddRbkRelationalAuthentication(builder.Configuration, options => options
     .UseSymetricEncryptationKey()
     .AllowUserSelfRegistration()  // ← Add this
 );
@@ -279,7 +279,7 @@ builder.Services.AddRbkRelationalAuthentication(options => options
 ### Enable Tenant Switching
 
 ```csharp
-builder.Services.AddRbkRelationalAuthentication(options => options
+builder.Services.AddRbkRelationalAuthentication(builder.Configuration, options => options
     .UseSymetricEncryptationKey()
     .AllowTenantSwitching()  // ← Add this
 );

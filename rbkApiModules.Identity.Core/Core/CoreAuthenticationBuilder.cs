@@ -21,7 +21,26 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class CoreAuthenticationBuilder
 {
-    public static void AddRbkAuthentication(this IServiceCollection services, RbkAuthenticationOptions authenticationOptions)
+    /// <summary>
+    /// Adds rbk authentication services to the DI container, including JWT token generation and validation.
+    /// </summary>
+    /// <remarks>
+    /// This extension method registers core authentication infrastructure:
+    /// - JWT bearer authentication with configurable token lifetime
+    /// - Tenant provider for multi-tenancy support
+    /// - Authorization policies for authenticated users
+    /// - Optional API key authentication scheme
+    /// - Optional Windows/NTLM authentication
+    /// 
+    /// JWT configuration is loaded from IConfiguration using the "JwtIssuerOptions" section,
+    /// which must contain: Issuer, Audience, SecretKey, AccessTokenLife, RefreshTokenLife.
+    /// </remarks>
+    /// <param name="services">The service collection to add services to.</param>
+    /// <param name="configuration">The application configuration, typically builder.Configuration. Used to read JWT settings from "JwtIssuerOptions".</param>
+    /// <param name="authenticationOptions">Configuration options for authentication features (encryption, login modes, feature toggles).</param>
+    /// <exception cref="ArgumentNullException">Thrown when required JWT configuration values are missing.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when neither symmetric nor asymmetric encryption key is configured.</exception>
+    public static void AddRbkAuthentication(this IServiceCollection services, IConfiguration configuration, RbkAuthenticationOptions authenticationOptions)
     {
         services.AddSingleton(authenticationOptions);
         services.AddSingleton<IOptions<RbkAuthenticationOptions>>(new OptionsWrapper<RbkAuthenticationOptions>(authenticationOptions));
@@ -29,9 +48,6 @@ public static class CoreAuthenticationBuilder
         // Register tenant provider for query filters
         services.AddHttpContextAccessor();
         services.AddScoped<ITenantProvider, HttpContextTenantProvider>();
-
-        var serviceProvider = services.BuildServiceProvider();
-        var configuration = serviceProvider.GetService<IConfiguration>();
 
         var authOptions = configuration.GetSection(nameof(JwtIssuerOptions));
 

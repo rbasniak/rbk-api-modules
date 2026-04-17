@@ -147,11 +147,12 @@ Translation: "Was having issues with SetupTenant when tenantId was not nullable.
 
 ---
 
-### 3. 🔴 Remove ServiceProvider.Build() Anti-pattern
+### 3. ✅ Remove ServiceProvider.Build() Anti-pattern
 **Severity:** HIGH — Correctness Issue  
-**Decision Needed:** Approval for refactor
+**Status:** ✅ IMPLEMENTED (2026-04-17)  
+**Implemented By:** Jarvis
 
-**Issue:**
+**Issue (Original):**
 In `CoreAuthenticationBuilder.cs:26`:
 ```csharp
 var serviceProvider = services.BuildServiceProvider();
@@ -163,12 +164,53 @@ This anti-pattern:
 - Impacts performance
 - Violates ASP.NET Core DI guidelines
 
-**Proposed Solution:**
-Refactor to accept `IConfiguration` via options lambda (internal implementation change only)
+**Root Cause of Initial Regression:**
 
-**Effort:** 2-4 hours  
-**Breaking Change:** NO (internal implementation)  
-**Status:** ⏳ AWAITING DECISION
+The initial fix attempted `IServiceCollection` descriptor lookup via `ImplementationInstance`, but all 350 tests failed with:
+```
+IConfiguration is not registered. Ensure WebApplicationBuilder (or a host builder) 
+is used before calling AddRbkAuthentication.
+```
+
+**Analysis:** `WebApplicationFactory<TProgram>` uses `DeferredHostBuilder` to intercept `Program.Main()`. When `WebApplicationBuilder` registers `IConfiguration`, it uses a **factory delegate registration** (`.AddSingleton<IConfiguration>(sp => _config)`), not a direct instance registration. Factory delegates have null `ImplementationInstance`, causing the null-coalescing throw even though the service IS registered. This is WebApplicationFactory-specific behavior, not a general DI issue.
+
+**Solution Implemented: Option A — IConfiguration as Parameter**
+
+Changed public extension method signatures to accept `IConfiguration` explicitly:
+
+```csharp
+// CoreAuthenticationBuilder.cs
+AddRbkAuthentication(
+    this IServiceCollection services, 
+    IConfiguration configuration,
+    RbkAuthenticationOptions options)
+
+// Builder.cs
+AddRbkRelationalAuthentication(
+    this IServiceCollection services, 
+    IConfiguration configuration,
+    Action<RbkAuthenticationOptions> configureOptions)
+```
+
+Callers pass `builder.Configuration` — available immediately from `WebApplicationBuilder`, no container build needed, works in all contexts (production and test).
+
+**Why Option A vs Others:**
+- **Option B (IStartupFilter):** More complex, harder to reason about
+- **Option C (Optional parameter with fallback):** Still has descriptor lookup problem, messier API
+- **Option A:** ✅ Clean, explicit, works universally
+
+**Breaking Changes:**
+YES — public signatures of `AddRbkAuthentication` and `AddRbkRelationalAuthentication` changed. Per policy: one-go, no [Obsolete] markers.
+
+**Files Changed:**
+- `rbkApiModules.Identity.Core\Core\CoreAuthenticationBuilder.cs` — signature + removed descriptor lookup
+- `rbkApiModules.Identity.Core\Relational\Builder.cs` — signature + `using Microsoft.Extensions.Configuration` added
+- `Demo1\Program.cs` — pass `builder.Configuration`
+- `Demo2\Program.cs` — pass `builder.Configuration`
+
+**Test Status:**
+✅ 350/350 tests pass  
+✅ Build clean (0 errors)
 
 ---
 
@@ -334,7 +376,7 @@ public interface IEndpoint
 |---|----------|----------|-----------|-----------|--------|--------|
 | 1 | ~~Commons.Relational package~~ | N/A | N/A | N/A | N/A | ❌ REJECTED |
 | 2 | Tenant query filter bug | HIGH | YES | NO | 1d | ✅ IMPLEMENTED |
-| 3 | ServiceProvider.Build() | HIGH | NO | NO | 2-4h | ⏳ Ready |
+| 3 | ServiceProvider.Build() | HIGH | NO | NO | 2-4h | ✅ IMPLEMENTED |
 | 4 | Dispatcher refactoring | HIGH | NO | NO | TBD | ⏳ Ready |
 | 5 | CoreAuthenticationBuilder | HIGH | YES | NO | TBD | ⏳ Ready |
 | 6 | ConfigureAwait policy | MEDIUM | NO | NO | Var | ⏳ Ready |
