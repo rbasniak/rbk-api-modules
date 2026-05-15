@@ -3,8 +3,17 @@
 namespace rbkApiModules.Testing.Core;
 
 
+
+
 public static class PlaywrightExtensions
 {
+    public static async Task GotoRelativeUrlAsync(this IPage page, string relativeUrl, PageGotoOptions? options = null)
+    {
+        var baseUrl = new Uri(page.Url).GetLeftPart(UriPartial.Authority);
+        await page.GotoAsync($"{baseUrl}{relativeUrl}", options);
+        await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+    }
+
     public static async Task ClickButtonAsync(this IPage page, string buttonText, bool force = false)
     {
         var button = page.GetByRole(AriaRole.Button, new() { Name = buttonText });
@@ -44,6 +53,29 @@ public static class PlaywrightExtensions
         await option.WaitForAsync(new() { State = WaitForSelectorState.Visible, Timeout = 5000 });
 
         await option.ClickAsync();
+    }
+
+    /// <summary>
+    /// Clicks a dropdown within a scoped locator by its id, then picks the option from the full page (options are appended to body).
+    /// </summary>
+    public static async Task SelectDropdownOption(this ILocator scope, IPage page, string id, string optionText)
+    {
+        var dropdown = scope.Locator("#" + id);
+        await dropdown.ClickAsync();
+
+        var option = page.GetByRole(AriaRole.Option, new() { Name = optionText });
+        await option.WaitForAsync(new() { State = WaitForSelectorState.Visible, Timeout = 5000 });
+        await option.ClickAsync();
+    }
+
+    /// <summary>
+    /// Fills an input within a scoped locator by its id.
+    /// </summary>
+    public static async Task FillInputAsync(this ILocator scope, string id, string value)
+    {
+        var input = scope.Locator("#" + id);
+        await input.WaitForAsync(new() { State = WaitForSelectorState.Visible, Timeout = 5000 });
+        await input.FillAsync(value);
     }
 
     public static async Task AssertDropDownHasOptionAsync(this IPage page, string dropdownSelector, string optionText)
@@ -112,12 +144,76 @@ public static class PlaywrightExtensions
         await option.ClickAsync();
     }
 
+    public static async Task CheckSmzDropdownValueAsync(this ILocator scope, string id, string expectedValue)
+    {
+        var dropdown = scope.Locator("#" + id);
+        var value = await dropdown.InnerTextAsync();
+
+        if (String.IsNullOrEmpty(expectedValue))
+        {
+            string.IsNullOrWhiteSpace(value).ShouldBeTrue($"Dropdown '#{id}' should be empty but has '{value}'");
+        }
+        else
+        {
+            value.Contains(expectedValue).ShouldBeTrue($"Dropdown '#{id}' should contain '{expectedValue}' but has '{value}'");
+        }
+    }
+
+    public static async Task CheckSmzDateTimeInputAsync(this ILocator scope, string id, string expectedValue)
+    {
+        var input = scope.Locator($"#{id} input");
+        var value = await input.InputValueAsync();
+
+        if (String.IsNullOrEmpty(expectedValue))
+        {
+            string.IsNullOrWhiteSpace(value).ShouldBeTrue($"Dropdown '#{id}' should be empty but has '{value}'");
+        }
+        else
+        {
+            value.Contains(expectedValue).ShouldBeTrue($"DateTime input '#{id}' should have the value '{expectedValue}' but has '{value}'");
+        }
+    }
+
+    public static async Task CheckSmzTextAreaValueAsync(this ILocator scope, string id, string expectedValue)
+    {
+        var input = scope.Locator("#" + id);
+        var value = await input.InputValueAsync();
+
+        if (String.IsNullOrEmpty(expectedValue))
+        {
+            string.IsNullOrWhiteSpace(value).ShouldBeTrue($"Dropdown '#{id}' should be empty but has '{value}'");
+        }
+        else
+        {
+            value.ShouldBe(expectedValue, $"TextArea '#{id}' should have the value '{expectedValue}' but has '{value}'");
+        }
+    }
+
+    public static async Task CheckSmzInputTextValueAsync(this ILocator scope, string id, string expectedValue)
+    {
+        var input = scope.Locator("#" + id);
+        var value = await input.InputValueAsync();
+        if (expectedValue is null)
+        {
+            string.IsNullOrWhiteSpace(value).ShouldBeTrue($"Input '#{id}' should be empty but has '{value}'");
+        }
+        else
+        {
+            value.ShouldBe(expectedValue, $"Input '#{id}' should have the value '{expectedValue}' but has '{value}'");
+        }
+    }
+
+    public static async Task<ILocator> LocateSmzFormAsync(this IPage page, string testId, int timeout = 5000)
+    {
+        var locator = page.Locator($"[data-testid='{testId}']");
+        await locator.WaitForAsync(new() { State = WaitForSelectorState.Visible, Timeout = 5000 });
+        return locator;
+    }
+
+
     private static void ValidateSelector(string selector)
     {
-        if (!selector.StartsWith("#"))
-        {
-            throw new ArgumentException($"Selector must start with '#' for id. Invalid selector: {selector}");
-        }
+
     }
 }
 
@@ -131,5 +227,13 @@ public class UiTestException : Exception
     }
     public UiTestException(string message, Exception innerException) : base(message, innerException)
     {
+    }
+
+    public static void ThrowIfPageIsNull(IPage? page)
+    {
+        if (page is null)
+        {
+            throw new UiTestException("Page should be initialized");
+        }
     }
 }
