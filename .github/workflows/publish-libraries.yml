@@ -98,7 +98,7 @@ jobs:
           
           if (Test-Path $historyFile) {
             $content = Get-Content $historyFile -Raw
-            $content = $content -replace '## X\.X\.X', "## $version", 1
+            $content = $content -replace '## X\.X\.X', "## $version"
             Set-Content $historyFile $content
             Write-Host "Changelog updated: X.X.X -> $version"
           } else {
