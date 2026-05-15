@@ -2,7 +2,7 @@
 
 All notable changes to rbkApiModules are documented here. Changes are organized by release, newest first. Consumer-facing changes only — internal implementation details are excluded.
 
-## X.X.X
+## 10.2.0
 
 ### rbkApiModules.Identity.Core
 
@@ -27,3 +27,4 @@ All notable changes to rbkApiModules are documented here. Changes are organized 
 ---
 
 *No prior release history recorded.*
+
