@@ -794,7 +794,16 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"*** RbkTestingServer Dispose: Could not delete content folder {ContentFolder}. Exception: {ex.Message}");
+            Debug.WriteLine($"*** RbkTestingServer Dispose: Could not delete content folder {ContentFolder}. Exception: {ex.ToBetterString()}");
+        }
+
+        try
+        {
+            await CreateContext().Database.EnsureDeletedAsync();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"*** RbkTestingServer Dispose: Could not delete test database. Exception: {ex.ToBetterString()}");
         }
     }
 }
