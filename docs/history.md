@@ -2,6 +2,11 @@
 
 All notable changes to rbkApiModules are documented here. Changes are organized by release, newest first. Consumer-facing changes only — internal implementation details are excluded.
 
+## X.X.X
+
+#### Breaking Changes
+- ⚠️ Added database dispose on `RbkTestingServer<T>.DisposeAsync()`, so if your test methods are deleting the database in the `Cleanup` method, you can remove that call and call `await TestingServer.DisposeAsync()` instead.
+
 ## 10.2.0
 
 ### rbkApiModules.Identity.Core
