@@ -1,4 +1,3 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
 VisualStudioVersion = 18.3.11222.16
@@ -27,6 +26,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		Directory.Build.props = Directory.Build.props
 		Directory.Packages.props = Directory.Packages.props
+		docs\history.md = docs\history.md
 		publish_pre-release.txt = publish_pre-release.txt
 		README.md = README.md
 	EndProjectSection
@@ -201,8 +201,8 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{3FA16A51-4F5B-673E-32DD-4522147CA3B4} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
-		{4A2B3C4D-5E6F-7890-1234-567890ABCDEF} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{BB96AB92-1049-5B34-4C9F-46B5E8E086B9} = {E853F01F-178D-4B72-B47D-58D158C175F0}
+		{4A2B3C4D-5E6F-7890-1234-567890ABCDEF} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{5B3C4D5E-6F70-8901-2345-67890ABCDEF0} = {E853F01F-178D-4B72-B47D-58D158C175F0}
 		{9083C340-9293-CA34-6D0F-247E968E2448} = {E853F01F-178D-4B72-B47D-58D158C175F0}
 		{79D2CAA2-6DE7-0399-7D30-25D3018FC63D} = {567032B4-2B91-4E0E-9E1E-7293F79D7498}

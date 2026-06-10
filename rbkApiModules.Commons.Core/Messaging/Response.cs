@@ -221,8 +221,9 @@ public sealed class QueryResponse : BaseResponse
         {
             Error = new ProblemDetails
             {
-                Title = "Query Failure",
+                Title = "Query failure handled by user",
                 Detail = message,
+                Status = StatusCodes.Status400BadRequest,
             },
             IsValid = false,
         };

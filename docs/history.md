@@ -2,6 +2,9 @@
 
 All notable changes to rbkApiModules are documented here. Changes are organized by release, newest first. Consumer-facing changes only — internal implementation details are excluded.
 
+## X.X.X
+- Fixed a bug in which `QueryResponse.Failure('..')` was not setting the correct status code.
+
 ## 10.3.0
 
 #### Breaking Changes
