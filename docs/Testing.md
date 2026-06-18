@@ -99,21 +99,22 @@ var response = await PostAsync<UserDetails>("/api/users", request, new ApiKey("k
 
 For full-stack E2E tests against a .NET Aspire AppHost, use `RbkAspireTestingServer<TAppHost>` together with `RbkPlaywrightTestBase<TAppHost>`.
 
-Project-specific settings (resource names, login path, localStorage key, API redirect origin) are **constants for the entire test project**. Configure them once in a fixture subclass — the same pattern as `Demo1TestingServer : RbkTestingServer<Program>`.
+Project-specific settings are **constants for the entire test project**. Configure them once in a fixture subclass — the same pattern as `Demo1TestingServer : RbkTestingServer<Program>`.
+
+The backend must declare `.WithHttpsEndpoint(..., name: "https")`. The fixture always uses that endpoint and derives the Playwright API redirect origin from it via `GetEndpoint`.
 
 #### AspireTestingOptions
 
 | Option | Default | Description |
 |--------|---------|-------------|
 | `BackendResourceName` | `"backend"` | Aspire resource name for the API |
-| `BackendEndpointName` | `"https"` | Endpoint on the backend resource |
-| `FrontendResourceName` | `"frontend"` | Aspire resource name for the frontend |
-| `FrontendEndpointName` | `"https"` | Endpoint on the frontend resource |
+| `FrontendResourceName` | `"frontend"` | Aspire resource name for the frontend (waited on before tests) |
+| `FrontendPort` | `4207` | localhost port where ng serve / npm start listens |
 | `FrontendBasePath` | `null` | Optional path suffix (e.g. `/gcab`) |
-| `FrontendUrlOverride` | `null` | Fixed URL when the frontend runs outside Aspire (local debug) |
 | `AccessTokenStorageKey` | `"access_token"` | localStorage key for the JWT |
-| `ApiRedirectOrigin` | `null` | Hardcoded API origin in the frontend to intercept (e.g. `https://localhost:44301`) |
 | `LoginPath` | `"/api/authentication/login"` | Backend login endpoint |
+
+Frontend URL is built as `http://localhost:{FrontendPort}` + optional `FrontendBasePath`.
 
 #### Fixture subclass (required for non-default config)
 
@@ -122,12 +123,12 @@ public class MyApp_AspireTestingServer : RbkAspireTestingServer<MyApp_AppHost>
 {
     protected override AspireTestingOptions Options => new()
     {
-        BackendResourceName = "api",
-        FrontendResourceName = "webfrontend",
-        FrontendBasePath = "/myapp",
-        LoginPath = "/api/authentication/login",
-        AccessTokenStorageKey = "myapp_access_token",
-        ApiRedirectOrigin = "https://localhost:44301",
+        BackendResourceName = "backend",
+        FrontendResourceName = "frontend",
+        FrontendPort = 4207,
+        FrontendBasePath = "/gcab",
+        LoginPath = "/api/ca/login",
+        AccessTokenStorageKey = "gcab_access_token",
     };
 }
 ```
@@ -154,12 +155,14 @@ public class UserManagement_E2E_Tests : RbkPlaywrightTestBase<MyApp_AppHost>
 Resource names in the AppHost must match `AspireTestingOptions`:
 
 ```csharp
-var backend = builder.AddProject<Projects.MyApp_Api>("api");
-var frontend = builder.AddNpmApp("webfrontend", "../front", "start")
-    .WithReference(backend);
+var backend = builder.AddProject<Projects.MyApp_Api>("backend")
+    .WithHttpsEndpoint(port: 44301, name: "https");
+var frontend = builder.AddExecutable("frontend", "npm", frontPath, "start", "--", "--port", "4207")
+    .WithReference(backend)
+    .WithExternalHttpEndpoints();
 ```
 
-The fixture resolves backend and frontend URLs via `CreateHttpClient` after waiting for resources to become healthy. If the Angular app hardcodes an API base URL, set `ApiRedirectOrigin` so Playwright redirects those requests to the actual Aspire backend URL.
+The fixture resolves the backend URL via `CreateHttpClient` and the API redirect origin via `GetEndpoint` on the `https` endpoint. Playwright redirects browser calls from that origin to the runtime backend URL. Set `FrontendPort` to match the port passed to ng serve / npm start.
 
 #### Execution-only environment variables
 
@@ -170,6 +173,25 @@ These control test **execution**, not application config:
 - `E2E_SCREENSHOT_ALWAYS` — capture screenshots on every test
 
 Use `TestSettings` on the test base class to override `Headless` and diagnostic logging per test class.
+
+#### Troubleshooting
+
+**Backend endpoint not found**
+
+The backend must declare `.WithHttpsEndpoint(..., name: "https")`. The fixture always uses the endpoint named `"https"`.
+
+**Frontend registered with `AddExecutable` + `npm start -- --port 4207`**
+
+Set `FrontendPort` to the same port passed on the CLI. The fixture waits for the Aspire `frontend` resource to become healthy, then opens `http://localhost:{FrontendPort}`.
+
+**AppHost E2E conditionals (`isE2EMode`, `DROP_DATABASE_ON_START`, etc.)**
+
+`RbkAspireTestingServer` starts the AppHost with `--environment=Testing` and sets `E2E_TESTING=true` before launch. Your AppHost can keep checking either flag:
+
+```csharp
+var isE2EMode = builder.Environment.EnvironmentName == "Testing"
+    || Environment.GetEnvironmentVariable("E2E_TESTING") == "true";
+```
 
 ## Usage Examples
 

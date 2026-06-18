@@ -2,43 +2,53 @@
 
 All notable changes to rbkApiModules are documented here. Changes are organized by release, newest first. Consumer-facing changes only — internal implementation details are excluded.
 
+## X.X.X
+
+E2E testing bug fixes
+
 ## 10.4.0
 
 ### rbkApiModules.Commons.Testing
 
 #### New Features
-- **`AspireTestingOptions`** — Project-level configuration for Aspire E2E tests (resource names, login path, localStorage key, API redirect origin, frontend URL).
-- **`RbkAspireTestingServer<TAppHost>`** — Frontend URL is now resolved from Aspire (same as backend); optional `FrontendUrlOverride` for local debug when the frontend runs outside the AppHost.
+- **`AspireTestingOptions`** — Project-level configuration for Aspire E2E tests (resource names, frontend port, login path, localStorage key).
+- **`RbkAspireTestingServer<TAppHost>`** — Resolves backend URL and API redirect origin from the Aspire `https` endpoint; builds frontend URL as `http://localhost:{FrontendPort}`.
 
 #### Breaking Changes
-- ⚠️ **E2E app config moved to a fixture subclass** — Hardcoded defaults (`E2E_FRONTEND_URL`, `gcab_access_token`, `https://localhost:44301`, etc.) were removed. Create a project-specific subclass and override `Options`:
+- ⚠️ **E2E app config moved to a fixture subclass** — Create a project-specific subclass and override `Options`:
 
 ```csharp
 public class MyApp_AspireTestingServer : RbkAspireTestingServer<MyApp_AppHost>
 {
     protected override AspireTestingOptions Options => new()
     {
-        BackendResourceName = "api",
-        FrontendResourceName = "webfrontend",
+        BackendResourceName = "backend",
+        FrontendResourceName = "frontend",
+        FrontendPort = 4207,
         LoginPath = "/api/ca/login",
         AccessTokenStorageKey = "myapp_access_token",
-        ApiRedirectOrigin = "https://localhost:44301",
         FrontendBasePath = "/myapp",
     };
 }
 ```
 
+Removed options: `BackendEndpointName` (always `"https"`), `FrontendEndpointName`, `FrontendUrlOverride`, `ApiRedirectOrigin` (derived from Aspire via `GetEndpoint`).
+
 Use it in tests: `[ClassDataSource<MyApp_AspireTestingServer>(Shared = SharedType.PerClass)]`.
 
 #### Upgrade guide (Aspire E2E / Playwright)
 
-1. **Create a fixture subclass** (see above) and reference it in `[ClassDataSource<...>]` instead of `RbkAspireTestingServer<TAppHost>` directly.
-2. **Move `LoginPath`** from `RbkPlaywrightTestBase` (or a local test base override) into `AspireTestingOptions.LoginPath`.
-3. **Remove `TestSettings.LoginPath`** — it is no longer used.
-4. **Replace `E2E_FRONTEND_URL`** — omit it; the fixture reads the frontend from Aspire. For a frontend running outside Aspire, set `FrontendUrlOverride` in `Options`.
-5. **Update `CreateAuthenticatedContextAsync` calls** — signature is now `(username, tenant)` only; login path comes from `Options`.
+1. **Create a fixture subclass** (see above) and reference it in `[ClassDataSource<...>]`.
+2. **Move `LoginPath`** into `AspireTestingOptions.LoginPath`.
+3. **Remove `TestSettings.LoginPath`** — no longer used.
+4. **Replace `FrontendUrlOverride` / `E2E_FRONTEND_URL`** with `FrontendPort` (e.g. `4207`).
+5. **Remove `ApiRedirectOrigin`** — derived from the backend's `.WithHttpsEndpoint(..., name: "https")`.
+6. **Remove `BackendEndpointName`** — backend must use an endpoint named `"https"`.
+7. **Update `CreateAuthenticatedContextAsync` calls** — signature is `(username, tenant)` only.
 
 See [Testing.md — Aspire E2E Testing](Testing.md#aspire-e2e-testing-playwright) for full details.
+
+## 10.3.1
 
 - Fixed a bug in which `QueryResponse.Failure('..')` was not setting the correct status code.
 

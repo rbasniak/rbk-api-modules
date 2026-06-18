@@ -8,23 +8,21 @@ public sealed class AspireTestingOptions
 {
     /// <summary>
     /// Aspire resource name for the backend API (must match the AppHost registration).
+    /// The backend must expose an HTTPS endpoint named <c>https</c> (e.g. <c>.WithHttpsEndpoint(port: 44301, name: "https")</c>).
     /// </summary>
     public string BackendResourceName { get; init; } = "backend";
 
     /// <summary>
-    /// Endpoint name on the backend resource (typically <c>https</c>).
-    /// </summary>
-    public string BackendEndpointName { get; init; } = "https";
-
-    /// <summary>
     /// Aspire resource name for the frontend (must match the AppHost registration).
+    /// Used to wait for the frontend process to become healthy before tests run.
     /// </summary>
     public string FrontendResourceName { get; init; } = "frontend";
 
     /// <summary>
-    /// Endpoint name on the frontend resource (typically <c>https</c> or <c>http</c>).
+    /// Localhost port where the frontend dev server listens during E2E tests (e.g. <c>4207</c> for ng serve).
+    /// The fixture builds the URL as <c>http://localhost:{FrontendPort}</c>.
     /// </summary>
-    public string FrontendEndpointName { get; init; } = "https";
+    public int FrontendPort { get; init; } = 4207;
 
     /// <summary>
     /// Optional path suffix appended to the frontend base URL (e.g. <c>/gcab</c> for a base href).
@@ -32,21 +30,9 @@ public sealed class AspireTestingOptions
     public string? FrontendBasePath { get; init; }
 
     /// <summary>
-    /// Fixed frontend URL used when the frontend does not run as an Aspire resource (local debug).
-    /// When set, Aspire frontend lookup is skipped.
-    /// </summary>
-    public string? FrontendUrlOverride { get; init; }
-
-    /// <summary>
     /// localStorage key used by the frontend to store the JWT access token.
     /// </summary>
     public string AccessTokenStorageKey { get; init; } = "access_token";
-
-    /// <summary>
-    /// Origin that the frontend hardcodes for API calls (e.g. <c>https://localhost:44301</c>).
-    /// When set, Playwright intercepts requests to this origin and redirects them to the actual Aspire backend URL.
-    /// </summary>
-    public string? ApiRedirectOrigin { get; init; }
 
     /// <summary>
     /// Backend login endpoint path (e.g. <c>/api/authentication/login</c>).

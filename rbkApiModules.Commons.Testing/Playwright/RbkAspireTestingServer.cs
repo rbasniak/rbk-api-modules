@@ -12,6 +12,8 @@ namespace rbkApiModules.Testing.Core;
 /// </summary>
 public class RbkAspireTestingServer<TAppHost> : IAsyncDisposable where TAppHost : class
 {
+    private const string BackendHttpsEndpoint = "https";
+
     private static readonly TimeSpan ResourceStartupTimeout = TimeSpan.FromMinutes(2);
 
     private DistributedApplication? _app;
@@ -19,6 +21,7 @@ public class RbkAspireTestingServer<TAppHost> : IAsyncDisposable where TAppHost 
     private IBrowser? _browser;
     private HttpClient? _httpClient;
     private AspireTestingOptions? _options;
+    private string _apiRedirectOrigin = string.Empty;
     private bool _initialized = false;
 
     /// <summary>
@@ -66,6 +69,12 @@ public class RbkAspireTestingServer<TAppHost> : IAsyncDisposable where TAppHost 
 
         _options = Options;
 
+        if (_options.FrontendPort <= 0)
+        {
+            throw new InvalidOperationException(
+                $"{nameof(AspireTestingOptions.FrontendPort)} must be a positive port number.");
+        }
+
         LogDiagnosticMessage("========================================");
         LogDiagnosticMessage("Starting Aspire E2E Test Initialization");
         LogDiagnosticMessage("========================================");
@@ -73,7 +82,8 @@ public class RbkAspireTestingServer<TAppHost> : IAsyncDisposable where TAppHost 
         try
         {
             LogDiagnosticMessage("Step 1: Creating Aspire application builder...");
-            var appHost = await DistributedApplicationTestingBuilder.CreateAsync<TAppHost>();
+            Environment.SetEnvironmentVariable("E2E_TESTING", "true");
+            var appHost = await DistributedApplicationTestingBuilder.CreateAsync<TAppHost>(["--environment=Testing"]);
 
             if (!VerboseLogging)
             {
@@ -97,13 +107,16 @@ public class RbkAspireTestingServer<TAppHost> : IAsyncDisposable where TAppHost 
                 .WaitForResourceHealthyAsync(_options.BackendResourceName, startupCts.Token);
 
             LogDiagnosticMessage("Step 5: Creating HTTP client for backend...");
-            _httpClient = _app.CreateHttpClient(_options.BackendResourceName, _options.BackendEndpointName);
+            _httpClient = CreateBackendHttpClient(_options.BackendResourceName);
 
             BackendUrl = _httpClient.BaseAddress?.ToString().TrimEnd('/')
                 ?? throw new InvalidOperationException(
                     $"Failed to get backend URL from Aspire resource '{_options.BackendResourceName}'.");
 
+            _apiRedirectOrigin = ResolveApiRedirectOrigin(_options.BackendResourceName);
+
             LogDiagnosticMessage($"  - Backend URL (from Aspire): {BackendUrl}");
+            LogDiagnosticMessage($"  - API redirect origin (Aspire https endpoint): {_apiRedirectOrigin}");
 
             LogDiagnosticMessage("Step 6: Resolving frontend URL...");
             FrontendUrl = await ResolveFrontendUrlAsync(_options, startupCts.Token);
@@ -161,28 +174,46 @@ public class RbkAspireTestingServer<TAppHost> : IAsyncDisposable where TAppHost 
         }
     }
 
+    private string ResolveApiRedirectOrigin(string backendResourceName)
+    {
+        try
+        {
+            var endpoint = _app!.GetEndpoint(backendResourceName, BackendHttpsEndpoint);
+            return endpoint.GetLeftPart(UriPartial.Authority).TrimEnd('/');
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException(
+                $"Failed to resolve the API redirect origin from Aspire resource '{backendResourceName}' " +
+                $"endpoint '{BackendHttpsEndpoint}'. Ensure the backend declares " +
+                $".WithHttpsEndpoint(..., name: \"{BackendHttpsEndpoint}\").",
+                ex);
+        }
+    }
+
     private async Task<string> ResolveFrontendUrlAsync(AspireTestingOptions options, CancellationToken cancellationToken)
     {
-        string baseUrl;
+        LogDiagnosticMessage($"  - Waiting for frontend resource '{options.FrontendResourceName}'...");
+        await _app!.ResourceNotifications
+            .WaitForResourceHealthyAsync(options.FrontendResourceName, cancellationToken);
 
-        if (!string.IsNullOrWhiteSpace(options.FrontendUrlOverride))
-        {
-            baseUrl = options.FrontendUrlOverride.TrimEnd('/');
-        }
-        else
-        {
-            LogDiagnosticMessage($"  - Waiting for frontend resource '{options.FrontendResourceName}'...");
-            await _app!.ResourceNotifications
-                .WaitForResourceHealthyAsync(options.FrontendResourceName, cancellationToken);
-
-            var frontendClient = _app.CreateHttpClient(options.FrontendResourceName, options.FrontendEndpointName);
-            baseUrl = frontendClient.BaseAddress?.ToString().TrimEnd('/')
-                ?? throw new InvalidOperationException(
-                    $"Failed to get frontend URL from Aspire resource '{options.FrontendResourceName}'. " +
-                    $"Set {nameof(AspireTestingOptions.FrontendUrlOverride)} if the frontend runs outside Aspire.");
-        }
-
+        var baseUrl = $"http://localhost:{options.FrontendPort}";
         return AppendFrontendBasePath(baseUrl, options.FrontendBasePath);
+    }
+
+    private HttpClient CreateBackendHttpClient(string resourceName)
+    {
+        try
+        {
+            return _app!.CreateHttpClient(resourceName, BackendHttpsEndpoint);
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException(
+                $"Failed to create HTTP client for Aspire resource '{resourceName}' endpoint '{BackendHttpsEndpoint}'. " +
+                $"Ensure the backend declares .WithHttpsEndpoint(..., name: \"{BackendHttpsEndpoint}\").",
+                ex);
+        }
     }
 
     private static string AppendFrontendBasePath(string baseUrl, string? basePath)
@@ -246,9 +277,9 @@ public class RbkAspireTestingServer<TAppHost> : IAsyncDisposable where TAppHost 
             ViewportSize = new ViewportSize { Width = 1920, Height = 1080 }
         });
 
-        if (!string.IsNullOrWhiteSpace(options.ApiRedirectOrigin))
+        var redirectOrigin = _apiRedirectOrigin;
+        if (!string.IsNullOrWhiteSpace(redirectOrigin))
         {
-            var redirectOrigin = options.ApiRedirectOrigin.TrimEnd('/');
             await context.RouteAsync($"{redirectOrigin}/**", async route =>
             {
                 var request = route.Request;
@@ -289,11 +320,8 @@ public class RbkAspireTestingServer<TAppHost> : IAsyncDisposable where TAppHost 
                 "(args) => localStorage.setItem(args.key, args.token)",
                 new { key = options.AccessTokenStorageKey, token = accessToken });
 
-            if (!string.IsNullOrWhiteSpace(options.ApiRedirectOrigin))
-            {
-                LogDiagnosticMessage(
-                    $"Note: API calls to {options.ApiRedirectOrigin} will be automatically redirected to {BackendUrl}");
-            }
+            LogDiagnosticMessage(
+                $"Note: API calls to {redirectOrigin} will be automatically redirected to {BackendUrl}");
 
             LogDiagnosticMessage("Navigating back to frontend root to leave login flow");
             await page.GotoAsync(FrontendUrl, new() { Timeout = 60000, WaitUntil = WaitUntilState.NetworkIdle });
