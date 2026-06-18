@@ -2,7 +2,7 @@
 
 All notable changes to rbkApiModules are documented here. Changes are organized by release, newest first. Consumer-facing changes only — internal implementation details are excluded.
 
-## X.X.X
+## 10.4.1
 
 E2E testing bug fixes
 
@@ -82,6 +82,7 @@ See [Testing.md — Aspire E2E Testing](Testing.md#aspire-e2e-testing-playwright
 ---
 
 *No prior release history recorded.*
+
 
 
 
