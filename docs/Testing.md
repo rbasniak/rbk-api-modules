@@ -162,7 +162,9 @@ var frontend = builder.AddExecutable("frontend", "npm", frontPath, "start", "--"
     .WithExternalHttpEndpoints();
 ```
 
-The fixture resolves the backend URL via `CreateHttpClient` and the API redirect origin via `GetEndpoint` on the `https` endpoint. Playwright redirects browser calls from that origin to the runtime backend URL. Set `FrontendPort` to match the port passed to ng serve / npm start.
+The fixture resolves the backend URL via `CreateHttpClient` and the API redirect origin from the **configured** `https` endpoint port in the AppHost (e.g. `44301` from `.WithHttpsEndpoint(port: 44301, name: "https")`). During tests Aspire may assign a different runtime port; Playwright redirects browser calls from the configured origin to the runtime backend URL.
+
+Set `FrontendPort` to match the port passed to ng serve / npm start.
 
 #### Execution-only environment variables
 

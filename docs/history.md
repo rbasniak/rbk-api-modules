@@ -2,6 +2,10 @@
 
 All notable changes to rbkApiModules are documented here. Changes are organized by release, newest first. Consumer-facing changes only — internal implementation details are excluded.
 
+## X.X.X
+
+E2E testing bug fixes
+
 ## 10.4.1
 
 E2E testing bug fixes
