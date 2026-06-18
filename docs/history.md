@@ -2,7 +2,44 @@
 
 All notable changes to rbkApiModules are documented here. Changes are organized by release, newest first. Consumer-facing changes only — internal implementation details are excluded.
 
-## 10.3.1
+## X.X.X
+
+### rbkApiModules.Commons.Testing
+
+#### New Features
+- **`AspireTestingOptions`** — Project-level configuration for Aspire E2E tests (resource names, login path, localStorage key, API redirect origin, frontend URL).
+- **`RbkAspireTestingServer<TAppHost>`** — Frontend URL is now resolved from Aspire (same as backend); optional `FrontendUrlOverride` for local debug when the frontend runs outside the AppHost.
+
+#### Breaking Changes
+- ⚠️ **E2E app config moved to a fixture subclass** — Hardcoded defaults (`E2E_FRONTEND_URL`, `gcab_access_token`, `https://localhost:44301`, etc.) were removed. Create a project-specific subclass and override `Options`:
+
+```csharp
+public class MyApp_AspireTestingServer : RbkAspireTestingServer<MyApp_AppHost>
+{
+    protected override AspireTestingOptions Options => new()
+    {
+        BackendResourceName = "api",
+        FrontendResourceName = "webfrontend",
+        LoginPath = "/api/ca/login",
+        AccessTokenStorageKey = "myapp_access_token",
+        ApiRedirectOrigin = "https://localhost:44301",
+        FrontendBasePath = "/myapp",
+    };
+}
+```
+
+Use it in tests: `[ClassDataSource<MyApp_AspireTestingServer>(Shared = SharedType.PerClass)]`.
+
+#### Upgrade guide (Aspire E2E / Playwright)
+
+1. **Create a fixture subclass** (see above) and reference it in `[ClassDataSource<...>]` instead of `RbkAspireTestingServer<TAppHost>` directly.
+2. **Move `LoginPath`** from `RbkPlaywrightTestBase` (or a local test base override) into `AspireTestingOptions.LoginPath`.
+3. **Remove `TestSettings.LoginPath`** — it is no longer used.
+4. **Replace `E2E_FRONTEND_URL`** — omit it; the fixture reads the frontend from Aspire. For a frontend running outside Aspire, set `FrontendUrlOverride` in `Options`.
+5. **Update `CreateAuthenticatedContextAsync` calls** — signature is now `(username, tenant)` only; login path comes from `Options`.
+
+See [Testing.md — Aspire E2E Testing](Testing.md#aspire-e2e-testing-playwright) for full details.
+
 - Fixed a bug in which `QueryResponse.Failure('..')` was not setting the correct status code.
 
 ## 10.3.0

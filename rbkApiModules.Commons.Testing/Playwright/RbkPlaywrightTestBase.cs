@@ -30,12 +30,6 @@ public abstract class RbkPlaywrightTestBase<TAppHost> : IAsyncDisposable where T
 
     protected virtual TestSettings TestSettings => TestSettings.Default;
 
-    /// <summary>
-    /// Login endpoint path used by <see cref="Authenticate"/>.
-    /// Defaults to <c>/api/ca/login</c>. Override in a test class to point at a different login route.
-    /// </summary>
-    protected virtual string LoginPath => "/api/authentication/login";
-
     private void LogDiagnosticMessage(string message)
     {
         if (TestSettings.EnableAspireDiagnosticMessages)
@@ -98,7 +92,7 @@ public abstract class RbkPlaywrightTestBase<TAppHost> : IAsyncDisposable where T
     protected async Task Authenticate(string username, string tenant)
     {
         LogDiagnosticMessage("Creating authenticated browser context...");
-        Context = await Fixture.CreateAuthenticatedContextAsync(username, tenant, LoginPath);
+        Context = await Fixture.CreateAuthenticatedContextAsync(username, tenant);
         Page = await Context.NewPageAsync();
 
         // Navigate to the frontend
@@ -150,12 +144,6 @@ public sealed class TestSettings
     /// variable decide.
     /// </summary>
     public bool? Headless { get; init; } = null;
-
-    /// <summary>
-    /// Login endpoint path used by <see cref="RbkPlaywrightTestBase.Authenticate"/>.
-    /// Defaults to <c>/api/ca/login</c>. Override in a test class to point at a different login route.
-    /// </summary>
-    public string LoginPath { get; init; } = "/api/authentication/login";
 
     public static TestSettings Default => new TestSettings();
 

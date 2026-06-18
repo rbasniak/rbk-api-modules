@@ -203,7 +203,9 @@ public static class Builder
 
             var context = contexts.GetDefaultContext();
 
-            var user = context.Set<User>().FirstOrDefault(x => x.Username == options._username && String.IsNullOrEmpty(x.TenantId));
+            var user = context.Set<User>()
+                .Include(x => x.Claims)
+                .FirstOrDefault(x => x.Username == options._username && String.IsNullOrEmpty(x.TenantId));
 
             if (user == null)
             {

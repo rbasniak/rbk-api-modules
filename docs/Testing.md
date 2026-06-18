@@ -95,6 +95,82 @@ var response = await PostAsync<UserDetails>("/api/users", request, new JwtToken(
 var response = await PostAsync<UserDetails>("/api/users", request, new ApiKey("key"));
 ```
 
+### Aspire E2E Testing (Playwright)
+
+For full-stack E2E tests against a .NET Aspire AppHost, use `RbkAspireTestingServer<TAppHost>` together with `RbkPlaywrightTestBase<TAppHost>`.
+
+Project-specific settings (resource names, login path, localStorage key, API redirect origin) are **constants for the entire test project**. Configure them once in a fixture subclass — the same pattern as `Demo1TestingServer : RbkTestingServer<Program>`.
+
+#### AspireTestingOptions
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `BackendResourceName` | `"backend"` | Aspire resource name for the API |
+| `BackendEndpointName` | `"https"` | Endpoint on the backend resource |
+| `FrontendResourceName` | `"frontend"` | Aspire resource name for the frontend |
+| `FrontendEndpointName` | `"https"` | Endpoint on the frontend resource |
+| `FrontendBasePath` | `null` | Optional path suffix (e.g. `/gcab`) |
+| `FrontendUrlOverride` | `null` | Fixed URL when the frontend runs outside Aspire (local debug) |
+| `AccessTokenStorageKey` | `"access_token"` | localStorage key for the JWT |
+| `ApiRedirectOrigin` | `null` | Hardcoded API origin in the frontend to intercept (e.g. `https://localhost:44301`) |
+| `LoginPath` | `"/api/authentication/login"` | Backend login endpoint |
+
+#### Fixture subclass (required for non-default config)
+
+```csharp
+public class MyApp_AspireTestingServer : RbkAspireTestingServer<MyApp_AppHost>
+{
+    protected override AspireTestingOptions Options => new()
+    {
+        BackendResourceName = "api",
+        FrontendResourceName = "webfrontend",
+        FrontendBasePath = "/myapp",
+        LoginPath = "/api/authentication/login",
+        AccessTokenStorageKey = "myapp_access_token",
+        ApiRedirectOrigin = "https://localhost:44301",
+    };
+}
+```
+
+#### Test class
+
+```csharp
+public class UserManagement_E2E_Tests : RbkPlaywrightTestBase<MyApp_AppHost>
+{
+    [ClassDataSource<MyApp_AspireTestingServer>(Shared = SharedType.PerClass)]
+    public required override MyApp_AspireTestingServer Fixture { get; set; }
+
+    [Test]
+    public async Task Admin_Can_View_Users()
+    {
+        await Authenticate("admin", "default");
+        // Page and Context are ready; FrontendUrl comes from the fixture
+    }
+}
+```
+
+#### AppHost contract
+
+Resource names in the AppHost must match `AspireTestingOptions`:
+
+```csharp
+var backend = builder.AddProject<Projects.MyApp_Api>("api");
+var frontend = builder.AddNpmApp("webfrontend", "../front", "start")
+    .WithReference(backend);
+```
+
+The fixture resolves backend and frontend URLs via `CreateHttpClient` after waiting for resources to become healthy. If the Angular app hardcodes an API base URL, set `ApiRedirectOrigin` so Playwright redirects those requests to the actual Aspire backend URL.
+
+#### Execution-only environment variables
+
+These control test **execution**, not application config:
+
+- `E2E_HEADLESS` — browser headless mode (default: `true`)
+- `E2E_SLOW_MO` — Playwright slow-motion delay in ms
+- `E2E_SCREENSHOT_ALWAYS` — capture screenshots on every test
+
+Use `TestSettings` on the test base class to override `Headless` and diagnostic logging per test class.
+
 ## Usage Examples
 
 ### Basic Test Setup
@@ -483,6 +559,8 @@ public async Task ConcurrentUserCreation_ShouldHandleConflicts()
 - Shouldly
 - TUnit
 - MimeKit
+- Aspire.Hosting.Testing
+- Microsoft.Playwright
 
 ## Troubleshooting
 

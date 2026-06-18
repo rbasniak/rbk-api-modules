@@ -1,4 +1,4 @@
-namespace GCAB.Tests.E2E;
+namespace rbkApiModules.Tests.E2E;
 
 /// <summary>
 /// Global test session setup for Playwright E2E tests
