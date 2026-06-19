@@ -2,6 +2,10 @@
 
 All notable changes to rbkApiModules are documented here. Changes are organized by release, newest first. Consumer-facing changes only — internal implementation details are excluded.
 
+## X.X.X
+
+- Package updates across the board
+
 ## 10.4.3
 
 ### rbkApiModules.Commons.Testing
