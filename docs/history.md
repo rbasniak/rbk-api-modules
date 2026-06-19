@@ -2,6 +2,12 @@
 
 All notable changes to rbkApiModules are documented here. Changes are organized by release, newest first. Consumer-facing changes only — internal implementation details are excluded.
 
+## X.X.X
+
+### rbkApiModules.Commons.Testing
+
+- Added `FileEncodingChecker` utility for validating file encodings (e.g. UTF-8) in tests.
+
 ## 10.4.2
 
 E2E testing bug fixes
