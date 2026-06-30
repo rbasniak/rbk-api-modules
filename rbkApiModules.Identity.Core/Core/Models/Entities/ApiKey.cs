@@ -27,16 +27,11 @@ public sealed class ApiKey : TenantEntity
             throw new ArgumentNullException(nameof(keyHash));
         }
 
-        if (string.IsNullOrWhiteSpace(keyPrefix))
-        {
-            throw new ArgumentNullException(nameof(keyPrefix));
-        }
-
         ValidateRateLimits(requestsPerMinute, burstLimit);
 
         Name = name;
         KeyHash = keyHash;
-        KeyPrefix = keyPrefix;
+        KeyPrefix = keyPrefix ?? string.Empty;
         TenantId = tenantId;
         ExpirationDate = expirationDate;
         IsActive = true;

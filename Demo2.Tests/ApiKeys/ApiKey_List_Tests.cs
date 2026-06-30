@@ -27,7 +27,7 @@ public class ApiKey_List_Tests
 
         keys.Count.ShouldBe(5);
         var integration = keys.Single(x => x.Name == "Demo2 integration");
-        integration.KeyPrefix.ShouldBe("rbk_live_");
+        integration.KeyPrefix.ShouldBe("rbk_live");
         integration.IsActive.ShouldBeTrue();
         integration.ExpirationDate.ShouldBeNull();
         integration.TenantId.ShouldBeNull();

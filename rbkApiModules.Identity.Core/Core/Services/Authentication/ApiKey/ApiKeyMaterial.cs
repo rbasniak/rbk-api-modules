@@ -10,15 +10,25 @@ public static class ApiKeyMaterial
     /// <summary>Generates a new API key: raw value (returned once), public prefix segment, and SHA-256 hash (hex, lowercase) of the raw key.</summary>
     public static (string RawKey, string KeyPrefix, string KeyHash) Generate(string publicPrefix = DefaultPublicPrefix)
     {
-        if (string.IsNullOrEmpty(publicPrefix))
-        {
-            throw new ArgumentNullException(nameof(publicPrefix));
-        }
-
         var secret = Convert.ToHexString(RandomNumberGenerator.GetBytes(32)).ToLowerInvariant();
-        var rawKey = $"{publicPrefix}{secret}";
+        publicPrefix ??= string.Empty;
+        var rawKey = string.IsNullOrEmpty(publicPrefix) ? secret : $"{publicPrefix}{secret}";
         var keyHash = HashRawKey(rawKey);
         return (rawKey, publicPrefix, keyHash);
+    }
+
+    /// <summary>Builds a raw API key from a secret segment and optional prefix ({prefix}_{key} when prefix is set, otherwise just key).</summary>
+    public static (string RawKey, string KeyPrefix, string KeyHash) Compose(string key, string prefix = "")
+    {
+        if (string.IsNullOrWhiteSpace(key))
+        {
+            throw new ArgumentException("API key secret segment is empty.", nameof(key));
+        }
+
+        prefix ??= string.Empty;
+        var rawKey = string.IsNullOrEmpty(prefix) ? key : $"{prefix}_{key}";
+        var keyHash = HashRawKey(rawKey);
+        return (rawKey, prefix, keyHash);
     }
 
     public static string HashRawKey(string rawKey)

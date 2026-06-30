@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Identity.Core;
+using System.Security.Cryptography;
 
 namespace rbkApiModules.Identity.Relational;
 
@@ -11,9 +12,10 @@ public static class ApiKeySeeding
         DbContext context,
         string name,
         IReadOnlyList<Guid> claimIds,
-        string? rawKey,
+        string? key,
         DateTime? expirationDate,
         string? tenantId,
+        string prefix = "",
         CancellationToken cancellationToken = default)
     {
         if (claimIds == null || claimIds.Count == 0)
@@ -44,27 +46,21 @@ public static class ApiKeySeeding
         }
 
         string raw;
-        string prefix;
+        string storedPrefix;
         string hash;
 
-        if (string.IsNullOrEmpty(rawKey))
+        if (string.IsNullOrEmpty(key))
         {
-            (raw, prefix, hash) = ApiKeyMaterial.Generate();
+            var secret = Convert.ToHexString(RandomNumberGenerator.GetBytes(32)).ToLowerInvariant();
+            (raw, storedPrefix, hash) = ApiKeyMaterial.Compose(secret, prefix);
         }
         else
         {
-            if (!ApiKeyMaterial.TryParseStoredPrefix(rawKey, ApiKeyMaterial.DefaultPublicPrefix, out var err))
-            {
-                throw new ArgumentException(err, nameof(rawKey));
-            }
-
-            raw = rawKey;
-            prefix = ApiKeyMaterial.DefaultPublicPrefix;
-            hash = ApiKeyMaterial.HashRawKey(raw);
+            (raw, storedPrefix, hash) = ApiKeyMaterial.Compose(key, prefix);
         }
 
         const int defaultRequestsPerMinute = 600;
-        var apiKey = new ApiKey(name, hash, prefix, tenantId, expirationDate, defaultRequestsPerMinute, defaultRequestsPerMinute);
+        var apiKey = new ApiKey(name, hash, storedPrefix, tenantId, expirationDate, defaultRequestsPerMinute, defaultRequestsPerMinute);
 
         foreach (var claim in claims)
         {

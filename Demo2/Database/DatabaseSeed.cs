@@ -45,9 +45,10 @@ public class DatabaseSeed : DatabaseSeedManager<DatabaseContext>, IDatabaseSeede
             context,
             "Demo2 integration",
             new List<Guid> { demoApiClaim.Id },
-            DemoIntegrationApiKey.Value,
+            DemoIntegrationApiKey.Secret,
             expirationDate: null,
-            tenantId: null).GetAwaiter().GetResult();
+            tenantId: null,
+            prefix: DemoIntegrationApiKey.Prefix).GetAwaiter().GetResult();
 
         var crossTenantApiKeysClaim = context.Set<Claim>().First(x => x.Identification == AuthenticationClaims.CAN_MANAGE_CROSS_TENANT_API_KEYS);
 
@@ -55,32 +56,36 @@ public class DatabaseSeed : DatabaseSeedManager<DatabaseContext>, IDatabaseSeede
             context,
             "Demo2 global manage+cross",
             new List<Guid> { manageApiKeysClaim.Id, crossTenantApiKeysClaim.Id, demoApiClaim.Id },
-            Demo2TestApiKeys.GlobalManageAndCrossTenant,
+            Demo2TestApiKeys.GlobalManageAndCrossTenantSecret,
             expirationDate: null,
-            tenantId: null).GetAwaiter().GetResult();
+            tenantId: null,
+            prefix: Demo2TestApiKeys.Prefix).GetAwaiter().GetResult();
 
         ApiKeySeeding.SeedApiKeyAsync(
             context,
             "Demo2 global manage only",
             new List<Guid> { manageApiKeysClaim.Id, demoApiClaim.Id },
-            Demo2TestApiKeys.GlobalManageOnly,
+            Demo2TestApiKeys.GlobalManageOnlySecret,
             expirationDate: null,
-            tenantId: null).GetAwaiter().GetResult();
+            tenantId: null,
+            prefix: Demo2TestApiKeys.Prefix).GetAwaiter().GetResult();
 
         ApiKeySeeding.SeedApiKeyAsync(
             context,
             "Demo2 buzios manage",
             new List<Guid> { manageApiKeysClaim.Id, demoApiClaim.Id },
-            Demo2TestApiKeys.BuziosManage,
+            Demo2TestApiKeys.BuziosManageSecret,
             expirationDate: null,
-            tenantId: buzios.Alias).GetAwaiter().GetResult();
+            tenantId: buzios.Alias,
+            prefix: Demo2TestApiKeys.Prefix).GetAwaiter().GetResult();
 
         ApiKeySeeding.SeedApiKeyAsync(
             context,
             "Demo2 un-bs manage",
             new List<Guid> { manageApiKeysClaim.Id, demoApiClaim.Id },
-            Demo2TestApiKeys.UnBsManage,
+            Demo2TestApiKeys.UnBsManageSecret,
             expirationDate: null,
-            tenantId: unBs.Alias).GetAwaiter().GetResult();
+            tenantId: unBs.Alias,
+            prefix: Demo2TestApiKeys.Prefix).GetAwaiter().GetResult();
     }
 }

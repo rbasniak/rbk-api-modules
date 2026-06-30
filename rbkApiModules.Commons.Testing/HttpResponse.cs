@@ -8,12 +8,16 @@ public class HttpResponse
     public HttpResponse()
     {
         Messages = [];
+        RequestHeaders = new Dictionary<string, string[]>();
+        ResponseHeaders = new Dictionary<string, string[]>();
     }
 
     public HttpStatusCode Code { get; set; }
     public string[] Messages { get; set; }
     public string Body { get; set; }
     public ProblemDetails? Problem { get; set; }
+    public IReadOnlyDictionary<string, string[]> RequestHeaders { get; set; }
+    public IReadOnlyDictionary<string, string[]> ResponseHeaders { get; set; }
     public bool IsSuccess => Code == HttpStatusCode.OK || Code == HttpStatusCode.NoContent;
 
     public override string ToString()

@@ -5,12 +5,22 @@ namespace rbkApiModules.Commons.Core;
 
 public static class ResultsMapper
 {
-    public static IResult FromResponse(BaseResponse response)
+    public static IResult FromResponse(BaseResponse response, HttpContext? httpContext = null)
     {
         if (response.IsValid)
         {
             if (response.Data != null)
             {
+                if (response.Data is FileResult fileResult)
+                {
+                    if (httpContext != null)
+                    {
+                        httpContext.Items["response-size"] = fileResult.FileStream.Length;
+                    }
+
+                    return Results.File(fileResult.FileStream, fileResult.ContentType, fileResult.FileName);
+                }
+
                 return Results.Ok(response.Data);
             }
 

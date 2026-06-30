@@ -98,9 +98,10 @@ public class DatabaseSeed : DatabaseSeedManager<DatabaseContext>, IDatabaseSeede
             context,
             "Demo integration",
             new List<Guid> { canAproveReportsClaim.Id },
-            DemoIntegrationApiKey.Value,
+            DemoIntegrationApiKey.Secret,
             expirationDate: null,
-            tenantId: null).GetAwaiter().GetResult();
+            tenantId: null,
+            prefix: DemoIntegrationApiKey.Prefix).GetAwaiter().GetResult();
 
         var generalRole = new Role("Employee");
         var generalManagerRole = new Role("Manager");

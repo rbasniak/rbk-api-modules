@@ -670,6 +670,8 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
 
         result.Code = response.StatusCode;
         result.Body = await response.Content.ReadAsStringAsync();
+        result.ResponseHeaders = GetHeaders(response.Headers, response.Content.Headers);
+        result.RequestHeaders = GetHeaders(response.RequestMessage?.Headers, response.RequestMessage?.Content?.Headers);
 
         if (response.StatusCode == HttpStatusCode.Redirect)
         {
@@ -693,6 +695,8 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
 
         result.Code = response.StatusCode;
         result.Body = await response.Content.ReadAsStringAsync();
+        result.ResponseHeaders = GetHeaders(response.Headers, response.Content.Headers);
+        result.RequestHeaders = GetHeaders(response.RequestMessage?.Headers, response.RequestMessage?.Content?.Headers);
 
         if (response.IsSuccessStatusCode)
         {
@@ -710,6 +714,26 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
         else
         {
             DeserializeErrorResult(result);
+        }
+
+        return result;
+    }
+
+    private static IReadOnlyDictionary<string, string[]> GetHeaders(params HttpHeaders?[] headersCollections)
+    {
+        var result = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var headers in headersCollections)
+        {
+            if (headers == null)
+            {
+                continue;
+            }
+
+            foreach (var header in headers)
+            {
+                result[header.Key] = header.Value.ToArray();
+            }
         }
 
         return result;

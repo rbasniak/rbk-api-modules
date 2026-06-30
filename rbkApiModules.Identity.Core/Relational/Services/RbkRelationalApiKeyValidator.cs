@@ -33,9 +33,9 @@ public sealed class RbkRelationalApiKeyValidator : IApiKeyValidator
 
     public async Task<AuthenticateResult> AuthenticateAsync(string apiKey, CancellationToken cancellationToken)
     {
-        if (!ApiKeyMaterial.TryParseStoredPrefix(apiKey, ApiKeyMaterial.DefaultPublicPrefix, out var formatError))
+        if (string.IsNullOrWhiteSpace(apiKey))
         {
-            return AuthenticateResult.Fail(formatError);
+            return AuthenticateResult.Fail("API key is empty.");
         }
 
         var keyHash = ApiKeyMaterial.HashRawKey(apiKey);

@@ -2,6 +2,29 @@
 
 All notable changes to rbkApiModules are documented here. Changes are organized by release, newest first. Consumer-facing changes only — internal implementation details are excluded.
 
+## X.X.X
+
+### rbkApiModules.Identity.Core
+
+#### New Features
+- **`ApiKeyMaterial.Compose()`** — Builds a raw API key from a secret segment and optional prefix (`{prefix}_{key}` when prefix is set, otherwise just the key).
+
+#### Breaking Changes
+- ⚠️ **`ApiKeySeeding.SeedApiKeyAsync` signature changed** — `rawKey` renamed to `key` (secret segment only). New optional `prefix` parameter; pass the prefix separately instead of embedding `rbk_live_` in the full key value. Pass `key: null` to generate a random secret.
+- ⚠️ **API key authentication no longer validates prefix format** — Any non-empty `Api-Key` header value is hashed and matched against the database. Custom or empty prefixes are supported for seeded keys.
+- ⚠️ **`KeyPrefix` may be empty** — The `ApiKey` entity no longer requires a non-empty prefix; `null` is stored as an empty string.
+
+### rbkApiModules.Commons.Core
+
+#### New Features
+- **`FileResult`** — Return type for file-download endpoints; mapped by `ResultsMapper.FromResponse()` to `Results.File()`.
+- **`ResultsMapper.FromResponse()`** — Optional `HttpContext` parameter; when response data is `FileResult`, sets `response-size` on the context for middleware.
+
+### rbkApiModules.Commons.Testing
+
+#### New Features
+- **`HttpResponse.RequestHeaders` and `HttpResponse.ResponseHeaders`** — Populated by `RbkTestingServer` when executing HTTP calls in integration tests.
+
 ## 10.4.4
 
 - Package updates across the board

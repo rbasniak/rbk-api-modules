@@ -93,7 +93,7 @@ app.SetupRbkAuthenticationClaims(options => options
 
 ## Key Format
 
-Generated keys follow the pattern:
+Keys created through the management API follow the pattern:
 
 ```
 rbk_live_<64-hex-chars>
@@ -109,6 +109,8 @@ rbk_live_fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210
 - The secret segment is 32 cryptographically random bytes encoded as lowercase hex
 - The raw key is **never stored** — only its SHA-256 hash is persisted in `KeyHash`
 - `KeyPrefix` is stored separately so you can identify a key in the database without revealing the secret
+
+Seeded keys support an optional custom prefix. When a prefix is provided the raw value is `{prefix}_{key}`; otherwise it is just `{key}`. `KeyPrefix` may be an empty string when no prefix is used.
 
 ---
 
@@ -180,7 +182,7 @@ Api-Key: rbk_live_fedcba9876543210fedcba9876543210fedcba9876543210fedcba98765432
 
 Authentication will fail (returning `401 Unauthorized`) if:
 
-- The key does not start with `rbk_live_`
+- The header value is empty
 - The SHA-256 hash does not match any record in the database
 - The matching key has `IsActive = false` or has been revoked
 - The key has passed its `ExpirationDate`
@@ -446,14 +448,27 @@ var result = await ApiKeySeeding.SeedApiKeyAsync(
     context: dbContext,
     name: "Integration Test Key",
     claimIds: new[] { claimId },
-    rawKey: "rbk_live_fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210",
+    key: "fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210",
     expirationDate: null,
     tenantId: null,
+    prefix: "rbk_live",
     cancellationToken: ct
 );
 
-// result.RawKey   — raw value to use in the Api-Key header
+// result.RawKey   — full raw value to use in the Api-Key header (prefix_key when prefix is set)
 // result.ApiKeyId — database ID of the persisted entity
 ```
 
-Pass `rawKey: null` to have the library generate a new random key. Pass an explicit value (must start with `rbk_live_`) for deterministic keys, which is useful for test fixtures where you want to hardcode the header value.
+Pass `key: null` to have the library generate a new random secret segment. Pass an explicit `key` for deterministic keys, which is useful for test fixtures where you want to hardcode the header value.
+
+The optional `prefix` parameter defaults to an empty string. When set, the stored raw key is `{prefix}_{key}`; when omitted, the raw key is just `{key}`. You can also pass the full header value as `key` with an empty prefix:
+
+```csharp
+await ApiKeySeeding.SeedApiKeyAsync(
+    context,
+    "Integration Test Key",
+    new[] { claimId },
+    key: "rbk_live_fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210",
+    expirationDate: null,
+    tenantId: null);
+```
