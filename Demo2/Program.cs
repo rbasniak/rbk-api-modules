@@ -49,7 +49,7 @@ public class Program
             .UseSymetricEncryptationKey()
             .UseLoginWithWindowsAuthentication()
             .UseMockedWindowsAuthentication()
-            .AddApiKeyAuthentication()
+            .AddApiKeyAuthentication() 
         );
 
         builder.Services.AddRbkUIDefinitions(Assembly.GetAssembly(typeof(Program)));

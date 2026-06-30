@@ -5,6 +5,7 @@ All notable changes to rbkApiModules are documented here. Changes are organized 
 ## X.X.X
 
 - Package updates across the board
+- Added missing endpoint for removing claim overrides
 
 ## 10.4.3
 

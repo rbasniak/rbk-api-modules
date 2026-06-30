@@ -91,6 +91,7 @@ public static class Builder
             ("DeleteRole", DeleteRole.MapEndpoint),
             ("RenameRole", RenameRole.MapEndpoint),
             ("UpdateRoleClaims", UpdateRoleClaims.MapEndpoint),
+            ("RemoveClaimOverride", RemoveClaimOverride.MapEndpoint),
             ("GetAllClaims", GetAllClaims.MapEndpoint),
             ("CreateClaim", CreateClaim.MapEndpoint),
             ("DeleteClaim", DeleteClaim.MapEndpoint),
