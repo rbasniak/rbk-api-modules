@@ -2,7 +2,7 @@
 
 All notable changes to rbkApiModules are documented here. Changes are organized by release, newest first. Consumer-facing changes only — internal implementation details are excluded.
 
-## X.X.X
+## 10.5.1
 - Fixed bug in which RefreshToken was generated with null value
 - Package updates across the board
 - Replaced SisLabors.ImageSharp for SkiaSharp 
@@ -125,6 +125,7 @@ See [Testing.md — Aspire E2E Testing](Testing.md#aspire-e2e-testing-playwright
 ---
 
 *No prior release history recorded.*
+
 
 
 
