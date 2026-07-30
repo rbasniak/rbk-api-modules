@@ -2,6 +2,11 @@
 
 All notable changes to rbkApiModules are documented here. Changes are organized by release, newest first. Consumer-facing changes only — internal implementation details are excluded.
 
+## X.X.X
+- Fixed bug in which RefreshToken was generated with null value
+- Package updates across the board
+- Replaced SisLabors.ImageSharp for SkiaSharp 
+
 ## 10.5.0
 
 ### rbkApiModules.Identity.Core

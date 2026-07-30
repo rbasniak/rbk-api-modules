@@ -11,7 +11,7 @@
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
 		<PackageReference Include="Microsoft.Extensions.DependencyModel" />
 		<PackageReference Include="OpenTelemetry" />
-		<PackageReference Include="SixLabors.ImageSharp" />
+		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" />
 	</ItemGroup>
 

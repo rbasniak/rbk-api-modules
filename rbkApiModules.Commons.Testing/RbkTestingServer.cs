@@ -237,7 +237,7 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
 
     private async Task<HttpResponse> PostAsync(HttpClient httpClient, string url, object body)
     {
-        var response = await httpClient.PostAsync(url, new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json"));
+        var response = await httpClient.PostAsync(url, CreatePostContent(body));
 
         var result = await ProcessResponse(response);
 
@@ -246,11 +246,21 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
 
     private async Task<HttpResponse<TResponse>> PostAsync<TResponse>(HttpClient httpClient, string url, object body) where TResponse : class
     {
-        var response = await httpClient.PostAsync(url, new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json"));
+        var response = await httpClient.PostAsync(url, CreatePostContent(body));
 
         var result = await ProcessResponse<TResponse>(response);
 
         return result;
+    }
+
+    private static HttpContent CreatePostContent(object body)
+    {
+        if (body is HttpContent httpContent)
+        {
+            return httpContent;
+        }
+
+        return new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json");
     }
 
     #endregion

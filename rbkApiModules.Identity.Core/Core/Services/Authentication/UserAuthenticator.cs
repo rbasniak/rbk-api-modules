@@ -39,7 +39,7 @@ public class UserAuthenticator : IUserAuthenticator
 
         _logger.LogInformation($"Loging in with user {user.Username}");
 
-        if (user.RefreshTokenValidity < DateTime.UtcNow)
+        if (user.RefreshTokenValidity == null || user.RefreshTokenValidity < DateTime.UtcNow)
         {
             var refreshToken = Guid.NewGuid().ToString().ToLower().Replace("-", "");
 

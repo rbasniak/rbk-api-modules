@@ -310,7 +310,7 @@ All options return `RbkApiCoreOptions` for fluent chaining.
 - Microsoft.AspNetCore.Http.Abstractions
 - Microsoft.Extensions.Logging.Abstractions
 - Microsoft.EntityFrameworkCore.Relational
-- SixLabors.ImageSharp
+- SkiaSharp
 - Swashbuckle.AspNetCore.SwaggerUI
 
 ## Best Practices

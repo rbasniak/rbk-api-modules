@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using rbkApiModules.Core.Utilities;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Processing; 
+using SkiaSharp;
 
 namespace rbkApiModules.Commons.Core;
 
@@ -143,22 +142,93 @@ public class LocalFileStorage : IFileStorage
         int? maxHeight,
         CancellationToken cancellationToken)
     {
-        // Use ImageSharp to resize the image
-        using var image = await Image.LoadAsync(new MemoryStream(imageData), cancellationToken);
-        
-        // Only resize if necessary
-        if ((maxWidth.HasValue && image.Width > maxWidth.Value) ||
-            (maxHeight.HasValue && image.Height > maxHeight.Value))
+        using var inputStream = new MemoryStream(imageData);
+        using var bitmap = SKBitmap.Decode(inputStream);
+        if (bitmap == null)
         {
-            var resizeOptions = new ResizeOptions
-            {
-                Mode = ResizeMode.Max,
-                Size = new Size(maxWidth ?? int.MaxValue, maxHeight ?? int.MaxValue)
-            };
-            
-            image.Mutate(x => x.Resize(resizeOptions));
+            await File.WriteAllBytesAsync(outputPath, imageData, cancellationToken);
+            return;
         }
-        
-        await image.SaveAsync(outputPath, cancellationToken);
+
+        var targetMaxWidth = maxWidth ?? int.MaxValue;
+        var targetMaxHeight = maxHeight ?? int.MaxValue;
+
+        SKBitmap bitmapToEncode = bitmap;
+        SKBitmap? resizedBitmap = null;
+
+        if (bitmap.Width > targetMaxWidth || bitmap.Height > targetMaxHeight)
+        {
+            var ratio = Math.Min(
+                (double)targetMaxWidth / bitmap.Width,
+                (double)targetMaxHeight / bitmap.Height);
+            var newWidth = Math.Max(1, (int)Math.Round(bitmap.Width * ratio));
+            var newHeight = Math.Max(1, (int)Math.Round(bitmap.Height * ratio));
+
+            resizedBitmap = bitmap.Resize(new SKImageInfo(newWidth, newHeight), SKSamplingOptions.Default);
+            if (resizedBitmap == null)
+            {
+                await File.WriteAllBytesAsync(outputPath, imageData, cancellationToken);
+                return;
+            }
+
+            bitmapToEncode = resizedBitmap;
+        }
+
+        try
+        {
+            using var image = SKImage.FromBitmap(bitmapToEncode);
+            await SaveEncodedImageAsync(image, outputPath, cancellationToken);
+        }
+        finally
+        {
+            resizedBitmap?.Dispose();
+        }
+    }
+
+    private static async Task SaveEncodedImageAsync(
+        SKImage image,
+        string outputPath,
+        CancellationToken cancellationToken)
+    {
+        var extension = Path.GetExtension(outputPath).TrimStart('.').ToLowerInvariant();
+        SKEncodedImageFormat format;
+        int quality;
+
+        switch (extension)
+        {
+            case "png":
+                format = SKEncodedImageFormat.Png;
+                quality = 100;
+                break;
+            case "bmp":
+                format = SKEncodedImageFormat.Bmp;
+                quality = 100;
+                break;
+            case "jpg":
+            case "jpeg":
+                format = SKEncodedImageFormat.Jpeg;
+                quality = 90;
+                break;
+            default:
+                format = SKEncodedImageFormat.Jpeg;
+                quality = 90;
+                break;
+        }
+
+        using var encoded = image.Encode(format, quality);
+        if (encoded == null)
+        {
+            throw new InvalidOperationException("Failed to encode image.");
+        }
+
+        await using var stream = new FileStream(
+            outputPath,
+            FileMode.Create,
+            FileAccess.Write,
+            FileShare.None,
+            bufferSize: 4096,
+            useAsync: true);
+        encoded.SaveTo(stream);
+        await stream.FlushAsync(cancellationToken);
     }
 }
