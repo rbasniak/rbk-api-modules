@@ -50,7 +50,7 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
         // By doing it within this method, it's thread safe.
         // And avoids multiple initialisations from different tests if parallelisation is switched on
         TestingServer = Server;
-
+        TestingServer.PreserveExecutionContext = true;
     }
 
     protected abstract Task InitializeApplicationAsync();
@@ -204,14 +204,14 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
     /// </summary>
     public HttpMockScope HttpMockScope() => global::rbkApiModules.Commons.Testing.HttpMockScope.Begin();
 
-    public HttpMockCallBuilder MockHttpGet<TClient>(string? url = null) where TClient : class =>
-        MockHttpCall<TClient>(HttpMethod.Get, url);
+    public HttpMockCallBuilder MockHttpGet<TClient>(Func<string, bool>? urlMatcher = null) where TClient : class =>
+        MockHttpCall<TClient>(HttpMethod.Get, urlMatcher);
 
-    public HttpMockCallBuilder MockHttpPost<TClient>(string? url = null) where TClient : class =>
-        MockHttpCall<TClient>(HttpMethod.Post, url);
+    public HttpMockCallBuilder MockHttpPost<TClient>(Func<string, bool>? urlMatcher = null) where TClient : class =>
+        MockHttpCall<TClient>(HttpMethod.Post, urlMatcher);
 
-    public HttpMockCallBuilder MockHttpCall<TClient>(HttpMethod method, string? url = null) where TClient : class =>
-        new(typeof(TClient), method, url);
+    public HttpMockCallBuilder MockHttpCall<TClient>(HttpMethod method, Func<string, bool>? urlMatcher = null) where TClient : class =>
+        new(typeof(TClient), method, urlMatcher);
 
     #region Post
 

@@ -2,7 +2,7 @@
 
 All notable changes to rbkApiModules are documented here. Changes are organized by release, newest first. Consumer-facing changes only — internal implementation details are excluded.
 
-## 10.6.0
+## X.X.X
 
 ### rbkApiModules.Commons.Testing
 
@@ -10,11 +10,13 @@ All notable changes to rbkApiModules are documented here. Changes are organized 
 - **`PostMultipartAsync`** — Upload `multipart/form-data` in integration tests; overloads match `PostAsync` (no auth, cached credentials, JWT, API key).
 - **`CustomHttpClientFactory`** — Supplies pre-registered `HttpClient` instances as `IHttpClientFactory`; auto-wired by `AddMockHttpClient` / `AddNamedHttpClient`.
 - **`AddMockHttpClient` / `AddNamedHttpClient` / `SetNamedHttpClient`** — Register stubbed external clients or sibling-API placeholders without manually building the factory dictionary.
-- **`HttpMockScope` + `MockHttpGet` / `MockHttpPost` / `MockHttpCall`** — Fluent outbound HTTP stubs with `ReturnsSuccess` / `ReturnsBadRequest` / `Returns`; rules are scoped via `AsyncLocal` for parallel-safe use on shared servers.
+- **`HttpMockScope` + `MockHttpGet` / `MockHttpPost` / `MockHttpCall`** — Fluent outbound HTTP stubs with `ReturnsSuccess` / `ReturnsBadRequest` / `Returns`; rules are scoped via `AsyncLocal` for parallel-safe use on shared servers. URL matching uses `Func<string, bool>?` on the full request URL (omit to match any).
+- **`RbkTestingServer` sets `PreserveExecutionContext = true`** — Required for `HttpMockScope` rules to flow into the in-process test server pipeline; applied automatically on initialize.
 
 #### Breaking Changes
 - ⚠️ **`GetMockedHttpClientMessageHandler<TClient>()` removed** — Use `HttpMockScope` + `MockHttpGet` / `MockHttpPost` / `MockHttpCall` instead of Moq `Protected().Setup("SendAsync", ...)`.
 - ⚠️ **`AddMockHttpClient` name parameter is now optional** — Defaults to `nameof(TClient)`. Production apps must register named HttpClients with the same name.
+- ⚠️ **HTTP mock URL matching is predicate-only** — `MockHttpGet` / `MockHttpPost` / `MockHttpCall` accept `Func<string, bool>?` on the full request URL; omit to match any URL.
 - ⚠️ **`Moq` removed** from `rbkApiModules.Commons.Testing` — outbound HTTP mocking no longer depends on Moq.
 - **`AddNamedHttpClient` placeholders fail loud** — Unbound sibling-API clients throw a clear error on first outbound call until `SetNamedHttpClient` is called.
 

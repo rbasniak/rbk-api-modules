@@ -50,9 +50,9 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
 
     // Fluent outbound HTTP mocks (per test, inside HttpMockScope)
     public HttpMockScope HttpMockScope();
-    public HttpMockCallBuilder MockHttpGet<TClient>(string? url = null);
-    public HttpMockCallBuilder MockHttpPost<TClient>(string? url = null);
-    public HttpMockCallBuilder MockHttpCall<TClient>(HttpMethod method, string? url = null);
+    public HttpMockCallBuilder MockHttpGet<TClient>(Func<string, bool>? urlMatcher = null);
+    public HttpMockCallBuilder MockHttpPost<TClient>(Func<string, bool>? urlMatcher = null);
+    public HttpMockCallBuilder MockHttpCall<TClient>(HttpMethod method, Func<string, bool>? urlMatcher = null);
 }
 ```
 
@@ -389,9 +389,9 @@ public async Task CaptureLink_DownloadsDocument()
     GlobalApiTestingServer.MockHttpGet<INetworkDownloaderClient>()
         .ReturnsSuccess(fileContent);
 
-    // Or match a specific URL:
-    // GlobalApiTestingServer.MockHttpGet<INetworkDownloaderClient>("http://localhost/doc.pdf")
-    //     .ReturnsSuccess(bytes, "application/pdf");
+    // Or match with a predicate on the full request URL (omit the argument to match any URL):
+    // GlobalApiTestingServer.MockHttpGet<IDocumentDownloader>(url => url.Contains("target-doc"))
+    //     .ReturnsSuccess(fileContent);
 
     var response = await GlobalApiTestingServer.PostAsync<CaptureLink.Response>(
         "api/capture/v1/link", request, apiKey);
@@ -404,15 +404,15 @@ Fluent helpers:
 
 | Method | Purpose |
 |--------|---------|
-| `MockHttpGet<T>(url?)` | Stub GET (omit `url` to match any) |
-| `MockHttpPost<T>(url?)` | Stub POST |
-| `MockHttpCall<T>(method, url?)` | Stub any verb |
+| `MockHttpGet<T>(urlMatcher?)` | Stub GET; omit `urlMatcher` to match any URL |
+| `MockHttpPost<T>(urlMatcher?)` | Stub POST; omit `urlMatcher` to match any URL |
+| `MockHttpCall<T>(method, urlMatcher?)` | Stub any verb; omit `urlMatcher` to match any URL |
 | `.ReturnsSuccess(...)` | 200 with `HttpContent`, `byte[]`, or `string` |
 | `.ReturnsBadRequest(...)` | 400 |
 | `.ReturnsUnauthorized()` | 401 |
 | `.Returns(statusCode, ...)` | Arbitrary status |
 
-**Parallelism:** mock rules live in an `AsyncLocal` scope, so parallel tests on a shared `PerClass` server stay isolated as long as arrange + act stay inside `HttpMockScope` and outbound calls run on the same async flow as the test (normal for in-process `TestServer`). Use `[NotInParallel]` if the app fires outbound HTTP on background threads / `Task.Run` that break `AsyncLocal` flow. Unmatched calls throw with the list of registered rules.
+**Parallelism:** mock rules live in an `AsyncLocal` scope. `RbkTestingServer` sets `TestServer.PreserveExecutionContext = true` during initialization so the scope flows from your test into the in-process API pipeline. Keep arrange + act inside `HttpMockScope`. Use `[NotInParallel]` only if the app fires outbound HTTP on background threads / `Task.Run` that break execution context flow. Unmatched calls throw with the list of registered rules.
 
 #### Situation B — Sibling API in the same solution
 

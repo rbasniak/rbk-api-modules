@@ -8,13 +8,13 @@ public sealed class HttpMockCallBuilder
 {
     private readonly Type _clientType;
     private readonly HttpMethod _method;
-    private readonly string? _url;
+    private readonly Func<string, bool>? _urlMatcher;
 
-    internal HttpMockCallBuilder(Type clientType, HttpMethod method, string? url)
+    internal HttpMockCallBuilder(Type clientType, HttpMethod method, Func<string, bool>? urlMatcher)
     {
         _clientType = clientType;
         _method = method;
-        _url = url;
+        _urlMatcher = urlMatcher;
     }
 
     public void ReturnsSuccess(HttpContent content) =>
@@ -59,7 +59,7 @@ public sealed class HttpMockCallBuilder
         {
             ClientType = _clientType,
             Method = _method,
-            Url = _url,
+            UrlMatcher = _urlMatcher,
             ResponseFactory = () =>
             {
                 var responseContent = new ByteArrayContent(payload);

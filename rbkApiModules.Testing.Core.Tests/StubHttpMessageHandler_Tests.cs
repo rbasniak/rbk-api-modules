@@ -26,7 +26,7 @@ public class StubHttpMessageHandler_Tests
         var handler = new StubHttpMessageHandler(typeof(IExternalClient));
 
         using var _ = HttpMockScope.Begin();
-        new HttpMockCallBuilder(typeof(IExternalClient), HttpMethod.Get, url: null)
+        new HttpMockCallBuilder(typeof(IExternalClient), HttpMethod.Get, urlMatcher: null)
             .ReturnsSuccess("payload", "text/plain");
 
         var client = new HttpClient(handler);
@@ -42,7 +42,7 @@ public class StubHttpMessageHandler_Tests
         var handler = new StubHttpMessageHandler(typeof(IExternalClient));
 
         using var _ = HttpMockScope.Begin();
-        new HttpMockCallBuilder(typeof(IExternalClient), HttpMethod.Get, "/expected")
+        new HttpMockCallBuilder(typeof(IExternalClient), HttpMethod.Get, url => url.Contains("/expected"))
             .ReturnsSuccess("payload");
 
         var client = new HttpClient(handler);
@@ -54,13 +54,29 @@ public class StubHttpMessageHandler_Tests
     }
 
     [Test]
+    public async Task SendAsync_MatchesUrlPredicate()
+    {
+        var handler = new StubHttpMessageHandler(typeof(IExternalClient));
+
+        using var _ = HttpMockScope.Begin();
+        new HttpMockCallBuilder(typeof(IExternalClient), HttpMethod.Get, url => url.Contains("target-doc"))
+            .ReturnsSuccess("matched", "text/plain");
+
+        var client = new HttpClient(handler);
+        var response = await client.GetAsync("http://localhost/files/target-doc.pdf");
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        (await response.Content.ReadAsStringAsync()).ShouldBe("matched");
+    }
+
+    [Test]
     public async Task SendAsync_IsolatesRulesBetweenNestedScopes()
     {
         var handler = new StubHttpMessageHandler(typeof(IExternalClient));
         var client = new HttpClient(handler);
 
         using var outer = HttpMockScope.Begin();
-        new HttpMockCallBuilder(typeof(IExternalClient), HttpMethod.Get, url: null)
+        new HttpMockCallBuilder(typeof(IExternalClient), HttpMethod.Get, urlMatcher: null)
             .ReturnsSuccess("outer", "text/plain");
 
         (await client.GetAsync("http://localhost/a")).Content!
@@ -68,7 +84,7 @@ public class StubHttpMessageHandler_Tests
 
         using (var inner = HttpMockScope.Begin())
         {
-            new HttpMockCallBuilder(typeof(IExternalClient), HttpMethod.Get, url: null)
+            new HttpMockCallBuilder(typeof(IExternalClient), HttpMethod.Get, urlMatcher: null)
                 .ReturnsSuccess("inner", "text/plain");
 
             (await client.GetAsync("http://localhost/b")).Content!
