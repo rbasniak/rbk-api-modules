@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Relational;
 using rbkApiModules.Identity.Core;
 using Shouldly;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Http.Headers;
@@ -23,7 +23,8 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
 {
     public string ContentFolder { get; private set; } = string.Empty;
 
-    private readonly Dictionary<Type, Mock<HttpMessageHandler>> _mockedHttpClientMessageHandlers = new();
+    private readonly ConcurrentDictionary<string, HttpClient> _namedHttpClients = new();
+    private bool _httpClientFactoryRegistered;
 
     protected readonly Dictionary<Credentials, string> CachedCredentials = new();
 
@@ -135,27 +136,82 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
         }
     }
 
-    // Does NOT support multiple integration tests running in parallel
-    public void AddMockHttpClient<TClient, TImplementation>(IServiceCollection services, string name)
+    /// <summary>
+    /// Registers a typed HttpClient whose outbound calls are stubbed via <see cref="MockHttpGet{TClient}"/> /
+    /// <see cref="MockHttpPost{TClient}"/> / <see cref="MockHttpCall{TClient}"/> inside an <see cref="HttpMockScope"/>.
+    /// Automatically wires <see cref="CustomHttpClientFactory"/> as <see cref="IHttpClientFactory"/>.
+    /// The client name defaults to <c>nameof(TClient)</c> and must match the production <c>AddHttpClient</c> name.
+    /// </summary>
+    public void AddMockHttpClient<TClient, TImplementation>(IServiceCollection services, string? name = null)
         where TClient : class
         where TImplementation : class, TClient
     {
-        var handler = new Mock<HttpMessageHandler>();
-        _mockedHttpClientMessageHandlers[typeof(TClient)] = handler;
+        name ??= typeof(TClient).Name;
 
-        var client = new HttpClient(handler.Object)
+        var handler = new StubHttpMessageHandler(typeof(TClient));
+
+        var client = new HttpClient(handler)
         {
             BaseAddress = new Uri($"{(UseHttps ? "https" : "http")}://test-server.com/")
         };
 
+        _namedHttpClients[name] = client;
+
         services.AddHttpClient<TClient, TImplementation>(name)
-                .ConfigurePrimaryHttpMessageHandler(() => handler.Object);
+            .ConfigurePrimaryHttpMessageHandler(() => handler);
+
+        EnsureHttpClientFactory(services);
     }
 
-    public Mock<HttpMessageHandler> GetMockedHttpClientMessageHandler<TClient>()
+    /// <summary>
+    /// Registers a named HttpClient placeholder that will later be bound to another API's
+    /// <see cref="HttpClient"/> via <see cref="SetNamedHttpClient"/>.
+    /// Automatically wires <see cref="CustomHttpClientFactory"/> as <see cref="IHttpClientFactory"/>.
+    /// </summary>
+    public void AddNamedHttpClient(IServiceCollection services, string name)
     {
-        return _mockedHttpClientMessageHandlers[typeof(TClient)];
+        _namedHttpClients.TryAdd(name, new HttpClient(new UnboundNamedHttpClientHandler(name))
+        {
+            BaseAddress = new Uri($"{(UseHttps ? "https" : "http")}://test-server.com/")
+        });
+
+        EnsureHttpClientFactory(services);
     }
+
+    /// <summary>
+    /// Replaces the <see cref="HttpClient"/> returned by <see cref="IHttpClientFactory"/> for <paramref name="name"/>.
+    /// Typical use: point a downstream API client at another <see cref="RbkTestingServer{TProgram}"/> via <c>CreateClient()</c>.
+    /// </summary>
+    public void SetNamedHttpClient(string name, HttpClient client)
+    {
+        _namedHttpClients[name] = client;
+    }
+
+    private void EnsureHttpClientFactory(IServiceCollection services)
+    {
+        if (_httpClientFactoryRegistered)
+        {
+            return;
+        }
+
+        services.AddSingleton<IHttpClientFactory>(new CustomHttpClientFactory(_namedHttpClients));
+        _httpClientFactoryRegistered = true;
+    }
+
+    /// <summary>
+    /// Begins an <see cref="AsyncLocal{T}"/>-backed scope for outbound HTTP mock rules.
+    /// Arrange and act must run inside this scope so parallel tests on a shared server stay isolated.
+    /// </summary>
+    public HttpMockScope HttpMockScope() => global::rbkApiModules.Commons.Testing.HttpMockScope.Begin();
+
+    public HttpMockCallBuilder MockHttpGet<TClient>(string? url = null) where TClient : class =>
+        MockHttpCall<TClient>(HttpMethod.Get, url);
+
+    public HttpMockCallBuilder MockHttpPost<TClient>(string? url = null) where TClient : class =>
+        MockHttpCall<TClient>(HttpMethod.Post, url);
+
+    public HttpMockCallBuilder MockHttpCall<TClient>(HttpMethod method, string? url = null) where TClient : class =>
+        new(typeof(TClient), method, url);
 
     #region Post
 
@@ -261,6 +317,102 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
         }
 
         return new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json");
+    }
+
+    public async Task<HttpResponse> PostMultipartAsync(string url, MultipartFormDataContent body, ApiKey credentials)
+    {
+        using (var httpClient = CreateHttpClient())
+        {
+            httpClient.DefaultRequestHeaders.Add(RbkAuthenticationSchemes.API_KEY, credentials.Value);
+
+            return await PostMultipartAsync(httpClient, url, body);
+        }
+    }
+
+    public async Task<HttpResponse> PostMultipartAsync(string url, MultipartFormDataContent body, Credentials credentials)
+    {
+        return await PostMultipartAsync(url, body, GetCredentialsFromCache(credentials));
+    }
+
+    public async Task<HttpResponse> PostMultipartAsync(string url, MultipartFormDataContent body, string username)
+    {
+        return await PostMultipartAsync(url, body, GetCredentialsFromCache(username));
+    }
+
+    public async Task<HttpResponse> PostMultipartAsync(string url, MultipartFormDataContent body, JwtToken credentials)
+    {
+        using (var httpClient = CreateHttpClient())
+        {
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", credentials.Value);
+
+            return await PostMultipartAsync(httpClient, url, body);
+        }
+    }
+
+    public async Task<HttpResponse> PostMultipartAsync(string url, MultipartFormDataContent body)
+    {
+        using (var httpClient = CreateHttpClient())
+        {
+            return await PostMultipartAsync(httpClient, url, body);
+        }
+    }
+
+    public async Task<HttpResponse<TResponse>> PostMultipartAsync<TResponse>(string url, MultipartFormDataContent body, ApiKey credentials)
+        where TResponse : class
+    {
+        using (var httpClient = CreateHttpClient())
+        {
+            httpClient.DefaultRequestHeaders.Add(RbkAuthenticationSchemes.API_KEY, credentials.Value);
+
+            return await PostMultipartAsync<TResponse>(httpClient, url, body);
+        }
+    }
+
+    public async Task<HttpResponse<TResponse>> PostMultipartAsync<TResponse>(string url, MultipartFormDataContent body, Credentials credentials)
+        where TResponse : class
+    {
+        return await PostMultipartAsync<TResponse>(url, body, GetCredentialsFromCache(credentials));
+    }
+
+    public async Task<HttpResponse<TResponse>> PostMultipartAsync<TResponse>(string url, MultipartFormDataContent body, string username)
+        where TResponse : class
+    {
+        return await PostMultipartAsync<TResponse>(url, body, GetCredentialsFromCache(username));
+    }
+
+    public async Task<HttpResponse<TResponse>> PostMultipartAsync<TResponse>(string url, MultipartFormDataContent body, JwtToken credentials)
+        where TResponse : class
+    {
+        using (var httpClient = CreateHttpClient())
+        {
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", credentials.Value);
+
+            return await PostMultipartAsync<TResponse>(httpClient, url, body);
+        }
+    }
+
+    public async Task<HttpResponse<TResponse>> PostMultipartAsync<TResponse>(string url, MultipartFormDataContent body)
+        where TResponse : class
+    {
+        using (var httpClient = CreateHttpClient())
+        {
+            return await PostMultipartAsync<TResponse>(httpClient, url, body);
+        }
+    }
+
+    private async Task<HttpResponse> PostMultipartAsync(HttpClient httpClient, string url, MultipartFormDataContent body)
+    {
+        using var response = await httpClient.PostAsync(url, body);
+
+        return await ProcessResponse(response);
+    }
+
+    private async Task<HttpResponse<TResponse>> PostMultipartAsync<TResponse>(HttpClient httpClient, string url, MultipartFormDataContent body)
+        where TResponse : class
+    {
+        using var response = await httpClient.PostAsync(url, body);
+
+        return await ProcessResponse<TResponse>(response);
     }
 
     #endregion

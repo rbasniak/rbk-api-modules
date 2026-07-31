@@ -148,7 +148,8 @@ Comprehensive testing framework for API integration tests.
 - In-memory testing server (`RbkTestingServer`)
 - Built-in authentication support
 - HTTP client wrappers with fluent assertions
-- Mock HTTP client capabilities
+- Multipart form uploads (`PostMultipartAsync`) 
+- Fluent outbound HTTP mocks (`HttpMockScope`, `MockHttpGet` / `MockHttpPost`) and named client wiring (`AddMockHttpClient`, `AddNamedHttpClient`, `SetNamedHttpClient`)
 - SQLite in-memory database for testing
 
 **[Read Full Documentation →](Testing.md)**

@@ -3,7 +3,6 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
-		<PackageReference Include="Moq" />
 		<PackageReference Include="Shouldly" />
 		<PackageReference Include="MimeKit" />
 		<PackageReference Include="FluentValidation" />
@@ -14,6 +13,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\rbkApiModules.Commons.Core\rbkApiModules.Commons.Core.csproj" />
+	  <ProjectReference Include="..\rbkApiModules.Commons.Testing\rbkApiModules.Testing.Core.csproj" />
 	</ItemGroup>
 
 

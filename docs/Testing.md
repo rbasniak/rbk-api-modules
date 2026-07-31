@@ -22,6 +22,16 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
     // HTTP Methods
     public Task<HttpResponse> PostAsync(string url, object body, Credentials credentials);
     public Task<HttpResponse<TResponse>> PostAsync<TResponse>(string url, object body, Credentials credentials) where TResponse : class;
+    public Task<HttpResponse> PostMultipartAsync(string url, MultipartFormDataContent body);
+    public Task<HttpResponse> PostMultipartAsync(string url, MultipartFormDataContent body, ApiKey credentials);
+    public Task<HttpResponse> PostMultipartAsync(string url, MultipartFormDataContent body, JwtToken credentials);
+    public Task<HttpResponse> PostMultipartAsync(string url, MultipartFormDataContent body, Credentials credentials);
+    public Task<HttpResponse> PostMultipartAsync(string url, MultipartFormDataContent body, string username);
+    public Task<HttpResponse<TResponse>> PostMultipartAsync<TResponse>(string url, MultipartFormDataContent body) where TResponse : class;
+    public Task<HttpResponse<TResponse>> PostMultipartAsync<TResponse>(string url, MultipartFormDataContent body, ApiKey credentials) where TResponse : class;
+    public Task<HttpResponse<TResponse>> PostMultipartAsync<TResponse>(string url, MultipartFormDataContent body, JwtToken credentials) where TResponse : class;
+    public Task<HttpResponse<TResponse>> PostMultipartAsync<TResponse>(string url, MultipartFormDataContent body, Credentials credentials) where TResponse : class;
+    public Task<HttpResponse<TResponse>> PostMultipartAsync<TResponse>(string url, MultipartFormDataContent body, string username) where TResponse : class;
     public Task<HttpResponse> GetAsync(string url, Credentials credentials);
     public Task<HttpResponse<TResponse>> GetAsync<TResponse>(string url, Credentials credentials) where TResponse : class;
     public Task<HttpResponse> PutAsync(string url, object body, Credentials credentials);
@@ -33,9 +43,16 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
     public Task CacheCredentialsAsync(string username, string password, string? tenant);
     public Task<HttpResponse<JwtResponse>> LoginAsync(string username, string password, string? tenant);
     
-    // Mock Support
-    public void AddMockHttpClient<TClient, TImplementation>(IServiceCollection services, string name);
-    public Mock<HttpMessageHandler> GetMockedHttpClientMessageHandler<TClient>();
+    // Outbound HTTP client registration (ConfigureTestServices)
+    public void AddMockHttpClient<TClient, TImplementation>(IServiceCollection services, string? name = null);
+    public void AddNamedHttpClient(IServiceCollection services, string name);
+    public void SetNamedHttpClient(string name, HttpClient client);
+
+    // Fluent outbound HTTP mocks (per test, inside HttpMockScope)
+    public HttpMockScope HttpMockScope();
+    public HttpMockCallBuilder MockHttpGet<TClient>(string? url = null);
+    public HttpMockCallBuilder MockHttpPost<TClient>(string? url = null);
+    public HttpMockCallBuilder MockHttpCall<TClient>(HttpMethod method, string? url = null);
 }
 ```
 
@@ -43,9 +60,25 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
 - In-memory testing server with full ASP.NET Core pipeline
 - Automatic credential caching and management
 - Support for multiple authentication types (JWT, API Key, Basic Auth)
-- HTTP client mocking capabilities
+- Fluent outbound HTTP mocking with `AsyncLocal` test isolation
+- Named HttpClient factory auto-wiring for cross-API and external stubs
+- Multipart form uploads with API key authentication
 - SQLite in-memory database for testing
 - Automatic test isolation
+
+### CustomHttpClientFactory
+
+Supplies pre-registered `HttpClient` instances as the application's `IHttpClientFactory` during integration tests. You normally do **not** register this yourself — `AddMockHttpClient` and `AddNamedHttpClient` wire it automatically.
+
+```csharp
+public sealed class CustomHttpClientFactory : IHttpClientFactory
+{
+    public CustomHttpClientFactory(ConcurrentDictionary<string, HttpClient> clients);
+    public HttpClient CreateClient(string name);
+}
+```
+
+Client names must match the production `AddHttpClient(..., name)` registration (typically `nameof(TClient)`). `CreateClient` throws if the name is not registered.
 
 ### HttpResponse<T>
 
@@ -94,6 +127,29 @@ var response = await PostAsync<UserDetails>("/api/users", request, new JwtToken(
 // API key authentication
 var response = await PostAsync<UserDetails>("/api/users", request, new ApiKey("key"));
 ```
+
+#### Multipart uploads
+
+Use `PostMultipartAsync` for endpoints that accept `multipart/form-data` (file uploads, mixed form fields). Overloads mirror `PostAsync`: no authentication, cached username/`Credentials`, `JwtToken`, or `ApiKey`.
+
+```csharp
+using var content = new MultipartFormDataContent();
+var fileContent = new ByteArrayContent(await File.ReadAllBytesAsync("document.pdf"));
+fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/pdf");
+content.Add(fileContent, "file", "document.pdf");
+
+// API key
+var response = await PostMultipartAsync<UploadResponse[]>("api/capture/v1/file", content, new ApiKey("my-api-key"));
+
+// Cached JWT (after CacheCredentialsAsync)
+await CacheCredentialsAsync("admin", "password", "default");
+var response = await PostMultipartAsync<UploadResponse[]>("api/capture/v1/file", content, "admin");
+
+// No authentication
+var response = await PostMultipartAsync<UploadResponse[]>("api/public/upload", content);
+```
+
+Responses are mapped through the same `ProcessResponse` pipeline as JSON `PostAsync` calls (status code, body, headers, validation errors).
 
 ### Aspire E2E Testing (Playwright)
 
@@ -282,30 +338,118 @@ public async Task InvalidRequest_ShouldReturnValidationErrors()
 }
 ```
 
-### Mock HTTP Client Testing
+### Outbound HTTP clients in integration tests
+
+Integration tests often need to control outbound HTTP that the API under test makes — either to **external systems** (stub the response) or to a **sibling API** in the same solution (route through another `RbkTestingServer`). Both paths go through a testing `IHttpClientFactory` that resolves **named** clients.
+
+#### Prerequisite — named HttpClients
+
+Every outbound client in the application under test **must** be registered as a named `HttpClient`. The testing factory replaces `IHttpClientFactory` and looks up clients by that name:
+
+```csharp
+// Production / Program.cs — required pattern
+builder.Services.AddHttpClient<INetworkDownloaderClient, NetworkDownloaderClient>(
+    nameof(INetworkDownloaderClient));
+
+builder.Services.AddHttpClient<IProcessingClient, ProcessingClient>(
+    nameof(IProcessingClient));
+```
+
+Unnamed `AddHttpClient` / typed clients without a name will not resolve correctly once the testing factory is active. Use the same name in tests (`nameof(IClient)` by default for `AddMockHttpClient`).
+
+#### Situation A — External HTTP (stub handler)
+
+Use when the API calls an external service and you want production typed-client code to run, but control only the HTTP response.
+
+**1. Register in `ConfigureTestServices`:**
+
+```csharp
+public class GlobalApiTestingServer : RbkTestingServer<Program>
+{
+    protected override void ConfigureTestServices(IServiceCollection services)
+    {
+        // Auto-wires CustomHttpClientFactory; name defaults to nameof(TClient)
+        AddMockHttpClient<INetworkDownloaderClient, NetworkDownloaderClient>(services);
+        AddMockHttpClient<IProteusAuthApiClient, ProteusAuthApiClient>(services);
+    }
+}
+```
+
+**2. Configure responses per test inside `HttpMockScope`:**
 
 ```csharp
 [Test]
-public async Task ExternalServiceCall_ShouldUseMockedClient()
+public async Task CaptureLink_DownloadsDocument()
 {
-    // Arrange
-    await CacheCredentialsAsync("admin", "password", "default");
-    
-    var mockHandler = GetMockedHttpClientMessageHandler<IExternalServiceClient>();
-    mockHandler.Setup(x => x.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-        .ReturnsAsync(new HttpResponseMessage
-        {
-            StatusCode = HttpStatusCode.OK,
-            Content = new StringContent("{\"result\":\"success\"}")
-        });
-    
-    // Act
-    var response = await PostAsync<ExternalServiceResponse>("/api/external", request, "admin");
-    
-    // Assert
+    using var _ = GlobalApiTestingServer.HttpMockScope();
+
+    var fileContent = new ByteArrayContent(File.ReadAllBytes("doc.pdf"));
+    fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/pdf");
+
+    GlobalApiTestingServer.MockHttpGet<INetworkDownloaderClient>()
+        .ReturnsSuccess(fileContent);
+
+    // Or match a specific URL:
+    // GlobalApiTestingServer.MockHttpGet<INetworkDownloaderClient>("http://localhost/doc.pdf")
+    //     .ReturnsSuccess(bytes, "application/pdf");
+
+    var response = await GlobalApiTestingServer.PostAsync<CaptureLink.Response>(
+        "api/capture/v1/link", request, apiKey);
+
     response.ShouldBeSuccess();
-    mockHandler.Verify(x => x.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()), Times.Once);
 }
+```
+
+Fluent helpers:
+
+| Method | Purpose |
+|--------|---------|
+| `MockHttpGet<T>(url?)` | Stub GET (omit `url` to match any) |
+| `MockHttpPost<T>(url?)` | Stub POST |
+| `MockHttpCall<T>(method, url?)` | Stub any verb |
+| `.ReturnsSuccess(...)` | 200 with `HttpContent`, `byte[]`, or `string` |
+| `.ReturnsBadRequest(...)` | 400 |
+| `.ReturnsUnauthorized()` | 401 |
+| `.Returns(statusCode, ...)` | Arbitrary status |
+
+**Parallelism:** mock rules live in an `AsyncLocal` scope, so parallel tests on a shared `PerClass` server stay isolated as long as arrange + act stay inside `HttpMockScope` and outbound calls run on the same async flow as the test (normal for in-process `TestServer`). Use `[NotInParallel]` if the app fires outbound HTTP on background threads / `Task.Run` that break `AsyncLocal` flow. Unmatched calls throw with the list of registered rules.
+
+#### Situation B — Sibling API in the same solution
+
+Use when API A calls API B and both run as test servers (e.g. Global → Processing).
+
+**1. Register a named placeholder on the caller:**
+
+```csharp
+protected override void ConfigureTestServices(IServiceCollection services)
+{
+    AddMockHttpClient<INetworkDownloaderClient, NetworkDownloaderClient>(services);
+    AddNamedHttpClient(services, nameof(IProcessingClient)); // placeholder until bound
+}
+```
+
+**2. After both servers initialize, bind the live client (usually once in an ordered setup test):**
+
+```csharp
+[Test, NotInParallel(Order = 20)]
+public async Task Prepare_Api_Clients()
+{
+    var client = ProcessingApiTestingServer.CreateClient();
+    client.DefaultRequestHeaders.Add(RbkAuthenticationSchemes.API_KEY, "valid-service-key");
+    GlobalApiTestingServer.SetNamedHttpClient(nameof(IProcessingClient), client);
+}
+```
+
+`SetNamedHttpClient` replaces the `HttpClient` in the shared factory dictionary for that fixture (process-wide for the shared server instance). There is no automatic wiring between two `RbkTestingServer` instances — binding stays explicit.
+
+If you forget to bind a placeholder client, the first outbound call throws a clear error: *Named HttpClient "…" has not been bound. Call SetNamedHttpClient(…)*.
+
+Downstream servers can still use Situation A for *their* external calls:
+
+```csharp
+using var _ = ProcessingApiTestingServer.HttpMockScope();
+ProcessingApiTestingServer.MockHttpGet<IDocumentDownloader>()
+    .ReturnsSuccess(fileContent);
 ```
 
 ### Database Testing
@@ -418,21 +562,7 @@ public async Task WindowsAuthentication_ShouldWork()
 
 ### Custom HTTP Client Configuration
 
-```csharp
-[Test]
-public async Task CustomHttpClient_ShouldBeMocked()
-{
-    // Add mocked HTTP client
-    AddMockHttpClient<IExternalApiClient, ExternalApiClient>(services, "ExternalApi");
-    
-    var mockHandler = GetMockedHttpClientMessageHandler<IExternalApiClient>();
-    mockHandler.Setup(x => x.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-        .ReturnsAsync(new HttpResponseMessage { StatusCode = HttpStatusCode.OK });
-    
-    var response = await PostAsync<ApiResponse>("/api/external", request, "admin");
-    response.ShouldBeSuccess();
-}
-```
+See [Outbound HTTP clients in integration tests](#outbound-http-clients-in-integration-tests) for `AddMockHttpClient`, `AddNamedHttpClient`, `SetNamedHttpClient`, and the fluent `MockHttpGet` / `MockHttpPost` API.
 
 ## Best Practices
 
@@ -459,10 +589,11 @@ public async Task CustomHttpClient_ShouldBeMocked()
 
 ### Mock Usage
 
-1. **Minimal Mocking**: Only mock external dependencies, not internal services
-2. **Realistic Responses**: Mock realistic HTTP responses
-3. **Verification**: Verify that mocked services are called as expected
-4. **Isolation**: Ensure mocks don't interfere between tests
+1. **Named clients**: Register production HttpClients with `nameof(IClient)` so the testing factory can resolve them
+2. **Fluent stubs**: Prefer `HttpMockScope` + `MockHttpGet` / `MockHttpPost` over hand-rolled Moq handler setups
+3. **Scope arrange + act**: Keep outbound mock rules and the API call inside the same `HttpMockScope`
+4. **Sibling APIs**: Use `AddNamedHttpClient` + `SetNamedHttpClient(otherServer.CreateClient())` once during ordered setup
+5. **Parallelism**: Rely on `AsyncLocal` isolation; fall back to `[NotInParallel]` for background outbound HTTP
 
 ## Advanced Examples
 
@@ -579,7 +710,6 @@ public async Task ConcurrentUserCreation_ShouldHandleConflicts()
 
 - Microsoft.AspNetCore.Mvc.Testing
 - Microsoft.EntityFrameworkCore.Sqlite
-- Moq
 - Shouldly
 - TUnit
 - MimeKit

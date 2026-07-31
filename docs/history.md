@@ -2,6 +2,22 @@
 
 All notable changes to rbkApiModules are documented here. Changes are organized by release, newest first. Consumer-facing changes only — internal implementation details are excluded.
 
+## X.X.X
+
+### rbkApiModules.Commons.Testing
+
+#### New Features
+- **`PostMultipartAsync`** — Upload `multipart/form-data` in integration tests; overloads match `PostAsync` (no auth, cached credentials, JWT, API key).
+- **`CustomHttpClientFactory`** — Supplies pre-registered `HttpClient` instances as `IHttpClientFactory`; auto-wired by `AddMockHttpClient` / `AddNamedHttpClient`.
+- **`AddMockHttpClient` / `AddNamedHttpClient` / `SetNamedHttpClient`** — Register stubbed external clients or sibling-API placeholders without manually building the factory dictionary.
+- **`HttpMockScope` + `MockHttpGet` / `MockHttpPost` / `MockHttpCall`** — Fluent outbound HTTP stubs with `ReturnsSuccess` / `ReturnsBadRequest` / `Returns`; rules are scoped via `AsyncLocal` for parallel-safe use on shared servers.
+
+#### Breaking Changes
+- ⚠️ **`GetMockedHttpClientMessageHandler<TClient>()` removed** — Use `HttpMockScope` + `MockHttpGet` / `MockHttpPost` / `MockHttpCall` instead of Moq `Protected().Setup("SendAsync", ...)`.
+- ⚠️ **`AddMockHttpClient` name parameter is now optional** — Defaults to `nameof(TClient)`. Production apps must register named HttpClients with the same name.
+- ⚠️ **`Moq` removed** from `rbkApiModules.Commons.Testing` — outbound HTTP mocking no longer depends on Moq.
+- **`AddNamedHttpClient` placeholders fail loud** — Unbound sibling-API clients throw a clear error on first outbound call until `SetNamedHttpClient` is called.
+
 ## 10.5.1
 - Fixed bug in which RefreshToken was generated with null value
 - Package updates across the board

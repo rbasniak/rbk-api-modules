@@ -3,7 +3,6 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
-    <PackageReference Include="Moq" />
     <PackageReference Include="Npgsql" />
     <PackageReference Include="Shouldly" />
     <PackageReference Include="Testcontainers.PostgreSql" />
@@ -18,6 +17,10 @@
   <ItemGroup>
     <ProjectReference Include="..\rbkApiModules.Commons.Core\rbkApiModules.Commons.Core.csproj" />
     <ProjectReference Include="..\rbkApiModules.Identity.Core\rbkApiModules.Identity.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="rbkApiModules.Testing.Core.Tests" />
   </ItemGroup>
 
 </Project>

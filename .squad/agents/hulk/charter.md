@@ -15,7 +15,8 @@ Quality assurance and testing lead for rbk-api-modules — owns test coverage, c
 
 ## Domain Knowledge
 - NUnit / xUnit test frameworks
-- rbkApiModules.Commons.Testing: RbkTestingServer, CacheCredentialsAsync, PostAsync/GetAsync/PutAsync/DeleteAsync, ShouldBeSuccess/ShouldBeError fluent assertions
+- rbkApiModules.Commons.Testing: RbkTestingServer, CacheCredentialsAsync, PostAsync/GetAsync/PutAsync/DeleteAsync, PostMultipartAsync, ShouldBeSuccess/ShouldBeError fluent assertions
+- Outbound HTTP testing: AddMockHttpClient, AddNamedHttpClient, SetNamedHttpClient, HttpMockScope, MockHttpGet/MockHttpPost/MockHttpCall
 - SQLite in-memory database for test isolation
 - ASP.NET Core TestServer / WebApplicationFactory
 - EF Core testing: in-memory provider, SQLite, seeding strategies

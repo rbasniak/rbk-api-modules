@@ -12,7 +12,7 @@ rbkApiModules accelerates Web API development by providing battle-tested infrast
 |---------|---------|
 | **rbkApiModules.Commons.Core** | Core infrastructure: base entities, validation, messaging, file storage, UI definitions |
 | **rbkApiModules.Identity.Core** | Authentication & authorization: JWT, API keys, Windows Auth, users, roles, claims |
-| **rbkApiModules.Commons.Testing** | Integration testing: in-memory server, fluent assertions, mock support |
+| **rbkApiModules.Commons.Testing** | Integration testing: in-memory server, multipart uploads, fluent HTTP mocks, named client wiring |
 | **rbkApiModules.Analysers** | Code analyzers: enforce authorization, validate Swagger annotations |
 
 ## Quick Install
