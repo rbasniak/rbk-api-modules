@@ -2,7 +2,7 @@
 
 All notable changes to rbkApiModules are documented here. Changes are organized by release, newest first. Consumer-facing changes only — internal implementation details are excluded.
 
-## X.X.X
+## 10.6.0
 
 ### rbkApiModules.Commons.Testing
 
@@ -141,6 +141,7 @@ See [Testing.md — Aspire E2E Testing](Testing.md#aspire-e2e-testing-playwright
 ---
 
 *No prior release history recorded.*
+
 
 
 
