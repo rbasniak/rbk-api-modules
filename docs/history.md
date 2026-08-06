@@ -2,6 +2,24 @@
 
 All notable changes to rbkApiModules are documented here. Changes are organized by release, newest first. Consumer-facing changes only — internal implementation details are excluded.
 
+## X.X.X
+
+### rbkApiModules.Commons.Testing
+
+#### New Features
+- **`GetConfigurationBasePath()`** — Virtual hook to choose where JSON config files are loaded from during integration tests. Default: folder containing the hosted API assembly (test project output).
+- **`GetTestingConfigurationFiles()`** — Virtual hook returning JSON files loaded in order (later wins). Default: `["appsettings.Testing.json"]`. Override per `RbkTestingServer` subclass to avoid `appsettings` collisions when a test project hosts multiple Web APIs.
+- **`ConfigureAppConfiguration` is now invoked** — Optional virtual hook (previously abstract but never called). Runs after `GetTestingConfigurationFiles()` and before `ConfigureInMemoryOverrides()`.
+
+#### Breaking Changes
+- ⚠️ **`ConfigureAppConfiguration` is no longer abstract** — Changed to `protected virtual` with an empty default. Existing overrides continue to compile; empty implementations can be removed.
+
+#### Documentation
+- [Testing.md](Testing.md) — Multi-API configuration (appsettings collision workaround), bidirectional sibling-API binding, and typed `HttpClient` client constructor requirement.
+
+#### Demo / reference
+- **`Demo.MultipleApis.Tests`** — Sample project hosting Demo1 and Demo2 together with per-API config subfolders and bidirectional `SetNamedHttpClient` wiring.
+
 ## 10.7.0
 
 ### rbkApiModules.Commons.Testing

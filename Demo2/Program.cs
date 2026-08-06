@@ -6,6 +6,7 @@ using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using rbkApiModules.Commons.Core.Helpers;
 using Demo2.Endpoints;
+using Demo2.Clients;
 
 namespace Demo2;
 
@@ -56,6 +57,14 @@ public class Program
 
         builder.Services.AddOpenApi();
 
+        builder.Services.AddHttpClient<IDemo1ApiClient, Demo1ApiClient>(nameof(IDemo1ApiClient))
+            .ConfigureHttpClient((sp, client) =>
+            {
+                var baseUrl = sp.GetRequiredService<IConfiguration>()["Demo1Api:BaseUrl"]
+                    ?? throw new InvalidOperationException("Demo1Api:BaseUrl is not configured.");
+                client.BaseAddress = new Uri(baseUrl);
+            });
+
         var app = builder.Build();
 
         app.UseRbkApiCoreSetup();
@@ -91,6 +100,7 @@ public class Program
         app.UseRbkUIDefinitions();
 
         DemoEndpoints.MapEndpoint(app);
+        IntegrationEndpoints.MapEndpoint(app);
 
         app.MapOpenApi().AllowAnonymous();
         app.UseSwaggerUI(options =>

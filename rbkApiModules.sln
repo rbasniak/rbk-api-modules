@@ -1,3 +1,4 @@
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
 VisualStudioVersion = 18.3.11222.16
@@ -40,6 +41,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.Analysers.Package", "rbkApiModules.Analysers\rbkApiModules.Analysers.Package\rbkApiModules.Analysers.Package.csproj", "{C9B15699-12DD-A7AD-0460-EFD119BF80BC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rbkApiModules.Messaging.Core", "rbkApiModules.Messaging.Core\rbkApiModules.Messaging.Core.csproj", "{EDDBCB0E-BE50-463E-9EF3-597DAC46F6A6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.MultipleApis.Tests", "Demo.MultipleApis.Tests\Demo.MultipleApis.Tests.csproj", "{6B78B0AA-6A13-46AD-93C6-81F22CF294CA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "rbkApiModules.Commons.Testing", "rbkApiModules.Commons.Testing", "{7F37E612-9313-1F8A-8CCF-793E5F8DCC9C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -195,6 +200,18 @@ Global
 		{EDDBCB0E-BE50-463E-9EF3-597DAC46F6A6}.Release|x64.Build.0 = Release|Any CPU
 		{EDDBCB0E-BE50-463E-9EF3-597DAC46F6A6}.Release|x86.ActiveCfg = Release|Any CPU
 		{EDDBCB0E-BE50-463E-9EF3-597DAC46F6A6}.Release|x86.Build.0 = Release|Any CPU
+		{6B78B0AA-6A13-46AD-93C6-81F22CF294CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B78B0AA-6A13-46AD-93C6-81F22CF294CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B78B0AA-6A13-46AD-93C6-81F22CF294CA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6B78B0AA-6A13-46AD-93C6-81F22CF294CA}.Debug|x64.Build.0 = Debug|Any CPU
+		{6B78B0AA-6A13-46AD-93C6-81F22CF294CA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6B78B0AA-6A13-46AD-93C6-81F22CF294CA}.Debug|x86.Build.0 = Debug|Any CPU
+		{6B78B0AA-6A13-46AD-93C6-81F22CF294CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B78B0AA-6A13-46AD-93C6-81F22CF294CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B78B0AA-6A13-46AD-93C6-81F22CF294CA}.Release|x64.ActiveCfg = Release|Any CPU
+		{6B78B0AA-6A13-46AD-93C6-81F22CF294CA}.Release|x64.Build.0 = Release|Any CPU
+		{6B78B0AA-6A13-46AD-93C6-81F22CF294CA}.Release|x86.ActiveCfg = Release|Any CPU
+		{6B78B0AA-6A13-46AD-93C6-81F22CF294CA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Demo1\Demo1.csproj" />
+    <ProjectReference Include="..\Demo2\Demo2.csproj" />
+    <ProjectReference Include="..\rbkApiModules.Commons.Testing\rbkApiModules.Testing.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\Demo1\appsettings.json"
+          Link="Config\Demo1\appsettings.json"
+          CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Demo1\appsettings.Testing.json"
+          Link="Config\Demo1\appsettings.Testing.json"
+          CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Demo2\appsettings.json"
+          Link="Config\Demo2\appsettings.json"
+          CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Demo2\appsettings.Testing.json"
+          Link="Config\Demo2\appsettings.Testing.json"
+          CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="Microsoft.Testing.Extensions.TrxReport" />
+    <PackageReference Update="TUnit" />
+  </ItemGroup>
+
+</Project>

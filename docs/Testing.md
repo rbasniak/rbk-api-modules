@@ -355,6 +355,16 @@ builder.Services.AddHttpClient<IProcessingClient, ProcessingClient>(
     nameof(IProcessingClient));
 ```
 
+The implementation **must** take `HttpClient` in its constructor (typed client pattern). Do not inject `IHttpClientFactory` directly into the client class when using `AddHttpClient<TClient, TImplementation>`:
+
+```csharp
+// Correct
+public class ProcessingClient(HttpClient httpClient) : IProcessingClient { ... }
+
+// Incorrect — breaks typed client registration
+public class ProcessingClient(IHttpClientFactory factory) : IProcessingClient { ... }
+```
+
 Unnamed `AddHttpClient` / typed clients without a name will not resolve correctly once the testing factory is active. Use the same name in tests (`nameof(IClient)` by default for `AddMockHttpClient`).
 
 #### Situation A — External HTTP (stub handler)
@@ -452,6 +462,146 @@ ProcessingApiTestingServer.MockHttpGet<IDocumentDownloader>()
     .ReturnsSuccess(fileContent);
 ```
 
+#### Situation B — Bidirectional sibling calls (Demo1 ↔ Demo2)
+
+When **both** APIs call each other, each caller needs its own named placeholder and binding. See `Demo.MultipleApis.Tests` for a full working example.
+
+**Production — each API registers its outbound client and exposes an integration endpoint:**
+
+```csharp
+// Demo1/Program.cs
+builder.Services.AddHttpClient<IDemo2ApiClient, Demo2ApiClient>(nameof(IDemo2ApiClient))
+    .ConfigureHttpClient((sp, client) =>
+    {
+        client.BaseAddress = new Uri(sp.GetRequiredService<IConfiguration>()["Demo2Api:BaseUrl"]!);
+    });
+
+// Demo2/Program.cs
+builder.Services.AddHttpClient<IDemo1ApiClient, Demo1ApiClient>(nameof(IDemo1ApiClient))
+    .ConfigureHttpClient((sp, client) =>
+    {
+        client.BaseAddress = new Uri(sp.GetRequiredService<IConfiguration>()["Demo1Api:BaseUrl"]!);
+    });
+```
+
+**Test servers — register a placeholder on each caller:**
+
+```csharp
+// Demo1TestingServer
+protected override void ConfigureTestServices(IServiceCollection services)
+{
+    AddNamedHttpClient(services, nameof(IDemo2ApiClient));
+}
+
+// Demo2TestingServer
+protected override void ConfigureTestServices(IServiceCollection services)
+{
+    AddNamedHttpClient(services, nameof(IDemo1ApiClient));
+}
+```
+
+**Setup test — bind both directions before any cross-API test runs:**
+
+```csharp
+[Test, NotInParallel(Order = 10)]
+public async Task Bind_Cross_Api_Clients()
+{
+    var demo2Client = Demo2Server.CreateClient();
+    Demo1Server.SetNamedHttpClient(nameof(IDemo2ApiClient), demo2Client);
+
+    var demo1Client = Demo1Server.CreateClient();
+    Demo2Server.SetNamedHttpClient(nameof(IDemo1ApiClient), demo1Client);
+}
+
+[Test, NotInParallel(Order = 20)]
+public async Task Demo1_Calls_Demo2()
+{
+    var response = await Demo1Server.GetAsync<IntegrationResponse>("/integration/demo2/anonymous");
+    response.ShouldBeSuccess(out var payload);
+    payload.Message.ShouldBe("Anonymous");
+}
+
+[Test, NotInParallel(Order = 30)]
+public async Task Demo2_Calls_Demo1()
+{
+    var response = await Demo2Server.GetAsync<IntegrationResponse>("/integration/demo1/anonymous");
+    response.ShouldBeSuccess(out var payload);
+    payload.Message.ShouldBe("Anonymous");
+}
+```
+
+For protected sibling endpoints, add the target API's integration key to the bound client before `SetNamedHttpClient`:
+
+```csharp
+var serviceClient = ServiceServer.CreateClient();
+serviceClient.DefaultRequestHeaders.Add(RbkAuthenticationSchemes.API_KEY, "valid-service-key");
+GlobalApiTestingServer.SetNamedHttpClient(nameof(IProcessingClient), serviceClient);
+```
+
+#### Multi-API configuration (`appsettings.Testing.json` collision)
+
+When a test project references **two or more Web SDK projects**, MSBuild copies all `appsettings*.json` files into the **same output folder**. Files with the same name collide — only the last one copied survives. Single-API tests are unaffected.
+
+**Solution:** copy each API's settings into a unique subfolder and override the config path in each `RbkTestingServer` subclass.
+
+**1. Test project `.csproj` — copy JSONs with unique destinations:**
+
+```xml
+<ItemGroup>
+  <None Include="..\Demo1\appsettings.json"
+        Link="Config\Demo1\appsettings.json"
+        CopyToOutputDirectory="PreserveNewest" />
+  <None Include="..\Demo1\appsettings.Testing.json"
+        Link="Config\Demo1\appsettings.Testing.json"
+        CopyToOutputDirectory="PreserveNewest" />
+  <None Include="..\Demo2\appsettings.json"
+        Link="Config\Demo2\appsettings.json"
+        CopyToOutputDirectory="PreserveNewest" />
+  <None Include="..\Demo2\appsettings.Testing.json"
+        Link="Config\Demo2\appsettings.Testing.json"
+        CopyToOutputDirectory="PreserveNewest" />
+</ItemGroup>
+```
+
+The `Link=` attribute keeps the source files in the API projects — no duplication of config content.
+
+**2. Override config hooks in each testing server:**
+
+```csharp
+public abstract class MultiApiTestingServerBase<TProgram> : RbkTestingServer<TProgram> where TProgram : class
+{
+    protected abstract string ConfigFolderName { get; }
+
+    protected override string GetConfigurationBasePath()
+        => Path.Combine(base.GetConfigurationBasePath(), "Config", ConfigFolderName);
+
+    protected override IEnumerable<string> GetTestingConfigurationFiles()
+        => ["appsettings.json", "appsettings.Testing.json"];
+}
+
+public class Demo1TestingServer : MultiApiTestingServerBase<Demo1.Program>
+{
+    protected override string ConfigFolderName => "Demo1";
+    // ...
+}
+```
+
+**3. Configuration precedence** (lowest → highest):
+
+| Order | Source |
+|-------|--------|
+| 1 | Files from `GetTestingConfigurationFiles()` (in order) |
+| 2 | `ConfigureAppConfiguration` hook (optional extra JSON/env vars) |
+| 3 | `ConfigureInMemoryOverrides()` |
+
+**Notes:**
+
+- `ExcludeAssets=contentfiles` on `ProjectReference` is **not required**. Collided files at the output root are simply ignored once each server loads from its own subfolder.
+- Single-API test projects can keep the default behavior (`appsettings.Testing.json` at the output root) without any override.
+- Use `ConfigureInMemoryOverrides()` only for small, dynamic adjustments — not to compensate for missing JSON files.
+
+Reference implementation: `Demo.MultipleApis.Tests` in the rbkApiModules repository.
+
 ### Database Testing
 
 ```csharp
@@ -527,23 +677,36 @@ users.ShouldContain(u => u.Username == "admin");
 
 ### Test Server Setup
 
+`RbkTestingServer<TProgram>` loads configuration from the **Testing** environment. By default it reads `appsettings.Testing.json` from the hosted API assembly folder (typically the test project output).
+
+Override these hooks when hosting multiple APIs from the same test project:
+
+```csharp
+protected override string GetConfigurationBasePath()
+    => Path.Combine(base.GetConfigurationBasePath(), "Config", "MyApi");
+
+protected override IEnumerable<string> GetTestingConfigurationFiles()
+    => ["appsettings.json", "appsettings.Testing.json"];
+
+protected override void ConfigureAppConfiguration(WebHostBuilderContext context, IConfigurationBuilder config)
+{
+    // Optional: add extra sources between JSON files and in-memory overrides
+}
+
+protected override IEnumerable<KeyValuePair<string, string>> ConfigureInMemoryOverrides()
+    => [];
+```
+
+See [Multi-API configuration](#multi-api-configuration-appsettingstestingjson-collision) for the full appsettings collision workaround.
+
+For service overrides:
+
 ```csharp
 public class UserControllerTests : RbkTestingServer<Program>
 {
-    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    protected override void ConfigureTestServices(IServiceCollection services)
     {
-        // Configure test-specific services
-        builder.ConfigureServices(services =>
-        {
-            // Replace real services with mocks
-            services.AddScoped<IEmailService, MockEmailService>();
-            
-            // Configure test database
-            services.AddDbContext<TestDbContext>(options =>
-            {
-                options.UseInMemoryDatabase("TestDb");
-            });
-        });
+        services.AddScoped<IEmailService, MockEmailService>();
     }
 }
 ```

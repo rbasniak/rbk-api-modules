@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using rbkApiModules.Commons.Core;
 using rbkApiModules.Commons.Relational;
 using rbkApiModules.Identity.Core;
@@ -55,11 +56,25 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
 
     protected abstract Task InitializeApplicationAsync();
 
+    /// <summary>
+    /// Base directory for JSON configuration files loaded during integration tests.
+    /// Default: the folder containing the hosted API assembly (typically the test project output).
+    /// </summary>
+    protected virtual string GetConfigurationBasePath()
+        => Path.GetDirectoryName(typeof(TProgram).Assembly.Location)!;
+
+    /// <summary>
+    /// JSON files loaded in order; later entries override earlier ones.
+    /// Paths are relative to <see cref="GetConfigurationBasePath"/>.
+    /// </summary>
+    protected virtual IEnumerable<string> GetTestingConfigurationFiles()
+        => ["appsettings.Testing.json"];
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        var projectDir = Path.GetDirectoryName(typeof(TProgram).Assembly.Location);
+        var basePath = GetConfigurationBasePath();
 
-        ContentFolder = Path.Combine(projectDir, $"wwwroot_{Guid.NewGuid().ToString("N")}");
+        ContentFolder = Path.Combine(basePath, $"wwwroot_{Guid.NewGuid():N}");
 
         if (Directory.Exists(ContentFolder))
         {
@@ -68,21 +83,28 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
 
         Directory.CreateDirectory(ContentFolder);
 
+        var configBuilder = new ConfigurationBuilder().SetBasePath(basePath);
+
+        foreach (var file in GetTestingConfigurationFiles())
+        {
+            configBuilder.AddJsonFile(file, optional: false, reloadOnChange: false);
+        }
+
+        var hostContext = new WebHostBuilderContext
+        {
+            Configuration = configBuilder.Build(),
+            HostingEnvironment = new TestingWebHostEnvironment(
+                typeof(TProgram).Assembly.GetName().Name ?? typeof(TProgram).Name,
+                basePath)
+        };
+
+        ConfigureAppConfiguration(hostContext, configBuilder);
+        configBuilder.AddInMemoryCollection(ConfigureInMemoryOverrides());
+
         builder
             .UseEnvironment("Testing")
-            .UseConfiguration(
-                new ConfigurationBuilder()
-                    .SetBasePath(projectDir!)
-                    .AddJsonFile("appsettings.Testing.json", optional: false, reloadOnChange: false)
-                    .AddInMemoryCollection(ConfigureInMemoryOverrides()) // last wins
-                    .Build()
-            )
+            .UseConfiguration(configBuilder.Build())
             .UseWebRoot(ContentFolder)
-            //.UseConfiguration(new ConfigurationBuilder()
-            //    .SetBasePath(projectDir!)
-            //    .AddJsonFile("appsettings.Testing.json")
-            //    .Build()
-            //)
             .ConfigureTestServices(services => ConfigureTestServices(services));
 
         base.ConfigureWebHost(builder);
@@ -90,7 +112,13 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
 
     protected abstract IEnumerable<KeyValuePair<string, string>> ConfigureInMemoryOverrides();
 
-    protected abstract void ConfigureAppConfiguration(WebHostBuilderContext context, IConfigurationBuilder config);
+    /// <summary>
+    /// Optional hook to add configuration sources after <see cref="GetTestingConfigurationFiles"/>
+    /// and before <see cref="ConfigureInMemoryOverrides"/>.
+    /// </summary>
+    protected virtual void ConfigureAppConfiguration(WebHostBuilderContext context, IConfigurationBuilder config)
+    {
+    }
 
     protected abstract void ConfigureTestServices(IServiceCollection services);
 
@@ -992,6 +1020,26 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
             Debug.WriteLine($"*** RbkTestingServer Dispose: Could not delete test database. Exception: {ex.ToBetterString()}");
         }
     }
+}
+
+file sealed class TestingWebHostEnvironment : IWebHostEnvironment
+{
+    public TestingWebHostEnvironment(string applicationName, string contentRootPath)
+    {
+        ApplicationName = applicationName;
+        ContentRootPath = contentRootPath;
+        EnvironmentName = "Testing";
+        ContentRootFileProvider = new PhysicalFileProvider(contentRootPath);
+        WebRootPath = contentRootPath;
+        WebRootFileProvider = ContentRootFileProvider;
+    }
+
+    public string ApplicationName { get; set; }
+    public IFileProvider WebRootFileProvider { get; set; }
+    public string WebRootPath { get; set; }
+    public string EnvironmentName { get; set; }
+    public string ContentRootPath { get; set; }
+    public IFileProvider ContentRootFileProvider { get; set; }
 }
 
 public record Credentials
