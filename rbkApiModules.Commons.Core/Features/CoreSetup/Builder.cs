@@ -1,5 +1,6 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -481,8 +482,15 @@ public static class CommonsCoreBuilder
 
             #region Authorization and Authentication
 
-            app.UseAuthentication();
-            app.UseAuthorization();
+            if (scope.ServiceProvider.GetService<IAuthenticationService>() != null)
+            {
+                app.UseAuthentication();
+            }
+
+            if (scope.ServiceProvider.GetService<IAuthorizationService>() != null)
+            {
+                app.UseAuthorization();
+            }
 
             #endregion
 

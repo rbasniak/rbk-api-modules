@@ -2,6 +2,13 @@
 
 All notable changes to rbkApiModules are documented here. Changes are organized by release, newest first. Consumer-facing changes only — internal implementation details are excluded.
 
+## X.X.X
+
+### rbkApiModules.Commons.Core
+
+#### Bug Fixes
+- Fixed `UseRbkApiCoreSetup()` calling `UseAuthentication()` and `UseAuthorization()` when the corresponding services were not registered. The middleware is now enabled only when its service is available in dependency injection.
+
 ## 10.9.0
 
 ### rbkApiModules.Commons.Testing
