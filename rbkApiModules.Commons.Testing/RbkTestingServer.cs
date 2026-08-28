@@ -997,7 +997,15 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
 
     public override async ValueTask DisposeAsync()
     {
-        await base.DisposeAsync();
+        try
+        {
+            await using var context = CreateContext();
+            await context.Database.EnsureDeletedAsync();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"*** RbkTestingServer Dispose: Could not delete test database. Exception: {ex.ToBetterString()}");
+        }
 
         try
         {
@@ -1011,14 +1019,7 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
             Debug.WriteLine($"*** RbkTestingServer Dispose: Could not delete content folder {ContentFolder}. Exception: {ex.ToBetterString()}");
         }
 
-        try
-        {
-            await CreateContext().Database.EnsureDeletedAsync();
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine($"*** RbkTestingServer Dispose: Could not delete test database. Exception: {ex.ToBetterString()}");
-        }
+        await base.DisposeAsync();
     }
 }
 

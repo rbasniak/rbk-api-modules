@@ -2,6 +2,12 @@
 
 All notable changes to rbkApiModules are documented here. Changes are organized by release, newest first. Consumer-facing changes only — internal implementation details are excluded.
 
+## X.X.X
+
+### rbkApiModules.Commons.Testing
+
+- Fixed a bug witth `RbkTestingServer<TAppHost>` where the `DisposeAsync()` method was not disposing the database context, leading to potential resource leaks in integration tests.
+
 ## 10.9.1
 
 ### rbkApiModules.Commons.Core
