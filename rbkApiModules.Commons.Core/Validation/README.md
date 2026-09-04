@@ -183,6 +183,29 @@ public class Validator : DatabaseConstraintValidator<Request, Material>
 4. **Test thoroughly**: Ensure custom rules work correctly with automatic constraints
 5. **Document exceptions**: When you need to ignore properties, document why
 
+## Tenant-Aware Database Existence Validation
+
+For validating that a `TenantEntity` exists and belongs to the authenticated user's tenant, use the FluentValidation extension methods in `FluentValidationBasicExtensions`:
+
+```csharp
+RuleFor(x => x.Id)
+    .MustExistInDatabaseForCurrentTenant<DeletePost.Request, Post>(context, localization);
+
+RuleFor(x => x.OptionalParentId)
+    .MustExistInDatabaseForCurrentTenantWhenNotNull<UpdatePost.Request, Post>(context, localization);
+```
+
+**Tenant scope rules:**
+- `Identity.Tenant` is **null** → validation fails (invalid authentication context)
+- `Identity.Tenant` is **empty string** (global admin) → entity must have `TenantId` null or empty
+- `Identity.Tenant` has a value → entity must have `TenantId == Identity.Tenant`
+
+Use `MustExistInDatabaseForCurrentTenantWhenNotNull` for optional `Guid?` foreign keys (e.g. `ParentPostId` in a PATCH) where `null` means "not provided" and should skip existence validation.
+
+**Limitation:** These validators enforce strict tenant matching only. They do **not** support hybrid entities that can be tenant-scoped or application-wide (e.g., `Role` with `TenantId = null` accessible by tenant users). For those cases, create a custom validator.
+
+For existence checks without tenant filtering, use `MustExistInDatabase` instead.
+
 ## Troubleshooting
 
 ### Entity Type Not Found

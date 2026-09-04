@@ -2,7 +2,17 @@
 
 All notable changes to rbkApiModules are documented here. Changes are organized by release, newest first. Consumer-facing changes only — internal implementation details are excluded.
 
-## 10.9.2
+## X.X.X
+
+### rbkApiModules.Commons.Core
+
+#### New Features
+- **`MustExistInDatabaseForCurrentTenant`** — FluentValidation extension that validates a `TenantEntity` exists by ID and belongs to the authenticated user's tenant scope. Requires `AuthenticatedRequest` and `DbContext`.
+- **`MustExistInDatabaseForCurrentTenantWhenNotNull`** — Same tenant rules, but skips validation when the `Guid?` value is `null` (for optional foreign keys in update/patch commands).
+
+#### Documentation
+- [Commons.Core.md](Commons.Core.md) — FluentValidation extension methods section (`MustExistInDatabase`, tenant-aware variants, usage examples, hybrid-entity limitation).
+- [Validation/README.md](../rbkApiModules.Commons.Core/Validation/README.md) — Tenant-aware database existence validation.
 
 ### rbkApiModules.Commons.Testing
 

@@ -147,6 +147,52 @@ public class CreateUserValidator : SmartValidator<CreateUserRequest, User>
 }
 ```
 
+#### FluentValidation Extension Methods
+
+For manual validation rules on specific properties, use the extension methods in `FluentValidationBasicExtensions`:
+
+**`MustExistInDatabase`** — Validates that an entity exists by ID, without tenant filtering:
+
+```csharp
+RuleFor(x => x.CategoryId)
+    .MustExistInDatabase<Request, Category>(context, localization);
+```
+
+**`MustExistInDatabaseForCurrentTenant`** — Validates that a `TenantEntity` exists by ID and belongs to the authenticated user's tenant scope:
+
+```csharp
+public class DeletePostValidator : AbstractValidator<DeletePost.Request>
+{
+    public DeletePostValidator(DbContext context, ILocalizationService localization)
+    {
+        RuleFor(x => x.Id)
+            .MustExistInDatabaseForCurrentTenant<DeletePost.Request, Post>(context, localization);
+    }
+}
+```
+
+**Tenant scope rules:**
+- `Identity.Tenant` is **null** → validation fails (invalid authentication context)
+- `Identity.Tenant` is **empty string** (global admin) → entity must have `TenantId` null or empty
+- `Identity.Tenant` has a value → entity must have `TenantId == Identity.Tenant`
+
+**`MustExistInDatabaseForCurrentTenantWhenNotNull`** — Same tenant rules as above, but skips validation when the `Guid?` value is `null`. Use this for **optional foreign keys** in update/patch commands where the client may omit the reference:
+
+```csharp
+public class UpdatePostRequest : AuthenticatedRequest
+{
+    public Guid Id { get; set; }
+    public Guid? ParentPostId { get; set; }  // optional — null means "don't change"
+}
+
+RuleFor(x => x.ParentPostId)
+    .MustExistInDatabaseForCurrentTenantWhenNotNull<UpdatePostRequest, Post>(context, localization);
+```
+
+**Limitation:** These validators enforce strict tenant matching. They do **not** support hybrid entities that can be either tenant-scoped or application-wide (e.g., `Role` with `TenantId = null`). For those cases, create a custom validator.
+
+See also `SmartValidator<TRequest, TModel>` for automatic constraint validation based on EF metadata.
+
 ### Messaging System
 
 #### Dispatcher
