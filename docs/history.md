@@ -4,6 +4,9 @@ All notable changes to rbkApiModules are documented here. Changes are organized 
 
 ## X.X.X
 
+### rbkApiModules.Identity.Core
+- Added opttions to create a specific API key when creating a new key
+
 ### rbkApiModules.Commons.Core
 
 #### New Features

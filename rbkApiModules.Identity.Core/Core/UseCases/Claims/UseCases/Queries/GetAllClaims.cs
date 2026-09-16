@@ -12,7 +12,7 @@ public class GetAllClaims : IEndpoint
         })
         .AllowAnonymous()
         .WithName("Get All Claims")
-        .WithTags("Authorization");
+        .WithTags("Claims");
     }
 
     public class Request : IQuery

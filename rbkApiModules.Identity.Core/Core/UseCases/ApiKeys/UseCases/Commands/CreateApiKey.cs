@@ -22,6 +22,10 @@ public class CreateApiKey : IEndpoint
     {
         public required string Name { get; set; }
 
+        public string? Key { get; set; }
+
+        public string? Prefix { get; set; }
+
         public DateTime? ExpirationDate { get; set; }
 
         public string? TenantId { get; set; }
@@ -112,7 +116,29 @@ public class CreateApiKey : IEndpoint
             var requestsPerMinute = request.RequestsPerMinute ?? defaultRpm;
             var burstLimit = request.BurstLimit ?? requestsPerMinute;
 
-            var (rawKey, keyPrefix, keyHash) = ApiKeyMaterial.Generate();
+            string rawKey;
+            string keyPrefix;
+            string keyHash;
+
+            if (string.IsNullOrWhiteSpace(request.Key))
+            {
+                (rawKey, keyPrefix, keyHash) = request.Prefix is null
+                    ? ApiKeyMaterial.Generate()
+                    : ApiKeyMaterial.Generate(request.Prefix);
+            }
+            else
+            {
+                rawKey = request.Key.Trim();
+                keyPrefix = rawKey.StartsWith(ApiKeyMaterial.DefaultPublicPrefix, StringComparison.Ordinal)
+                    ? ApiKeyMaterial.DefaultPublicPrefix
+                    : string.Empty;
+                keyHash = ApiKeyMaterial.HashRawKey(rawKey);
+
+                if (await _context.Set<ApiKey>().AnyAsync(x => x.KeyHash == keyHash, cancellationToken))
+                {
+                    return CommandResponse.Failure("An API key with this value already exists.");
+                }
+            }
 
             var apiKey = new ApiKey(request.Name, keyHash, keyPrefix, request.TenantId, request.ExpirationDate, requestsPerMinute, burstLimit);
 

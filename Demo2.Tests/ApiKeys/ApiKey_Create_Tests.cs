@@ -392,6 +392,105 @@ public class ApiKey_Create_Tests
         response.ShouldHaveErrors(HttpStatusCode.BadRequest, $"Requests per minute must be between {EntityApiKey.MinRequestsPerMinute} and {EntityApiKey.MaxRequestsPerMinute}.");
     }
 
+    [Test, NotInParallel(Order = 20)]
+    public async Task Create_With_Explicit_Key_Returns_And_Persists_It()
+    {
+        var claimId = TestingServer.CreateContext()
+            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
+        var rawKey = "rbk_live_explicit-test-key";
+
+        var request = new CreateApiKey.Request
+        {
+            Name = "Explicit API key",
+            Key = rawKey,
+            ClaimIds = new List<Guid> { claimId }
+        };
+
+        var response = await TestingServer.PostAsync<CreateApiKey.Result>(
+            "api/authorization/api-keys", request, "superuser");
+
+        response.ShouldBeSuccess(out var result);
+        result.RawKey.ShouldBe(rawKey);
+        result.KeyPrefix.ShouldBe("rbk_live_");
+
+        var dbKey = TestingServer.CreateContext().Set<EntityApiKey>().Find(result.Id);
+        dbKey.ShouldNotBeNull();
+        dbKey!.KeyHash.ShouldBe(ApiKeyMaterial.HashRawKey(rawKey));
+    }
+
+    [Test, NotInParallel(Order = 21)]
+    public async Task Create_Returns_400_When_Explicit_Key_Already_Exists()
+    {
+        var claimId = TestingServer.CreateContext()
+            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
+        var rawKey = "rbk_live_duplicate-test-key";
+
+        var firstRequest = new CreateApiKey.Request
+        {
+            Name = "First explicit API key",
+            Key = rawKey,
+            ClaimIds = new List<Guid> { claimId }
+        };
+
+        var firstResponse = await TestingServer.PostAsync<CreateApiKey.Result>(
+            "api/authorization/api-keys", firstRequest, "superuser");
+        firstResponse.ShouldBeSuccess();
+
+        var secondRequest = new CreateApiKey.Request
+        {
+            Name = "Duplicate explicit API key",
+            Key = rawKey,
+            ClaimIds = new List<Guid> { claimId }
+        };
+
+        var secondResponse = await TestingServer.PostAsync<CreateApiKey.Result>(
+            "api/authorization/api-keys", secondRequest, "superuser");
+
+        secondResponse.ShouldHaveErrors(HttpStatusCode.BadRequest, "An API key with this value already exists.");
+    }
+
+    [Test, NotInParallel(Order = 22)]
+    public async Task Create_With_Empty_Prefix_Returns_Key_Without_Prefix()
+    {
+        var claimId = TestingServer.CreateContext()
+            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
+
+        var request = new CreateApiKey.Request
+        {
+            Name = "Key without prefix",
+            Prefix = string.Empty,
+            ClaimIds = new List<Guid> { claimId }
+        };
+
+        var response = await TestingServer.PostAsync<CreateApiKey.Result>(
+            "api/authorization/api-keys", request, "superuser");
+
+        response.ShouldBeSuccess(out var result);
+        result.RawKey.Length.ShouldBe(64);
+        result.KeyPrefix.ShouldBe(string.Empty);
+    }
+
+    [Test, NotInParallel(Order = 23)]
+    public async Task Create_With_Explicit_Prefix_Returns_Key_With_Prefix()
+    {
+        var claimId = TestingServer.CreateContext()
+            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
+
+        var request = new CreateApiKey.Request
+        {
+            Name = "Key with custom prefix",
+            Prefix = "custom_",
+            ClaimIds = new List<Guid> { claimId }
+        };
+
+        var response = await TestingServer.PostAsync<CreateApiKey.Result>(
+            "api/authorization/api-keys", request, "superuser");
+
+        response.ShouldBeSuccess(out var result);
+        result.RawKey.ShouldStartWith("custom_");
+        result.KeyPrefix.ShouldBe("custom_");
+    }
+
     [Test, NotInParallel(Order = 99)]
     public async Task CleanUp()
     {
