@@ -1,6 +1,8 @@
 # rbkApiModules — Change History
 
 All notable changes to rbkApiModules are documented here. Changes are organized by release, newest first. Consumer-facing changes only — internal implementation details are excluded.
+## X.X.X
+- Added new validators for enums
 
 ## 10.9.3
 
