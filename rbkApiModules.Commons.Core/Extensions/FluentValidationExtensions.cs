@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Net.Mail;
 
@@ -10,8 +11,8 @@ public static class FluentValidationExtensions
 
     /// <summary>
     /// Validação de campos de texto que devem ser Ids de banco.
-    /// Retorna válido se o Id for vazio ou nulo, precisa usar o MustNotBeWmpty 
-    /// antes desse validador caso o id não possa ser nulo
+    /// Retorna válido se o Id for vazio ou nulo; use <see cref="IsRequired"/> antes
+    /// desse validador caso o id não possa ser nulo.
     /// </summary>
     public static IRuleBuilderOptions<T, string> MustBeValidId<T>(this IRuleBuilder<T, string> rule, ILocalizationService localization)
     {
@@ -24,6 +25,72 @@ public static class FluentValidationExtensions
     {
         return rule
             .NotEmpty().WithMessage(localization.LocalizeString(SharedValidationMessages.Common.FieldCannotBeEmpty));
+    }
+
+    /// <summary>
+    /// Ensures the collection property was sent (not null). An empty collection passes.
+    /// </summary>
+    public static IRuleBuilderOptions<T, ICollection<TElement>> IsRequired<T, TElement>(
+        this IRuleBuilder<T, ICollection<TElement>> rule,
+        ILocalizationService localization)
+    {
+        return rule
+            .NotNull()
+            .WithMessage(localization.LocalizeString(SharedValidationMessages.Common.FieldCannotBeNull));
+    }
+
+    /// <summary>
+    /// Ensures a nullable value-type property is present (not null). Zero and other defaults are valid.
+    /// Use nullable request properties (e.g. <c>int?</c>) so JSON <c>null</c> is deserialized and validated here (400)
+    /// instead of failing during deserialization (500) when the property is a non-nullable value type.
+    /// </summary>
+    public static IRuleBuilderOptions<T, TProperty?> IsRequired<T, TProperty>(
+        this IRuleBuilder<T, TProperty?> rule,
+        ILocalizationService localization)
+        where TProperty : struct
+    {
+        return rule
+            .NotNull()
+            .WithMessage(localization.LocalizeString(SharedValidationMessages.Common.FieldCannotBeNull));
+    }
+
+    /// <summary>
+    /// Ensures the collection is not null and contains at least one element.
+    /// </summary>
+    public static IRuleBuilderOptions<T, ICollection<TElement>> MustHaveItems<T, TElement>(
+        this IRuleBuilder<T, ICollection<TElement>> rule,
+        ILocalizationService localization)
+    {
+        return rule
+            .NotEmpty()
+            .WithMessage(localization.LocalizeString(SharedValidationMessages.Common.FieldMustHaveAtLeastOneItem));
+    }
+
+    /// <summary>
+    /// Ensures the enum value is a defined member of <typeparamref name="TEnum"/>.
+    /// </summary>
+    public static IRuleBuilderOptions<T, TEnum> MustBeInEnum<T, TEnum>(
+        this IRuleBuilder<T, TEnum> rule,
+        ILocalizationService localization)
+        where TEnum : struct, Enum
+    {
+        return rule
+            .Must(value => Enum.IsDefined(value))
+            .WithMessage(localization.LocalizeString(SharedValidationMessages.Common.FieldHasInvalidValue));
+    }
+
+    /// <summary>
+    /// Ensures the enum value is a defined member of <typeparamref name="TEnum"/> when not null.
+    /// Use <see cref="IsRequired{T, TProperty}"/> on the same property to require a value.
+    /// </summary>
+    public static IRuleBuilderOptions<T, TEnum?> MustBeInEnum<T, TEnum>(
+        this IRuleBuilder<T, TEnum?> rule,
+        ILocalizationService localization)
+        where TEnum : struct, Enum
+    {
+        return rule
+            .Must(value => value == null || Enum.IsDefined(value.Value))
+            .WithMessage(localization.LocalizeString(SharedValidationMessages.Common.FieldHasInvalidValue));
     }
 
     public static IRuleBuilderOptions<T, string> MustNotBeNull<T>(this IRuleBuilder<T, string> rule, ILocalizationService localization)
@@ -103,6 +170,8 @@ public class SharedValidationMessages : ILocalizedResource
         [Description("Request expected to require authentication")] RequestExpectedToRequireAuthentication,
         [Description("Request expected to be authenticated")] RequestExpectedToBeAuthenticated,
         [Description("Possible unauthorized access")] PossibleUnauthorizedAccess,
+        [Description("The field '{PropertyName}' must have at least one item")] FieldMustHaveAtLeastOneItem,
+        [Description("The field '{PropertyName}' has an invalid value")] FieldHasInvalidValue,
     }
 
     public enum Errors

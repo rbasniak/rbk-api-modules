@@ -149,7 +149,35 @@ public class CreateUserValidator : SmartValidator<CreateUserRequest, User>
 
 #### FluentValidation Extension Methods
 
-For manual validation rules on specific properties, use the extension methods in `FluentValidationBasicExtensions`:
+For manual validation rules on specific properties, use the extension methods in `FluentValidationBasicExtensions` (database existence) and `FluentValidationExtensions` (presence, collections, enums) in `rbkApiModules.Commons.Core`.
+
+**Nullable value types on requests (`int?`, `decimal?`, enum nullable types)** — Use these when the client may send JSON `null` for a required field. Non-nullable value types cannot deserialize `null`; `System.Text.Json` throws during model binding, before FluentValidation runs, and unhandled exceptions become **500** responses from `ExceptionHandlingMiddleware`. Nullable properties deserialize `null` successfully; `IsRequired` then fails with a localized **400** validation response. Zero remains valid because `IsRequired` checks presence only, not magnitude.
+
+**`IsRequired`** — Localized required checks:
+- `string`: `NotEmpty` (null and empty string fail).
+- `ICollection<T>` (arrays, lists): `NotNull` only; an empty collection passes.
+- Nullable structs (`int?`, `decimal?`, `Guid?`, enums, etc.): `NotNull` only; default values such as `0` pass.
+
+```csharp
+RuleFor(x => x.Age).IsRequired(localization);
+RuleFor(x => x.TagIds).IsRequired(localization);
+```
+
+**`MustHaveItems`** — Collection must be non-null and contain at least one element. Combine with `IsRequired` when you need both presence and content, or use `MustHaveItems` alone to reject null and empty lists.
+
+```csharp
+RuleFor(x => x.Tags)
+    .IsRequired(localization)
+    .MustHaveItems(localization);
+```
+
+**`MustBeInEnum`** — Ensures the value is a defined enum member (numeric JSON values outside the enum fail here). On nullable enum properties, `null` is allowed so `IsRequired` can emit the presence message; pair both rules when the enum is mandatory.
+
+```csharp
+RuleFor(x => x.Status)
+    .IsRequired(localization)
+    .MustBeInEnum(localization);
+```
 
 **`MustExistInDatabase`** — Validates that an entity exists by ID, without tenant filtering:
 
