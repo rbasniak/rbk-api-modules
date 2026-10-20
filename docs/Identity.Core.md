@@ -48,16 +48,6 @@ public class ApiKeyAuthenticationHandler : AuthenticationHandler<AuthenticationS
 }
 ```
 
-#### MockedWindowsAuthenticationHandler
-Windows authentication handler for testing environments.
-
-```csharp
-public class MockedWindowsAuthenticationHandler : AuthenticationHandler<TestAuthHandlerOptions>
-{
-    public const string AuthenticationScheme = "MockedWindows";
-}
-```
-
 ### Core Models
 
 #### User
@@ -170,8 +160,7 @@ public class RbkAuthenticationOptions
     public RbkAuthenticationOptions DisallowUserCreationOnFirstAccess();
     
     // Login Modes
-    public RbkAuthenticationOptions UseWindowsAuthentication();
-    public RbkAuthenticationOptions UseCustomAuthentication();
+    public RbkAuthenticationOptions UseCustomLogin();
     
     // Additional Schemes
     public RbkAuthenticationOptions AddAuthenticationScheme(Action<AuthenticationBuilder> scheme);
@@ -217,7 +206,7 @@ builder.Services.AddRbkAuthentication(options =>
            .UseSymmetricEncryptionKey()
            .AllowTenantSwitching()
            .AllowUserCreationOnFirstAccess()
-           .UseWindowsAuthentication()
+           .UseCustomLogin()
            .AddAuthenticationScheme(auth =>
            {
                auth.AddApiKey("ApiKey", configureOptions: null);
@@ -245,13 +234,12 @@ public async Task<IActionResult> Login(LoginRequest request)
 }
 ```
 
-### Windows Authentication
-Integration with Windows authentication for enterprise environments.
+### Custom Login
+For external identity providers; disables password/email confirmation endpoints and enables `AllowUserCreationOnFirstAccess`.
 
 ```csharp
-// Configure Windows authentication
-options.UseWindowsAuthentication()
-       .AllowUserCreationOnFirstAccess();
+options.UseCustomLogin()
+       .AllowUserCreationOnFirstAccess("User");
 ```
 
 ### API Key Authentication

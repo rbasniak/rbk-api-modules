@@ -20,7 +20,6 @@ public class RbkAuthenticationOptions
     internal bool _allowUserCreationByAdmin = false;
     internal string _userAvatarPath = "users/images";
     internal Type _customAvatarStorageType = typeof(DefaultAvatarStorageService);
-    internal bool _useMockedWindowsAuthentication = false;
     internal bool _allowUserCreationOnFirstAccess = false;
     internal string _defaultRoleName = null;
     internal List<Action<AuthenticationBuilder>> _extraAuthenticationSchemes = new List<Action<AuthenticationBuilder>>();
@@ -34,7 +33,7 @@ public class RbkAuthenticationOptions
     {
         if (_loginMode == LoginMode.Credentials)
         {
-            throw new NotSupportedException($"Automatic user creation is supported with Windows Authentication or Custom Authentication only. Call '{nameof(UseLoginWithWindowsAuthentication)}' or {nameof(UseCustomLogin)} before calling '{nameof(AllowUserCreationOnFirstAccess)}'");
+            throw new NotSupportedException($"Automatic user creation is supported with Custom Authentication only. Call '{nameof(UseCustomLogin)}' before calling '{nameof(AllowUserCreationOnFirstAccess)}'");
         }
 
         _allowUserCreationOnFirstAccess = true;
@@ -95,13 +94,6 @@ public class RbkAuthenticationOptions
         return this;
     }
 
-    public RbkAuthenticationOptions UseLoginWithWindowsAuthentication()
-    {
-        _loginMode = LoginMode.WindowsAuthentication;
-
-        return this;
-    }
-
     public RbkAuthenticationOptions UseCustomLogin()
     {
         _loginMode = LoginMode.Custom;
@@ -154,13 +146,6 @@ public class RbkAuthenticationOptions
     public RbkAuthenticationOptions AllowUserCreationByAdmins()
     {
         _allowUserCreationByAdmin = true;
-
-        return this;
-    }
-
-    public RbkAuthenticationOptions UseMockedWindowsAuthentication()
-    {
-        _useMockedWindowsAuthentication = true;
 
         return this;
     }

@@ -40,7 +40,6 @@ Call `AddApiKeyAuthentication` inside `AddRbkRelationalAuthentication`:
 ```csharp
 builder.Services.AddRbkRelationalAuthentication(builder.Configuration, options => options
     .UseSymetricEncryptationKey()
-    .UseLoginWithWindowsAuthentication()
     .AddApiKeyAuthentication()
 );
 ```

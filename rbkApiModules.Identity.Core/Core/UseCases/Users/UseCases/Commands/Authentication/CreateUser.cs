@@ -34,7 +34,6 @@ public class CreateUser : IEndpoint
     {
         private readonly IAuthService _usersService;
         private readonly IRolesService _rolesService;
-        private readonly AuthenticationMode _authenticationMode;
         private readonly ILogger<Validator> _logger;
         public Validator(IAuthService usersService, 
             ILocalizationService localization, 
@@ -56,8 +55,6 @@ public class CreateUser : IEndpoint
             {
                 throw new Exception("Cannot create a new user using a token without authentication mode");
             }
-
-            _authenticationMode = Enum.Parse<AuthenticationMode>(authenticationModeClaim.Value);
 
             RuleFor(x => x.Username)
                 .NotEmpty()
@@ -142,13 +139,6 @@ public class CreateUser : IEndpoint
         {
             _logger.LogInformation("Validation: Checking is passwords match");
 
-            if (_authenticationMode == AuthenticationMode.Windows)
-            {
-                _logger.LogInformation("Using Windows Authentication, password is not used in this scenario");
-
-                return true;
-            }
-
             var result = request.PasswordConfirmation == request.Password;
 
             if (result)
@@ -166,13 +156,6 @@ public class CreateUser : IEndpoint
         private bool PasswordsIsRequired(Request request, string _)
         {
             _logger.LogInformation("Validation: Checking password");
-
-            if (_authenticationMode == AuthenticationMode.Windows)
-            {
-                _logger.LogInformation("Using Windows Authentication, password is not used in this scenario");
-
-                return true;
-            }
 
             var result = !String.IsNullOrEmpty(request.Password);
 

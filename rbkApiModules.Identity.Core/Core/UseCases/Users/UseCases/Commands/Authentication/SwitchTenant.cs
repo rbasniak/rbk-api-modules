@@ -50,8 +50,7 @@ public class SwitchTenant : IEndpoint
 
         public async Task<bool> BePartOfDomain(Request request, string destinationDomain, CancellationToken cancellationToken)
         {
-            var userWillBeAutomaticallyCreated = _authOptions._allowUserCreationOnFirstAccess && _authOptions._loginMode == LoginMode.WindowsAuthentication ||
-                _authOptions._allowUserCreationOnFirstAccess && _authOptions._loginMode == LoginMode.Custom;
+            var userWillBeAutomaticallyCreated = _authOptions._allowUserCreationOnFirstAccess && _authOptions._loginMode == LoginMode.Custom;
 
             var userExists = await _usersService.FindUserAsync(request.Identity.Username, destinationDomain, cancellationToken) != null;
 

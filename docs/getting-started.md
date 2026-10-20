@@ -240,7 +240,7 @@ curl -X GET http://localhost:5000/api/hello \
 
 Now that your app is running:
 
-1. **[Learn about authentication options](identity-authentication.md)** - JWT, Windows Auth, API Keys
+1. **[Learn about authentication options](identity-authentication.md)** - JWT and API keys
 2. **[Manage users, roles, and claims](identity-management.md)** - Built-in identity features
 3. **[Enable multi-tenancy](identity-authentication.md#multi-tenancy)** - Isolate data by tenant
 4. **[Write integration tests](testing.md)** - Test your APIs with `RbkTestingServer`
@@ -255,15 +255,6 @@ Now that your app is running:
 builder.Services.AddRbkRelationalAuthentication(builder.Configuration, options => options
     .UseSymetricEncryptationKey()
     .AddApiKeyAuthentication()  // ← Add this
-);
-```
-
-### Enable Windows Authentication
-
-```csharp
-builder.Services.AddRbkRelationalAuthentication(builder.Configuration, options => options
-    .UseSymetricEncryptationKey()
-    .UseLoginWithWindowsAuthentication()  // ← Add this
 );
 ```
 

@@ -1,4 +1,3 @@
-using rbkApiModules.Commons.Core.Helpers;
 using rbkApiModules.Commons.Relational;
 using rbkApiModules.Identity.Core;
 using rbkApiModules.Identity.Relational;
@@ -72,7 +71,6 @@ public static class Builder
             ("GetAllTenants.Authenticated", GetAllTenants.MapEndpointAuthenticated),
             ("GetAllTenants.Anonymous", GetAllTenants.MapEndpointAnonymous),
             ("UserLogin.Credentials", UserLogin.MapCredentialsLoginEndpoint),
-            ("UserLogin.Ntlm", UserLogin.MapNtlmLoginEndpoint),
             ("ChangePassword", ChangePassword.MapEndpoint),
             ("SwitchTenant", SwitchTenant.MapEndpoint),
             ("CreateUser", CreateUser.MapEndpoint),
@@ -132,7 +130,7 @@ public static class Builder
             endpoints.RemoveAll(x => x.Key == "GetAllTenants.Anonymous");  
         }
 
-        if (authenticationOptions._loginMode == LoginMode.WindowsAuthentication || authenticationOptions._loginMode == LoginMode.Custom)
+        if (authenticationOptions._loginMode == LoginMode.Custom)
         {
             endpoints.RemoveAll(e =>
                 e.Key is "ChangePassword"
@@ -141,23 +139,7 @@ public static class Builder
                 or "RedefinePassword"
                 or "RequestPasswordReset");
 
-            if (TestingEnvironmentChecker.IsTestingEnvironment)
-            {
-                // Single combined endpoint so superuser can use credentials and Windows users can use NTLM (no route ambiguity).
-                endpoints.RemoveAll(e => e.Key is "UserLogin.Credentials" or "UserLogin.Ntlm");
-                endpoints.Add(("UserLogin.Combined", UserLogin.MapCombinedLoginEndpoint));
-            }
-            else
-            {
-                endpoints.RemoveAll(e => e.Key == "UserLogin.Credentials");
-            }
-
             app.UseMiddleware<WindowsAuthenticationMiddleware>();
-        }
-
-        if (authenticationOptions._loginMode == LoginMode.Credentials || authenticationOptions._loginMode == LoginMode.Custom)
-        {
-            endpoints.RemoveAll(x => x.Key == "UserLogin.Ntlm");
         }
 
         if (!authenticationOptions._allowTenantSwitching)
@@ -169,9 +151,9 @@ public static class Builder
         {
             endpoints.RemoveAll(x => x.Key == "Register");
         }
-        else if (authenticationOptions._loginMode is LoginMode.WindowsAuthentication or LoginMode.Custom)
+        else if (authenticationOptions._loginMode == LoginMode.Custom)
         {
-            throw new NotSupportedException("User self registration is not allowed with Windows authentication");
+            throw new NotSupportedException("User self registration is not allowed with custom login");
         }
 
         if (!authenticationOptions._allowUserCreationByAdmin)

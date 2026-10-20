@@ -48,8 +48,6 @@ public class Program
 
         builder.Services.AddRbkRelationalAuthentication(builder.Configuration, options => options
             .UseSymetricEncryptationKey()
-            .UseLoginWithWindowsAuthentication()
-            .UseMockedWindowsAuthentication()
             .AddApiKeyAuthentication() 
         );
 

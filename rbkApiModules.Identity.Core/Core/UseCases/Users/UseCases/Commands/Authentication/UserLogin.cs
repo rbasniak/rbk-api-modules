@@ -4,30 +4,6 @@ namespace rbkApiModules.Identity.Core;
 
 public class UserLogin
 {
-    public static void MapNtlmLoginEndpoint(IEndpointRouteBuilder endpoints)
-    {
-        endpoints.MapPost("/api/authentication/login", async (Request request, IDispatcher dispatcher, 
-            HttpContext httpContext, RbkDefaultAdminOptions adminOptions, CancellationToken cancellationToken) =>
-        {
-            var requestHasUsername = String.IsNullOrEmpty(request.Username);
-            var isAdminUser = request.Username.ToLower() != adminOptions._username.ToLower();
-            var requestHasTenant = String.IsNullOrEmpty(request.Tenant);
-
-            if ( requestHasUsername || isAdminUser || !requestHasTenant)
-            {
-                request.Username = httpContext.User.Identity.Name.Split('\\').Last().ToLower();
-                request.AuthenticationMode = AuthenticationMode.Windows;
-            }
-
-            var result = await dispatcher.SendAsync(request, cancellationToken);
-
-            return ResultsMapper.FromResponse(result);
-        })
-        .RequireAuthorization()
-        .WithName("NTLM Login")
-        .WithTags("Authentication");
-    }
-
     public static void MapCredentialsLoginEndpoint(IEndpointRouteBuilder endpoints)
     {
         endpoints.MapPost("/api/authentication/login", async (Request request, IDispatcher dispatcher, 
@@ -40,47 +16,6 @@ public class UserLogin
         })
         .AllowAnonymous()
         .WithName("Login with Credentials")
-        .WithTags("Authentication");
-    }
-
-    /// <summary>
-    /// Single login endpoint for Testing + Windows mode: credentials when no Windows auth, NTLM when authenticated with TestScheme.
-    /// </summary>
-    public static void MapCombinedLoginEndpoint(IEndpointRouteBuilder endpoints)
-    {
-        endpoints.MapPost("/api/authentication/login", async (Request request, IDispatcher dispatcher,
-            HttpContext httpContext, RbkDefaultAdminOptions adminOptions, CancellationToken cancellationToken) =>
-        {
-            // AllowAnonymous may not run auth middleware; detect TestScheme from header so Windows (mock) login works.
-            var authHeader = httpContext.Request.Headers.Authorization.ToString();
-            var isWindowsAuth = authHeader.StartsWith(MockedWindowsAuthenticationHandler.AuthenticationScheme, StringComparison.OrdinalIgnoreCase)
-                || (httpContext.User.Identity?.IsAuthenticated == true
-                    && string.Equals(httpContext.User.Identity.AuthenticationType, MockedWindowsAuthenticationHandler.AuthenticationScheme, StringComparison.Ordinal));
-
-            if (isWindowsAuth)
-            {
-                var requestHasUsername = string.IsNullOrEmpty(request.Username);
-                var isAdminUser = !string.IsNullOrEmpty(request.Username) && request.Username.ToLower() != adminOptions._username.ToLower();
-                var requestHasTenant = string.IsNullOrEmpty(request.Tenant);
-
-                if (requestHasUsername || isAdminUser || !requestHasTenant)
-                {
-                    var nameFromContext = httpContext.User.Identity?.Name?.Split('\\').Last().ToLower();
-                    var nameFromHeader = httpContext.Request.Headers[MockedWindowsAuthenticationHandler.UserId].FirstOrDefault()?.ToLower();
-                    request.Username = nameFromContext ?? nameFromHeader ?? request.Username;
-                }
-                request.AuthenticationMode = AuthenticationMode.Windows;
-            }
-            else
-            {
-                request.AuthenticationMode = AuthenticationMode.Credentials;
-            }
-
-            var result = await dispatcher.SendAsync(request, cancellationToken);
-            return ResultsMapper.FromResponse(result);
-        })
-        .AllowAnonymous()
-        .WithName("Combined Login (Testing + Windows)")
         .WithTags("Authentication");
     }
 
@@ -131,7 +66,7 @@ public class UserLogin
                                     .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.UserNotYetConfirmed));
 
                             RuleFor(x => x.Password)
-                                .Must(IsRequiredWhenUsingCredentials)
+                                .NotEmpty()
                                     .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.PasswordIsRequired))
                                 .MustAsync(MatchPassword)
                                     .WithMessage(localization.LocalizeString(AuthenticationMessages.Validations.InvalidCredentials));
@@ -139,26 +74,12 @@ public class UserLogin
                 });
         }
 
-        private bool IsRequiredWhenUsingCredentials(Request request, string password)
-        {
-            if (request.AuthenticationMode == AuthenticationMode.Windows)
-            {
-                return true;
-            }   
-            else if (request.AuthenticationMode == AuthenticationMode.Credentials)
-            {
-                return !String.IsNullOrEmpty(password);
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
-        }
+        private static bool UserWillBeAutomaticallyCreated(RbkAuthenticationOptions authOptions) =>
+            authOptions._allowUserCreationOnFirstAccess && authOptions._loginMode == LoginMode.Custom;
 
         public async Task<bool> ExistOnDatabase(Request request, string username, CancellationToken cancellationToken)
         {
-            var userWillBeAutomaticallyCreated = _authOptions._allowUserCreationOnFirstAccess && _authOptions._loginMode == LoginMode.WindowsAuthentication ||
-                _authOptions._allowUserCreationOnFirstAccess && _authOptions._loginMode == LoginMode.Custom;
+            var userWillBeAutomaticallyCreated = UserWillBeAutomaticallyCreated(_authOptions);
 
             var user = await _userService.FindUserAsync(username, request.Tenant, cancellationToken);
 
@@ -167,8 +88,7 @@ public class UserLogin
 
         public async Task<bool> BeConfirmed(Request request, string username, CancellationToken cancellationToken)
         {
-            var userWillBeAutomaticallyCreated = _authOptions._allowUserCreationOnFirstAccess && _authOptions._loginMode == LoginMode.WindowsAuthentication || 
-                _authOptions._allowUserCreationOnFirstAccess && _authOptions._loginMode == LoginMode.Custom;
+            var userWillBeAutomaticallyCreated = UserWillBeAutomaticallyCreated(_authOptions);
 
             var user = await _userService.FindUserAsync(username, request.Tenant, cancellationToken);
 
@@ -177,8 +97,7 @@ public class UserLogin
 
         public async Task<bool> BeActive(Request request, string username, CancellationToken cancellationToken)
         {
-            var userWillBeAutomaticallyCreated = _authOptions._allowUserCreationOnFirstAccess && _authOptions._loginMode == LoginMode.WindowsAuthentication || 
-                _authOptions._allowUserCreationOnFirstAccess && _authOptions._loginMode == LoginMode.Custom;
+            var userWillBeAutomaticallyCreated = UserWillBeAutomaticallyCreated(_authOptions);
 
             var user = await _userService.FindUserAsync(username, request.Tenant, cancellationToken);
 
@@ -187,8 +106,7 @@ public class UserLogin
 
         public async Task<bool> UseCorrectAuthenticationMode(Request request, string username, CancellationToken cancellationToken)
         {
-            var userWillBeAutomaticallyCreated = _authOptions._allowUserCreationOnFirstAccess && _authOptions._loginMode == LoginMode.WindowsAuthentication || 
-                _authOptions._allowUserCreationOnFirstAccess && _authOptions._loginMode == LoginMode.Custom;
+            var userWillBeAutomaticallyCreated = UserWillBeAutomaticallyCreated(_authOptions);
 
             var user = await _userService.FindUserAsync(username, request.Tenant, cancellationToken);
 
@@ -197,20 +115,9 @@ public class UserLogin
 
         public async Task<bool> MatchPassword(Request request, string password, CancellationToken cancellationToken)
         {
-            if (request.AuthenticationMode == AuthenticationMode.Windows)
-            {
-                return true;
-            }
-            else if (request.AuthenticationMode == AuthenticationMode.Credentials)
-            {
-                var user = await _userService.FindUserAsync(request.Username, request.Tenant, cancellationToken);
+            var user = await _userService.FindUserAsync(request.Username, request.Tenant, cancellationToken);
 
-                return PasswordHasher.VerifyPassword(password, user.Password);
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
+            return PasswordHasher.VerifyPassword(password, user.Password);
         }
     }
 
@@ -228,8 +135,8 @@ public class UserLogin
 public enum AuthenticationMode
 {
     Credentials = 0,
+    [Obsolete("Windows authentication is no longer supported. Existing database values are retained for compatibility.")]
     Windows = 1,
     Custom = 2,
     ApiKey = 3
 }
-

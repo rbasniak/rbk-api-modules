@@ -6,7 +6,6 @@ using System.Reflection;
 using System.Text;
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authorization;
-using rbkApiModules.Commons.Core.Helpers;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using rbkApiModules.Commons.Core.Authentication;
@@ -28,7 +27,6 @@ public static class CoreAuthenticationBuilder
     /// - Tenant provider for multi-tenancy support
     /// - Authorization policies for authenticated users
     /// - Optional API key authentication scheme
-    /// - Optional Windows/NTLM authentication
     /// 
     /// JWT configuration is loaded from IConfiguration using the "JwtIssuerOptions" section,
     /// which must contain: Issuer, Audience, SecretKey, AccessTokenLife, RefreshTokenLife.
@@ -116,60 +114,21 @@ public static class CoreAuthenticationBuilder
             authenticationScheme(services.AddAuthentication());
         }
 
-        if (TestingEnvironmentChecker.IsTestingEnvironment && authenticationOptions._loginMode == LoginMode.WindowsAuthentication ||
-                authenticationOptions._useMockedWindowsAuthentication && authenticationOptions._loginMode == LoginMode.WindowsAuthentication)
+        services.AddAuthorization(options =>
         {
-            services.AddAuthentication(MockedWindowsAuthenticationHandler.AuthenticationScheme)
-                .AddScheme<TestAuthHandlerOptions, MockedWindowsAuthenticationHandler>(MockedWindowsAuthenticationHandler.AuthenticationScheme, options => { });
-
-            services.AddAuthorization(options =>
+            if (authenticationOptions._addApiKeyAuthentication)
             {
-                if (TestingEnvironmentChecker.IsTestingEnvironment && authenticationOptions._loginMode == LoginMode.WindowsAuthentication ||
-                    authenticationOptions._useMockedWindowsAuthentication && authenticationOptions._loginMode == LoginMode.WindowsAuthentication)
-                {
-                    var validSchemas = new List<string>
-                    {
-                        MockedWindowsAuthenticationHandler.AuthenticationScheme,
-                        JwtBearerDefaults.AuthenticationScheme,
-                    };
+                var defaultAuthorizationPolicyBuilder = new AuthorizationPolicyBuilder(
+                    JwtBearerDefaults.AuthenticationScheme,
+                    RbkAuthenticationSchemes.API_KEY);
 
-                    if (authenticationOptions._addApiKeyAuthentication)
-                    {
-                        validSchemas.Add(RbkAuthenticationSchemes.API_KEY);
-                    }
+                defaultAuthorizationPolicyBuilder.RequireAuthenticatedUser();
+                options.DefaultPolicy = defaultAuthorizationPolicyBuilder.Build();
 
-                    var defaultAuthorizationPolicyBuilder = new AuthorizationPolicyBuilder(validSchemas.ToArray());
-
-                    defaultAuthorizationPolicyBuilder = defaultAuthorizationPolicyBuilder.RequireAuthenticatedUser();
-
-                    options.DefaultPolicy = defaultAuthorizationPolicyBuilder.Build();
-                }
-
-                if (authenticationOptions._addApiKeyAuthentication)
-                {
-                    options.AddPolicy(RbkAuthenticationSchemes.API_KEY_POLICY, policy =>
-                        policy.AddAuthenticationSchemes(RbkAuthenticationSchemes.API_KEY).RequireAuthenticatedUser());
-                }
-            });
-        }
-        else
-        {
-            services.AddAuthorization(options =>
-            {
-                if (authenticationOptions._addApiKeyAuthentication)
-                {
-                    var defaultAuthorizationPolicyBuilder = new AuthorizationPolicyBuilder(
-                        JwtBearerDefaults.AuthenticationScheme,
-                        RbkAuthenticationSchemes.API_KEY);
-
-                    defaultAuthorizationPolicyBuilder.RequireAuthenticatedUser();
-                    options.DefaultPolicy = defaultAuthorizationPolicyBuilder.Build();
-
-                    options.AddPolicy(RbkAuthenticationSchemes.API_KEY_POLICY, policy =>
-                        policy.AddAuthenticationSchemes(RbkAuthenticationSchemes.API_KEY).RequireAuthenticatedUser());
-                }
-            });
-        }
+                options.AddPolicy(RbkAuthenticationSchemes.API_KEY_POLICY, policy =>
+                    policy.AddAuthenticationSchemes(RbkAuthenticationSchemes.API_KEY).RequireAuthenticatedUser());
+            }
+        });
 
         if (authenticationOptions._addApiKeyAuthentication)
         {

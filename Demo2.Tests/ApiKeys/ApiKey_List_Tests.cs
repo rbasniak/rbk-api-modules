@@ -14,8 +14,8 @@ public class ApiKey_List_Tests
     public async Task Seed()
     {
         await TestingServer.CacheCredentialsAsync("superuser", "admin", null);
-        await TestingServer.CacheCredentialsAsync("admin1", "buzios");
-        await TestingServer.CacheCredentialsAsync("john.doe", "buzios");
+        await TestingServer.CacheCredentialsAsync("admin1", "123", "buzios");
+        await TestingServer.CacheCredentialsAsync("john.doe", "123", "buzios");
     }
 
     [Test, NotInParallel(Order = 2)]

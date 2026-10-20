@@ -44,8 +44,7 @@ public class DeleteRole : IEndpoint
 
         private async Task<bool> NotBeTheDefaultUserRole(Request request, Guid Id, CancellationToken cancellationToken)
         {
-            if (!_authOptions._allowUserCreationOnFirstAccess && _authOptions._loginMode == LoginMode.Credentials ||
-                !_authOptions._allowUserCreationOnFirstAccess && _authOptions._loginMode == LoginMode.Custom)
+            if (!_authOptions._allowUserCreationOnFirstAccess || _authOptions._loginMode != LoginMode.Custom)
             {
                 return true;
             }

@@ -33,9 +33,6 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
 
     private TestServer? TestingServer;
 
-    private const string MockedWindowsAuthenticationHeaderName = "UserId";
-    private const string MockedWindowsAuthenticationSchemeName = "TestScheme";
-
     public string LoginUrl { get; set; } = "api/authentication/login";
 
     protected abstract bool UseHttps { get; }
@@ -741,53 +738,6 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
 
     #region Login
 
-    /// <summary>
-    /// Login using Mocked Windows Authentication
-    /// </summary>
-    public virtual async Task CacheCredentialsAsync(string username, string tenant)
-    {
-        using (var httpClient = CreateHttpClient())
-        {
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(MockedWindowsAuthenticationSchemeName);
-            httpClient.DefaultRequestHeaders.Add(MockedWindowsAuthenticationHeaderName, username);
-
-            var result = await PostAsync<JwtResponse>(httpClient, LoginUrl, new UserLogin.Request
-            {
-                Username = username,
-                Tenant = tenant
-            });
-
-            if (!result.IsSuccess)
-            {
-                var exception = new InvalidOperationException($"Could not login with user {username} (Status Code = {result.Code}). Messages: {String.Join(", ", result.Messages)}");
-                exception.Data.Add("Details", result);
-                throw exception;
-            }
-
-            CachedCredentials.Add(new Credentials(username, string.Empty, tenant), result.Data.AccessToken);
-        }
-    }
-
-    public virtual async Task<HttpResponse<JwtResponse>> LoginAsync(string username, string? tenant)
-    {
-        using (var httpClient = CreateHttpClient())
-        {
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(MockedWindowsAuthenticationSchemeName);
-            httpClient.DefaultRequestHeaders.Add(MockedWindowsAuthenticationHeaderName, username);
-
-            var result = await PostAsync<JwtResponse>(httpClient, LoginUrl, new UserLogin.Request
-            {
-                Username = username,
-                Tenant = tenant
-            });
-
-            return result;
-        }
-    }
-
-    /// <summary>
-    /// Login using normal credentials
-    /// </summary>
     public virtual async Task CacheCredentialsAsync(string username, string password, string? tenant)
     {
         using (var httpClient = CreateHttpClient())

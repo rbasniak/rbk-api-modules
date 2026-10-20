@@ -28,7 +28,7 @@ public class User : TenantEntity
     public bool IsConfirmed { get; set; }
     public bool IsActive { get; set; }
     public string? TenantId { get; set; }
-    public AuthenticationMode AuthenticationMode { get; set; }  // Credentials or Windows
+    public AuthenticationMode AuthenticationMode { get; set; }  // Credentials, Custom, ApiKey, etc.
     
     public ICollection<UserToRole> Roles { get; set; }
     public ICollection<UserToClaim> Claims { get; set; }
@@ -117,7 +117,7 @@ public class User : TenantEntity
 
 **Notes:**
 - Available only when `AllowUserSelfRegistration()` is enabled
-- Cannot be used with Windows Authentication
+- Cannot be used with custom login (`UseCustomLogin()`)
 - User receives confirmation email if email confirmation is enabled
 
 ### Activate User
@@ -777,7 +777,7 @@ public class UserManagementTests : RbkTestingServer<Program>
 
 ## Next Steps
 
-- **[Authentication Setup](identity-authentication.md)** - Configure JWT, Windows Auth, API keys
+- **[Authentication Setup](identity-authentication.md)** - Configure JWT and API keys
 - **[API Keys](../README-ApiKeys.md)** - Machine-to-machine authentication
 - **[Built-In Endpoints](built-in-endpoints.md)** - Complete endpoint reference
 - **[Testing](Testing.md)** - Test identity features

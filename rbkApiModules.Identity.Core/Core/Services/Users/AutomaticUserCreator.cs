@@ -30,8 +30,7 @@ public class AutomaticUserCreator : IAutomaticUserCreator
 
     public async Task<User> CreateIfAllowedAsync(string username, string tenant, CancellationToken cancellationToken)
     {
-        if (_authOptions._allowUserCreationOnFirstAccess && _authOptions._loginMode == LoginMode.WindowsAuthentication ||
-            _authOptions._allowUserCreationOnFirstAccess && _authOptions._loginMode == LoginMode.Custom)
+        if (_authOptions._allowUserCreationOnFirstAccess && _authOptions._loginMode == LoginMode.Custom)
         {
             _logger.LogInformation("User does not exist and the project is setup to allow automatic creation. User will be created now.");
 
@@ -48,7 +47,7 @@ public class AutomaticUserCreator : IAutomaticUserCreator
                 userInfo = await _customUserPostProcessor.GetUserExtraInformationAsync(tenant, username, cancellationToken);
             }
 
-            var authenticationMode = _authOptions._loginMode == LoginMode.Custom ? AuthenticationMode.Custom : AuthenticationMode.Windows;
+            var authenticationMode = AuthenticationMode.Custom;
 
             var user = await _authService.CreateUserAsync(
                 tenant: tenant,

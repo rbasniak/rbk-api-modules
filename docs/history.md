@@ -1,6 +1,19 @@
 # rbkApiModules — Change History
 
 All notable changes to rbkApiModules are documented here. Changes are organized by release, newest first. Consumer-facing changes only — internal implementation details are excluded.
+
+## X.X.X
+
+### rbkApiModules.Identity.Core
+
+#### Breaking Changes
+- ⚠️ **Windows Authentication removed** — `UseLoginWithWindowsAuthentication()`, `UseMockedWindowsAuthentication()`, and `LoginMode.WindowsAuthentication` are no longer available. NTLM/combined login endpoints and the mocked `TestScheme` handler were removed. Use credentials login (default) or `UseCustomLogin()` for external identity integration. `AuthenticationMode.Windows` remains in the enum for existing database rows but is obsolete and no longer used for login.
+
+### rbkApiModules.Commons.Testing
+
+#### Breaking Changes
+- ⚠️ **`CacheCredentialsAsync(username, tenant)` and `LoginAsync(username, tenant)` removed** — These overloads only supported mocked Windows authentication. Use the overloads that accept a password.
+
 ## 10.9.4
 - Added new validators for enums
 

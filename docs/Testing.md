@@ -713,14 +713,12 @@ public class UserControllerTests : RbkTestingServer<Program>
 
 ### Authentication Configuration
 
+Cache credentials with username and password before calling protected endpoints:
+
 ```csharp
-[Test]
-public async Task WindowsAuthentication_ShouldWork()
-{
-    // Windows authentication is automatically mocked in testing environment
-    var response = await PostAsync<UserDetails>("/api/users", request);
-    response.ShouldBeSuccess();
-}
+await TestingServer.CacheCredentialsAsync("admin", "admin123", "MY-TENANT");
+var response = await TestingServer.GetAsync<UserDetails>("api/users/me", "admin");
+response.ShouldBeSuccess();
 ```
 
 ### Custom HTTP Client Configuration

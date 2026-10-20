@@ -122,7 +122,7 @@ Comprehensive identity and authentication management with JWT support.
 - JWT token generation and validation
 - User management and role-based authorization
 - Multi-tenant authentication support
-- Windows authentication integration
+- Custom login mode for external identity providers
 - API key authentication
 - Custom claims system
 - Built-in email templates

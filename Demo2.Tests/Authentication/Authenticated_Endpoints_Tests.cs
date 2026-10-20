@@ -8,19 +8,16 @@ using ApiKey = rbkApiModules.Commons.Testing.ApiKey;
 namespace rbkApiModules.Identity.Tests.MixedAuthentication;
 
 [HumanFriendlyDisplayName]
-public class Authenticated_Endpoints_When_WindowsAuthentication_Is_Enbabled_Tests
+public class Authenticated_Endpoints_Tests
 {
     [ClassDataSource<Demo2TestingServer>(Shared = SharedType.PerClass)]
     public required Demo2TestingServer TestingServer { get; set; } = default!;
 
-    /// <summary>
-    /// Cache superuser (JWT endpoint) and admin1 (role endpoint - has MANAGE_USERS) using Windows auth (no password).
-    /// </summary>
     [Test, NotInParallel(Order = 1)]
     public async Task Seed_Credentials()
     {
         await TestingServer.CacheCredentialsAsync("superuser", "admin", null);
-        await TestingServer.CacheCredentialsAsync("admin1", "buzios");
+        await TestingServer.CacheCredentialsAsync("admin1", "123", "buzios");
     }
 
     [Test, NotInParallel(Order = 2)]
@@ -78,7 +75,7 @@ public class Authenticated_Endpoints_When_WindowsAuthentication_Is_Enbabled_Test
     [Test, NotInParallel(Order = 9)]
     public async Task Role_Endpoint_Returns_403_When_User_Without_ManageUsers_Claim()
     {
-        await TestingServer.CacheCredentialsAsync("john.doe", "buzios");
+        await TestingServer.CacheCredentialsAsync("john.doe", "123", "buzios");
         var response = await TestingServer.GetAsync<DemoMessageResponse>("demo/role", "john.doe");
         response.Code.ShouldBe(HttpStatusCode.Forbidden);
     }

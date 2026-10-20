@@ -1,12 +1,11 @@
 # Identity & Authentication Setup
 
-Complete guide to setting up authentication in rbkApiModules: JWT tokens, Windows Authentication, API keys, and multi-tenancy.
+Complete guide to setting up authentication in rbkApiModules: JWT tokens, API keys, and multi-tenancy.
 
 ## Overview
 
 rbkApiModules provides flexible authentication out of the box:
 - **JWT Authentication** - Token-based auth with refresh tokens
-- **Windows Authentication** - Active Directory integration for enterprise environments
 - **API Key Authentication** - Machine-to-machine communication ([detailed docs](../README-ApiKeys.md))
 - **Multi-Tenancy** - Isolate users and data by tenant
 
@@ -104,8 +103,7 @@ builder.Services.AddRbkRelationalAuthentication(builder.Configuration, options =
     .AllowAnonymousTenantAccess()        // GET /api/authorization/tenants doesn't require auth
 
     // Login Modes
-    .UseLoginWithWindowsAuthentication() // Enable Windows/NTLM login
-    .UseMockedWindowsAuthentication()    // Mock Windows auth for testing
+    .UseCustomLogin()                    // External identity integration (disables password/email endpoints)
 
     // Feature Toggles
     .AddApiKeyAuthentication()           // Enable API key support
@@ -200,63 +198,18 @@ Users with `tenantId: null` are **global users** (typically admins). They are no
 
 ---
 
-## Windows Authentication
+## Custom Login
 
-### Overview
+Use `UseCustomLogin()` when users authenticate through an external identity provider and your app issues JWTs after that flow. When enabled:
 
-Windows Authentication integrates with Active Directory (NTLM/Kerberos). When enabled:
-- Users authenticate via Windows credentials
-- Password-related endpoints (reset, change password) are disabled
-- Users are auto-created on first login if configured
-
-### Enable Windows Authentication
+- Password reset, change password, and email confirmation endpoints are disabled
+- `AllowUserCreationOnFirstAccess(roleName)` can auto-create users on first login with `AuthenticationMode.Custom`
 
 ```csharp
 builder.Services.AddRbkRelationalAuthentication(builder.Configuration, options => options
     .UseSymetricEncryptationKey()
-    .UseLoginWithWindowsAuthentication()
-);
-```
-
-### Login Endpoint
-
-```bash
-POST /api/authentication/login/windows
-# No body required - uses Windows credentials from HTTP context
-```
-
-Or for combined mode (Windows + credentials):
-
-```bash
-POST /api/authentication/login
-{
-  "username": "john",
-  "password": "password123",
-  "tenant": null
-}
-```
-
-### Auto-Create Users on First Access
-
-```csharp
-builder.Services.AddRbkRelationalAuthentication(builder.Configuration, options => options
-    .UseSymetricEncryptationKey()
-    .UseLoginWithWindowsAuthentication()
-    .AllowUserCreationByAdmins()  // ← Auto-creates users on first Windows login
-);
-```
-
-When a Windows user logs in for the first time, a User record is created automatically with their username.
-
-### Testing Windows Auth Locally
-
-Use the mocked handler in test/dev environments:
-
-```csharp
-builder.Services.AddRbkRelationalAuthentication(builder.Configuration, options => options
-    .UseSymetricEncryptationKey()
-    .UseLoginWithWindowsAuthentication()
-    .UseMockedWindowsAuthentication()  // ← Mock for testing
+    .UseCustomLogin()
+    .AllowUserCreationOnFirstAccess("User")
 );
 ```
 
@@ -382,7 +335,7 @@ POST /api/authentication/register
 }
 ```
 
-**Note:** Cannot be used with Windows Authentication.
+**Note:** Cannot be used with custom login (`UseCustomLogin()`).
 
 ---
 
@@ -506,7 +459,6 @@ When you call `app.UseRbkRelationalAuthentication()`, these endpoints are automa
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | POST | `/api/authentication/login` | Login with username/password |
-| POST | `/api/authentication/login/windows` | Login with Windows credentials |
 | POST | `/api/authentication/register` | Public user registration |
 | POST | `/api/authentication/renew` | Refresh access token |
 | POST | `/api/authentication/change-password` | Change password (authenticated) |
@@ -550,12 +502,6 @@ See **[Built-In Endpoints](built-in-endpoints.md)** for complete API reference.
 - Refresh token expired
 - User logged out or token was revoked
 - User must log in again
-
-### Windows Authentication not working
-
-- Ensure IIS/Kestrel is configured for Windows Authentication
-- Check `UseLoginWithWindowsAuthentication()` is called
-- Verify network allows NTLM/Kerberos
 
 ---
 

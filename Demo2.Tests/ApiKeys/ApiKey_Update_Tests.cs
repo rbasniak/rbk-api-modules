@@ -16,8 +16,8 @@ public class ApiKey_Update_Tests
     public async Task Seed()
     {
         await TestingServer.CacheCredentialsAsync("superuser", "admin", null);
-        await TestingServer.CacheCredentialsAsync("admin1", "buzios");
-        await TestingServer.CacheCredentialsAsync("john.doe", "buzios");
+        await TestingServer.CacheCredentialsAsync("admin1", "123", "buzios");
+        await TestingServer.CacheCredentialsAsync("john.doe", "123", "buzios");
 
         var claimId = TestingServer.CreateContext()
             .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;

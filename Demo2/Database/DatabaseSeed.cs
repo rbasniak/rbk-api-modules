@@ -24,12 +24,12 @@ public class DatabaseSeed : DatabaseSeedManager<DatabaseContext>, IDatabaseSeede
         var canManageUsers = context.Set<Claim>().First(x => x.Identification == AuthenticationClaims.MANAGE_USERS);
         var manageApiKeysClaim = context.Set<Claim>().First(x => x.Identification == AuthenticationClaims.CAN_MANAGE_APIKEYS);
 
-        var adminBuzios = new User(buzios.Alias, "admin1", "admin1@buzios.com", "", AvatarGenerator.GenerateBase64Avatar("A 1"), "Administrador BUZIOS 1", AuthenticationMode.Windows, null);
+        var adminBuzios = new User(buzios.Alias, "admin1", "admin1@buzios.com", "123", AvatarGenerator.GenerateBase64Avatar("A 1"), "Administrador BUZIOS 1", AuthenticationMode.Credentials, null);
         adminBuzios.AddClaim(canManageUsers, ClaimAccessType.Allow);
         adminBuzios.AddClaim(manageApiKeysClaim, ClaimAccessType.Allow);
         adminBuzios.Confirm();
 
-        var johnDoeBuzios = new User(buzios.Alias, "john.doe", "john.doe@buzios.com", "", AvatarGenerator.GenerateBase64Avatar("John Doe"), "John Doe", AuthenticationMode.Windows, null);
+        var johnDoeBuzios = new User(buzios.Alias, "john.doe", "john.doe@buzios.com", "123", AvatarGenerator.GenerateBase64Avatar("John Doe"), "John Doe", AuthenticationMode.Credentials, null);
         johnDoeBuzios.Confirm();
 
         context.Add(adminBuzios);

@@ -48,8 +48,7 @@ public class RenameRole : IEndpoint
 
         private async Task<bool> NotBeTheDefaultUserRole(Request request, string name, CancellationToken cancellationToken)
         {
-            if (!_authOptions._allowUserCreationOnFirstAccess && _authOptions._loginMode == LoginMode.Credentials ||
-                !_authOptions._allowUserCreationOnFirstAccess && _authOptions._loginMode != LoginMode.Custom)
+            if (!_authOptions._allowUserCreationOnFirstAccess || _authOptions._loginMode != LoginMode.Custom)
             {
                 return true;
             }

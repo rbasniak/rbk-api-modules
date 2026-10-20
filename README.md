@@ -11,7 +11,7 @@ rbkApiModules accelerates Web API development by providing battle-tested infrast
 | Package | Purpose |
 |---------|---------|
 | **rbkApiModules.Commons.Core** | Core infrastructure: base entities, validation, messaging, file storage, UI definitions |
-| **rbkApiModules.Identity.Core** | Authentication & authorization: JWT, API keys, Windows Auth, users, roles, claims |
+| **rbkApiModules.Identity.Core** | Authentication & authorization: JWT, API keys, users, roles, claims |
 | **rbkApiModules.Commons.Testing** | Integration testing: in-memory server, multipart uploads, fluent HTTP mocks, named client wiring |
 | **rbkApiModules.Analysers** | Code analyzers: enforce authorization, validate Swagger annotations |
 
@@ -83,7 +83,7 @@ That's it! Your API now has JWT authentication, user management, role-based auth
 
 **Core Features:**
 - **[Commons.Core](docs/commons-core.md)** - Base entities, validation, messaging, file storage
-- **[Identity & Authentication](docs/identity-authentication.md)** - JWT, API keys, Windows Auth setup
+- **[Identity & Authentication](docs/identity-authentication.md)** - JWT and API key setup
 - **[Identity Management](docs/identity-management.md)** - Users, roles, claims, tenants
 - **[API Keys](README-ApiKeys.md)** - Machine-to-machine authentication with rate limiting
 - **[Testing Framework](docs/Testing.md)** - Write integration tests with `RbkTestingServer`
