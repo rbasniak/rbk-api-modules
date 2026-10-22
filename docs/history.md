@@ -2,6 +2,13 @@
 
 All notable changes to rbkApiModules are documented here. Changes are organized by release, newest first. Consumer-facing changes only — internal implementation details are excluded.
 
+## X.X.X
+
+### rbkApiModules.Identity.Core
+
+#### Breaking Changes
+- ⚠️ **Create and update API key endpoints** — `POST` and `PUT` `/api/authorization/api-keys` now accept `claimIdentifications` (string array) instead of `claimIds` (GUID array). Use each claim's `identification` value (case-insensitive).
+
 ## 10.11.0
 
 ### rbkApiModules.Identity.Core

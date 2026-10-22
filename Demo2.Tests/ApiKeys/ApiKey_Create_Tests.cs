@@ -22,12 +22,12 @@ public class ApiKey_Create_Tests
     }
 
     [Test, NotInParallel(Order = 2)]
-    public async Task Create_Returns_400_When_ClaimIds_Is_Empty()
+    public async Task Create_Returns_400_When_ClaimIdentifications_Is_Empty()
     {
         var request = new CreateApiKey.Request
         {
             Name = "Test Key",
-            ClaimIds = new List<Guid>()
+            ClaimIdentifications = new List<string>()
         };
 
         var response = await TestingServer.PostAsync<CreateApiKey.Result>(
@@ -37,15 +37,12 @@ public class ApiKey_Create_Tests
     }
 
     [Test, NotInParallel(Order = 3)]
-    public async Task Create_Returns_400_When_ClaimIds_Has_Duplicates()
+    public async Task Create_Returns_400_When_ClaimIdentifications_Has_Duplicates()
     {
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
-
         var request = new CreateApiKey.Request
         {
             Name = "Test Key",
-            ClaimIds = new List<Guid> { claimId, claimId }
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION", "DEMO2_INTEGRATION" }
         };
 
         var response = await TestingServer.PostAsync<CreateApiKey.Result>(
@@ -60,7 +57,7 @@ public class ApiKey_Create_Tests
         var request = new CreateApiKey.Request
         {
             Name = "Test Key",
-            ClaimIds = new List<Guid> { Guid.NewGuid() }
+            ClaimIdentifications = new List<string> { "UNKNOWN_CLAIM" }
         };
 
         var response = await TestingServer.PostAsync<CreateApiKey.Result>(
@@ -72,13 +69,10 @@ public class ApiKey_Create_Tests
     [Test, NotInParallel(Order = 5)]
     public async Task Create_Returns_400_When_Claim_Is_Not_Allowed_On_ApiKeys()
     {
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == AuthenticationClaims.MANAGE_USERS).Id;
-
         var request = new CreateApiKey.Request
         {
             Name = "Test Key",
-            ClaimIds = new List<Guid> { claimId }
+            ClaimIdentifications = new List<string> { AuthenticationClaims.MANAGE_USERS }
         };
 
         var response = await TestingServer.PostAsync<CreateApiKey.Result>(
@@ -90,13 +84,10 @@ public class ApiKey_Create_Tests
     [Test, NotInParallel(Order = 6)]
     public async Task Create_Returns_403_For_User_Without_CAN_MANAGE_APIKEYS()
     {
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
-
         var request = new CreateApiKey.Request
         {
             Name = "Test Key",
-            ClaimIds = new List<Guid> { claimId }
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" }
         };
 
         var response = await TestingServer.PostAsync<CreateApiKey.Result>(
@@ -108,15 +99,12 @@ public class ApiKey_Create_Tests
     [Test, NotInParallel(Order = 7)]
     public async Task Create_Returns_Raw_Key_And_Correct_Metadata()
     {
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
-
         var request = new CreateApiKey.Request
         {
             Name = "My Test Key",
             ExpirationDate = null,
             TenantId = null,
-            ClaimIds = new List<Guid> { claimId }
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" }
         };
 
         var response = await TestingServer.PostAsync<CreateApiKey.Result>(
@@ -168,14 +156,11 @@ public class ApiKey_Create_Tests
     [Test, NotInParallel(Order = 9)]
     public async Task Create_As_Tenant_Admin_With_TenantId_Succeeds_For_Own_Tenant()
     {
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
-
         var request = new CreateApiKey.Request
         {
             Name = "Admin1 tenant key",
             TenantId = "BUZIOS",
-            ClaimIds = new List<Guid> { claimId }
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" }
         };
 
         var response = await TestingServer.PostAsync<CreateApiKey.Result>(
@@ -188,14 +173,11 @@ public class ApiKey_Create_Tests
     [Test, NotInParallel(Order = 10)]
     public async Task Create_As_Tenant_Admin_Global_Key_Returns_403_Without_Cross_Tenant_Claim()
     {
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
-
         var request = new CreateApiKey.Request
         {
             Name = "Should fail global",
             TenantId = null,
-            ClaimIds = new List<Guid> { claimId }
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" }
         };
 
         var response = await TestingServer.PostAsync<CreateApiKey.Result>(
@@ -207,14 +189,11 @@ public class ApiKey_Create_Tests
     [Test, NotInParallel(Order = 11)]
     public async Task Create_As_Tenant_Admin_Wrong_Tenant_Returns_403()
     {
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
-
         var request = new CreateApiKey.Request
         {
             Name = "Wrong tenant",
             TenantId = "UN-BS",
-            ClaimIds = new List<Guid> { claimId }
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" }
         };
 
         var response = await TestingServer.PostAsync<CreateApiKey.Result>(
@@ -226,14 +205,11 @@ public class ApiKey_Create_Tests
     [Test, NotInParallel(Order = 12)]
     public async Task Create_With_Global_Manage_Only_Api_Key_And_Null_Tenant_Returns_403()
     {
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
-
         var request = new CreateApiKey.Request
         {
             Name = "From manage-only key",
             TenantId = null,
-            ClaimIds = new List<Guid> { claimId }
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" }
         };
 
         var response = await TestingServer.PostAsync<CreateApiKey.Result>(
@@ -245,14 +221,11 @@ public class ApiKey_Create_Tests
     [Test, NotInParallel(Order = 13)]
     public async Task Create_With_Global_Manage_And_Cross_Api_Key_And_Null_Tenant_Succeeds()
     {
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
-
         var request = new CreateApiKey.Request
         {
             Name = "From full global key",
             TenantId = null,
-            ClaimIds = new List<Guid> { claimId }
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" }
         };
 
         var response = await TestingServer.PostAsync<CreateApiKey.Result>(
@@ -265,14 +238,11 @@ public class ApiKey_Create_Tests
     [Test, NotInParallel(Order = 14)]
     public async Task Create_With_Buzios_Api_Key_For_Buzios_Succeeds()
     {
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
-
         var request = new CreateApiKey.Request
         {
             Name = "From buzios api key",
             TenantId = "BUZIOS",
-            ClaimIds = new List<Guid> { claimId }
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" }
         };
 
         var response = await TestingServer.PostAsync<CreateApiKey.Result>(
@@ -285,14 +255,11 @@ public class ApiKey_Create_Tests
     [Test, NotInParallel(Order = 15)]
     public async Task Create_With_Buzios_Api_Key_Global_Tenant_Returns_403()
     {
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
-
         var request = new CreateApiKey.Request
         {
             Name = "Buzios key global fail",
             TenantId = null,
-            ClaimIds = new List<Guid> { claimId }
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" }
         };
 
         var response = await TestingServer.PostAsync<CreateApiKey.Result>(
@@ -304,14 +271,11 @@ public class ApiKey_Create_Tests
     [Test, NotInParallel(Order = 16)]
     public async Task Create_As_Superuser_Can_Create_Tenant_Scoped_Key_For_Another_Tenant()
     {
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
-
         var request = new CreateApiKey.Request
         {
             Name = "Superuser created UN-BS key",
             TenantId = "UN-BS",
-            ClaimIds = new List<Guid> { claimId }
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" }
         };
 
         var response = await TestingServer.PostAsync<CreateApiKey.Result>(
@@ -324,14 +288,11 @@ public class ApiKey_Create_Tests
     [Test, NotInParallel(Order = 17)]
     public async Task Create_With_Explicit_Rate_Limits_Returns_And_Persists_Them()
     {
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
-
         var request = new CreateApiKey.Request
         {
             Name = "Explicit rate limits key",
             TenantId = null,
-            ClaimIds = new List<Guid> { claimId },
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" },
             RequestsPerMinute = 42,
             BurstLimit = 120
         };
@@ -353,14 +314,11 @@ public class ApiKey_Create_Tests
     [Test, NotInParallel(Order = 18)]
     public async Task Create_Returns_400_When_Burst_Limit_Less_Than_Requests_Per_Minute()
     {
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
-
         var request = new CreateApiKey.Request
         {
             Name = "Invalid burst key",
             TenantId = null,
-            ClaimIds = new List<Guid> { claimId },
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" },
             RequestsPerMinute = 100,
             BurstLimit = 50
         };
@@ -374,14 +332,11 @@ public class ApiKey_Create_Tests
     [Test, NotInParallel(Order = 19)]
     public async Task Create_Returns_400_When_Requests_Per_Minute_Out_Of_Range()
     {
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
-
         var request = new CreateApiKey.Request
         {
             Name = "Invalid rpm key",
             TenantId = null,
-            ClaimIds = new List<Guid> { claimId },
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" },
             RequestsPerMinute = 0,
             BurstLimit = 1
         };
@@ -395,15 +350,13 @@ public class ApiKey_Create_Tests
     [Test, NotInParallel(Order = 20)]
     public async Task Create_With_Explicit_Key_Returns_And_Persists_It()
     {
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
         var rawKey = "rbk_live_explicit-test-key";
 
         var request = new CreateApiKey.Request
         {
             Name = "Explicit API key",
             Key = rawKey,
-            ClaimIds = new List<Guid> { claimId }
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" }
         };
 
         var response = await TestingServer.PostAsync<CreateApiKey.Result>(
@@ -421,15 +374,13 @@ public class ApiKey_Create_Tests
     [Test, NotInParallel(Order = 21)]
     public async Task Create_Returns_400_When_Explicit_Key_Already_Exists()
     {
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
         var rawKey = "rbk_live_duplicate-test-key";
 
         var firstRequest = new CreateApiKey.Request
         {
             Name = "First explicit API key",
             Key = rawKey,
-            ClaimIds = new List<Guid> { claimId }
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" }
         };
 
         var firstResponse = await TestingServer.PostAsync<CreateApiKey.Result>(
@@ -440,7 +391,7 @@ public class ApiKey_Create_Tests
         {
             Name = "Duplicate explicit API key",
             Key = rawKey,
-            ClaimIds = new List<Guid> { claimId }
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" }
         };
 
         var secondResponse = await TestingServer.PostAsync<CreateApiKey.Result>(
@@ -452,14 +403,11 @@ public class ApiKey_Create_Tests
     [Test, NotInParallel(Order = 22)]
     public async Task Create_With_Empty_Prefix_Returns_Key_Without_Prefix()
     {
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
-
         var request = new CreateApiKey.Request
         {
             Name = "Key without prefix",
             Prefix = string.Empty,
-            ClaimIds = new List<Guid> { claimId }
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" }
         };
 
         var response = await TestingServer.PostAsync<CreateApiKey.Result>(
@@ -473,14 +421,11 @@ public class ApiKey_Create_Tests
     [Test, NotInParallel(Order = 23)]
     public async Task Create_With_Explicit_Prefix_Returns_Key_With_Prefix()
     {
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
-
         var request = new CreateApiKey.Request
         {
             Name = "Key with custom prefix",
             Prefix = "custom_",
-            ClaimIds = new List<Guid> { claimId }
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" }
         };
 
         var response = await TestingServer.PostAsync<CreateApiKey.Result>(

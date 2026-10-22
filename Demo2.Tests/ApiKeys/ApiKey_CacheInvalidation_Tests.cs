@@ -20,14 +20,11 @@ public class ApiKey_CacheInvalidation_Tests
     [Test, NotInParallel(Order = 2)]
     public async Task Deactivated_Key_Is_Rejected_After_Cache_Invalidation()
     {
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
-
         // Create a dedicated key so we don't affect the seeded one
         var createRequest = new CreateApiKey.Request
         {
             Name = "Key For Deactivation Test",
-            ClaimIds = new List<Guid> { claimId }
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" }
         };
 
         var createResponse = await TestingServer.PostAsync<CreateApiKey.Result>(
@@ -46,7 +43,7 @@ public class ApiKey_CacheInvalidation_Tests
             Id = created.Id,
             Name = "Key For Deactivation Test",
             IsActive = false,
-            ClaimIds = new List<Guid> { claimId }
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" }
         };
 
         var updateResponse = await TestingServer.PutAsync<ApiKeyDetails>(
@@ -63,14 +60,11 @@ public class ApiKey_CacheInvalidation_Tests
     [Test, NotInParallel(Order = 3)]
     public async Task Revoked_Key_Is_Rejected_After_Cache_Invalidation()
     {
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
-
         // Create a dedicated key
         var createRequest = new CreateApiKey.Request
         {
             Name = "Key For Revoke Test",
-            ClaimIds = new List<Guid> { claimId }
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" }
         };
 
         var createResponse = await TestingServer.PostAsync<CreateApiKey.Result>(

@@ -20,15 +20,12 @@ public class ApiKey_Expiration_Tests
     [Test, NotInParallel(Order = 2)]
     public async Task Expired_Key_Is_Rejected()
     {
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
-
         // Create a key already past its expiration date
         var createRequest = new CreateApiKey.Request
         {
             Name = "Expired Key",
             ExpirationDate = DateTime.UtcNow.AddSeconds(-1),
-            ClaimIds = new List<Guid> { claimId }
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" }
         };
 
         var createResponse = await TestingServer.PostAsync<CreateApiKey.Result>(
@@ -45,14 +42,11 @@ public class ApiKey_Expiration_Tests
     [Test, NotInParallel(Order = 3)]
     public async Task Key_With_Future_Expiration_Is_Accepted()
     {
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
-
         var createRequest = new CreateApiKey.Request
         {
             Name = "Future Expiry Key",
             ExpirationDate = DateTime.UtcNow.AddDays(365),
-            ClaimIds = new List<Guid> { claimId }
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" }
         };
 
         var createResponse = await TestingServer.PostAsync<CreateApiKey.Result>(

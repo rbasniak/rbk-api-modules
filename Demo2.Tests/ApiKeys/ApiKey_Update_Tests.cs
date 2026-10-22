@@ -19,14 +19,11 @@ public class ApiKey_Update_Tests
         await TestingServer.CacheCredentialsAsync("admin1", "123", "buzios");
         await TestingServer.CacheCredentialsAsync("john.doe", "123", "buzios");
 
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
-
         var createRequest = new CreateApiKey.Request
         {
             Name = "My Test Key",
             TenantId = null,
-            ClaimIds = new List<Guid> { claimId }
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" }
         };
 
         var response = await TestingServer.PostAsync<CreateApiKey.Result>(
@@ -36,7 +33,7 @@ public class ApiKey_Update_Tests
     }
 
     [Test, NotInParallel(Order = 2)]
-    public async Task Update_Returns_400_When_ClaimIds_Is_Empty()
+    public async Task Update_Returns_400_When_ClaimIdentifications_Is_Empty()
     {
         var key = TestingServer.CreateContext()
             .Set<EntityApiKey>().First(x => x.Name == "My Test Key");
@@ -46,7 +43,7 @@ public class ApiKey_Update_Tests
             Id = key.Id,
             Name = "My Test Key",
             IsActive = true,
-            ClaimIds = new List<Guid>()
+            ClaimIdentifications = new List<string>()
         };
 
         var response = await TestingServer.PutAsync<ApiKeyDetails>(
@@ -58,15 +55,12 @@ public class ApiKey_Update_Tests
     [Test, NotInParallel(Order = 3)]
     public async Task Update_Returns_400_When_Key_Does_Not_Exist()
     {
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
-
         var request = new UpdateApiKey.Request
         {
             Id= Guid.NewGuid(),
             Name = "My Test Key",
             IsActive = true,
-            ClaimIds = new List<Guid> { claimId }
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" }
         };
 
         var response = await TestingServer.PutAsync<ApiKeyDetails>(
@@ -81,15 +75,12 @@ public class ApiKey_Update_Tests
         var key = TestingServer.CreateContext()
             .Set<EntityApiKey>().First(x => x.Name == "My Test Key");
 
-        var restrictedClaimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == AuthenticationClaims.MANAGE_USERS).Id;
-
         var request = new UpdateApiKey.Request
         {
             Id = key.Id,
             Name = "My Test Key",
             IsActive = true,
-            ClaimIds = new List<Guid> { restrictedClaimId }
+            ClaimIdentifications = new List<string> { AuthenticationClaims.MANAGE_USERS }
         };
 
         var response = await TestingServer.PutAsync<ApiKeyDetails>(
@@ -104,15 +95,12 @@ public class ApiKey_Update_Tests
         var key = TestingServer.CreateContext()
             .Set<EntityApiKey>().First(x => x.Name == "My Test Key");
 
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
-
         var request = new UpdateApiKey.Request
         {
             Id = key.Id,
             Name = "My Test Key",
             IsActive = true,
-            ClaimIds = new List<Guid> { claimId }
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" }
         };
 
         var response = await TestingServer.PutAsync<ApiKeyDetails>(
@@ -127,15 +115,12 @@ public class ApiKey_Update_Tests
         var key = TestingServer.CreateContext()
             .Set<EntityApiKey>().First(x => x.Name == "Demo2 integration");
 
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
-
         var request = new UpdateApiKey.Request
         {
             Id = key.Id,
             Name = "Demo2 integration",
             IsActive = true,
-            ClaimIds = new List<Guid> { claimId }
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" }
         };
 
         var response = await TestingServer.PutAsync<ApiKeyDetails>(
@@ -150,15 +135,12 @@ public class ApiKey_Update_Tests
         var key = TestingServer.CreateContext()
             .Set<EntityApiKey>().First(x => x.Name == "Demo2 buzios manage");
 
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
-
         var request = new UpdateApiKey.Request
         {
             Id = key.Id,
             Name = "Demo2 buzios manage renamed",
             IsActive = true,
-            ClaimIds = new List<Guid> { claimId }
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" }
         };
 
         var response = await TestingServer.PutAsync<ApiKeyDetails>(
@@ -174,15 +156,12 @@ public class ApiKey_Update_Tests
         var key = TestingServer.CreateContext()
             .Set<EntityApiKey>().First(x => x.Name == "Demo2 un-bs manage");
 
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
-
         var request = new UpdateApiKey.Request
         {
             Id = key.Id,
             Name = "Demo2 un-bs manage",
             IsActive = true,
-            ClaimIds = new List<Guid> { claimId }
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" }
         };
 
         var response = await TestingServer.PutAsync<ApiKeyDetails>(
@@ -197,15 +176,12 @@ public class ApiKey_Update_Tests
         var key = TestingServer.CreateContext()
             .Set<EntityApiKey>().First(x => x.Name == "My Test Key");
 
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
-
         var request = new UpdateApiKey.Request
         {
             Id = key.Id,
             Name = "Renamed Key",
             IsActive = true,
-            ClaimIds = new List<Guid> { claimId }
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" }
         };
 
         var response = await TestingServer.PutAsync<ApiKeyDetails>(
@@ -226,9 +202,6 @@ public class ApiKey_Update_Tests
         var key = TestingServer.CreateContext()
             .Set<EntityApiKey>().First(x => x.Name == "Renamed Key");
 
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
-
         var expiration = DateTime.UtcNow.AddDays(30);
 
         var request = new UpdateApiKey.Request
@@ -237,7 +210,7 @@ public class ApiKey_Update_Tests
             Name = "Renamed Key",
             IsActive = true,
             ExpirationDate = expiration,
-            ClaimIds = new List<Guid> { claimId }
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" }
         };
 
         var response = await TestingServer.PutAsync<ApiKeyDetails>(
@@ -258,15 +231,12 @@ public class ApiKey_Update_Tests
         var key = TestingServer.CreateContext()
             .Set<EntityApiKey>().First(x => x.Name == "Renamed Key");
 
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
-
         var request = new UpdateApiKey.Request
         {
             Id = key.Id,
             Name = "Renamed Key",
             IsActive = false,
-            ClaimIds = new List<Guid> { claimId }
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" }
         };
 
         var response = await TestingServer.PutAsync<ApiKeyDetails>(
@@ -286,15 +256,12 @@ public class ApiKey_Update_Tests
         var key = TestingServer.CreateContext()
             .Set<EntityApiKey>().First(x => x.Name == "Renamed Key");
 
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
-
         var request = new UpdateApiKey.Request
         {
             Id = key.Id,
             Name = "Renamed Key",
             IsActive = true,
-            ClaimIds = new List<Guid> { claimId }
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" }
         };
 
         var response = await TestingServer.PutAsync<ApiKeyDetails>(
@@ -311,15 +278,12 @@ public class ApiKey_Update_Tests
         var key = TestingServer.CreateContext()
             .Set<EntityApiKey>().First(x => x.Name == "Renamed Key");
 
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
-
         var request = new UpdateApiKey.Request
         {
             Id = key.Id,
             Name = "Renamed Key",
             IsActive = true,
-            ClaimIds = new List<Guid> { claimId },
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" },
             RequestsPerMinute = 55,
             BurstLimit = 200
         };
@@ -343,15 +307,12 @@ public class ApiKey_Update_Tests
         var key = TestingServer.CreateContext()
             .Set<EntityApiKey>().First(x => x.Name == "Renamed Key");
 
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
-
         var request = new UpdateApiKey.Request
         {
             Id = key.Id,
             Name = "Renamed Key",
             IsActive = true,
-            ClaimIds = new List<Guid> { claimId },
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" },
             RequestsPerMinute = 80,
             BurstLimit = 40
         };
@@ -368,15 +329,12 @@ public class ApiKey_Update_Tests
         var key = TestingServer.CreateContext()
             .Set<EntityApiKey>().First(x => x.Name == "Renamed Key");
 
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
-
         var request = new UpdateApiKey.Request
         {
             Id = key.Id,
             Name = "Renamed Key",
             IsActive = true,
-            ClaimIds = new List<Guid> { claimId },
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" },
             RequestsPerMinute = 60,
             BurstLimit = null
         };

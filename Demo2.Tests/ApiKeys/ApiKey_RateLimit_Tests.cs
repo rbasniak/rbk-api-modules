@@ -21,14 +21,11 @@ public class ApiKey_RateLimit_Tests
     [Test, NotInParallel(Order = 2)]
     public async Task Create_Persists_Rate_Limits_And_Returns_Them()
     {
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
-
         var createRequest = new CreateApiKey.Request
         {
             Name = "Rate limit test key",
             TenantId = null,
-            ClaimIds = new List<Guid> { claimId },
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" },
             RequestsPerMinute = 2,
             BurstLimit = 2
         };
@@ -48,16 +45,13 @@ public class ApiKey_RateLimit_Tests
     [Test, NotInParallel(Order = 3)]
     public async Task Third_Quick_Request_Returns_429_When_Burst_Is_Two()
     {
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
-
         var createResponse = await TestingServer.PostAsync<CreateApiKey.Result>(
             "api/authorization/api-keys",
             new CreateApiKey.Request
             {
                 Name = "Rate limit burst key",
                 TenantId = null,
-                ClaimIds = new List<Guid> { claimId },
+                ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" },
                 RequestsPerMinute = 2,
                 BurstLimit = 2
             },
@@ -78,16 +72,13 @@ public class ApiKey_RateLimit_Tests
     [Test, NotInParallel(Order = 4)]
     public async Task Update_Higher_Limits_Allows_Burst_Again()
     {
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
-
         var createResponse = await TestingServer.PostAsync<CreateApiKey.Result>(
             "api/authorization/api-keys",
             new CreateApiKey.Request
             {
                 Name = "Rate limit update key",
                 TenantId = null,
-                ClaimIds = new List<Guid> { claimId },
+                ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" },
                 RequestsPerMinute = 2,
                 BurstLimit = 2
             },
@@ -106,7 +97,7 @@ public class ApiKey_RateLimit_Tests
             Id = created.Id,
             Name = "Rate limit update key",
             IsActive = true,
-            ClaimIds = new List<Guid> { claimId },
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" },
             RequestsPerMinute = 100,
             BurstLimit = 100
         };

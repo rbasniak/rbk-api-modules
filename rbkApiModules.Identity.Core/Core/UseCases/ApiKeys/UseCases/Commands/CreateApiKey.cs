@@ -34,7 +34,7 @@ public class CreateApiKey : IEndpoint
 
         public int? BurstLimit { get; set; }
 
-        public required IReadOnlyList<Guid> ClaimIds { get; set; }
+        public required IReadOnlyList<string> ClaimIdentifications { get; set; }
     }
 
     public class Handler : ICommandHandler<Request>
@@ -55,20 +55,28 @@ public class CreateApiKey : IEndpoint
                 return CommandResponse.Forbidden("Authentication is required.");
             }
 
-            if (request.ClaimIds == null || request.ClaimIds.Count == 0)
+            if (request.ClaimIdentifications == null || request.ClaimIdentifications.Count == 0)
             {
                 return CommandResponse.Failure("At least one claim is required.");
             }
 
-            if (request.ClaimIds.Distinct().Count() != request.ClaimIds.Count)
+            var identifications = request.ClaimIdentifications
+                .Select(x => x.Trim().ToUpperInvariant())
+                .ToArray();
+
+            if (identifications.Any(string.IsNullOrEmpty))
+            {
+                return CommandResponse.Failure("At least one claim is required.");
+            }
+
+            if (identifications.Distinct().Count() != identifications.Length)
             {
                 return CommandResponse.Failure("Duplicate claim identifiers in the request.");
             }
 
-            var claimIds = request.ClaimIds.ToArray();
-            var claims = await _context.Set<Claim>().Where(x => claimIds.Contains(x.Id)).ToArrayAsync(cancellationToken);
+            var claims = await _context.Set<Claim>().Where(x => identifications.Contains(x.Identification)).ToArrayAsync(cancellationToken);
 
-            if (claims.Length != claimIds.Length)
+            if (claims.Length != identifications.Length)
             {
                 return CommandResponse.Failure("One or more claims were not found.");
             }

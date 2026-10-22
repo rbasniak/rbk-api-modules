@@ -70,7 +70,7 @@ public class Claim_Update_ApiKeyUsage_Tests
         {
             Name = "Key for AllowApiKeyUsage flag test",
             TenantId = null,
-            ClaimIds = new List<Guid> { claim.Id },
+            ClaimIdentifications = new List<string> { "CLAIM_APIKEY_USAGE_FLAG_TEST" },
         };
 
         var createKeyResponse = await TestingServer.PostAsync<CreateApiKey.Result>("api/authorization/api-keys", createKeyRequest, "superuser");

@@ -76,14 +76,11 @@ public class ApiKey_Revoke_Tests
     [Test, NotInParallel(Order = 6)]
     public async Task Revoke_As_Tenant_Admin_Succeeds_For_Own_Tenant_Key()
     {
-        var claimId = TestingServer.CreateContext()
-            .Set<Claim>().First(x => x.Identification == "DEMO2_INTEGRATION").Id;
-
         var createRequest = new CreateApiKey.Request
         {
             Name = "Disposable buzios revoke test",
             TenantId = "BUZIOS",
-            ClaimIds = new List<Guid> { claimId }
+            ClaimIdentifications = new List<string> { "DEMO2_INTEGRATION" }
         };
 
         var createResponse = await TestingServer.PostAsync<CreateApiKey.Result>(

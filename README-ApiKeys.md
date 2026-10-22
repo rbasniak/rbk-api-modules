@@ -326,7 +326,7 @@ Returns all API keys visible to the caller, filtered by tenant scope.
   "expirationDate": "2026-12-31T23:59:59Z",
   "requestsPerMinute": 300,
   "burstLimit": 600,
-  "claimIds": ["<guid>", "<guid>"]
+  "claimIdentifications": ["MY_INTEGRATION", "OTHER_CLAIM"]
 }
 ```
 
@@ -335,7 +335,7 @@ Returns all API keys visible to the caller, filtered by tenant scope.
 | `name` | Yes | Max 256 characters |
 | `key` | No | Complete raw key to use. When omitted, a cryptographically random key is generated; only its SHA-256 hash is stored. The request fails if the key is already registered. |
 | `prefix` | No | Prefix for generated keys when `key` is omitted. Defaults to `rbk_live_`; pass an empty string to generate a key without a prefix. |
-| `claimIds` | Yes | At least one; all must have `AllowApiKeyUsage = true` |
+| `claimIdentifications` | Yes | At least one claim identification string; all must have `AllowApiKeyUsage = true` |
 | `tenantId` | No | Must match caller's tenant unless caller has `CAN_MANAGE_CROSS_TENANT_API_KEYS`; `null` creates a global key |
 | `expirationDate` | No | ISO 8601 UTC; no value means the key never expires |
 | `requestsPerMinute` | No | Defaults to the configured global default |
@@ -369,7 +369,7 @@ Updates metadata, active status, rate limits, and assigned claims. The underlyin
   "expirationDate": "2027-06-01T00:00:00Z",
   "requestsPerMinute": 1000,
   "burstLimit": 2000,
-  "claimIds": ["<guid>"]
+  "claimIdentifications": ["MY_INTEGRATION"]
 }
 ```
 
@@ -377,7 +377,7 @@ Updates metadata, active status, rate limits, and assigned claims. The underlyin
 |---|---|---|
 | `id` | Yes | ID of the key to update |
 | `name` | Yes | Max 256 characters |
-| `claimIds` | Yes | Replaces the full claim set; all must have `AllowApiKeyUsage = true` |
+| `claimIdentifications` | Yes | Replaces the full claim set; all must have `AllowApiKeyUsage = true` |
 | `isActive` | Yes | Set to `false` to temporarily disable without revoking |
 | `expirationDate` | No | Pass `null` to remove the expiration |
 | `requestsPerMinute` | No | Omit to keep the current value |
