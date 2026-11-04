@@ -2,6 +2,14 @@
 
 All notable changes to rbkApiModules are documented here. Changes are organized by release, newest first. Consumer-facing changes only — internal implementation details are excluded.
 
+## X.X.X
+
+### rbkApiModules.Commons.Testing
+
+#### New Features
+- **`BackgroundHttpMocks()`** — Second mock scope on `RbkTestingServer` for outbound HTTP from background threads (timers, hosted services) that do not flow `HttpMockScope`. Same `MockHttpGet` / `MockHttpPost` helpers; dispose to clear rules. Request-scope mocks take precedence when `HttpMockScope` is active.
+- **`MockBackgroundHttpGet` / `MockBackgroundHttpPost`** — Register stubs on the background scope only (use when `HttpMockScope` is also open and you need different rules per path).
+
 ## 10.11.1
 
 ### rbkApiModules.Identity.Core

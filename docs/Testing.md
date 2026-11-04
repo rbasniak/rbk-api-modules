@@ -50,6 +50,9 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
 
     // Fluent outbound HTTP mocks (per test, inside HttpMockScope)
     public HttpMockScope HttpMockScope();
+    public BackgroundHttpMockScope BackgroundHttpMocks();
+    public HttpMockCallBuilder MockBackgroundHttpGet<TClient>(Func<string, bool>? urlMatcher = null);
+    public HttpMockCallBuilder MockBackgroundHttpPost<TClient>(Func<string, bool>? urlMatcher = null);
     public HttpMockCallBuilder MockHttpGet<TClient>(Func<string, bool>? urlMatcher = null);
     public HttpMockCallBuilder MockHttpPost<TClient>(Func<string, bool>? urlMatcher = null);
     public HttpMockCallBuilder MockHttpCall<TClient>(HttpMethod method, Func<string, bool>? urlMatcher = null);
@@ -422,7 +425,9 @@ Fluent helpers:
 | `.ReturnsUnauthorized()` | 401 |
 | `.Returns(statusCode, ...)` | Arbitrary status |
 
-**Parallelism:** mock rules live in an `AsyncLocal` scope. `RbkTestingServer` sets `TestServer.PreserveExecutionContext = true` during initialization so the scope flows from your test into the in-process API pipeline. Keep arrange + act inside `HttpMockScope`. Use `[NotInParallel]` only if the app fires outbound HTTP on background threads / `Task.Run` that break execution context flow. Unmatched calls throw with the list of registered rules.
+**Parallelism:** mock rules for in-request HTTP live in an `AsyncLocal` scope. `RbkTestingServer` sets `TestServer.PreserveExecutionContext = true` during initialization so the scope flows from your test into the in-process API pipeline. Keep arrange + act inside `HttpMockScope`. Unmatched calls throw with the list of registered rules.
+
+**Background services (timers, hosted services):** outbound HTTP does not flow `HttpMockScope`. Open `using var _ = TestingServer.BackgroundHttpMocks();`, configure responses with the same `MockHttpGet` / `MockHttpPost` helpers, and keep the scope open until background work finishes (e.g. polling). Dispose clears rules for the next test. If the same client is called both during the HTTP request and from a background thread, register mocks in `HttpMockScope` and in `BackgroundHttpMocks` separately. While `HttpMockScope` is active, the stub uses only request-scope rules (background rules are ignored on that thread).
 
 #### Situation B — Sibling API in the same solution
 
@@ -754,7 +759,7 @@ See [Outbound HTTP clients in integration tests](#outbound-http-clients-in-integ
 2. **Fluent stubs**: Prefer `HttpMockScope` + `MockHttpGet` / `MockHttpPost` over hand-rolled Moq handler setups
 3. **Scope arrange + act**: Keep outbound mock rules and the API call inside the same `HttpMockScope`
 4. **Sibling APIs**: Use `AddNamedHttpClient` + `SetNamedHttpClient(otherServer.CreateClient())` once during ordered setup
-5. **Parallelism**: Rely on `AsyncLocal` isolation; fall back to `[NotInParallel]` for background outbound HTTP
+5. **Parallelism**: Rely on `AsyncLocal` isolation for in-request HTTP; use `BackgroundHttpMocks()` for timer/queue outbound calls
 
 ## Advanced Examples
 

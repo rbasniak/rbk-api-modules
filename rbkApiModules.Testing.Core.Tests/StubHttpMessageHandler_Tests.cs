@@ -1,5 +1,5 @@
 using System.Net;
-using System.Text;
+using System.Threading;
 using Shouldly;
 
 namespace rbkApiModules.Testing.Core.Tests;
@@ -8,10 +8,13 @@ public class StubHttpMessageHandler_Tests
 {
     private interface IExternalClient;
 
+    private static StubHttpMessageHandler CreateHandler(BackgroundHttpMockScope.RbkTestingServerHolder? holder = null) =>
+        new(typeof(IExternalClient), () => holder?.ActiveRules);
+
     [Test]
     public async Task SendAsync_ThrowsWhenNoScopeIsActive()
     {
-        var handler = new StubHttpMessageHandler(typeof(IExternalClient));
+        var handler = CreateHandler();
         var client = new HttpClient(handler);
 
         var ex = await Should.ThrowAsync<InvalidOperationException>(() =>
@@ -23,7 +26,7 @@ public class StubHttpMessageHandler_Tests
     [Test]
     public async Task SendAsync_ReturnsConfiguredResponseInsideScope()
     {
-        var handler = new StubHttpMessageHandler(typeof(IExternalClient));
+        var handler = CreateHandler();
 
         using var _ = HttpMockScope.Begin();
         new HttpMockCallBuilder(typeof(IExternalClient), HttpMethod.Get, urlMatcher: null)
@@ -39,7 +42,7 @@ public class StubHttpMessageHandler_Tests
     [Test]
     public async Task SendAsync_ThrowsWhenNoRuleMatches()
     {
-        var handler = new StubHttpMessageHandler(typeof(IExternalClient));
+        var handler = CreateHandler();
 
         using var _ = HttpMockScope.Begin();
         new HttpMockCallBuilder(typeof(IExternalClient), HttpMethod.Get, url => url.Contains("/expected"))
@@ -56,7 +59,7 @@ public class StubHttpMessageHandler_Tests
     [Test]
     public async Task SendAsync_MatchesUrlPredicate()
     {
-        var handler = new StubHttpMessageHandler(typeof(IExternalClient));
+        var handler = CreateHandler();
 
         using var _ = HttpMockScope.Begin();
         new HttpMockCallBuilder(typeof(IExternalClient), HttpMethod.Get, url => url.Contains("target-doc"))
@@ -72,7 +75,7 @@ public class StubHttpMessageHandler_Tests
     [Test]
     public async Task SendAsync_IsolatesRulesBetweenNestedScopes()
     {
-        var handler = new StubHttpMessageHandler(typeof(IExternalClient));
+        var handler = CreateHandler();
         var client = new HttpClient(handler);
 
         using var outer = HttpMockScope.Begin();
@@ -93,5 +96,80 @@ public class StubHttpMessageHandler_Tests
 
         (await client.GetAsync("http://localhost/c")).Content!
             .ReadAsStringAsync().GetAwaiter().GetResult().ShouldBe("outer");
+    }
+
+    [Test]
+    public async Task SendAsync_UsesBackgroundScopeWhenExecutionContextDoesNotFlow()
+    {
+        var holder = new BackgroundHttpMockScope.RbkTestingServerHolder();
+        var handler = CreateHandler(holder);
+
+        using var background = new BackgroundHttpMockScope(holder);
+        new HttpMockCallBuilder(typeof(IExternalClient), HttpMethod.Get, urlMatcher: null, () => holder.ActiveRules)
+            .ReturnsSuccess("from-background", "text/plain");
+
+        var client = new HttpClient(handler);
+        HttpResponseMessage? response = null;
+
+        ExecutionContext.SuppressFlow();
+        try
+        {
+            response = await client.GetAsync("http://localhost/resource");
+        }
+        finally
+        {
+            ExecutionContext.RestoreFlow();
+        }
+
+        response!.StatusCode.ShouldBe(HttpStatusCode.OK);
+        (await response.Content.ReadAsStringAsync()).ShouldBe("from-background");
+    }
+
+    [Test]
+    public async Task SendAsync_PrefersRequestScopeOverBackgroundWhenBothConfigured()
+    {
+        var holder = new BackgroundHttpMockScope.RbkTestingServerHolder();
+        var handler = CreateHandler(holder);
+
+        using var background = new BackgroundHttpMockScope(holder);
+        new HttpMockCallBuilder(typeof(IExternalClient), HttpMethod.Get, urlMatcher: null, () => holder.ActiveRules)
+            .ReturnsSuccess("background", "text/plain");
+
+        using var requestScope = HttpMockScope.Begin();
+        new HttpMockCallBuilder(typeof(IExternalClient), HttpMethod.Get, urlMatcher: null)
+            .ReturnsSuccess("request", "text/plain");
+
+        var client = new HttpClient(handler);
+        var response = await client.GetAsync("http://localhost/resource");
+
+        (await response.Content.ReadAsStringAsync()).ShouldBe("request");
+    }
+
+    [Test]
+    public async Task SendAsync_DoesNotUseBackgroundRulesAfterBackgroundScopeDisposed()
+    {
+        var holder = new BackgroundHttpMockScope.RbkTestingServerHolder();
+        var handler = CreateHandler(holder);
+
+        using (var background = new BackgroundHttpMockScope(holder))
+        {
+            new HttpMockCallBuilder(typeof(IExternalClient), HttpMethod.Get, urlMatcher: null, () => holder.ActiveRules)
+                .ReturnsSuccess("from-background", "text/plain");
+        }
+
+        var client = new HttpClient(handler);
+
+        ExecutionContext.SuppressFlow();
+        try
+        {
+            await Should.ThrowAsync<InvalidOperationException>(() => client.GetAsync("http://localhost/resource"));
+        }
+        finally
+        {
+            if (ExecutionContext.IsFlowSuppressed())
+            {
+                ExecutionContext.RestoreFlow();
+            }
+        }
     }
 }

@@ -9,12 +9,21 @@ public sealed class HttpMockCallBuilder
     private readonly Type _clientType;
     private readonly HttpMethod _method;
     private readonly Func<string, bool>? _urlMatcher;
+    private readonly Func<HttpMockRuleBag?>? _getBackgroundRules;
+    private readonly bool _targetBackgroundOnly;
 
-    internal HttpMockCallBuilder(Type clientType, HttpMethod method, Func<string, bool>? urlMatcher)
+    internal HttpMockCallBuilder(
+        Type clientType,
+        HttpMethod method,
+        Func<string, bool>? urlMatcher,
+        Func<HttpMockRuleBag?>? getBackgroundRules = null,
+        bool targetBackgroundOnly = false)
     {
         _clientType = clientType;
         _method = method;
         _urlMatcher = urlMatcher;
+        _getBackgroundRules = getBackgroundRules;
+        _targetBackgroundOnly = targetBackgroundOnly;
     }
 
     public void ReturnsSuccess(HttpContent content) =>
@@ -46,10 +55,10 @@ public sealed class HttpMockCallBuilder
 
     public void Returns(HttpStatusCode statusCode, HttpContent content)
     {
-        var rules = HttpMockScope.CurrentRules
+        var rules = ResolveRuleBag()
             ?? throw new InvalidOperationException(
-                $"No {nameof(HttpMockScope)} is active. Call {nameof(HttpMockScope)}.{nameof(HttpMockScope.Begin)}() " +
-                $"(or TestingServer.HttpMockScope()) before configuring mock responses.");
+                $"No {nameof(HttpMockScope)} or {nameof(BackgroundHttpMockScope)} is active. Call " +
+                $"TestingServer.HttpMockScope() or TestingServer.BackgroundHttpMocks() before configuring mock responses.");
 
         // Capture content bytes now so each invocation gets a fresh HttpContent instance.
         var payload = content.ReadAsByteArrayAsync().GetAwaiter().GetResult();
@@ -74,6 +83,16 @@ public sealed class HttpMockCallBuilder
                 };
             }
         });
+    }
+
+    private HttpMockRuleBag? ResolveRuleBag()
+    {
+        if (_targetBackgroundOnly)
+        {
+            return _getBackgroundRules?.Invoke();
+        }
+
+        return HttpMockScope.CurrentRules ?? _getBackgroundRules?.Invoke();
     }
 
     public void Returns(HttpStatusCode statusCode, byte[] content, string? mediaType = null) =>

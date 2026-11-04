@@ -27,6 +27,8 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
     private readonly ConcurrentDictionary<string, HttpClient> _namedHttpClients = new();
     private bool _httpClientFactoryRegistered;
 
+    private readonly BackgroundHttpMockScope.RbkTestingServerHolder _backgroundHttpMockHolder = new();
+
     protected readonly Dictionary<Credentials, string> CachedCredentials = new();
 
     public string InstanceId = Guid.NewGuid().ToString("N");
@@ -173,7 +175,7 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
     {
         name ??= typeof(TClient).Name;
 
-        var handler = new StubHttpMessageHandler(typeof(TClient));
+        var handler = new StubHttpMessageHandler(typeof(TClient), () => _backgroundHttpMockHolder.ActiveRules);
 
         var client = new HttpClient(handler)
         {
@@ -229,6 +231,14 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
     /// </summary>
     public HttpMockScope HttpMockScope() => global::rbkApiModules.Commons.Testing.HttpMockScope.Begin();
 
+    /// <summary>
+    /// Mock rules for outbound HTTP from background threads (timers, hosted services) on this server.
+    /// Keep the scope open until background work finishes (e.g. polling). Use with the same
+    /// <see cref="MockHttpGet{TClient}"/> helpers; dispose to clear rules for the next test.
+    /// </summary>
+    public BackgroundHttpMockScope BackgroundHttpMocks() =>
+        new(_backgroundHttpMockHolder);
+
     public HttpMockCallBuilder MockHttpGet<TClient>(Func<string, bool>? urlMatcher = null) where TClient : class =>
         MockHttpCall<TClient>(HttpMethod.Get, urlMatcher);
 
@@ -236,7 +246,16 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
         MockHttpCall<TClient>(HttpMethod.Post, urlMatcher);
 
     public HttpMockCallBuilder MockHttpCall<TClient>(HttpMethod method, Func<string, bool>? urlMatcher = null) where TClient : class =>
-        new(typeof(TClient), method, urlMatcher);
+        new(typeof(TClient), method, urlMatcher, () => _backgroundHttpMockHolder.ActiveRules);
+
+    public HttpMockCallBuilder MockBackgroundHttpGet<TClient>(Func<string, bool>? urlMatcher = null) where TClient : class =>
+        MockBackgroundHttpCall<TClient>(HttpMethod.Get, urlMatcher);
+
+    public HttpMockCallBuilder MockBackgroundHttpPost<TClient>(Func<string, bool>? urlMatcher = null) where TClient : class =>
+        MockBackgroundHttpCall<TClient>(HttpMethod.Post, urlMatcher);
+
+    public HttpMockCallBuilder MockBackgroundHttpCall<TClient>(HttpMethod method, Func<string, bool>? urlMatcher = null) where TClient : class =>
+        new(typeof(TClient), method, urlMatcher, () => _backgroundHttpMockHolder.ActiveRules, targetBackgroundOnly: true);
 
     #region Post
 
