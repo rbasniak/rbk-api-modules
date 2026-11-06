@@ -60,3 +60,30 @@ public class HttpResponse<T> : HttpResponse where T : class
         return $"[{(int)Code}] {messages}{data}";
     }
 }
+
+public class BinaryHttpResponse
+{
+    public BinaryHttpResponse()
+    {
+        Messages = [];
+        Data = [];
+    }
+
+    public HttpStatusCode Code { get; set; }
+    public string[] Messages { get; set; }
+    public ProblemDetails? Problem { get; set; }
+    public byte[] Data { get; set; }
+    public bool IsSuccess => Code == HttpStatusCode.OK || Code == HttpStatusCode.NoContent;
+
+    public override string ToString()
+    {
+        var messages = String.Empty;
+
+        if (Messages.Length > 0)
+        {
+            messages = String.Join(", ", Messages);
+        }
+
+        return $"[{(int)Code}] {messages} ({Data.Length} bytes)";
+    }
+}

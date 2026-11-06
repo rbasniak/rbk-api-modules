@@ -1,4 +1,4 @@
-# rbkApiModules.Commons.Testing
+﻿# rbkApiModules.Commons.Testing
 
 Comprehensive testing framework for API integration tests with built-in authentication support and fluent assertions.
 
@@ -32,6 +32,8 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
     public Task<HttpResponse<TResponse>> PostMultipartAsync<TResponse>(string url, MultipartFormDataContent body, JwtToken credentials) where TResponse : class;
     public Task<HttpResponse<TResponse>> PostMultipartAsync<TResponse>(string url, MultipartFormDataContent body, Credentials credentials) where TResponse : class;
     public Task<HttpResponse<TResponse>> PostMultipartAsync<TResponse>(string url, MultipartFormDataContent body, string username) where TResponse : class;
+    public Task<BinaryHttpResponse> PostFileAsync(string url, object body, Credentials credentials);
+    public Task<BinaryHttpResponse> GetFileAsync(string url, Credentials credentials);
     public Task<HttpResponse> GetAsync(string url, Credentials credentials);
     public Task<HttpResponse<TResponse>> GetAsync<TResponse>(string url, Credentials credentials) where TResponse : class;
     public Task<HttpResponse> PutAsync(string url, object body, Credentials credentials);
@@ -153,6 +155,27 @@ var response = await PostMultipartAsync<UploadResponse[]>("api/public/upload", c
 ```
 
 Responses are mapped through the same `ProcessResponse` pipeline as JSON `PostAsync` calls (status code, body, headers, validation errors).
+
+#### Binary downloads
+
+Use `GetFileAsync` and `PostFileAsync` when the endpoint returns a file (`FileResult`, spreadsheet, PDF, or other non-JSON body). `GetAsync` and `PostAsync` read the body as text and are the right choice for JSON.
+
+Overloads match the JSON helpers: no authentication, cached username/`Credentials`, `JwtToken`, or `ApiKey`. The result is `BinaryHttpResponse` (`Code`, `Messages`, `Problem`, `Data`).
+
+```csharp
+await CacheCredentialsAsync("admin", "password", "default");
+
+var download = await GetFileAsync("api/help/download-manual", "admin");
+download.ShouldBeSuccess(out var manualBytes);
+
+var export = await PostFileAsync("api/reports/export", command, "admin");
+export.ShouldBeSuccess(out var spreadsheetBytes);
+
+var denied = await GetFileAsync("api/help/download-manual");
+denied.ShouldHaveErrors(HttpStatusCode.Unauthorized);
+```
+
+On success, `Data` is the raw response bytes. On failure, the body is decoded as UTF-8 and mapped with the same `ProblemDetails` / `ValidationProblemDetails` rules as `HttpResponse`.
 
 ### Aspire E2E Testing (Playwright)
 

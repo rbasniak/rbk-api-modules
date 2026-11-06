@@ -1,4 +1,4 @@
-using System.Net;
+﻿using System.Net;
 using rbkApiModules.Commons.Testing;
 using Shouldly;
 
@@ -58,6 +58,37 @@ public static class HttpAssertionExtensions
         response.Data.ShouldBeOfType(typeof(T), $"Expected response of type {typeof(T).Name}, but the response was of type {response.Data.GetType().Name}");
 
         result = response.Data;
+    }
+
+    public static void ShouldBeSuccess(this BinaryHttpResponse response, out byte[] fileBytes)
+    {
+        string messages;
+        if (response.Messages.Any())
+        {
+            messages = string.Join(", ", response.Messages);
+        }
+        else
+        {
+            messages = GetFriendlyError(response.Code, string.Empty);
+        }
+
+        response.IsSuccess.ShouldBeTrue($"Http request failed. Messages: [ {messages} ]");
+        response.Data.ShouldNotBeNull();
+        response.Data.Length.ShouldBeGreaterThan(0);
+        fileBytes = response.Data;
+    }
+
+    public static void ShouldHaveErrors(this BinaryHttpResponse response, HttpStatusCode expectedCode, params string[] messages)
+    {
+        response.Code.ShouldBe(expectedCode, $"Unexpected http response code. Should be {expectedCode} but was {response.Code}");
+
+        response.Data.Length.ShouldBe(0, "Expected an empty file payload, but the response contained bytes");
+        response.Messages.Length.ShouldBe(messages.Length, $"Unexpected number of error messages. Should be {messages.Length} but was {response.Messages.Length}");
+
+        foreach (var message in messages)
+        {
+            response.Messages.ShouldContain(message, $"Could not find the [{message}] message in the response");
+        }
     }
 
     public static void ShouldBeSuccess(this HttpResponse response)

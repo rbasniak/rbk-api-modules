@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -752,6 +752,128 @@ public abstract class RbkTestingServer<TProgram> : WebApplicationFactory<TProgra
         return result;
     }
 
+
+    #endregion
+
+    #region File
+
+    public async Task<BinaryHttpResponse> PostFileAsync(string url, object body, ApiKey credentials)
+    {
+        using (var httpClient = CreateHttpClient())
+        {
+            httpClient.DefaultRequestHeaders.Add(RbkAuthenticationSchemes.API_KEY, credentials.Value);
+
+            return await PostFileAsync(httpClient, url, body);
+        }
+    }
+
+    public async Task<BinaryHttpResponse> PostFileAsync(string url, object body, Credentials credentials)
+    {
+        return await PostFileAsync(url, body, GetCredentialsFromCache(credentials));
+    }
+
+    public async Task<BinaryHttpResponse> PostFileAsync(string url, object body, string username)
+    {
+        return await PostFileAsync(url, body, GetCredentialsFromCache(username));
+    }
+
+    public async Task<BinaryHttpResponse> PostFileAsync(string url, object body, JwtToken credentials)
+    {
+        using (var httpClient = CreateHttpClient())
+        {
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", credentials.Value);
+
+            return await PostFileAsync(httpClient, url, body);
+        }
+    }
+
+    public async Task<BinaryHttpResponse> PostFileAsync(string url, object body)
+    {
+        using (var httpClient = CreateHttpClient())
+        {
+            return await PostFileAsync(httpClient, url, body);
+        }
+    }
+
+    public async Task<BinaryHttpResponse> GetFileAsync(string url, ApiKey credentials)
+    {
+        using (var httpClient = CreateHttpClient())
+        {
+            httpClient.DefaultRequestHeaders.Add(RbkAuthenticationSchemes.API_KEY, credentials.Value);
+
+            return await GetFileAsync(httpClient, url);
+        }
+    }
+
+    public async Task<BinaryHttpResponse> GetFileAsync(string url, Credentials credentials)
+    {
+        return await GetFileAsync(url, GetCredentialsFromCache(credentials));
+    }
+
+    public async Task<BinaryHttpResponse> GetFileAsync(string url, string username)
+    {
+        return await GetFileAsync(url, GetCredentialsFromCache(username));
+    }
+
+    public async Task<BinaryHttpResponse> GetFileAsync(string url, JwtToken credentials)
+    {
+        using (var httpClient = CreateHttpClient())
+        {
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", credentials.Value);
+
+            return await GetFileAsync(httpClient, url);
+        }
+    }
+
+    public async Task<BinaryHttpResponse> GetFileAsync(string url)
+    {
+        using (var httpClient = CreateHttpClient())
+        {
+            return await GetFileAsync(httpClient, url);
+        }
+    }
+
+    private async Task<BinaryHttpResponse> PostFileAsync(HttpClient httpClient, string url, object body)
+    {
+        using var response = await httpClient.PostAsync(url, CreatePostContent(body));
+
+        return await ProcessBinaryResponse(response);
+    }
+
+    private async Task<BinaryHttpResponse> GetFileAsync(HttpClient httpClient, string url)
+    {
+        using var response = await httpClient.GetAsync(url);
+
+        return await ProcessBinaryResponse(response);
+    }
+
+    private async Task<BinaryHttpResponse> ProcessBinaryResponse(HttpResponseMessage response)
+    {
+        var result = new BinaryHttpResponse
+        {
+            Code = response.StatusCode
+        };
+
+        var bytes = await response.Content.ReadAsByteArrayAsync();
+
+        if (response.IsSuccessStatusCode)
+        {
+            result.Data = bytes;
+            return result;
+        }
+
+        var error = new HttpResponse
+        {
+            Code = response.StatusCode,
+            Body = Encoding.UTF8.GetString(bytes)
+        };
+
+        DeserializeErrorResult(error);
+        result.Messages = error.Messages;
+        result.Problem = error.Problem;
+
+        return result;
+    }
 
     #endregion
 

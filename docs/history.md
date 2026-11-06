@@ -1,12 +1,13 @@
-# rbkApiModules — Change History
+﻿# rbkApiModules — Change History
 
 All notable changes to rbkApiModules are documented here. Changes are organized by release, newest first. Consumer-facing changes only — internal implementation details are excluded.
 
-## X.X.X
+## 10.12.1
 
 ### rbkApiModules.Commons.Testing
 
 #### New Features
+- **`PostFileAsync` / `GetFileAsync`** — Download binary responses (`FileResult`, spreadsheets, PDFs) as `BinaryHttpResponse.Data`. Overloads match `PostAsync` / `GetAsync`. Assert with `ShouldBeSuccess(out byte[])` and `ShouldHaveErrors`.
 - **`BackgroundHttpMocks()`** — Second mock scope on `RbkTestingServer` for outbound HTTP from background threads (timers, hosted services) that do not flow `HttpMockScope`. Same `MockHttpGet` / `MockHttpPost` helpers; dispose to clear rules. Request-scope mocks take precedence when `HttpMockScope` is active.
 - **`MockBackgroundHttpGet` / `MockBackgroundHttpPost`** — Register stubs on the background scope only (use when `HttpMockScope` is also open and you need different rules per path).
 
